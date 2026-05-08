@@ -249,3 +249,45 @@ Este pacote consolida os 7 passos do cronograma:
 - Senha: `Jus9MVP#2026`
 - Adicionada nota de que o ambiente é demonstrativo e não utiliza dados reais.
 - Atualizados `versionamento.html` e `documentos/VERSIONAMENTO_JUS9_COMPLETO.md`.
+
+# Investidores v1
+- Criada página `investidores.html`.
+- Criados documentos de prospecção, texto para investidores, resumo executivo e preparação para reunião Web Summit Rio.
+- Estratégia: conservadora nos custos e ambiciosa na visão.
+
+# v1.2 — Grandes Escritórios e Gravações no DAJ
+
+- Criado `app-grupos.html`.
+- Criado `app-gravacoes.html`.
+- DAJ passa a prever níveis: Liberado, Compartilhado, Sigiloso, Interno e Secreto/Cofre.
+- Gravação de áudio/vídeo passa a ser prevista com alerta, consentimento expresso e termo assinado.
+- Criada migration `database/migrations/002_office_groups_and_attendance_media.sql`.
+
+# v1.3 — Portal separado de investidores
+
+- Investidores removido do site principal.
+- Criado projeto separado `investidores_site_v1_0` para investidores.jus9tecnologia.com.br.
+- Portal com entradas por perfil, custos, Web Summit e documentos.
+- Gravações no DAJ ganharam campo de armazenamento e exclusão apenas pelo advogado titular.
+
+# v1.4 — Formulários e mídias
+
+- `app-atendimento-inicial.html`: título ajustado para “Formulário de atendimento inicial”.
+- `app-retorno.html`: título ajustado para “Formulário de retorno”.
+- Adicionados uploads de vídeo/áudio em atendimento inicial e retorno.
+- Adicionado alerta de ciência/autorização do cliente ou pessoa monitorada.
+- Adicionado campo para termo de ciência/autorização de gravação.
+
+# v1.5 — Portal de investidores com detalhamento
+
+- O site principal permanece sem investidores no menu.
+- O portal `investidores_site_v1_0` recebeu `detalhamento.html`.
+- Cada perfil do portal de investidores ganhou dashboard próprio.
+- Incluída opção “Mercado / visão S.A.”.
+
+# v2.0 — Dashboard interativo de investimentos
+
+- Site principal continua sem área de investidores no menu principal.
+- Home e MVP receberam link sugestivo para `https://investimentos.jus9tecnologia.com.br`.
+- Criado projeto separado `investimentos_site_v2_0`.
+- Portal de investimentos passa a usar dados JSON, script Python gerador e dashboard interativo com foco por clique.

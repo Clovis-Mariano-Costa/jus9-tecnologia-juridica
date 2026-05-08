@@ -98,3 +98,38 @@ Este arquivo registra a evolução do pacote Jus 9 ao longo dos 7 passos do cron
 
 **Atualizações:** O bloco “Acesso ao ambiente MVP” em `mvp.html` passou a exibir claramente as credenciais demonstrativas — e-mail `demo@jus9tecnologia.com.br` e senha `Jus9MVP#2026` — além do placeholder. Também foi adicionada nota informando que o acesso é apenas demonstrativo e não utiliza dados reais.
 
+
+
+## JUS9_v1_2_GRANDES_ESCRITORIOS_GRAVACOES.zip
+
+**Etapa:** Atualização pós-publicação — escala institucional e mídias do DAJ
+
+**Atualizações:** Acrescenta previsão para grandes escritórios e grupos associados, com DAJ Liberado, Compartilhado, Sigiloso, Interno e Secreto/Cofre. Acrescenta área de gravações de áudio/vídeo com consentimento expresso, termo assinado, alerta antes de iniciar gravação e armazenamento no DAJ.
+
+
+## JUS9_v1_3_PORTAL_INVESTIDORES_GRANDES_ESCRITORIOS_GRAVACOES.zip
+
+**Etapa:** Portal separado de investidores e operacionalização de gravações
+
+**Atualizações:** Remove destaque de Investidores do site principal, cria portal separado para investidores.jus9tecnologia.com.br com entradas por perfil, custos, captação, Web Summit e documentos. Reforça grandes escritórios e gravações no DAJ, com campo de armazenamento de mídia e exclusão permitida apenas ao advogado titular.
+
+
+## JUS9_v1_4_FORMULARIOS_MIDIAS_ATENDIMENTO_RETORNO.zip
+
+**Etapa:** Ajuste de formulários e mídias de atendimento
+
+**Atualizações:** Renomeia “Formulário de atendimento inicial amplo” para “Formulário de atendimento inicial” e “Formulário de retorno específico” para “Formulário de retorno”. Acrescenta upload de vídeo/áudio no atendimento inicial e no retorno, com alerta de ciência/autorização do cliente ou pessoa monitorada e campo para anexar termo.
+
+
+## JUS9_v1_5_INVESTIDORES_DETALHAMENTO_DASHBOARDS.zip
+
+**Etapa:** Portal de investidores — detalhamento por perfil
+
+**Atualizações:** Mantém o portal de investidores separado do site principal, adiciona link “Detalhamento” no cabeçalho do portal e cria página de escolha de perfil. Cada opção passa a abrir um dashboard próprio: anjo, banco, fundo, parceiro, escritório, universidade, patrocinador, aceleradora e Mercado / visão S.A.
+
+
+## JUS9_INVESTIMENTOS_v2_0_DASHBOARD_INTERATIVO_PYTHON_JSON.zip
+
+**Etapa:** Dashboard interativo de investimentos e integração sugestiva
+
+**Atualizações:** Cria portal separado `investimentos_site_v2_0`, preparado para `investimentos.jus9tecnologia.com.br`, com dashboard interativo baseado em HTML/CSS/JavaScript e dados JSON gerados por Python. Mantém filtros persistentes de perfil, prazo e faixa de investimento, gráficos clicáveis, foco contextual e botão “Limpar foco”. Atualiza o site principal e o MVP com link discreto e estratégico para a área de investimentos.

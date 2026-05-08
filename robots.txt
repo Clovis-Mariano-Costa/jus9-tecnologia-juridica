@@ -32,3 +32,5 @@ Disallow: /documentos/relatorio-atendimento-demo.txt
 Disallow: /app-perfis.html
 Disallow: /database/
 Disallow: /app-ia-profissional.html
+Disallow: /app-grupos.html
+Disallow: /app-gravacoes.html
