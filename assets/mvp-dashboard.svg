@@ -1,0 +1,37 @@
+<svg width="980" height="640" viewBox="0 0 980 640" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#0A1728"/><stop offset="1" stop-color="#07111F"/></linearGradient>
+<linearGradient id="gold" x1="0" x2="1"><stop stop-color="#B9781D"/><stop offset=".45" stop-color="#FFE6A6"/><stop offset="1" stop-color="#C58B2F"/></linearGradient>
+<filter id="shadow"><feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000" flood-opacity=".4"/></filter>
+</defs>
+<rect width="980" height="640" rx="36" fill="url(#bg)"/>
+<rect x="28" y="28" width="924" height="584" rx="28" fill="#0B1A2D" stroke="#233B58"/>
+<rect x="54" y="70" width="185" height="500" rx="20" fill="#07111F" stroke="#213757"/>
+<text x="78" y="116" font-family="Inter,Arial" font-size="25" font-weight="800" fill="#F8FAFC">Jus 9</text>
+<text x="78" y="145" font-family="Inter,Arial" font-size="11" letter-spacing="3" fill="#E7C36C">MVP ADVOGADOS</text>
+<g font-family="Inter,Arial" font-size="14" fill="#B8C6DA">
+<text x="78" y="210">Painel</text><text x="78" y="250">Clientes</text><text x="78" y="290">Processos</text><text x="78" y="330">Prazos</text><text x="78" y="370">Documentos</text><text x="78" y="410">Cofre Jurídico</text><text x="78" y="450">Área Secreta</text>
+</g>
+<circle cx="202" cy="407" r="5" fill="url(#gold)"/>
+<rect x="270" y="70" width="650" height="92" rx="22" fill="#10243B" stroke="#253F60"/>
+<text x="300" y="112" font-family="Inter,Arial" font-size="24" font-weight="800" fill="#F8FAFC">Olá, escritório.</text>
+<text x="300" y="140" font-family="Inter,Arial" font-size="15" fill="#B8C6DA">Visão segura de processos, prazos, documentos e sigilo.</text>
+<g filter="url(#shadow)">
+<rect x="270" y="190" width="190" height="116" rx="22" fill="#0E2036" stroke="#2A476B"/>
+<rect x="490" y="190" width="190" height="116" rx="22" fill="#0E2036" stroke="#2A476B"/>
+<rect x="710" y="190" width="210" height="116" rx="22" fill="#0E2036" stroke="#2A476B"/>
+</g>
+<text x="298" y="232" font-family="Inter,Arial" font-size="14" fill="#E7C36C">PRAZOS CRÍTICOS</text>
+<text x="298" y="274" font-family="Inter,Arial" font-size="42" font-weight="800" fill="#F8FAFC">12</text>
+<text x="518" y="232" font-family="Inter,Arial" font-size="14" fill="#E7C36C">PROCESSOS SECRETOS</text>
+<text x="518" y="274" font-family="Inter,Arial" font-size="42" font-weight="800" fill="#F8FAFC">04</text>
+<text x="738" y="232" font-family="Inter,Arial" font-size="14" fill="#E7C36C">DOCUMENTOS NO COFRE</text>
+<text x="738" y="274" font-family="Inter,Arial" font-size="42" font-weight="800" fill="#F8FAFC">86</text>
+<rect x="270" y="340" width="650" height="230" rx="26" fill="#0E2036" stroke="#2A476B"/>
+<text x="300" y="382" font-family="Inter,Arial" font-size="18" font-weight="800" fill="#F8FAFC">Controle de acesso por processo</text>
+<g font-family="Inter,Arial" font-size="15">
+<rect x="300" y="414" width="580" height="44" rx="12" fill="#07111F"/><text x="324" y="443" fill="#B8C6DA">Processo 0001234-00.2026.8.24.0000</text><text x="720" y="443" fill="#E7C36C">Restrito</text>
+<rect x="300" y="468" width="580" height="44" rx="12" fill="#07111F"/><text x="324" y="497" fill="#B8C6DA">Cliente empresarial — documentos sensíveis</text><text x="705" y="497" fill="#E7C36C">Cofre</text>
+<rect x="300" y="522" width="580" height="44" rx="12" fill="#07111F"/><text x="324" y="551" fill="#B8C6DA">Caso em segredo de justiça</text><text x="690" y="551" fill="#E7C36C">Titular</text>
+</g>
+</svg>
