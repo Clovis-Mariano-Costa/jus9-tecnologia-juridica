@@ -133,14 +133,3 @@ Este arquivo registra a evolução do pacote Jus 9 ao longo dos 7 passos do cron
 **Etapa:** Dashboard interativo de investimentos e integração sugestiva
 
 **Atualizações:** Cria portal separado `investimentos_site_v2_0`, preparado para `investimentos.jus9tecnologia.com.br`, com dashboard interativo baseado em HTML/CSS/JavaScript e dados JSON gerados por Python. Mantém filtros persistentes de perfil, prazo e faixa de investimento, gráficos clicáveis, foco contextual e botão “Limpar foco”. Atualiza o site principal e o MVP com link discreto e estratégico para a área de investimentos.
-
-
-## v2.1 — Dashboard, cadastros, DAJ e investidores
-
-- Dashboard recebeu atenção especial para leitura executiva.
-- MVP recebeu abertura de DAJ como cadastro inicial do cliente, com foto, anexos, auditoria e número `DAJ-AAAAMM-sequencial`.
-- Reforçada a regra: clientes não acessam DAJ; acompanhamento é interno da equipe.
-- Qualquer membro autorizado pode abrir DAJ; demais cadastros seguem com Advogado Líder ou delegação registrada.
-- Criado aviso: a execução pode ser delegada, mas a responsabilidade não.
-- Workspace recebeu histórico de fotos em estilo rede privada, sem expor dados sensíveis.
-- Investidores recebeu gráficos de pizza, página de despesas/lucro e dados por horizonte.
