@@ -291,3 +291,36 @@ Este pacote consolida os 7 passos do cronograma:
 - Home e MVP receberam link sugestivo para `https://investimentos.jus9tecnologia.com.br`.
 - Criado projeto separado `investimentos_site_v2_0`.
 - Portal de investimentos passa a usar dados JSON, script Python gerador e dashboard interativo com foco por clique.
+
+
+## v2.1 — Dashboard, cadastros, DAJ e investidores
+
+- Dashboard recebeu atenção especial para leitura executiva.
+- MVP recebeu abertura de DAJ como cadastro inicial do cliente, com foto, anexos, auditoria e número `DAJ-AAAAMM-sequencial`.
+- Reforçada a regra: clientes não acessam DAJ; acompanhamento é interno da equipe.
+- Qualquer membro autorizado pode abrir DAJ; demais cadastros seguem com Advogado Líder ou delegação registrada.
+- Criado aviso: a execução pode ser delegada, mas a responsabilidade não.
+- Workspace recebeu histórico de fotos em estilo rede privada, sem expor dados sensíveis.
+- Investidores recebeu gráficos de pizza, página de despesas/lucro e dados por horizonte.
+
+
+---
+
+## v2.1.2 — Ajuste de acesso ao MVP
+
+Correção pontual na Home: o botão de destaque do cabeçalho voltou a ser **Acessar MVP**, apontando para `mvp.html`. O botão secundário de cadastro na área principal foi removido para manter o acesso ao MVP como chamada prioritária.
+
+Arquivo de registro: `README_v2_1_2_AJUSTE_ACESSO_MVP.md`.
+
+---
+
+## v2.1.3 — Cadastro de Equipe no MVP
+
+- A seção interna do MVP anteriormente chamada **Cadastros** foi renomeada para **Cadastro de Equipe**.
+- `app-cadastro.html` agora leva diretamente ao formulário de cadastro de equipe.
+- O formulário prevê foto pessoal/profissional, dados básicos, perfil interno, permissões delegadas, status, advogado líder responsável e auditoria.
+- A foto pode ser vinculada ao arquivo de fotos do Workspace conforme permissão definida pelo advogado líder.
+- O Workspace recebeu âncora `#arquivo-fotos-equipe`, tabela de origem/uso/controle das fotos e link de retorno para o Cadastro de Equipe.
+- Mantida a separação entre Cadastro de Equipe e abertura de DAJ: cliente entra por DAJ; equipe entra por Cadastro de Equipe.
+
+Arquivo de registro: `README_v2_1_3_CADASTRO_EQUIPE.md`.
