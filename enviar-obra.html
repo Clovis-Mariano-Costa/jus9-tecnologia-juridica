@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Enviar obra para avaliação — Livros Gratuitos — Jus 9 Tecnologia Jurídica</title>
+  <meta name="description" content="Formulário de envio de obra para avaliação no portal Livros Gratuitos da Jus 9 Tecnologia Jurídica.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/x-icon" href="assets/jus9-favicons/jus9-favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/jus9-favicons/jus9-favicon-32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/jus9-favicons/jus9-favicon-180.png" />
+</head>
+<body>
+<header class="header">
+  <div class="container nav">
+    <a href="https://www.jus9tecnologia.com.br" class="logo"><img src="assets/jus9-logo.svg" alt="Jus 9 Tecnologia Jurídica"></a>
+    <nav class="menu">
+      <a href="index.html">Livros Gratuitos</a>
+      <a href="sou-um-aeon-e-nasci-lembrando.html">Sou um Aeon e Nasci Lembrando</a>
+      <a href="https://carta.jus9tecnologia.com.br" target="_blank" rel="noopener">Carta aberta</a>
+      <a href="https://www.jus9tecnologia.com.br" target="_blank" rel="noopener">Jus 9 Tecnologia Jurídica</a>
+      <a href="https://quandoodesenhofala.jus9tecnologia.com.br" target="_blank" rel="noopener">Quando o Desenho Fala</a>
+    </nav>
+    <a class="cta" href="mailto:livros@aeonprimevo.com.br">livros@aeonprimevo.com.br</a>
+    <button class="mobile-toggle" aria-label="Abrir menu">☰</button>
+  </div>
+</header>
+<main>
+<section class="ai-hero form-hero">
+  <div class="container">
+    <div class="eyebrow">Autores e autoras</div>
+    <h1>Envie sua obra para avaliação.</h1>
+    <p class="lead">Este formulário é destinado a autores e autoras que desejam submeter uma obra ao portal <a href="index.html">Livros Gratuitos</a> da <a href="https://www.jus9tecnologia.com.br" target="_blank" rel="noopener">Jus 9 Tecnologia Jurídica</a>.</p>
+    <div class="notice-box">
+      <h2>Informe inicial antes do envio</h2>
+      <p>Ao enviar sua obra para avaliação, você declara estar ciente de que os dados informados serão utilizados exclusivamente para análise de autoria, contato, avaliação editorial e eventual disponibilização da obra no portal.</p>
+      <p>Caso a obra seja recusada, os dados pessoais, incluindo CPF, e o arquivo enviado poderão ser excluídos automaticamente após a conclusão da análise, salvo necessidade de preservação por obrigação legal, prevenção de fraude ou exercício regular de direitos.</p>
+      <p>Caso a obra seja aprovada e publicada, os dados necessários à comprovação de autoria, autorização, contato e segurança jurídica serão mantidos enquanto a obra permanecer disponível conosco.</p>
+      <p><strong>Importante:</strong> esta versão estática prepara o envio para <a href="mailto:livros@aeonprimevo.com.br">livros@aeonprimevo.com.br</a>. Para anexar o PDF, use o campo de arquivo como conferência e anexe o PDF manualmente no e-mail aberto pelo sistema, ou informe um link privado para análise.</p>
+    </div>
+  </div>
+</section>
+<section class="section">
+  <div class="container form-layout">
+    <form class="submission-form" id="obraForm" novalidate>
+      <div class="form-block">
+        <div class="eyebrow">Dados do autor</div>
+        <div class="form-grid">
+          <label>Nome completo *<input name="nome" required autocomplete="name"></label>
+          <label>Nome de autor, se houver<input name="nomeAutor"></label>
+          <label>CPF *<input name="cpf" required inputmode="numeric" placeholder="000.000.000-00" data-cpf></label>
+          <label>Data de nascimento *<input type="date" name="nascimento" required></label>
+          <label>CEP *<input name="cep" required inputmode="numeric" placeholder="00000-000" data-cep></label>
+          <label>Endereço *<input name="endereco" required data-endereco></label>
+          <label>Número / complemento<input name="numeroComplemento"></label>
+          <label>Cidade *<input name="cidade" required data-cidade></label>
+          <label>UF *<input name="uf" required maxlength="2" data-uf></label>
+          <label>País *<input name="pais" required value="Brasil"></label>
+          <label>E-mail *<input type="email" name="email" required autocomplete="email"></label>
+          <label>Telefone / WhatsApp *<input name="telefone" required autocomplete="tel"></label>
+        </div>
+      </div>
+      <div class="form-block">
+        <div class="eyebrow">Dados da obra</div>
+        <div class="form-grid">
+          <label>Título da obra *<input name="titulo" required></label>
+          <label>Subtítulo<input name="subtitulo"></label>
+          <label>Categoria / gênero *<input name="categoria" required placeholder="Ex.: espiritualidade, poesia, romance, educação"></label>
+          <label>A obra já foi publicada? *<select name="publicada" required><option value="">Selecione</option><option>Sim</option><option>Não</option><option>Parcialmente / em outra versão</option></select></label>
+          <label>Número aproximado de páginas<input type="number" min="1" step="1" name="paginas" placeholder="Ex.: 384"></label>
+          <label>ISBN, se houver<input name="isbn" placeholder="Ex.: 978-65-01-41096-8"></label>
+          <label class="full sample-field">Porcentagem autorizada para amostra gratuita pública *
+            <input type="number" name="percentualAmostra" required min="0" max="100" step="0.001" value="8.594" data-percentual-amostra>
+            <span class="field-help">Sugestão editorial da Jus 9 Tecnologia Jurídica: <strong>8,594%</strong> da obra completa, inspirada em uma amostra de 33 páginas reais em uma obra de 384 páginas. O autor pode aceitar a sugestão ou informar outro percentual.</span>
+          </label>
+          <label class="full">Orientação sobre a amostra gratuita<textarea name="orientacaoAmostra" rows="3" placeholder="Ex.: aceito a sugestão editorial; prefiro que a equipe escolha páginas com início, meio e fim; desejo indicar capítulos específicos..."></textarea></label>
+          <label class="full">Link externo ou pasta privada para análise<input name="linkPdf" placeholder="Google Drive, Dropbox, site próprio ou outro link seguro"></label>
+          <label class="full">Arquivo PDF da obra *<input type="file" name="arquivoPdf" accept="application/pdf,.pdf" required data-pdf></label>
+          <label class="full">Breve descrição da obra *<textarea name="descricao" required rows="5"></textarea></label>
+        </div>
+      </div>
+      <div class="form-block declarations">
+        <div class="eyebrow">Declarações obrigatórias</div>
+        <label><input type="checkbox" name="declaraAutoria" required> Declaro ser autor(a) da obra ou possuir autorização suficiente para submetê-la à análise.</label>
+        <label><input type="checkbox" name="declaraVerdade" required> Declaro que as informações prestadas são verdadeiras e estou ciente de que a falsidade de informações pode gerar responsabilidade civil e criminal.</label>
+        <label><input type="checkbox" name="autorizaAvaliacao" required> Autorizo a Jus 9 Tecnologia Jurídica a avaliar a obra enviada.</label>
+        <label><input type="checkbox" name="autorizaAmostra" required> Autorizo que, em caso de aprovação, a porcentagem indicada seja usada como referência para uma amostra gratuita pública, preferencialmente formada por páginas reais e fiéis, com início, meio e fim.</label>
+        <label><input type="checkbox" name="autorizaPublicacao" required> Em caso de aprovação, aceito tratar separadamente as condições de publicação da obra no portal Livros Gratuitos.</label>
+        <label><input type="checkbox" name="cienteExclusao" required> Estou ciente de que, se a obra for recusada, meus dados pessoais e o arquivo enviado poderão ser excluídos após a análise, conforme aviso inicial.</label>
+      </div>
+      <div class="form-actions">
+        <button class="btn primary" type="submit">Preparar envio para avaliação</button>
+        <a class="btn" href="mailto:livros@aeonprimevo.com.br">Enviar e-mail manualmente</a>
+      </div>
+      <p class="form-status" data-form-status hidden></p>
+    </form>
+    <aside class="card side-card">
+      <div class="eyebrow">Como funciona</div>
+      <h2>Fluxo de avaliação</h2>
+      <ol>
+        <li>O autor preenche o formulário e envia os dados para <strong>livros@aeonprimevo.com.br</strong>.</li>
+        <li>A Jus 9 Tecnologia Jurídica analisa autoria, dados, declarações e PDF.</li>
+        <li>Se aprovada, a obra poderá ter uma amostra gratuita pública.</li>
+        <li>O autor define ou aceita a sugestão de porcentagem da amostra. A sugestão editorial é <strong>8,594%</strong>.</li>
+        <li>As condições completas de publicação serão tratadas antes da disponibilização final.</li>
+      </ol>
+      <p class="small">Recomendação editorial: a amostra gratuita deve, sempre que possível, ser composta por páginas reais e fiéis da obra original, organizadas para formar uma leitura com início, meio e fim.</p>
+    </aside>
+  </div>
+</section>
+</main>
+<footer class="footer"><div class="container"><a href="https://www.jus9tecnologia.com.br" target="_blank" rel="noopener">Jus 9 Tecnologia Jurídica</a> • <a href="index.html">Livros Gratuitos</a> • <a href="https://carta.jus9tecnologia.com.br" target="_blank" rel="noopener">Carta aberta</a></div></footer>
+<script src="script.js"></script>
+</body>
+</html>
