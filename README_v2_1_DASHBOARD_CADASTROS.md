@@ -17,12 +17,3 @@ Dashboard, cadastro público, abertura de DAJ, foto do cliente, anexos, Workspac
 
 ## Observação
 Esta versão segue demonstrativa/estática. A implementação real exigirá backend, autenticação, banco, storage, logs, permissões e revisão jurídica/LGPD.
-
-
-## Correção v2.1.1 — visibilidade da seção Cadastro
-
-- A página institucional `cadastro.html` foi vinculada ao menu principal e aos botões da Home.
-- Foi criada a página `app-cadastro.html` dentro do MVP demonstrativo.
-- O menu lateral do MVP agora mostra explicitamente `Cadastros`.
-- A abertura de DAJ permanece como cadastro inicial do cliente, com foto, anexos, auditoria e numeração por ano/mês/sequencial.
-- Demais cadastros permanecem sob controle do advogado líder, com delegação auditável e aviso de responsabilidade.

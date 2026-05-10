@@ -964,85 +964,9 @@ html, body{max-width:100%; overflow-x:hidden}
 @media(max-width:520px){.header .container{width:min(100% - 20px, var(--max));}.logo{min-width:0}.logo img{max-width:160px}.cta{display:none}}
 
 
-/* v1.1 — formulário de envio de obras gratuitas */
-.ai-hero{padding:82px 0 44px;}
-.form-hero h1{max-width:940px;}
-.notice-box{
-  margin-top:28px;
-  border:1px solid rgba(231,195,108,.24);
-  border-radius:26px;
-  padding:24px;
-  background:linear-gradient(180deg,rgba(16,36,59,.78),rgba(7,17,31,.72));
-  color:var(--muted);
-}
-.notice-box h2{font-size:28px;color:var(--text);margin-bottom:14px;}
-.notice-box a{color:var(--gold);font-weight:900;}
-.submit-card{max-width:900px;}
-.form-layout{display:grid;grid-template-columns:1.15fr .85fr;gap:24px;align-items:start;}
-.submission-form{display:grid;gap:18px;}
-.form-block{
-  border:1px solid rgba(231,195,108,.18);
-  border-radius:24px;
-  padding:22px;
-  background:linear-gradient(180deg,rgba(16,36,59,.82),rgba(7,17,31,.72));
-  box-shadow:0 12px 50px rgba(0,0,0,.2);
-}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;}
-.form-grid .full{grid-column:1/-1;}
-.submission-form label{display:grid;gap:7px;color:var(--text);font-weight:800;font-size:14px;}
-.submission-form input,.submission-form select,.submission-form textarea{
-  width:100%;border:1px solid rgba(231,195,108,.22);border-radius:14px;
-  padding:13px 14px;background:rgba(255,255,255,.04);color:var(--text);outline:none;
-}
-.submission-form select option{background:#07111f;color:#f8fafc;}
-.submission-form textarea{resize:vertical;min-height:120px;}
-.submission-form input:focus,.submission-form select:focus,.submission-form textarea:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(231,195,108,.10);}
-.submission-form input.invalid,.submission-form select.invalid,.submission-form textarea.invalid{border-color:#fca5a5;box-shadow:0 0 0 4px rgba(248,113,113,.12);}
-.declarations{gap:12px;}
-.declarations label{display:flex;align-items:flex-start;gap:10px;color:var(--muted);font-weight:700;line-height:1.5;margin-top:12px;}
-.declarations input{width:auto;margin-top:4px;}
-.form-actions{display:flex;gap:12px;flex-wrap:wrap;}
-.form-actions button{cursor:pointer;}
-.form-status{border:1px solid rgba(231,195,108,.22);border-radius:16px;padding:14px;background:rgba(231,195,108,.08);color:var(--gold3);font-weight:800;}
-.side-card{position:sticky;top:104px;}
-.side-card ol{color:var(--muted);padding-left:22px;}
-.small{font-size:14px;color:var(--soft)!important;}
-@media(max-width:980px){.form-layout,.form-grid{grid-template-columns:1fr}.side-card{position:static}}
+/* v2.1 — Dashboard, abertura de DAJ, cadastro e Workspace fotográfico */
+.field-help{display:block;color:#6b7280;font-size:12px;margin-top:6px}.audit-box,.responsibility-warning{border-left:4px solid #c58b2f;background:#fff7e2;color:#5b3b09;border-radius:0 18px 18px 0;padding:16px 18px;margin:14px 0}.responsibility-warning p{margin:8px 0 0;color:#5b3b09}.client-daj-row{display:grid;grid-template-columns:82px 1fr;gap:14px;align-items:start}.client-photo-placeholder{width:72px;height:72px;border-radius:22px;border:1px dashed rgba(197,139,47,.45);background:#fff7e2;color:#8a5a12;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;text-align:center}.photo-history-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:16px 0}.photo-history-grid article{background:#fff;border:1px solid rgba(15,23,42,.10);border-radius:20px;padding:12px;box-shadow:0 12px 34px rgba(15,23,42,.07)}.photo-history-grid strong{display:block;color:#0b1728;margin-top:10px}.photo-history-grid span{display:block;color:#51627a;font-size:12px;margin-top:4px}.photo-tile{height:120px;border-radius:16px;background:linear-gradient(135deg,#f7f4ee,#fff7e2);border:1px solid rgba(197,139,47,.20);display:flex;align-items:center;justify-content:center;color:#8a5a12;font-weight:900;font-size:22px}.cadastro-publico{background:#fff;border:1px solid rgba(15,23,42,.10);border-radius:28px;padding:24px;box-shadow:0 18px 60px rgba(15,23,42,.08)}
+@media(max-width:900px){.photo-history-grid{grid-template-columns:1fr 1fr}.client-daj-row{grid-template-columns:1fr}.client-photo-placeholder{width:100%;height:110px}}@media(max-width:560px){.photo-history-grid{grid-template-columns:1fr}}
 
-/* Portal de livros - ajustes do livro Sou um Aeon */
-.ai-hero{padding:92px 0 64px; position:relative; overflow:hidden}
-.book-showcase{display:grid; grid-template-columns:340px 1fr; gap:42px; align-items:center}
-.book-cover-card{border:1px solid var(--line); border-radius:28px; padding:16px; background:linear-gradient(145deg, rgba(16,36,59,.86), rgba(7,17,31,.88)); box-shadow:0 24px 80px rgba(0,0,0,.38)}
-.book-cover-card img{border-radius:18px; width:100%; height:auto; object-fit:cover}
-.book-card img{border-radius:18px; border:1px solid rgba(231,195,108,.18); margin-bottom:18px}
-.two-col{display:grid; grid-template-columns:1.1fr .9fr; gap:22px; align-items:start}
-.highlight-card p{font-size:17px}
-.technical-info dl{display:grid; gap:12px; margin:18px 0 24px}
-.technical-info dl div{display:grid; grid-template-columns:120px 1fr; gap:12px; padding-bottom:12px; border-bottom:1px solid rgba(255,255,255,.08)}
-.technical-info dt{color:var(--gold); font-weight:900}
-.technical-info dd{margin:0; color:var(--muted)}
-.purchase-panel{padding:28px}
-.purchase-buttons{display:flex; flex-wrap:wrap; gap:12px; align-items:center}
-.small{font-size:14px; color:var(--muted)}
-.compact-hero{padding:72px 0 36px}
-.editorial-page{background:linear-gradient(180deg, rgba(16,36,59,.82), rgba(7,17,31,.72)); border:1px solid rgba(231,195,108,.18); border-radius:var(--radius); padding:36px}
-.source-box{margin:28px 0; padding:18px; border-radius:18px; border:1px solid rgba(231,195,108,.25); background:rgba(231,195,108,.06)}
-.source-box p{margin:8px 0}
-.notice-box{margin-top:24px; padding:24px; border:1px solid rgba(231,195,108,.22); border-radius:22px; background:rgba(255,255,255,.035)}
-.form-layout{display:grid; grid-template-columns:1fr 340px; gap:24px; align-items:start}
-.submission-form,.form-block{display:grid; gap:18px}
-.form-block{border:1px solid rgba(231,195,108,.18); border-radius:var(--radius); padding:24px; background:linear-gradient(180deg, rgba(16,36,59,.82), rgba(7,17,31,.72))}
-.form-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px}
-.form-grid label,.declarations label{display:grid; gap:8px; color:var(--muted); font-weight:700}
-.form-grid label.full{grid-column:1/-1}
-.form-grid input,.form-grid select,.form-grid textarea{width:100%; border:1px solid rgba(231,195,108,.22); border-radius:12px; padding:12px 14px; color:var(--text); background:rgba(255,255,255,.04); font:inherit}
-.form-grid textarea{resize:vertical}
-.field-help{font-size:13px; color:var(--soft); line-height:1.5; font-weight:500}
-.declarations label{display:block; margin:0 0 12px}
-.declarations input{margin-right:8px}
-.form-actions{display:flex; gap:12px; flex-wrap:wrap}
-.form-status{padding:14px 16px; border-radius:14px; border:1px solid rgba(231,195,108,.24); background:rgba(231,195,108,.06); color:var(--gold)}
-.invalid{border-color:#f87171 !important; outline:2px solid rgba(248,113,113,.24)}
-.side-card ol{color:var(--muted); padding-left:20px}
-.side-card li{margin:0 0 10px}
-@media(max-width:980px){.book-showcase,.two-col,.form-layout{grid-template-columns:1fr}.book-cover-card{max-width:360px}.technical-info dl div{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}}
+.daj-profile-head{display:flex;gap:16px;align-items:flex-start;margin:8px 0 12px}.daj-number-note{color:#6b7280!important;font-size:13px!important;margin-top:4px!important}
+@media(max-width:620px){.daj-profile-head{flex-direction:column}}
