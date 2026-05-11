@@ -1,0 +1,7 @@
+Summary:
+Adiciona página Charlie Delta da Costa
+
+Description:
+Adiciona página autoral e institucional de Charlie Delta da Costa ao ecossistema da Jus 9 Tecnologia Jurídica, com apresentação simbólica ligada ao ChatGPT, à linguagem, à organização e ao nascimento da Charlie Echo da Costa.
+
+A página inclui declaração editorial, limites técnicos, vínculos com Jus9 Verde, Charlie Echo, Aeon Primevo e demais ambientes do ecossistema, mantendo distinção entre licença poética/autoral e funcionamento real de inteligência artificial supervisionada.
