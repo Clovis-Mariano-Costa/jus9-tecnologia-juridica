@@ -10,16 +10,12 @@ E-mail de contato: clovis@jus9tecnologia.com.br
 DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
 -->
 
-# Database — Jus 9 Movimento 3
+# Privacidade — jus9-tecnologia-juridica
 
-Esquema inicial pensado para PostgreSQL/Supabase.
+Este projeto deve observar cuidados de privacidade e proteção de dados.
 
-## Núcleo
+Quando houver formulários, coleta de dados, envio de mensagens, analytics,
+cookies ou integração com APIs, revisar a política pública antes da publicação.
 
-- `dajs` é o eixo do caso.
-- `documents`, `attendances`, `deadlines`, `processes`, `workspace_messages` e `audit_logs` se vinculam ao DAJ.
-- `secreto/cofre` deve ser validado por titularidade do advogado.
-
-## Próximo passo técnico
-
-Adicionar RLS no Supabase ou autorização equivalente no backend.
+Referência institucional: https://www.jus9tecnologia.com.br/
+Contato: clovis@jus9tecnologia.com.br

@@ -10,16 +10,16 @@ E-mail de contato: clovis@jus9tecnologia.com.br
 DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
 -->
 
-# Database — Jus 9 Movimento 3
+# Relatório de segurança — jus9-tecnologia-juridica
 
-Esquema inicial pensado para PostgreSQL/Supabase.
+## Ações aplicadas
 
-## Núcleo
+- Remoção de pastas `.git/` do pacote público.
+- Remoção de caches, dependências instaladas e backups técnicos conhecidos, quando encontrados.
+- Inclusão de `.gitignore`, `LICENSE`, `NOTICE`, `SECURITY.md`, `PRIVACY.md` e assinatura institucional.
+- Inserção de assinatura em arquivos textuais/código quando tecnicamente seguro.
+- Preservação de arquivos de DNA sem alteração direta.
 
-- `dajs` é o eixo do caso.
-- `documents`, `attendances`, `deadlines`, `processes`, `workspace_messages` e `audit_logs` se vinculam ao DAJ.
-- `secreto/cofre` deve ser validado por titularidade do advogado.
+## Arquivos removidos neste pacote
 
-## Próximo passo técnico
-
-Adicionar RLS no Supabase ou autorização equivalente no backend.
+Nenhum arquivo removido além de regras gerais.
