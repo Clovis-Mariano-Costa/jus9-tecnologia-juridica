@@ -1,17 +1,9 @@
 # Jus 9 Tecnologia Jurídica
 
-## Repertório
+Repertório: `jus9-tecnologia-juridica`
 
-`jus9-tecnologia-juridica`
+Status: existente
 
-## Status
+Mão na Massa Final — padrão visual, assinatura, governança e orientação obrigatória.
 
-existente
-
-## Fase
-
-Pré-Mão na Massa — Pacote Governança encerrado.
-
-## Finalidade
-
-Atualiza o núcleo principal da Jus 9 com links de governança, equipe, documentação, decisão técnica de segurança e orientação para reconstrução do GitHub sem alterações visuais amplas.
+© Jus 9 Tecnologia Jurídica — software livre, autoria preservada.
