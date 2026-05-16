@@ -1,21 +1,37 @@
-<!--
-Jus 9 Tecnologia Jurídica
-Repositório: jus9-tecnologia-juridica
-Software livre com autoria preservada.
-Direitos autorais reservados para Jus 9 Tecnologia Jurídica.
-Produção do site: © **Jus 9 Tecnologia Jurídica**. Direitos autorais da produção reservados.
-A licença livre não remove autoria, origem, assinatura institucional nem direitos autorais.
-Referência oficial: https://www.jus9tecnologia.com.br/
-E-mail de contato: clovis@jus9tecnologia.com.br
-DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
--->
+# Política de Privacidade — Jus 9 Tecnologia Jurídica
 
-# Privacidade — jus9-tecnologia-juridica
+URL pública recomendada:
 
-Este projeto deve observar cuidados de privacidade e proteção de dados.
+- https://jus9tecnologia.com.br/politica-de-privacidade.html
+- https://jus9tecnologia.com.br/politica-de-privacidade/
 
-Quando houver formulários, coleta de dados, envio de mensagens, analytics,
-cookies ou integração com APIs, revisar a política pública antes da publicação.
+Esta política informa, em linguagem pública, como a Jus 9 Tecnologia Jurídica trata dados pessoais em seus sites, MVPs, páginas, formulários, contatos e recursos digitais.
 
-Referência institucional: https://www.jus9tecnologia.com.br/
-Contato: clovis@jus9tecnologia.com.br
+## Contato
+
+- clovis@jus9tecnologia.com.br
+- contato@jus9tecnologia.com.br
+
+## Princípios
+
+A Jus 9 trata privacidade como dever de confiança, especialmente por atuar em contexto jurídico, tecnológico, educativo e de inteligência artificial.
+
+Princípios aplicáveis:
+
+- minimização de dados;
+- finalidade clara;
+- segurança por camadas;
+- revisão humana;
+- cautela com dados sensíveis;
+- proteção contra exposição de senhas, tokens, chaves, segredos e documentos sigilosos;
+- respeito à LGPD;
+- preservação de autoria e governança humana.
+
+## Versão HTML
+
+A versão HTML completa está em:
+
+- `politica-de-privacidade.html`
+- `politica-de-privacidade/index.html`
+
+© Jus 9 Tecnologia Jurídica — software livre, autoria preservada.
