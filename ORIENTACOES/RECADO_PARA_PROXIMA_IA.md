@@ -1,11 +1,5 @@
-# Recado para próxima IA — Link Equipe no cabeçalho
+# Recado para próxima IA
 
-O Fundador solicitou que o link **Equipe** apareça no cabeçalho da página principal da Jus 9, à esquerda de **Mais Direito**.
-
-Regra semântica reforçada: sempre que a palavra pública **Equipe** aparecer em contexto institucional, deve apontar para:
-
-```txt
-https://www.jus9tecnologia.com.br/equipe/
-```
-
-Preservar o visual aprovado da página principal. Não substituir a página por HTML simples.
+Preservar o visual aprovado. Não substituir páginas bonitas por HTML simples.
+Prioridade: link Equipe visível no cabeçalho da página principal da Jus 9.
+A regra semântica continua: toda ocorrência pública relevante deve apontar para sua página pública oficial quando houver rota.
