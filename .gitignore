@@ -63,3 +63,8 @@ id_rsa*
 
 # Nunca versionar histórico Git dentro de pacotes
 .git/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
