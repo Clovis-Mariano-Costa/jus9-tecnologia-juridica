@@ -1,0 +1,46 @@
+Jus 9 Tecnologia Jurídica
+Repositório: jus9-tecnologia-juridica
+Software livre com autoria preservada.
+Direitos autorais reservados para Jus 9 Tecnologia Jurídica.
+Produção do site: © Jus 9 Tecnologia Jurídica. Direitos autorais da produção reservados.
+A licença livre não remove autoria, origem, assinatura institucional nem direitos autorais.
+Referência oficial: https://www.jus9tecnologia.com.br/
+E-mail de contato: clovis@jus9tecnologia.com.br
+DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
+
+User-agent: *
+Allow: /
+
+Disallow: /admin/
+Disallow: /app/
+Disallow: /dashboard/
+Disallow: /sistema/
+Disallow: /login/
+Disallow: /mvp/acesso/
+Disallow: /documentos-internos/
+Disallow: /area-secreta/
+Disallow: /cofre-juridico/
+Disallow: /api/
+Disallow: /backend/
+Disallow: /private/
+Disallow: /internal/
+Disallow: /app-demo.html
+
+Sitemap: https://jus9tecnologia.com.br/sitemap.xml
+Disallow: /app-clientes.html
+Disallow: /app-documentos.html
+Disallow: /app-daj.html
+Disallow: /app-processos.html
+Disallow: /app-prazos.html
+Disallow: /app-cofre.html
+Disallow: /app-workspace.html
+Disallow: /app-atendimento-inicial.html
+Disallow: /app-retorno.html
+Disallow: /documentos/minuta-contestacao-demo.txt
+Disallow: /documentos/contrato-prestacao-servicos-demo.txt
+Disallow: /documentos/relatorio-atendimento-demo.txt
+Disallow: /app-perfis.html
+Disallow: /database/
+Disallow: /app-ia-profissional.html
+Disallow: /app-grupos.html
+Disallow: /app-gravacoes.html

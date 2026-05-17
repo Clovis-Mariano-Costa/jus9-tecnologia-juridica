@@ -1,0 +1,10 @@
+.nav-link-equipe {
+  font-weight: 700;
+  color: #f3c75f;
+}
+.nav-link-equipe:hover,
+.nav-link-equipe:focus {
+  text-decoration: underline;
+  outline: 2px solid rgba(243, 199, 95, .35);
+  outline-offset: 3px;
+}
