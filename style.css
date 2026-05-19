@@ -1016,3 +1016,28 @@ button,input,select,textarea{max-width:100%}
   .grid,.grid2,.grid-2,.grid-3,.grid-4,.cards3,.profile-grid,.demo-grid,.demo-grid-2,.workbench,.timeline,.footer-grid{grid-template-columns:1fr!important;}
   table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
 }
+
+/* Destaques operacionais do MVP Advogados */
+.demo-sidebar a.sidebar-priority{
+  border:1px solid rgba(231,195,108,.46);
+  color:#ffe4a3;
+  background:rgba(231,195,108,.10);
+  font-weight:900;
+}
+.ia-professional-spotlight{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:18px;
+  align-items:center;
+  border-color:rgba(197,139,47,.38);
+  box-shadow:0 18px 54px rgba(169,109,22,.14);
+}
+.ia-actions .primary-action,.daj-actions-fixed .quick-ai,.daj-actions-fixed .quick-agenda{
+  background:#07111f;
+  border-color:#07111f;
+  color:#f8fafc;
+}
+@media (max-width:760px){
+  .ia-professional-spotlight{grid-template-columns:1fr;align-items:stretch}
+  .demo-sidebar a.sidebar-priority{grid-column:1/-1}
+}

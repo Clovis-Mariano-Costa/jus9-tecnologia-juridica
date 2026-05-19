@@ -1,4 +1,4 @@
-﻿const JUS9_CACHE = 'jus9-mvp-app-v4';
+const JUS9_CACHE = 'jus9-mvp-app-v5';
 const JUS9_ASSETS = [
   '/',
   '/app.html',
@@ -34,13 +34,31 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+  const requestUrl = new URL(event.request.url);
+  const acceptsHtml = event.request.headers.get('accept')?.includes('text/html');
+
+  if (requestUrl.origin === self.location.origin && acceptsHtml) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          const copy = response.clone();
+          if (response.ok) {
+            caches.open(JUS9_CACHE).then((cache) => cache.put(event.request, copy));
+          }
+          return response;
+        })
+        .catch(() => caches.match(event.request).then((cached) => cached || caches.match('/offline.html')))
+    );
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then((cached) => {
       if (cached) return cached;
       return fetch(event.request)
         .then((response) => {
           const copy = response.clone();
-          if (response.ok && new URL(event.request.url).origin === self.location.origin) {
+          if (response.ok && requestUrl.origin === self.location.origin) {
             caches.open(JUS9_CACHE).then((cache) => cache.put(event.request, copy));
           }
           return response;
