@@ -1,0 +1,48 @@
+{
+  "name": "Jus 9 MVP",
+  "short_name": "Jus 9",
+  "description": "Aplicativo demonstrativo do MVP Jus 9 Tecnologia Jurídica.",
+  "start_url": "/app.html",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "browser"],
+  "background_color": "#07111f",
+  "theme_color": "#07111f",
+  "orientation": "portrait",
+  "lang": "pt-BR",
+  "categories": ["productivity", "business", "legal"],
+  "icons": [
+    {
+      "src": "/assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Agenda",
+      "short_name": "Agenda",
+      "url": "/app-agenda.html",
+      "icons": [{ "src": "/assets/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "Painel MVP",
+      "short_name": "Painel",
+      "url": "/app-demo.html",
+      "icons": [{ "src": "/assets/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "IA Profissional",
+      "short_name": "IA",
+      "url": "/app-ia-profissional.html",
+      "icons": [{ "src": "/assets/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "WhatsApp Privado",
+      "short_name": "WhatsApp",
+      "url": "/app-whatsapp.html",
+      "icons": [{ "src": "/assets/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    }
+  ]
+}
