@@ -1,0 +1,102 @@
+<!--
+Jus 9 Tecnologia Jurídica
+Repositório: jus9-tecnologia-juridica
+Software livre com autoria preservada.
+Direitos autorais reservados para Jus 9 Tecnologia Jurídica.
+Produção do site: © Jus 9 Tecnologia Jurídica. Direitos autorais da produção reservados.
+A licença livre não remove autoria, origem, assinatura institucional nem direitos autorais.
+Referência oficial: https://www.jus9tecnologia.com.br/
+E-mail de contato: Contato@jus9tecnologia.com.br
+DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
+-->
+
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Agenda - Jus 9 Demo</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
+</head>
+<body class="demo-shell">
+<div class="jus9-autoria-topo" role="note" aria-label="Autoria e licença da produção do site" style="font-size: 0.82rem; line-height: 1.4; text-align: center; padding: 0.45rem 0.75rem; background: rgba(15, 23, 42, 0.94); color: #f8fafc; letter-spacing: 0.01em;">Jus 9 Tecnologia Jurídica — software livre, autoria preservada.</div>
+<div class="demo-layout">
+  <aside class="demo-sidebar">
+    <img src="assets/jus9-logo.svg" alt="Jus 9">
+    <nav>
+      <a href="app-demo.html">Painel</a>
+      <a href="app-clientes.html">Clientes</a>
+      <a href="app-atendimento-inicial.html">Atendimento inicial</a>
+      <a href="app-retorno.html">Retorno</a>
+      <a href="app-daj.html">DAJ</a>
+      <a href="app-processos.html">Processos</a>
+      <a class="active" href="app-agenda.html">Agenda</a>
+      <a href="app-prazos.html">Prazos</a>
+      <a href="app-documentos.html">Documentos</a>
+      <a href="app-cofre.html">Cofre Jurídico</a>
+      <a href="app-workspace.html">Workspace</a>
+      <a href="app-ia-profissional.html">IA Profissional</a>
+      <a href="mvp.html">Sair do demo</a>
+    </nav>
+  </aside>
+  <main class="demo-main">
+    <section class="demo-topbar">
+      <div>
+        <div class="eyebrow">Agenda</div>
+        <h1 style="font-size:42px;color:#0b1728;margin-top:8px">Agenda integrada.</h1>
+        <p style="color:#51627a;margin:8px 0 0">Compromissos, retornos, audiências, aulas, reuniões, tarefas e prazos em uma mesma visão demonstrativa.</p>
+      </div>
+      <span class="badge secret">Demo sem dados reais</span>
+    </section>
+
+    <section class="agenda-grid">
+      <article class="daj-card">
+        <h2>Novo compromisso</h2>
+        <form class="agenda-form" onsubmit="event.preventDefault(); alert('Demonstração: compromisso salvo na Agenda Jus 9.');">
+          <div class="form-field"><label>Tipo</label><select><option>Retorno ao cliente</option><option>Audiência</option><option>Prazo interno</option><option>Reunião</option><option>Aula / laboratório</option><option>Tarefa de equipe</option></select></div>
+          <div class="form-field"><label>Data e hora</label><input type="datetime-local"></div>
+          <div class="form-field"><label>Responsável</label><select><option>Advogado titular</option><option>Secretaria</option><option>Assessoria</option><option>Grupo / equipe</option></select></div>
+          <div class="form-field"><label>Vincular</label><select><option>DAJ-2026-0001</option><option>Processo 0001234</option><option>Cliente demonstração</option><option>Sem vínculo jurídico</option></select></div>
+          <div class="form-field full"><label>Descrição</label><textarea placeholder="Resumo objetivo do compromisso, sem dados sensíveis no demo público."></textarea></div>
+          <button class="mvp-button" type="submit">Salvar na agenda</button>
+        </form>
+      </article>
+      <article class="daj-card">
+        <h2>Alertas independentes</h2>
+        <div class="timeline-list">
+          <div class="timeline-entry"><strong>Notificação interna</strong><p>15 minutos, 2 horas e 24 horas antes.</p></div>
+          <div class="timeline-entry"><strong>E-mail</strong><p>48 horas e 7 dias antes, conforme perfil autorizado.</p></div>
+          <div class="timeline-entry"><strong>WhatsApp</strong><p>Canal futuro sujeito a consentimento, opt-in e logs.</p></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="daj-card">
+      <h2>Semana demonstrativa</h2>
+      <div class="agenda-board" aria-label="Semana demonstrativa da Agenda Jus 9">
+        <div class="agenda-day"><strong>Segunda</strong><span>09:00 - triagem DAJ</span><span>14:00 - retorno ao cliente</span></div>
+        <div class="agenda-day"><strong>Terça</strong><span>10:30 - revisar documento</span><span>16:00 - reunião interna</span></div>
+        <div class="agenda-day"><strong>Quarta</strong><span>08:30 - prazo interno</span><span>15:00 - audiência demo</span></div>
+        <div class="agenda-day"><strong>Quinta</strong><span>11:00 - laboratório</span><span>17:00 - checklist de cofre</span></div>
+        <div class="agenda-day"><strong>Sexta</strong><span>09:30 - relatório semanal</span><span>13:30 - follow-up</span></div>
+      </div>
+    </section>
+
+    <section class="links-semanticos-jus9-v1-5" aria-label="Links institucionais Jus 9" style="margin:2rem auto;max-width:1100px;padding:1rem;border:1px solid rgba(212,180,99,.35);border-radius:18px;background:rgba(15,23,42,.04);font-size:.95rem;line-height:1.6">
+      <strong>Links Jus 9:</strong>
+      <a href="https://www.jus9tecnologia.com.br/equipe/">Equipe</a> ·
+      <a href="https://investimentos.jus9tecnologia.com.br/">Investidores</a> ·
+      <a href="https://www.jus9tecnologia.com.br/mvp">MVP</a> ·
+      <a href="https://charlieecho.jus9tecnologia.com.br/">Charlie Echo</a> ·
+      <a href="https://jus9verde.jus9tecnologia.com.br/charlie-echo-social">Charlie Echo Social</a> ·
+      <a href="mailto:Contato@jus9tecnologia.com.br">Contato</a>
+    </section>
+  </main>
+</div>
+<script src="script.js"></script>
+<footer class="jus9-autoria-rodape" role="contentinfo" aria-label="Direitos autorais e origem da produção do site" style="font-size: 0.85rem; line-height: 1.5; text-align: center; padding: 1rem 0.75rem; margin-top: 2rem; background: rgba(15, 23, 42, 0.96); color: #f8fafc;">Produção do site: © Jus 9 Tecnologia Jurídica. Software livre com autoria, origem e direitos autorais preservados.</footer>
+</body>
+</html>

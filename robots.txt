@@ -32,6 +32,7 @@ Disallow: /app-documentos.html
 Disallow: /app-daj.html
 Disallow: /app-processos.html
 Disallow: /app-prazos.html
+Disallow: /app-agenda.html
 Disallow: /app-cofre.html
 Disallow: /app-workspace.html
 Disallow: /app-atendimento-inicial.html

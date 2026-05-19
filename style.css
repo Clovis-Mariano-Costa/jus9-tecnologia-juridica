@@ -974,3 +974,45 @@ html, body{max-width:100%; overflow-x:hidden}
 .cta{flex:0 0 auto; white-space:nowrap; padding:10px 14px;}
 @media(max-width:1120px){.menu{display:none; position:absolute; left:14px; right:14px; top:72px; padding:18px; border:1px solid var(--line); border-radius:20px; background:#07111F; flex-direction:column; align-items:flex-start}.menu.open{display:flex}.mobile-toggle{display:block}.nav{min-height:72px}.logo img{height:44px}}
 @media(max-width:520px){.header .container{width:min(100% - 20px, var(--max));}.logo{min-width:0}.logo img{max-width:160px}.cta{display:none}}
+
+/* Pacote mobile Samsung - app e repertorios publicos */
+html,body{max-width:100%;overflow-x:hidden}
+img,video,canvas,svg{max-width:100%;height:auto}
+button,input,select,textarea{max-width:100%}
+.demo-card,.daj-card,.process-card,.timeline-entry,.alert-row,.link-actions a,.link-actions button,.state-grid a{overflow-wrap:anywhere}
+.demo-table,.permission-table,.version-table,.investor-table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.demo-table thead,.permission-table thead,.version-table thead,.investor-table thead{white-space:nowrap}
+.agenda-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(260px,.95fr);gap:18px}
+.agenda-board{display:grid;grid-template-columns:repeat(5,minmax(130px,1fr));gap:10px;overflow-x:auto;padding-bottom:6px}
+.agenda-day{min-width:130px;border:1px solid rgba(15,23,42,.10);border-radius:18px;background:#fff;padding:14px;box-shadow:0 12px 34px rgba(15,23,42,.06)}
+.agenda-day strong{display:block;color:#0b1728;margin-bottom:8px}.agenda-day span{display:block;color:#51627a;font-size:14px;margin:.35rem 0}
+.agenda-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.agenda-form .form-field.full{grid-column:1/-1}
+@media(max-width:760px){
+  .container{width:min(100% - 20px,var(--max))}
+  .demo-layout{display:block;padding:10px}
+  .demo-sidebar{position:static;min-height:auto;border-radius:18px;padding:14px;margin-bottom:12px}
+  .demo-sidebar img{height:44px;margin-bottom:12px}
+  .demo-sidebar nav{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .demo-sidebar a{min-height:42px;padding:10px;border:1px solid rgba(231,195,108,.14)}
+  .demo-main{gap:14px}
+  .demo-topbar{display:grid;gap:12px;padding:16px}
+  .demo-topbar h1,.demo-topbar [style*="font-size:42px"]{font-size:clamp(1.9rem,10vw,2.45rem)!important;line-height:1.06}
+  .demo-grid,.demo-grid-2,.daj-grid,.alert-config,.process-layout,.quick-links,.community-feed,.form-grid,.document-meta,.state-grid,.agenda-grid,.agenda-form{grid-template-columns:1fr}
+  .demo-card,.daj-card,.process-card,.alert-row{border-radius:16px;padding:16px}
+  .link-actions,.filter-bar,.daj-actions-fixed{display:grid;grid-template-columns:1fr;gap:8px}
+  .link-actions a,.link-actions button,.filter-bar button,.daj-actions-fixed a,.mvp-button,.ghost-button{width:100%;justify-content:center;text-align:center;border-radius:12px}
+  .agenda-board{grid-template-columns:1fr;overflow-x:visible}
+  .agenda-day{min-width:0}
+}
+
+/* Pacote mobile Samsung - responsividade Jus 9 */
+html,body{max-width:100%;overflow-x:hidden}
+img,video,canvas,svg{max-width:100%;height:auto}
+button,input,select,textarea{max-width:100%}
+@media(max-width:760px){
+  .container,.wrap,.page,main{max-width:100%;}
+  nav,.nav,.menu,.links,.nav-links,.actions,.link-actions,.social-links,.origin-links{flex-wrap:wrap;}
+  .grid,.grid2,.grid-2,.grid-3,.grid-4,.cards3,.profile-grid,.demo-grid,.demo-grid-2,.workbench,.timeline,.footer-grid{grid-template-columns:1fr!important;}
+  table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+}
