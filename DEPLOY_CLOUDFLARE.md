@@ -6,7 +6,7 @@ Direitos autorais reservados para Jus 9 Tecnologia Jurídica.
 Produção do site: © **Jus 9 Tecnologia Jurídica**. Direitos autorais da produção reservados.
 A licença livre não remove autoria, origem, assinatura institucional nem direitos autorais.
 Referência oficial: https://www.jus9tecnologia.com.br/
-E-mail de contato: clovis@jus9tecnologia.com.br
+E-mail de contato: Contato@jus9tecnologia.com.br
 DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
 -->
 
@@ -45,7 +45,7 @@ A Cloudflare deve emitir HTTPS automaticamente após propagação DNS.
 
 A versão 1.1 já usa preferencialmente os e-mails institucionais:
 
-- contato@jus9tecnologia.com.br
+- Contato@jus9tecnologia.com.br
 - clovis@jus9tecnologia.com.br
 - parcerias@jus9tecnologia.com.br
 - eventos@jus9tecnologia.com.br

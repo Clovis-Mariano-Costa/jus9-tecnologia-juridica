@@ -9,8 +9,7 @@ Esta política informa, em linguagem pública, como a Jus 9 Tecnologia Jurídica
 
 ## Contato
 
-- clovis@jus9tecnologia.com.br
-- contato@jus9tecnologia.com.br
+- Contato@jus9tecnologia.com.br
 
 ## Princípios
 
