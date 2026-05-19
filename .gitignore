@@ -27,6 +27,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 logs/
+.servidor-local.pid
+.servidor-local.*.log
 
 # Sistema operacional e editores
 .DS_Store
