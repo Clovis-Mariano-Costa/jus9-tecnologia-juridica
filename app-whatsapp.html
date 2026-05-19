@@ -1,6 +1,6 @@
-<!--
-Jus 9 Tecnologia Jurídica
-Módulo demonstrativo de importação WhatsApp. Não usar dados reais no MVP público.
+﻿<!--
+Jus 9 Tecnologia JurÃ­dica
+MÃ³dulo demonstrativo de importaÃ§Ã£o WhatsApp. NÃ£o usar dados reais no MVP pÃºblico.
 -->
 <!doctype html>
 <html lang="pt-BR">
@@ -16,20 +16,20 @@ Módulo demonstrativo de importação WhatsApp. Não usar dados reais no MVP pú
   <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
 </head>
 <body class="demo-shell">
-<div class="jus9-autoria-topo" role="note" aria-label="Autoria e licença da produção do site" style="font-size: 0.82rem; line-height: 1.4; text-align: center; padding: 0.45rem 0.75rem; background: rgba(15, 23, 42, 0.94); color: #f8fafc; letter-spacing: 0.01em;">Jus 9 Tecnologia Jurídica — módulo demonstrativo, sem dados reais.</div>
+<div class="jus9-autoria-topo" role="note" aria-label="Autoria e licenÃ§a da produÃ§Ã£o do site" style="font-size: 0.82rem; line-height: 1.4; text-align: center; padding: 0.45rem 0.75rem; background: rgba(15, 23, 42, 0.94); color: #f8fafc; letter-spacing: 0.01em;">Jus 9 Tecnologia JurÃ­dica â€” mÃ³dulo demonstrativo, sem dados reais.</div>
 <div class="demo-layout">
   <aside class="demo-sidebar">
     <img src="assets/jus9-logo.svg" alt="Jus 9">
     <nav>
       <a href="app.html">App</a>
-      <a href="app-demo.html">Painel</a>
+      <a href="app-demo-advogar.html">Painel</a>
       <a href="app-clientes.html">Clientes</a>
       <a href="app-daj.html">DAJ</a>
       <a href="app-agenda.html">Agenda</a>
       <a href="app-prazos.html">Prazos</a>
       <a href="app-documentos.html">Documentos</a>
       <a class="active" href="app-whatsapp.html">WhatsApp</a>
-      <a href="app-cofre.html">Cofre Jurídico</a>
+      <a href="app-cofre.html">Cofre JurÃ­dico</a>
       <a href="app-ia-profissional.html">IA Profissional</a>
       <a href="mvp.html">Sair do demo</a>
     </nav>
@@ -37,40 +37,40 @@ Módulo demonstrativo de importação WhatsApp. Não usar dados reais no MVP pú
   <main class="demo-main">
     <section class="demo-topbar">
       <div>
-        <div class="eyebrow">Importação privada futura</div>
+        <div class="eyebrow">ImportaÃ§Ã£o privada futura</div>
         <h1 style="font-size:42px;color:#0b1728;margin-top:8px">WhatsApp para DAJ e Cofre.</h1>
-        <p style="color:#51627a;margin:8px 0 0">Modelo de fluxo para receber exportações, transcrições, áudios e anexos com consentimento, classificação e logs.</p>
+        <p style="color:#51627a;margin:8px 0 0">Modelo de fluxo para receber exportaÃ§Ãµes, transcriÃ§Ãµes, Ã¡udios e anexos com consentimento, classificaÃ§Ã£o e logs.</p>
       </div>
-      <span class="badge secret">Não publicar conteúdo bruto</span>
+      <span class="badge secret">NÃ£o publicar conteÃºdo bruto</span>
     </section>
 
     <section class="daj-grid">
       <article class="daj-card">
         <h2>Entrada demonstrativa</h2>
-        <form class="form-grid" onsubmit="event.preventDefault(); alert('Demonstração: arquivo recebido apenas localmente. No backend real, seguir Cofre/DAJ, consentimento, permissões e logs.');">
-          <div class="form-field" style="grid-column:1/-1"><label>Exportação `.txt` do WhatsApp</label><input type="file" accept=".txt" data-whatsapp-local-file></div>
-          <div class="form-field"><label>Finalidade</label><select><option>Atendimento inicial</option><option>Retorno ao cliente</option><option>Prova / anexo do DAJ</option><option>Transcrição para análise</option><option>Memória interna de IA</option></select></div>
-          <div class="form-field"><label>Classificação</label><select><option>A classificar</option><option>Restrito</option><option>Secreto</option><option>Cofre Jurídico</option></select></div>
-          <div class="form-field" style="grid-column:1/-1"><label>Observação</label><textarea placeholder="Nunca cole conversa real nesta página pública. Use apenas dados fictícios no MVP."></textarea></div>
-          <button class="mvp-button" type="submit">Simular importação</button>
+        <form class="form-grid" onsubmit="event.preventDefault(); alert('DemonstraÃ§Ã£o: arquivo recebido apenas localmente. No backend real, seguir Cofre/DAJ, consentimento, permissÃµes e logs.');">
+          <div class="form-field" style="grid-column:1/-1"><label>ExportaÃ§Ã£o `.txt` do WhatsApp</label><input type="file" accept=".txt" data-whatsapp-local-file></div>
+          <div class="form-field"><label>Finalidade</label><select><option>Atendimento inicial</option><option>Retorno ao cliente</option><option>Prova / anexo do DAJ</option><option>TranscriÃ§Ã£o para anÃ¡lise</option><option>MemÃ³ria interna de IA</option></select></div>
+          <div class="form-field"><label>ClassificaÃ§Ã£o</label><select><option>A classificar</option><option>Restrito</option><option>Secreto</option><option>Cofre JurÃ­dico</option></select></div>
+          <div class="form-field" style="grid-column:1/-1"><label>ObservaÃ§Ã£o</label><textarea placeholder="Nunca cole conversa real nesta pÃ¡gina pÃºblica. Use apenas dados fictÃ­cios no MVP."></textarea></div>
+          <button class="mvp-button" type="submit">Simular importaÃ§Ã£o</button>
         </form>
-        <div class="warning-note" data-whatsapp-local-output>Selecione um `.txt` fictício para gerar resumo local sem upload.</div>
+        <div class="warning-note" data-whatsapp-local-output>Selecione um `.txt` fictÃ­cio para gerar resumo local sem upload.</div>
       </article>
       <article class="daj-card">
-        <h2>Checklist obrigatório</h2>
+        <h2>Checklist obrigatÃ³rio</h2>
         <div class="timeline-list">
-          <div class="timeline-entry"><strong>Consentimento</strong><p>Confirmar ciência/autorização quando houver mensagens, áudios, imagens ou dados pessoais.</p></div>
-          <div class="timeline-entry"><strong>Classificação</strong><p>Separar público, interno, restrito, secreto e Cofre Jurídico.</p></div>
-          <div class="timeline-entry"><strong>Vínculo</strong><p>Associar somente ao DAJ, cliente, processo ou agenda autorizada.</p></div>
-          <div class="timeline-entry"><strong>Logs</strong><p>Registrar quem importou, quando, por quê e qual destino recebeu o material.</p></div>
+          <div class="timeline-entry"><strong>Consentimento</strong><p>Confirmar ciÃªncia/autorizaÃ§Ã£o quando houver mensagens, Ã¡udios, imagens ou dados pessoais.</p></div>
+          <div class="timeline-entry"><strong>ClassificaÃ§Ã£o</strong><p>Separar pÃºblico, interno, restrito, secreto e Cofre JurÃ­dico.</p></div>
+          <div class="timeline-entry"><strong>VÃ­nculo</strong><p>Associar somente ao DAJ, cliente, processo ou agenda autorizada.</p></div>
+          <div class="timeline-entry"><strong>Logs</strong><p>Registrar quem importou, quando, por quÃª e qual destino recebeu o material.</p></div>
         </div>
       </article>
     </section>
 
     <section class="daj-card">
-      <h2>Pastas privadas já mapeadas</h2>
-      <p>A escuta local encontrou exportações e transcrições em pasta marcada como não publicar. O conteúdo permanece privado; o MVP público recebe apenas esta estrutura demonstrativa.</p>
-      <div class="link-actions"><a href="app-daj.html">Abrir DAJ</a><a href="app-documentos.html">Documentos</a><a href="app-cofre.html">Cofre Jurídico</a><a href="app-agenda.html">Agenda</a></div>
+      <h2>Pastas privadas jÃ¡ mapeadas</h2>
+      <p>A escuta local encontrou exportaÃ§Ãµes e transcriÃ§Ãµes em pasta marcada como nÃ£o publicar. O conteÃºdo permanece privado; o MVP pÃºblico recebe apenas esta estrutura demonstrativa.</p>
+      <div class="link-actions"><a href="app-daj.html">Abrir DAJ</a><a href="app-documentos.html">Documentos</a><a href="app-cofre.html">Cofre JurÃ­dico</a><a href="app-agenda.html">Agenda</a></div>
     </section>
   </main>
 </div>

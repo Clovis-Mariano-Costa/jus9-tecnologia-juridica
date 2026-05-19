@@ -1,8 +1,8 @@
-const JUS9_CACHE = 'jus9-mvp-app-v3';
+﻿const JUS9_CACHE = 'jus9-mvp-app-v4';
 const JUS9_ASSETS = [
   '/',
   '/app.html',
-  '/app-demo.html',
+  '/app-demo-advogar.html',
   '/app-agenda.html',
   '/app-clientes.html',
   '/app-daj.html',

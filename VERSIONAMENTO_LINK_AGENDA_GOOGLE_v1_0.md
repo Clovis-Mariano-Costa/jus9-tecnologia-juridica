@@ -1,10 +1,10 @@
-# Versionamento - Link Agenda e Google Agenda v1.0
+﻿# Versionamento - Link Agenda e Google Agenda v1.0
 
 Data: 2026-05-19
 
 ## Entregue
 
-- Link rapido para `app-agenda.html` no topo do `app-demo.html`.
+- Link rapido para `app-agenda.html` no topo do `app-demo-advogar.html`.
 - Link "Abrir Agenda" no bloco da IA Profissional.
 - Card de prazos proximos clicavel para abrir a Agenda.
 - Link de Agenda no DAJ em atencao.

@@ -1,14 +1,14 @@
-# Relatório — jus9-tecnologia-juridica
+﻿# RelatÃ³rio â€” jus9-tecnologia-juridica
 
 ## Escopo
-Revisão Mão na Massa Charlie Echo: links, botões, assinatura, governança e compatibilidade.
+RevisÃ£o MÃ£o na Massa Charlie Echo: links, botÃµes, assinatura, governanÃ§a e compatibilidade.
 
 ## HTML encontrados
 - app-atendimento-inicial.html
 - app-clientes.html
 - app-cofre.html
 - app-daj.html
-- app-demo.html
+- app-demo-advogar.html
 - app-documentos.html
 - app-gravacoes.html
 - app-grupos.html
@@ -53,12 +53,12 @@ Revisão Mão na Massa Charlie Echo: links, botões, assinatura, governança e c
 - documentos/termos.html
 - documentos/visao-de-futuro.html
 
-## HTML alterados nesta revisão
+## HTML alterados nesta revisÃ£o
 - app-atendimento-inicial.html
 - app-clientes.html
 - app-cofre.html
 - app-daj.html
-- app-demo.html
+- app-demo-advogar.html
 - app-documentos.html
 - app-gravacoes.html
 - app-grupos.html
@@ -103,7 +103,7 @@ Revisão Mão na Massa Charlie Echo: links, botões, assinatura, governança e c
 - documentos/termos.html
 - documentos/visao-de-futuro.html
 
-## Arquivos com menção a Charlie/IA
+## Arquivos com menÃ§Ã£o a Charlie/IA
 - ASSINATURA_E_DIREITOS_AUTORAIS_JUS9.md
 - COMMITS_jus9-tecnologia-juridica.md
 - DEPLOY_CLOUDFLARE.md
@@ -123,7 +123,7 @@ Revisão Mão na Massa Charlie Echo: links, botões, assinatura, governança e c
 - app-clientes.html
 - app-cofre.html
 - app-daj.html
-- app-demo.html
+- app-demo-advogar.html
 - app-documentos.html
 - app-gravacoes.html
 - app-grupos.html
@@ -186,11 +186,11 @@ Revisão Mão na Massa Charlie Echo: links, botões, assinatura, governança e c
 - versionamento.html
 
 ## Regras preservadas
-- Links, botões e rotas antigas aprovadas permanecem.
-- DNA da Charlie Echo não foi alterado diretamente.
-- Segredos técnicos, `.env` real, `.git/` e `node_modules/` não devem ir ao pacote público.
+- Links, botÃµes e rotas antigas aprovadas permanecem.
+- DNA da Charlie Echo nÃ£o foi alterado diretamente.
+- Segredos tÃ©cnicos, `.env` real, `.git/` e `node_modules/` nÃ£o devem ir ao pacote pÃºblico.
 
 ## Assinatura
-Produção do site: © Jus 9 Tecnologia Jurídica. Software livre com autoria, origem e direitos autorais preservados.
+ProduÃ§Ã£o do site: Â© Jus 9 Tecnologia JurÃ­dica. Software livre com autoria, origem e direitos autorais preservados.
 
-DNA de referência: charlieecho-jus9-tecnologia-juridica
+DNA de referÃªncia: charlieecho-jus9-tecnologia-juridica

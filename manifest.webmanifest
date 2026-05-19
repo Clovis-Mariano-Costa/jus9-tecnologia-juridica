@@ -1,7 +1,7 @@
-{
+﻿{
   "name": "Jus 9 MVP",
   "short_name": "Jus 9",
-  "description": "Aplicativo demonstrativo do MVP Jus 9 Tecnologia Jurídica.",
+  "description": "Aplicativo demonstrativo do MVP Jus 9 Tecnologia JurÃ­dica.",
   "start_url": "/app.html",
   "scope": "/",
   "display": "standalone",
@@ -29,7 +29,7 @@
     {
       "name": "Painel MVP",
       "short_name": "Painel",
-      "url": "/app-demo.html",
+      "url": "/app-demo-advogar.html",
       "icons": [{ "src": "/assets/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
     },
     {

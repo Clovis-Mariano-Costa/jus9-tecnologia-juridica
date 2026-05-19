@@ -1,4 +1,4 @@
-// Jus 9 — scripts consolidados pré-Movimento 2
+﻿// Jus 9 â€” scripts consolidados prÃ©-Movimento 2
 (function(){
   const toggle = document.querySelector('.mobile-toggle');
   const menu = document.querySelector('.menu');
@@ -13,7 +13,7 @@
 
   document.querySelectorAll('[data-whatsapp]').forEach((el) => {
     el.addEventListener('click', () => {
-      const msg = encodeURIComponent('Olá, Clovis. Vim pelo site da Jus 9 Tecnologia Jurídica e quero conhecer melhor o MVP.');
+      const msg = encodeURIComponent('OlÃ¡, Clovis. Vim pelo site da Jus 9 Tecnologia JurÃ­dica e quero conhecer melhor o MVP.');
       el.href = `https://wa.me/5548999082726?text=${msg}`;
     });
   });
@@ -54,7 +54,7 @@ window.jus9DemoLogin = function(form){
   var password = ((form.querySelector('[name="password"]') || {}).value || '');
   var msg = document.querySelector('[data-login-message]');
   if(email === 'demo@jus9tecnologia.com.br' && password === 'Jus9MVP#2026'){
-    window.location.href = 'app-demo.html';
+    window.location.href = 'app-demo-advogar.html';
     return false;
   }
   if(msg){
