@@ -1,0 +1,33 @@
+<!--
+  Jus 9 Tecnologia Juridica - rota estatica temporaria para login Google.
+  Esta pagina evita 404 enquanto o backend OAuth real nao esta publicado.
+-->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Entrar com Google - Jus 9</title>
+  <link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../../style.css">
+  <link rel="stylesheet" href="../../../assets/css/visual-jus9-fase-final.css">
+</head>
+<body class="mvp-page">
+  <div class="jus9-autoria-topo" role="note" aria-label="Autoria e licenca da producao do site" style="font-size:0.82rem;line-height:1.4;text-align:center;padding:0.45rem 0.75rem;background:rgba(15,23,42,0.94);color:#f8fafc;letter-spacing:0.01em;">Jus 9 Tecnologia Juridica - software livre, autoria preservada.</div>
+  <main class="doc-page">
+    <div class="container">
+      <section class="doc-shell">
+        <div class="eyebrow">Login Google</div>
+        <h1>Integracao Google preparada.</h1>
+        <p>Esta rota esta reservada para o inicio do fluxo OAuth real do Google. No MVP estatico, ela funciona como aviso seguro enquanto o backend ainda nao esta conectado.</p>
+        <p>Na etapa de producao, esta mesma rota devera iniciar Google OAuth com PKCE, validacao de `state`, escopos minimos e sessao segura por perfil.</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="../../../mvp.html#acesso">Voltar ao acesso MVP</a>
+          <a class="ghost-button" href="../../../arquitetura-tecnica.html">Ver arquitetura tecnica</a>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

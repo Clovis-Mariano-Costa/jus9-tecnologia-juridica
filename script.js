@@ -73,19 +73,11 @@ window.jus9DemoLogin = function(form){
     window.location.href = demoRoutes[email];
     return false;
   }
-  if(demoRoutes[email] && password === 'Jus9MVP2026'){
-    window.location.href = demoRoutes[email];
-    return false;
-  }
-  if(email === 'demo@jus9tecnologia.com.br' && password === 'Jus9MVP#2026'){
-    window.location.href = 'app-demo-advogar.html';
-    return false;
-  }
   if(msg){
-    msg.textContent = 'Acesso demonstrativo: use demo@jus9tecnologia.com.br com a senha Jus9MVP#2026.';
+    msg.textContent = 'Acesso demonstrativo: use demo@jus9tecnologia.com.br ou demo1 a demo13 com a senha Jus9MVP#2026.';
     msg.hidden = false;
   } else {
-    alert('Acesso demonstrativo: use demo@jus9tecnologia.com.br com a senha Jus9MVP#2026.');
+    alert('Acesso demonstrativo: use demo@jus9tecnologia.com.br ou demo1 a demo13 com a senha Jus9MVP#2026.');
   }
   return false;
 };
