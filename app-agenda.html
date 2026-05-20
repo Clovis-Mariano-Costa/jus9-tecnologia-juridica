@@ -1,15 +1,14 @@
-﻿<!--
+<!--
 Jus 9 Tecnologia Jurídica
 Repositório: jus9-tecnologia-juridica
 Software livre com autoria preservada.
 Direitos autorais reservados para Jus 9 Tecnologia Jurídica.
-Produção do site: ? Jus 9 Tecnologia Jurídica. Direitos autorais da produção reservados.
+Produção do site: © Jus 9 Tecnologia Jurídica. Direitos autorais da produção reservados.
 A licença livre não remove autoria, origem, assinatura institucional nem direitos autorais.
 Referência oficial: https://www.jus9tecnologia.com.br/
 E-mail de contato: Contato@jus9tecnologia.com.br
 DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
 -->
-
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -20,9 +19,11 @@ DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridic
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
-<meta name="theme-color" content="#07111f"><link rel="manifest" href="manifest.webmanifest"></head>
+  <meta name="theme-color" content="#07111f">
+  <link rel="manifest" href="manifest.webmanifest">
+</head>
 <body class="demo-shell">
-<div class="jus9-autoria-topo" role="note" aria-label="Autoria e licença da produção do site" style="font-size: 0.82rem; line-height: 1.4; text-align: center; padding: 0.45rem 0.75rem; background: rgba(15, 23, 42, 0.94); color: #f8fafc; letter-spacing: 0.01em;">Jus 9 Tecnologia Jurídica ? software livre, autoria preservada.</div>
+<div class="jus9-autoria-topo" role="note" aria-label="Autoria e licença da produção do site" style="font-size: 0.82rem; line-height: 1.4; text-align: center; padding: 0.45rem 0.75rem; background: rgba(15, 23, 42, 0.94); color: #f8fafc; letter-spacing: 0.01em;">Jus 9 Tecnologia Jurídica — software livre, autoria preservada.</div>
 <div class="demo-layout">
   <aside class="demo-sidebar">
     <img src="assets/jus9-logo.svg" alt="Jus 9">
@@ -42,12 +43,13 @@ DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridic
       <a href="mvp.html">Sair do demo</a>
     </nav>
   </aside>
+
   <main class="demo-main">
     <section class="demo-topbar">
       <div>
-        <div class="eyebrow">Agenda</div>
-        <h1 style="font-size:42px;color:#0b1728;margin-top:8px">Agenda integrada.</h1>
-        <p style="color:#51627a;margin:8px 0 0">Compromissos, retornos, audiências, aulas, reuniões, tarefas e prazos em uma mesma visão demonstrativa.</p>
+        <div class="eyebrow">Agenda Jus 9</div>
+        <h1 style="font-size:42px;color:#0b1728;margin-top:8px">Agenda híbrida para o evento.</h1>
+        <p style="color:#51627a;margin:8px 0 0">A Jus 9 mantém agenda própria para prazos, DAJ, processo, cliente, equipe e auditoria. Google Calendar entra como lembrete e convite sem dados sensíveis.</p>
       </div>
       <span class="badge secret">Demo sem dados reais</span>
     </section>
@@ -55,43 +57,45 @@ DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridic
     <section class="agenda-grid">
       <article class="daj-card">
         <h2>Novo compromisso</h2>
-        <form class="agenda-form" onsubmit="event.preventDefault(); alert('Demonstração: compromisso salvo na Agenda Jus 9.');">
-          <div class="form-field"><label>Tipo</label><select><option>Retorno ao cliente</option><option>Audiência</option><option>Prazo interno</option><option>Reunião</option><option>Aula / laboratório</option><option>Tarefa de equipe</option></select></div>
-          <div class="form-field"><label>Data e hora</label><input type="datetime-local"></div>
-          <div class="form-field"><label>Responsável</label><select><option>Advogado titular</option><option>Secretaria</option><option>Assessoria</option><option>Grupo / equipe</option></select></div>
-          <div class="form-field"><label>Vincular</label><select><option>DAJ-2026-0001</option><option>Processo 0001234</option><option>Cliente demonstração</option><option>Sem vínculo jurídico</option></select></div>
-          <div class="form-field full"><label>Descrição</label><textarea placeholder="Resumo objetivo do compromisso, sem dados sensíveis no demo público."></textarea></div>
-          <button class="mvp-button" type="submit">Salvar na agenda</button>
+        <form class="agenda-form" id="portalAgendaForm">
+          <div class="form-field"><label>Título</label><input id="portalAgendaTitle" value="Reunião Jus 9 - Web Summit" required></div>
+          <div class="form-field"><label>Tipo</label><select id="portalAgendaType"><option>Reunião com investidor</option><option>Audiência</option><option>Prazo interno</option><option>Retorno ao cliente</option><option>Aula / laboratório</option><option>Tarefa de equipe</option></select></div>
+          <div class="form-field"><label>Data e hora</label><input id="portalAgendaStart" type="datetime-local" required></div>
+          <div class="form-field"><label>Duração</label><select id="portalAgendaDuration"><option value="30">30 min</option><option value="45" selected>45 min</option><option value="60">1 hora</option><option value="90">1h30</option></select></div>
+          <div class="form-field"><label>Responsável</label><select><option>Fundador</option><option>Advogado titular</option><option>Secretaria</option><option>Assessoria</option><option>Grupo / equipe</option></select></div>
+          <div class="form-field"><label>Vincular</label><select><option>Web Summit Rio 2026</option><option>DAJ-2026-0001</option><option>Processo 0001234</option><option>Cliente demonstração</option><option>Sem vínculo jurídico</option></select></div>
+          <div class="form-field full"><label>Descrição</label><textarea id="portalAgendaDescription">Compromisso demonstrativo da Agenda Jus 9. Não usar dados reais no MVP público.</textarea></div>
+          <div class="link-actions full">
+            <button class="mvp-button" type="submit">Salvar no navegador</button>
+            <button class="mvp-button" type="button" id="portalGoogleButton">Abrir no Google Agenda</button>
+            <button class="mvp-button" type="button" id="portalIcsButton">Baixar ICS</button>
+          </div>
         </form>
       </article>
       <article class="daj-card">
-        <h2>Alertas independentes</h2>
+        <h2>Integração recomendada</h2>
         <div class="timeline-list">
-          <div class="timeline-entry"><strong>Notificação interna</strong><p>15 minutos, 2 horas e 24 horas antes.</p></div>
-          <div class="timeline-entry"><strong>E-mail</strong><p>48 horas e 7 dias antes, conforme perfil autorizado.</p></div>
-          <div class="timeline-entry"><strong>WhatsApp</strong><p>Canal futuro sujeito a consentimento, opt-in e logs.</p></div>
+          <div class="timeline-entry"><strong>Agenda própria</strong><p>Fonte da verdade com vínculo jurídico, permissões e logs.</p></div>
+          <div class="timeline-entry"><strong>Google Calendar</strong><p>Saída rápida por link/ICS agora; OAuth seguro no backend depois.</p></div>
+          <div class="timeline-entry"><strong>WhatsApp/e-mail</strong><p>Notificações futuras só com consentimento, opt-in e registro.</p></div>
         </div>
       </article>
     </section>
 
     <section class="daj-card">
-      <h2>Semana demonstrativa</h2>
+      <h2>Semana demonstrativa Web Summit Rio</h2>
       <div class="agenda-board" aria-label="Semana demonstrativa da Agenda Jus 9">
-        <div class="agenda-day"><strong>Segunda</strong><span>09:00 - triagem DAJ</span><span>14:00 - retorno ao cliente</span></div>
-        <div class="agenda-day"><strong>Terça</strong><span>10:30 - revisar documento</span><span>16:00 - reunião interna</span></div>
-        <div class="agenda-day"><strong>Quarta</strong><span>08:30 - prazo interno</span><span>15:00 - audiência demo</span></div>
-        <div class="agenda-day"><strong>Quinta</strong><span>11:00 - laboratório</span><span>17:00 - checklist de cofre</span></div>
-        <div class="agenda-day"><strong>Sexta</strong><span>09:30 - relatório semanal</span><span>13:30 - follow-up</span></div>
+        <div class="agenda-day"><strong>08/06</strong><span>Check-in, reconhecimento do Riocentro e primeiras conversas.</span></div>
+        <div class="agenda-day"><strong>09/06</strong><span>Reuniões com banco, investidores, parceiros e universidades.</span></div>
+        <div class="agenda-day"><strong>10/06</strong><span>Demonstração dos MVPs: Agenda, Advogados, IA e Investidores.</span></div>
+        <div class="agenda-day"><strong>11/06</strong><span>Follow-up quente, classificação de leads e próximos passos.</span></div>
+        <div class="agenda-day"><strong>Pós-evento</strong><span>Propostas de piloto, cartas de intenção e reunião de decisão.</span></div>
       </div>
     </section>
 
     <section class="daj-card">
-      <h2>Google Agenda</h2>
-      <p>Integração possível em duas etapas: agora, link demonstrativo para criar evento no Google Agenda; depois, sincronização real com OAuth, permissões, logs e cofre.</p>
-      <div class="link-actions">
-        <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Compromisso%20Jus%209%20Demo&dates=20260520T120000Z/20260520T123000Z&details=Evento%20demonstrativo%20do%20MVP%20Jus%209.%20Nao%20usar%20dados%20reais.&location=Jus%209%20Tecnologia%20Juridica" target="_blank" rel="noopener">Criar evento no Google Agenda</a>
-        <a href="INTEGRACAO_GOOGLE_AGENDA.md">Ver plano de integração</a>
-      </div>
+      <h2>Compromissos salvos neste navegador</h2>
+      <div class="timeline-list" id="portalAgendaSaved"></div>
     </section>
 
     <section class="links-semanticos-jus9-v1-5" aria-label="Links institucionais Jus 9" style="margin:2rem auto;max-width:1100px;padding:1rem;border:1px solid rgba(212,180,99,.35);border-radius:18px;background:rgba(15,23,42,.04);font-size:.95rem;line-height:1.6">
@@ -106,6 +110,71 @@ DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridic
   </main>
 </div>
 <script src="script.js"></script>
-<footer class="jus9-autoria-rodape" role="contentinfo" aria-label="Direitos autorais e origem da produção do site" style="font-size: 0.85rem; line-height: 1.5; text-align: center; padding: 1rem 0.75rem; margin-top: 2rem; background: rgba(15, 23, 42, 0.96); color: #f8fafc;">Produção do site: ? Jus 9 Tecnologia Jurídica. Software livre com autoria, origem e direitos autorais preservados.</footer>
-<script src="assets/js/pwa-install.js"></script></body>
+<script>
+const portalAgendaKey = "jus9_portal_agenda_demo_v1";
+const portalPad = (n) => String(n).padStart(2, "0");
+const portalStamp = (date) => `${date.getFullYear()}${portalPad(date.getMonth()+1)}${portalPad(date.getDate())}T${portalPad(date.getHours())}${portalPad(date.getMinutes())}00`;
+function portalEvent() {
+  const start = new Date(document.getElementById("portalAgendaStart").value);
+  const end = new Date(start.getTime() + Number(document.getElementById("portalAgendaDuration").value || 45) * 60000);
+  return {
+    title: document.getElementById("portalAgendaTitle").value,
+    type: document.getElementById("portalAgendaType").value,
+    start: start.toISOString(),
+    end: end.toISOString(),
+    description: document.getElementById("portalAgendaDescription").value,
+    location: "Jus 9 Tecnologia Jurídica / Web Summit Rio"
+  };
+}
+function portalEvents() {
+  try { return JSON.parse(localStorage.getItem(portalAgendaKey) || "[]"); } catch { return []; }
+}
+function portalSave(events) { localStorage.setItem(portalAgendaKey, JSON.stringify(events)); }
+function portalGoogleUrl(event) {
+  const start = new Date(event.start);
+  const end = new Date(event.end);
+  const params = new URLSearchParams({ action: "TEMPLATE", text: event.title, dates: `${portalStamp(start)}/${portalStamp(end)}`, details: `${event.type}. ${event.description}`, location: event.location });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+function portalRender() {
+  const box = document.getElementById("portalAgendaSaved");
+  const events = portalEvents();
+  box.innerHTML = events.length ? events.map((event) => {
+    const start = new Date(event.start);
+    return `<div class="timeline-entry"><strong>${portalPad(start.getDate())}/${portalPad(start.getMonth()+1)} ${portalPad(start.getHours())}:${portalPad(start.getMinutes())} - ${event.title}</strong><p>${event.type} • ${event.location}</p></div>`;
+  }).join("") : '<div class="timeline-entry"><strong>Nenhum compromisso salvo</strong><p>Crie um compromisso acima para testar a Agenda Jus 9.</p></div>';
+}
+function portalDownloadIcs(event) {
+  const start = new Date(event.start);
+  const end = new Date(event.end);
+  const ics = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Jus 9 Tecnologia Juridica//Portal Agenda//PT-BR","BEGIN:VEVENT",`UID:${Date.now()}@jus9tecnologia.com.br`,`DTSTAMP:${portalStamp(new Date())}`,`DTSTART:${portalStamp(start)}`,`DTEND:${portalStamp(end)}`,`SUMMARY:${event.title}`,`LOCATION:${event.location}`,`DESCRIPTION:${event.type} - ${event.description}`,"END:VEVENT","END:VCALENDAR"].join("\r\n");
+  const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "agenda-jus9.ics";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+document.addEventListener("DOMContentLoaded", () => {
+  const now = new Date();
+  now.setDate(now.getDate() + 1);
+  now.setHours(10, 0, 0, 0);
+  document.getElementById("portalAgendaStart").value = `${now.getFullYear()}-${portalPad(now.getMonth()+1)}-${portalPad(now.getDate())}T${portalPad(now.getHours())}:${portalPad(now.getMinutes())}`;
+  portalRender();
+  document.getElementById("portalAgendaForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const item = portalEvent();
+    const events = portalEvents();
+    events.unshift(item);
+    portalSave(events.slice(0, 12));
+    portalRender();
+  });
+  document.getElementById("portalGoogleButton").addEventListener("click", () => window.open(portalGoogleUrl(portalEvent()), "_blank", "noopener"));
+  document.getElementById("portalIcsButton").addEventListener("click", () => portalDownloadIcs(portalEvent()));
+});
+</script>
+<footer class="jus9-autoria-rodape" role="contentinfo" aria-label="Direitos autorais e origem da produção do site" style="font-size: 0.85rem; line-height: 1.5; text-align: center; padding: 1rem 0.75rem; margin-top: 2rem; background: rgba(15, 23, 42, 0.96); color: #f8fafc;">Produção do site: © Jus 9 Tecnologia Jurídica. Software livre com autoria, origem e direitos autorais preservados.</footer>
+<script src="assets/js/pwa-install.js"></script>
+</body>
 </html>
