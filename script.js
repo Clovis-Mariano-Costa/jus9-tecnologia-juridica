@@ -53,6 +53,30 @@ window.jus9DemoLogin = function(form){
   var email = ((form.querySelector('[name="email"]') || {}).value || '').trim().toLowerCase();
   var password = ((form.querySelector('[name="password"]') || {}).value || '');
   var msg = document.querySelector('[data-login-message]');
+  var demoRoutes = {
+    'demo@jus9tecnologia.com.br': 'app-demo-advogar.html',
+    'demo1@jus9tecnologia.com.br': 'app-demo-advogar.html',
+    'demo2@jus9tecnologia.com.br': 'app-perfis.html',
+    'demo3@jus9tecnologia.com.br': 'app-perfis.html',
+    'demo4@jus9tecnologia.com.br': 'app-perfis.html',
+    'demo5@jus9tecnologia.com.br': 'app-perfis.html',
+    'demo6@jus9tecnologia.com.br': 'pontes-e-parcerias.html',
+    'demo7@jus9tecnologia.com.br': 'app-workspace.html',
+    'demo8@jus9tecnologia.com.br': 'app-documentos.html',
+    'demo9@jus9tecnologia.com.br': 'app-workspace.html',
+    'demo10@jus9tecnologia.com.br': 'central-tecnica.html',
+    'demo11@jus9tecnologia.com.br': 'app-processos.html',
+    'demo12@jus9tecnologia.com.br': 'app-processos.html',
+    'demo13@jus9tecnologia.com.br': 'app-documentos.html'
+  };
+  if(demoRoutes[email] && password === 'Jus9MVP#2026'){
+    window.location.href = demoRoutes[email];
+    return false;
+  }
+  if(demoRoutes[email] && password === 'Jus9MVP2026'){
+    window.location.href = demoRoutes[email];
+    return false;
+  }
   if(email === 'demo@jus9tecnologia.com.br' && password === 'Jus9MVP#2026'){
     window.location.href = 'app-demo-advogar.html';
     return false;
@@ -65,3 +89,20 @@ window.jus9DemoLogin = function(form){
   }
   return false;
 };
+
+(function(){
+  var googleLogin = document.querySelector('[data-google-login]');
+  if (!googleLogin) return;
+  googleLogin.addEventListener('click', function(event){
+    var msg = document.querySelector('[data-login-message]');
+    var isStaticPreview = location.protocol === 'file:' || location.hostname === '' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    if (!isStaticPreview) return;
+    event.preventDefault();
+    if (msg) {
+      msg.textContent = 'Login Google preparado para a rota /auth/google/start. No preview local, falta conectar o backend OAuth.';
+      msg.hidden = false;
+    } else {
+      alert('Login Google preparado para a rota /auth/google/start. No preview local, falta conectar o backend OAuth.');
+    }
+  });
+})();
