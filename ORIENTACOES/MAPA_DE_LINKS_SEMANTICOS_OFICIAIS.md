@@ -9,6 +9,9 @@ Sempre que uma expressão pública relevante aparecer em página, README, rodap�
 | Jus 9 Tecnologia Jurídica | https://www.jus9tecnologia.com.br/ |
 | Equipe | https://equipe.jus9tecnologia.com.br/ |
 | Investidores | https://investimentos.jus9tecnologia.com.br/ |
+| Busca de Parcerias | https://investimentos.jus9tecnologia.com.br/busca-parcerias.html |
+| Web Summit | https://investimentos.jus9tecnologia.com.br/web-summit.html |
+| Dashboard de Prioridades | https://investimentos.jus9tecnologia.com.br/prioridades.html |
 | MVP | https://www.jus9tecnologia.com.br/mvp |
 | Charlie Echo | https://charlieecho.jus9tecnologia.com.br/ |
 | Charlie Echo Social | https://jus9verde.jus9tecnologia.com.br/charlie-echo-social#chat-social |

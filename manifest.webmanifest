@@ -1,7 +1,7 @@
 ﻿{
   "name": "Jus 9 MVP",
   "short_name": "Jus 9",
-  "description": "Aplicativo demonstrativo do MVP Jus 9 Tecnologia JurÃ­dica.",
+  "description": "Aplicativo demonstrativo do MVP Jus 9 Tecnologia Jurídica.",
   "start_url": "/app.html",
   "scope": "/",
   "display": "standalone",
