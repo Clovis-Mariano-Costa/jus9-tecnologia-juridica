@@ -1,4 +1,4 @@
-﻿// Jus 9 ? scripts consolidados pr?-Movimento 2
+﻿// Jus 9 - scripts consolidados pre-Movimento 2
 (function(){
   const toggle = document.querySelector('.mobile-toggle');
   const menu = document.querySelector('.menu');
