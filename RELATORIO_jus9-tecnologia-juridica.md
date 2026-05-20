@@ -1,7 +1,7 @@
-﻿# RelatÃ³rio â€” jus9-tecnologia-juridica
+﻿# Relat?rio ? jus9-tecnologia-juridica
 
 ## Escopo
-RevisÃ£o MÃ£o na Massa Charlie Echo: links, botÃµes, assinatura, governanÃ§a e compatibilidade.
+Revisão Mão na Massa Charlie Echo: links, botões, assinatura, governança e compatibilidade.
 
 ## HTML encontrados
 - app-atendimento-inicial.html
@@ -53,7 +53,7 @@ RevisÃ£o MÃ£o na Massa Charlie Echo: links, botÃµes, assinatura, governan�
 - documentos/termos.html
 - documentos/visao-de-futuro.html
 
-## HTML alterados nesta revisÃ£o
+## HTML alterados nesta revisão
 - app-atendimento-inicial.html
 - app-clientes.html
 - app-cofre.html
@@ -103,7 +103,7 @@ RevisÃ£o MÃ£o na Massa Charlie Echo: links, botÃµes, assinatura, governan�
 - documentos/termos.html
 - documentos/visao-de-futuro.html
 
-## Arquivos com menÃ§Ã£o a Charlie/IA
+## Arquivos com menção a Charlie/IA
 - ASSINATURA_E_DIREITOS_AUTORAIS_JUS9.md
 - COMMITS_jus9-tecnologia-juridica.md
 - DEPLOY_CLOUDFLARE.md
@@ -186,11 +186,11 @@ RevisÃ£o MÃ£o na Massa Charlie Echo: links, botÃµes, assinatura, governan�
 - versionamento.html
 
 ## Regras preservadas
-- Links, botÃµes e rotas antigas aprovadas permanecem.
-- DNA da Charlie Echo nÃ£o foi alterado diretamente.
-- Segredos tÃ©cnicos, `.env` real, `.git/` e `node_modules/` nÃ£o devem ir ao pacote pÃºblico.
+- Links, botões e rotas antigas aprovadas permanecem.
+- DNA da Charlie Echo não foi alterado diretamente.
+- Segredos técnicos, `.env` real, `.git/` e `node_modules/` não devem ir ao pacote público.
 
 ## Assinatura
-ProduÃ§Ã£o do site: Â© Jus 9 Tecnologia JurÃ­dica. Software livre com autoria, origem e direitos autorais preservados.
+Produção do site: ? Jus 9 Tecnologia Jurídica. Software livre com autoria, origem e direitos autorais preservados.
 
-DNA de referÃªncia: charlieecho-jus9-tecnologia-juridica
+DNA de referência: charlieecho-jus9-tecnologia-juridica

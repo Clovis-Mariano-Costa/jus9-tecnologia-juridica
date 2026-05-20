@@ -1,12 +1,12 @@
-﻿Jus 9 Tecnologia JurÃ­dica
-RepositÃ³rio: jus9-tecnologia-juridica
+﻿Jus 9 Tecnologia Jur?dica
+Repositório: jus9-tecnologia-juridica
 Software livre com autoria preservada.
-Direitos autorais reservados para Jus 9 Tecnologia JurÃ­dica.
-ProduÃ§Ã£o do site: Â© Jus 9 Tecnologia JurÃ­dica. Direitos autorais da produÃ§Ã£o reservados.
-A licenÃ§a livre nÃ£o remove autoria, origem, assinatura institucional nem direitos autorais.
-ReferÃªncia oficial: https://www.jus9tecnologia.com.br/
+Direitos autorais reservados para Jus 9 Tecnologia Jurídica.
+Produção do site: ? Jus 9 Tecnologia Jurídica. Direitos autorais da produção reservados.
+A licença livre não remove autoria, origem, assinatura institucional nem direitos autorais.
+Referência oficial: https://www.jus9tecnologia.com.br/
 E-mail de contato: Contato@jus9tecnologia.com.br
-DNA de referÃªncia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
+DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
 
 User-agent: *
 Allow: /
