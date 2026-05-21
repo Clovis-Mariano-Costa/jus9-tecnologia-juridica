@@ -2,12 +2,35 @@
   Content-Type: text/html; charset=utf-8
   X-Content-Type-Options: nosniff
 
+/mvp
+  Cache-Control: no-store, max-age=0, must-revalidate
+  X-Content-Type-Options: nosniff
+
+/mvp.html
+  Cache-Control: no-store, max-age=0, must-revalidate
+  X-Content-Type-Options: nosniff
+
+/login/*
+  Cache-Control: no-store, max-age=0, must-revalidate
+  X-Content-Type-Options: nosniff
+
+/auth/google/start/*
+  Cache-Control: no-store, max-age=0, must-revalidate
+  X-Content-Type-Options: nosniff
+
 /*.css
   Content-Type: text/css; charset=utf-8
   X-Content-Type-Options: nosniff
 
 /*.js
   Content-Type: application/javascript; charset=utf-8
+  Cache-Control: no-cache, max-age=0, must-revalidate
+  X-Content-Type-Options: nosniff
+
+/sw.js
+  Content-Type: application/javascript; charset=utf-8
+  Cache-Control: no-cache, max-age=0, must-revalidate
+  Service-Worker-Allowed: /
   X-Content-Type-Options: nosniff
 
 /*.webmanifest

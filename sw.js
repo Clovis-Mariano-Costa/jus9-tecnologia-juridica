@@ -1,4 +1,4 @@
-const JUS9_CACHE = 'jus9-mvp-app-v6';
+const JUS9_CACHE = 'jus9-mvp-app-v7';
 const JUS9_ASSETS = [
   '/',
   '/app.html',
@@ -11,6 +11,7 @@ const JUS9_ASSETS = [
   '/app-whatsapp.html',
   '/app-ia-profissional.html',
   '/auth/google/start/',
+  '/login/',
   '/mvp.html',
   '/offline.html',
   '/style.css',
