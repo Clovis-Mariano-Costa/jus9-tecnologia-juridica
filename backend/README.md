@@ -26,12 +26,34 @@ npm run dev
 ## Endpoints iniciais
 
 - `GET /health`
+- `GET /auth/google/start`
+- `GET /auth/google/callback`
+- `GET /api/auth/me`
+- `POST /auth/logout`
 - `GET /api/profiles`
 - `GET /api/dajs`
 - `POST /api/dajs`
 - `GET /api/dajs/:id/documentos`
 - `POST /api/processos/consulta`
 - `POST /api/auditoria`
+
+## Login Google MVP
+
+O backend possui um fluxo OAuth Google preparado para ambiente real, sem publicar
+segredos no repositorio.
+
+Consulte `AUTH_GOOGLE_MVP_SPEC.md`.
+
+Resumo:
+
+- usa `state`, `nonce` e PKCE;
+- exige allowlist por `AUTH_ALLOWED_EMAILS`;
+- nao grava token Google;
+- cria cookie de sessao `HttpOnly`;
+- nao grava e-mail puro dentro do cookie de sessao.
+
+Sem as variaveis obrigatorias, `GET /auth/google/start` responde com aviso `501`
+de configuracao pendente.
 
 ## Regra central de sigilo
 

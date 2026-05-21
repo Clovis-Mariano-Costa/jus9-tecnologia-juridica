@@ -4,6 +4,9 @@
   "private": true,
   "description": "Backend inicial demonstrativo da Jus 9 Tecnologia Jurídica.",
   "main": "server.js",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js"

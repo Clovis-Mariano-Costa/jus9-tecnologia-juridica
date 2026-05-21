@@ -15,12 +15,31 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const crypto = require("crypto");
 
 const app = express();
 const port = process.env.PORT || 3009;
+const isProduction = process.env.NODE_ENV === "production";
+const publicSiteOrigin = process.env.PUBLIC_SITE_ORIGIN || "https://www.jus9tecnologia.com.br";
+const googleCallbackUrl =
+  process.env.GOOGLE_CALLBACK_URL || `${publicSiteOrigin}/auth/google/callback`;
 
 app.use(helmet());
-app.use(cors());
+app.use(
+  cors({
+    credentials: true,
+    origin(origin, callback) {
+      const allowed = new Set(
+        (process.env.CORS_ORIGINS || `${publicSiteOrigin},http://localhost:3009,http://127.0.0.1:3009`)
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean)
+      );
+      if (!origin || allowed.has(origin)) return callback(null, true);
+      return callback(new Error("Origem nao autorizada pelo CORS"));
+    }
+  })
+);
 app.use(express.json({ limit: "2mb" }));
 app.use(morgan("dev"));
 
@@ -66,6 +85,133 @@ const documentos = [
   }
 ];
 
+const authProfiles = [
+  "admin_sistema",
+  "advogado_lider",
+  "advogado",
+  "assessor_chefe",
+  "assessor",
+  "secretaria",
+  "estagio",
+  "academia",
+  "estudante",
+  "cidadao",
+  "perito",
+  "parceiro",
+  "escritorio",
+  "empresa",
+  "orgao_publico",
+  "magistrado",
+  "ministerio_publico",
+  "autoridade_policial"
+];
+
+function base64url(input) {
+  return Buffer.from(input).toString("base64url");
+}
+
+function randomToken(bytes = 32) {
+  return crypto.randomBytes(bytes).toString("base64url");
+}
+
+function sha256Base64url(value) {
+  return crypto.createHash("sha256").update(value).digest("base64url");
+}
+
+function getAuthSecret() {
+  return process.env.AUTH_COOKIE_SECRET || process.env.JWT_SECRET;
+}
+
+function signPayload(payload) {
+  const secret = getAuthSecret();
+  if (!secret || secret === "troque-esta-chave") {
+    throw new Error("AUTH_COOKIE_SECRET nao configurado");
+  }
+  const encoded = base64url(JSON.stringify(payload));
+  const signature = crypto.createHmac("sha256", secret).update(encoded).digest("base64url");
+  return `${encoded}.${signature}`;
+}
+
+function verifyPayload(value) {
+  const secret = getAuthSecret();
+  if (!secret || !value || !value.includes(".")) return null;
+  const [encoded, signature] = value.split(".");
+  const expected = crypto.createHmac("sha256", secret).update(encoded).digest("base64url");
+  if (signature.length !== expected.length) return null;
+  if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) return null;
+  try {
+    const payload = JSON.parse(Buffer.from(encoded, "base64url").toString("utf8"));
+    if (payload.expiresAt && Date.now() > payload.expiresAt) return null;
+    return payload;
+  } catch (_) {
+    return null;
+  }
+}
+
+function parseCookies(req) {
+  return String(req.headers.cookie || "")
+    .split(";")
+    .map((cookie) => cookie.trim())
+    .filter(Boolean)
+    .reduce((cookies, cookie) => {
+      const separator = cookie.indexOf("=");
+      if (separator === -1) return cookies;
+      cookies[decodeURIComponent(cookie.slice(0, separator))] = decodeURIComponent(cookie.slice(separator + 1));
+      return cookies;
+    }, {});
+}
+
+function serializeCookie(name, value, options = {}) {
+  const parts = [`${encodeURIComponent(name)}=${encodeURIComponent(value)}`];
+  if (options.maxAge !== undefined) parts.push(`Max-Age=${options.maxAge}`);
+  if (options.path) parts.push(`Path=${options.path}`);
+  if (options.httpOnly) parts.push("HttpOnly");
+  if (options.secure) parts.push("Secure");
+  if (options.sameSite) parts.push(`SameSite=${options.sameSite}`);
+  return parts.join("; ");
+}
+
+function clearCookie(name) {
+  return serializeCookie(name, "", {
+    maxAge: 0,
+    path: "/",
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: "Lax"
+  });
+}
+
+function parseAllowedUsers() {
+  return new Map(
+    String(process.env.AUTH_ALLOWED_EMAILS || "")
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean)
+      .map((item) => {
+        const [rawEmail, rawProfile = "advogado"] = item.split(":").map((value) => value.trim());
+        const profile = authProfiles.includes(rawProfile) ? rawProfile : "advogado";
+        return [rawEmail.toLowerCase(), profile];
+      })
+  );
+}
+
+function missingGoogleConfig() {
+  return [
+    ["GOOGLE_CLIENT_ID", process.env.GOOGLE_CLIENT_ID],
+    ["GOOGLE_CLIENT_SECRET", process.env.GOOGLE_CLIENT_SECRET],
+    ["AUTH_COOKIE_SECRET", getAuthSecret()],
+    ["AUTH_ALLOWED_EMAILS", process.env.AUTH_ALLOWED_EMAILS]
+  ]
+    .filter(([, value]) => !value || value === "troque-esta-chave")
+    .map(([name]) => name);
+}
+
+function getSession(req) {
+  const session = verifyPayload(parseCookies(req).jus9_session);
+  if (!session || session.kind !== "jus9_session") return null;
+  return session;
+}
+
 function canAccessSecret({ user, item }) {
   // Regra máxima: Secreto/Cofre pertence ao advogado titular.
   if (!item || !["secreto", "cofre"].includes(item.sigilo || item.status)) return true;
@@ -73,6 +219,140 @@ function canAccessSecret({ user, item }) {
 }
 
 app.get("/health", (_, res) => res.json({ ok: true, service: "Jus 9 MVP Backend" }));
+
+app.get("/auth/google/start", (req, res) => {
+  const missing = missingGoogleConfig();
+  if (missing.length) {
+    return res.status(501).type("html").send(`<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Login Google em preparacao</title></head>
+<body><h1>Login Google preparado com seguranca.</h1>
+<p>Configure as variaveis de ambiente do backend antes de ativar o OAuth real.</p>
+<p>Variaveis pendentes: <code>${missing.join(", ")}</code>.</p>
+<p>Nenhum segredo deve ser publicado no GitHub.</p></body></html>`);
+  }
+
+  const state = randomToken();
+  const verifier = randomToken(48);
+  const challenge = sha256Base64url(verifier);
+  const nonce = randomToken();
+  const tx = signPayload({
+    kind: "google_oauth_tx",
+    state,
+    verifier,
+    nonce,
+    issuedAt: Date.now(),
+    expiresAt: Date.now() + 10 * 60 * 1000
+  });
+  const params = new URLSearchParams({
+    client_id: process.env.GOOGLE_CLIENT_ID,
+    redirect_uri: googleCallbackUrl,
+    response_type: "code",
+    scope: "openid email profile",
+    state,
+    nonce,
+    code_challenge: challenge,
+    code_challenge_method: "S256",
+    prompt: "select_account"
+  });
+  res.setHeader(
+    "Set-Cookie",
+    serializeCookie("jus9_oauth_tx", tx, {
+      maxAge: 600,
+      path: "/",
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: "Lax"
+    })
+  );
+  res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`);
+});
+
+app.get("/auth/google/callback", async (req, res) => {
+  const tx = verifyPayload(parseCookies(req).jus9_oauth_tx);
+  if (!tx || tx.kind !== "google_oauth_tx" || tx.state !== req.query.state) {
+    return res.status(400).json({ ok: false, error: "oauth_state_invalido" });
+  }
+  if (req.query.error) {
+    return res.status(400).json({ ok: false, error: "google_oauth_recusado" });
+  }
+  if (!req.query.code) {
+    return res.status(400).json({ ok: false, error: "codigo_oauth_ausente" });
+  }
+
+  try {
+    const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        code: String(req.query.code),
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+        redirect_uri: googleCallbackUrl,
+        grant_type: "authorization_code",
+        code_verifier: tx.verifier
+      })
+    });
+    if (!tokenResponse.ok) {
+      return res.status(502).json({ ok: false, error: "falha_token_google" });
+    }
+    const token = await tokenResponse.json();
+    const userInfoResponse = await fetch("https://openidconnect.googleapis.com/v1/userinfo", {
+      headers: { Authorization: `Bearer ${token.access_token}` }
+    });
+    if (!userInfoResponse.ok) {
+      return res.status(502).json({ ok: false, error: "falha_perfil_google" });
+    }
+    const userInfo = await userInfoResponse.json();
+    const email = String(userInfo.email || "").toLowerCase();
+    const allowedUsers = parseAllowedUsers();
+    const profile = allowedUsers.get(email);
+    if (!email || userInfo.email_verified !== true || !profile) {
+      return res.status(403).json({ ok: false, error: "email_nao_autorizado" });
+    }
+
+    const session = signPayload({
+      kind: "jus9_session",
+      provider: "google",
+      emailHash: sha256Base64url(email),
+      googleSubHash: sha256Base64url(String(userInfo.sub || "")),
+      profile,
+      issuedAt: Date.now(),
+      expiresAt: Date.now() + 8 * 60 * 60 * 1000
+    });
+    console.info("auth.login", { provider: "google", profile, emailHash: sha256Base64url(email) });
+    res.setHeader("Set-Cookie", [
+      clearCookie("jus9_oauth_tx"),
+      serializeCookie("jus9_session", session, {
+        maxAge: 8 * 60 * 60,
+        path: "/",
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: "Lax"
+      })
+    ]);
+    return res.redirect(process.env.AUTH_SUCCESS_REDIRECT || `${publicSiteOrigin}/app.html`);
+  } catch (error) {
+    console.error("auth.google.callback", { message: error.message });
+    return res.status(502).json({ ok: false, error: "falha_oauth_google" });
+  }
+});
+
+app.get("/api/auth/me", (req, res) => {
+  const session = getSession(req);
+  if (!session) return res.status(401).json({ authenticated: false });
+  res.json({
+    authenticated: true,
+    provider: session.provider,
+    profile: session.profile,
+    emailHash: session.emailHash,
+    expiresAt: new Date(session.expiresAt).toISOString()
+  });
+});
+
+app.post("/auth/logout", (req, res) => {
+  res.setHeader("Set-Cookie", clearCookie("jus9_session"));
+  res.status(204).end();
+});
 
 app.get("/api/profiles", (_, res) => res.json({ profiles }));
 
