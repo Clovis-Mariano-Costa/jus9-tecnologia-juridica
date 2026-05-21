@@ -11,6 +11,7 @@ Este pacote implementa as rotas de backend:
 - `GET /auth/google/start`
 - `GET /auth/google/callback`
 - `GET /api/auth/me`
+- `GET /api/auth/permissions`
 - `POST /auth/logout`
 
 ## Principios de seguranca
@@ -36,6 +37,7 @@ GOOGLE_CALLBACK_URL=https://www.jus9tecnologia.com.br/auth/google/callback
 AUTH_COOKIE_SECRET=...
 AUTH_ALLOWED_EMAILS=email@dominio.com:perfil,outro@dominio.com:perfil
 AUTH_SUCCESS_REDIRECT=https://www.jus9tecnologia.com.br/app.html
+AUTH_ENFORCE_API=false
 ```
 
 `AUTH_COOKIE_SECRET` deve ser longo, aleatorio e exclusivo do ambiente.
@@ -79,6 +81,7 @@ AUTH_SUCCESS_REDIRECT=https://www.jus9tecnologia.com.br/app.html
 - Sem variaveis reais, `/auth/google/start` deve responder `501` com aviso de configuracao pendente.
 - Com variaveis reais, `/auth/google/start` deve redirecionar para `accounts.google.com`.
 - `/api/auth/me` sem sessao deve retornar `401`.
+- `/api/auth/permissions` sem sessao deve retornar `401`.
 - `/auth/logout` deve limpar a sessao.
 
 ## Bloqueios antes de producao plena
@@ -91,3 +94,15 @@ AUTH_SUCCESS_REDIRECT=https://www.jus9tecnologia.com.br/app.html
 - Substituir allowlist temporaria por tabela de usuarios com auditoria.
 - Revisar logs para garantir que e-mails e tokens nao sejam impressos.
 - Integrar autorizacao por perfil aos endpoints sensiveis.
+
+## Protecao de API
+
+`AUTH_ENFORCE_API=false` mantem os endpoints demonstrativos acessiveis para o MVP estatico.
+
+Quando o backend estiver em HTTPS e o login Google estiver validado, ativar:
+
+```env
+AUTH_ENFORCE_API=true
+```
+
+Com essa chave, endpoints de DAJ, documentos, processos e auditoria passam a exigir sessao e permissao de perfil.

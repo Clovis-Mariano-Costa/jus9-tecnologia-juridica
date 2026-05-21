@@ -44,6 +44,11 @@ segredos no repositorio.
 
 Consulte `AUTH_GOOGLE_MVP_SPEC.md`.
 
+Documentos de apoio:
+
+- `OAUTH_GOOGLE_ACTIVATION_CHECKLIST.md`
+- `AUTH_PROFILE_MATRIX.md`
+
 Para publicacao no dominio principal do MVP, a integracao preferencial esta em
 Cloudflare Pages Functions, no diretorio `functions/`. Consulte
 `CLOUDFLARE_PAGES_FUNCTIONS_DEPLOY.md`.
@@ -58,6 +63,10 @@ Resumo:
 
 Sem as variaveis obrigatorias, `GET /auth/google/start` responde com aviso `501`
 de configuracao pendente.
+
+`AUTH_ENFORCE_API=false` mantem os endpoints demonstrativos abertos para o MVP
+estatico. Depois do login real validado, `AUTH_ENFORCE_API=true` passa a exigir
+sessao e permissao nos endpoints de DAJ, documentos, processos e auditoria.
 
 ## Regra central de sigilo
 

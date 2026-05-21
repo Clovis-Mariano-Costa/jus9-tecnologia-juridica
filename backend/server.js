@@ -106,6 +106,29 @@ const authProfiles = [
   "autoridade_policial"
 ];
 
+const profilePermissions = {
+  admin_sistema: ["auth:read", "dajs:read", "dajs:write", "documents:read", "processes:read", "audit:write"],
+  advogado_lider: ["auth:read", "dajs:read", "dajs:write", "documents:read", "processes:read", "audit:write"],
+  advogado: ["auth:read", "dajs:read", "dajs:write", "documents:read", "processes:read", "audit:write"],
+  assessor_chefe: ["auth:read", "dajs:read", "documents:read", "processes:read", "audit:write"],
+  assessor: ["auth:read", "dajs:read", "documents:read", "processes:read"],
+  secretaria: ["auth:read", "dajs:read", "documents:read"],
+  estagio: ["auth:read", "dajs:read"],
+  academia: ["auth:read"],
+  estudante: ["auth:read"],
+  cidadao: ["auth:read"],
+  perito: ["auth:read", "documents:read"],
+  parceiro: ["auth:read"],
+  escritorio: ["auth:read", "dajs:read", "documents:read", "processes:read"],
+  empresa: ["auth:read", "documents:read"],
+  orgao_publico: ["auth:read", "processes:read"],
+  magistrado: ["auth:read", "processes:read"],
+  ministerio_publico: ["auth:read", "processes:read"],
+  autoridade_policial: ["auth:read", "documents:read", "processes:read"]
+};
+
+const enforceApiAuth = process.env.AUTH_ENFORCE_API === "true";
+
 function base64url(input) {
   return Buffer.from(input).toString("base64url");
 }
@@ -210,6 +233,37 @@ function getSession(req) {
   const session = verifyPayload(parseCookies(req).jus9_session);
   if (!session || session.kind !== "jus9_session") return null;
   return session;
+}
+
+function hasPermission(session, permission) {
+  if (!session || !session.profile) return false;
+  return (profilePermissions[session.profile] || []).includes(permission);
+}
+
+function requireAuth(req, res, next) {
+  const session = getSession(req);
+  if (!session) return res.status(401).json({ ok: false, error: "sessao_obrigatoria" });
+  req.auth = session;
+  return next();
+}
+
+function requirePermission(permission) {
+  return (req, res, next) => {
+    const session = req.auth || getSession(req);
+    if (!session) return res.status(401).json({ ok: false, error: "sessao_obrigatoria" });
+    if (!hasPermission(session, permission)) {
+      return res.status(403).json({ ok: false, error: "perfil_sem_permissao", permission });
+    }
+    req.auth = session;
+    return next();
+  };
+}
+
+function protectWhenEnabled(permission) {
+  return (req, res, next) => {
+    if (!enforceApiAuth) return next();
+    return requireAuth(req, res, () => requirePermission(permission)(req, res, next));
+  };
 }
 
 function canAccessSecret({ user, item }) {
@@ -349,6 +403,13 @@ app.get("/api/auth/me", (req, res) => {
   });
 });
 
+app.get("/api/auth/permissions", requireAuth, (req, res) => {
+  res.json({
+    profile: req.auth.profile,
+    permissions: profilePermissions[req.auth.profile] || []
+  });
+});
+
 app.post("/auth/logout", (req, res) => {
   res.setHeader("Set-Cookie", clearCookie("jus9_session"));
   res.status(204).end();
@@ -356,9 +417,9 @@ app.post("/auth/logout", (req, res) => {
 
 app.get("/api/profiles", (_, res) => res.json({ profiles }));
 
-app.get("/api/dajs", (_, res) => res.json({ items: dajs }));
+app.get("/api/dajs", protectWhenEnabled("dajs:read"), (_, res) => res.json({ items: dajs }));
 
-app.post("/api/dajs", (req, res) => {
+app.post("/api/dajs", protectWhenEnabled("dajs:write"), (req, res) => {
   const next = {
     id: `daj_${Date.now()}`,
     numero: `DAJ-2026-${String(dajs.length + 1).padStart(4, "0")}`,
@@ -374,11 +435,11 @@ app.post("/api/dajs", (req, res) => {
   res.status(201).json(next);
 });
 
-app.get("/api/dajs/:id/documentos", (req, res) => {
+app.get("/api/dajs/:id/documentos", protectWhenEnabled("documents:read"), (req, res) => {
   res.json({ items: documentos.filter((d) => d.dajId === req.params.id) });
 });
 
-app.post("/api/processos/consulta", (req, res) => {
+app.post("/api/processos/consulta", protectWhenEnabled("processes:read"), (req, res) => {
   const { numeroCnj, tribunal, fonte, dajId } = req.body;
   res.json({
     fonte: fonte || "simulacao",
@@ -394,7 +455,7 @@ app.post("/api/processos/consulta", (req, res) => {
   });
 });
 
-app.post("/api/auditoria", (req, res) => {
+app.post("/api/auditoria", protectWhenEnabled("audit:write"), (req, res) => {
   res.status(201).json({
     ok: true,
     registro: {
