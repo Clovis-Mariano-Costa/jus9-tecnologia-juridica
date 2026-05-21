@@ -10,7 +10,7 @@ Garantir que a pagina online de login sirva a versao correta do MVP, com:
 - demos `demo@` e `demo1` a `demo13`;
 - senha demonstrativa `Jus9MVP#2026`;
 - rota `/login/` apontando para `/mvp.html#acesso`;
-- rota `/auth/google/start/` sem erro 404 enquanto o OAuth real nao estiver publicado.
+- rota `/auth/google/start` servida por backend real ou, sem variaveis, respondendo `501` seguro.
 
 ## Versao esperada
 
@@ -25,9 +25,9 @@ Marcador visivel na tela:
 3. Confirmar se aparece o botao `Entrar com Google`.
 4. Abrir `Ver e-mails demo por MVP` e conferir `demo1` a `demo13`.
 5. Abrir `https://www.jus9tecnologia.com.br/login/`.
-6. Confirmar redirecionamento para `/mvp.html#acesso`.
-7. Abrir `https://www.jus9tecnologia.com.br/auth/google/start/`.
-8. Confirmar a pagina `Integracao Google preparada`.
+6. Confirmar redirecionamento HTTP para `/mvp.html#acesso`.
+7. Abrir `https://www.jus9tecnologia.com.br/auth/google/start`.
+8. Confirmar que a rota nao retorna 404: sem variaveis reais deve responder `501`; com variaveis reais deve redirecionar para Google.
 
 ## Se a versao online continuar antiga
 
@@ -43,7 +43,10 @@ Marcador visivel na tela:
    - `/sw.js`
    - `/login/`
    - `/auth/google/start/`
+   - `/auth/google/start`
+   - `/auth/google/callback`
+   - `/api/auth/me`
 
 ## Proxima etapa
 
-Substituir a pagina placeholder `/auth/google/start/` por backend real com OAuth Google, `state`, PKCE, sessao segura, escopos minimos e auditoria.
+Publicar as Pages Functions de OAuth Google com `state`, PKCE, sessao segura, escopos minimos e auditoria sem e-mail real em logs publicos.

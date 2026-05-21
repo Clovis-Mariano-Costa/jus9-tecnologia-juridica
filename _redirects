@@ -1,5 +1,7 @@
 /app-demo /app-demo-advogar 301
 /app-demo.html /app-demo-advogar.html 301
 /login /login/ 301
+/login/ /mvp.html#acesso 302
 /login.html /login/ 301
-/auth/google/start /auth/google/start/ 301
+/auth/google/start/ /auth/google/start 301
+/auth/google/callback/ /auth/google/callback 301

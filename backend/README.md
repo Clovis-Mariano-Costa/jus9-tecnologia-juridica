@@ -44,6 +44,10 @@ segredos no repositorio.
 
 Consulte `AUTH_GOOGLE_MVP_SPEC.md`.
 
+Para publicacao no dominio principal do MVP, a integracao preferencial esta em
+Cloudflare Pages Functions, no diretorio `functions/`. Consulte
+`CLOUDFLARE_PAGES_FUNCTIONS_DEPLOY.md`.
+
 Resumo:
 
 - usa `state`, `nonce` e PKCE;

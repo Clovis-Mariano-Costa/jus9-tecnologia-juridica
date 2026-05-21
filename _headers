@@ -18,6 +18,18 @@
   Cache-Control: no-store, max-age=0, must-revalidate
   X-Content-Type-Options: nosniff
 
+/auth/google/*
+  Cache-Control: no-store, max-age=0, must-revalidate
+  X-Content-Type-Options: nosniff
+
+/auth/logout
+  Cache-Control: no-store, max-age=0, must-revalidate
+  X-Content-Type-Options: nosniff
+
+/api/auth/*
+  Cache-Control: no-store, max-age=0, must-revalidate
+  X-Content-Type-Options: nosniff
+
 /*.css
   Content-Type: text/css; charset=utf-8
   X-Content-Type-Options: nosniff
