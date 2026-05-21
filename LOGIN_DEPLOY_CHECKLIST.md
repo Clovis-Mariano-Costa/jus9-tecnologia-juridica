@@ -35,7 +35,8 @@ Marcador visivel na tela:
 2. Confirmar branch de producao `main`.
 3. Confirmar commit de producao igual ou posterior a `1461c07`.
 4. Rodar `Retry deployment` ou criar novo deploy de producao.
-5. Limpar cache de Cloudflare para:
+5. Confirmar que nao existe pagina legada concorrente em `mvp/index.html`.
+6. Limpar cache de Cloudflare para:
    - `/mvp`
    - `/mvp.html`
    - `/script.js`
