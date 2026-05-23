@@ -3,6 +3,10 @@ export default {
     const originalUrl = new URL(request.url);
     const assetUrl = new URL(request.url);
 
+    if (assetUrl.pathname === "/" || assetUrl.pathname === "") {
+      assetUrl.pathname = "/index.html";
+    }
+
     if (assetUrl.pathname === "/mvp" || assetUrl.pathname === "/mvp/") {
       assetUrl.pathname = "/mvp.html";
     }
@@ -25,7 +29,7 @@ export default {
       headers.set("content-type", "image/webp");
     } else if (assetUrl.pathname.endsWith(".ico")) {
       headers.set("content-type", "image/x-icon");
-    } else if (assetUrl.pathname.endsWith(".html") || originalUrl.pathname === "/" || !originalUrl.pathname.includes(".")) {
+    } else if (assetUrl.pathname.endsWith(".html") || !originalUrl.pathname.includes(".")) {
       headers.set("content-type", "text/html; charset=utf-8");
     }
 
