@@ -7,5 +7,5 @@ Links semânticos importantes:
 - [Investidores](https://investimentos.jus9tecnologia.com.br/)
 - [MVP](https://www.jus9tecnologia.com.br/mvp)
 - [Charlie Echo](https://charlieecho.jus9tecnologia.com.br/)
-Atualização de deploy Worker: 2026-05-23.
+- Atualização de deploy Worker: 2026-05-23.
 © Jus 9 Tecnologia Jurídica — software livre, autoria preservada.
