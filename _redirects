@@ -1,5 +1,8 @@
-/app-demo /app-demo-advogar 301
-/app-demo.html /app-demo-advogar.html 301
+/mvp /mvp.html 200
+/mvp/ /mvp.html 200
+/app-demo /app-demo-advogar.html 200
+/app-demo/ /app-demo-advogar.html 200
+/app-demo.html /app-demo-advogar.html 200
 /login /login/ 301
 /login/ /mvp.html#acesso 302
 /login.html /login/ 301
