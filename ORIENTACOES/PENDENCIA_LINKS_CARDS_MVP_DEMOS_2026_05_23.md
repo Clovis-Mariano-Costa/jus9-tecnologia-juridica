@@ -50,3 +50,15 @@ Atualizar `mvp.html` para os links abaixo:
 ## Observação
 
 A correção deve preservar o Worker, CSS, DNS e rotas já estabilizadas.
+
+## Revisão Charlie - 2026-05-23
+
+Status revisado nesta data.
+
+- As páginas faltantes dos Demos 3, 4, 6, 9 e 10 já existem no repositório.
+- O `script.js` já contém o mapeamento de login demonstrativo e botões para os demos específicos.
+- O `mvp.html` ainda apontava vários cards para páginas genéricas.
+- A revisão corrigiu os links dos cards Demo 2 a Demo 13 para seus destinos específicos.
+- O Demo 6 - Investidor / Parceiro agora aponta para `demo-06-investidor-parceiro.html`.
+
+Pendência remanescente: testar publicação externa após deploy/cache para confirmar que `https://jus9tecnologia.com.br/mvp#demos-jus9` já entrega os links novos.
