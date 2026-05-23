@@ -4,7 +4,7 @@ Regra: sempre que uma palavra pública relevante aparecer em página pública, e
 
 - Equipe → https://www.jus9tecnologia.com.br/equipe/
 - Investidores → https://investimentos.jus9tecnologia.com.br/
-- MVP → https://www.jus9tecnologia.com.br/mvp
+- MVP → https://jus9tecnologia.com.br/mvp#demos-jus9
 - Pré-cadastro MVP / Acompanhe o MVP → https://www.jus9tecnologia.com.br/lider-mvp
 - Charlie Echo → https://charlieecho.jus9tecnologia.com.br/
 - Charlie Echo Social → https://jus9verde.jus9tecnologia.com.br/charlie-echo-social

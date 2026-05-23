@@ -12,7 +12,7 @@ Sempre que uma expressão pública relevante aparecer em página, README, rodap�
 | Busca de Parcerias | https://investimentos.jus9tecnologia.com.br/busca-parcerias.html |
 | Web Summit | https://investimentos.jus9tecnologia.com.br/web-summit.html |
 | Dashboard de Prioridades | https://investimentos.jus9tecnologia.com.br/prioridades.html |
-| MVP | https://www.jus9tecnologia.com.br/mvp |
+| MVP | https://jus9tecnologia.com.br/mvp#demos-jus9 |
 | Charlie Echo | https://charlieecho.jus9tecnologia.com.br/ |
 | Charlie Echo Social | https://jus9verde.jus9tecnologia.com.br/charlie-echo-social#chat-social |
 | Jus9 Verde | https://jus9verde.jus9tecnologia.com.br/ |

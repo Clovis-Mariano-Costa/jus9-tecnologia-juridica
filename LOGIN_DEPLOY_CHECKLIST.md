@@ -20,7 +20,7 @@ Marcador visivel na tela:
 
 ## Verificacoes online
 
-1. Abrir `https://www.jus9tecnologia.com.br/mvp`.
+1. Abrir `https://jus9tecnologia.com.br/mvp#demos-jus9`.
 2. Confirmar se aparece o marcador de versao acima.
 3. Confirmar se aparece o botao `Entrar com Google`.
 4. Abrir `Ver e-mails demo por MVP` e conferir `demo1` a `demo13`.
