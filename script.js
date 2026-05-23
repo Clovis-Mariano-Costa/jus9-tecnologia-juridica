@@ -50,8 +50,8 @@ window.jus9CookiePreferences = function(href){
 })();
 
 var jus9DemoRoutes = {
-  'demo@jus9tecnologia.com.br': 'app-demo-advogar.html',
-  'demo1@jus9tecnologia.com.br': 'app-demo-advogar.html',
+  'demo@jus9tecnologia.com.br': 'demo-01-advogado-defensor.html',
+  'demo1@jus9tecnologia.com.br': 'demo-01-advogado-defensor.html',
   'demo2@jus9tecnologia.com.br': 'demo-02-professor.html',
   'demo3@jus9tecnologia.com.br': 'demo-03-estudante.html',
   'demo4@jus9tecnologia.com.br': 'demo-04-cidadao-interessado.html',
@@ -67,7 +67,7 @@ var jus9DemoRoutes = {
 };
 
 var jus9DemoCardRoutes = {
-  'Acessar Demo 1': 'app-demo-advogar.html',
+  'Acessar Demo 1': 'demo-01-advogado-defensor.html',
   'Acessar Demo 2': 'demo-02-professor.html',
   'Acessar Demo 3': 'demo-03-estudante.html',
   'Acessar Demo 4': 'demo-04-cidadao-interessado.html',
