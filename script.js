@@ -2,6 +2,28 @@
 (function(){
   const toggle = document.querySelector('.mobile-toggle');
   const menu = document.querySelector('.menu');
+
+  if (menu && !menu.querySelector('[data-jus9-investimentos-menu]')) {
+    const mvpLink = Array.from(menu.querySelectorAll('a')).find((a) => (a.textContent || '').trim().toLowerCase().includes('mvp'));
+    const investimentoLink = document.createElement('a');
+    investimentoLink.href = 'https://investimentos.jus9tecnologia.com.br/';
+    investimentoLink.textContent = 'Investimentos';
+    investimentoLink.setAttribute('data-jus9-investimentos-menu', 'true');
+
+    const investidoresLink = document.createElement('a');
+    investidoresLink.href = 'https://investimentos.jus9tecnologia.com.br/web-summit';
+    investidoresLink.textContent = 'Investidores';
+    investidoresLink.setAttribute('data-jus9-investidores-menu', 'true');
+
+    if (mvpLink && mvpLink.nextSibling) {
+      menu.insertBefore(investimentoLink, mvpLink.nextSibling);
+      menu.insertBefore(investidoresLink, investimentoLink.nextSibling);
+    } else {
+      menu.appendChild(investimentoLink);
+      menu.appendChild(investidoresLink);
+    }
+  }
+
   if (toggle && menu) {
     toggle.addEventListener('click', () => menu.classList.toggle('open'));
   }
