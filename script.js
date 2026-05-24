@@ -3,6 +3,20 @@
   const toggle = document.querySelector('.mobile-toggle');
   const menu = document.querySelector('.menu');
 
+  if (!document.querySelector('link[rel="manifest"]')) {
+    const manifest = document.createElement('link');
+    manifest.rel = 'manifest';
+    manifest.href = '/manifest.webmanifest';
+    document.head.appendChild(manifest);
+  }
+
+  if (!document.querySelector('meta[name="theme-color"]')) {
+    const theme = document.createElement('meta');
+    theme.name = 'theme-color';
+    theme.content = '#d4a72c';
+    document.head.appendChild(theme);
+  }
+
   if (menu && !menu.querySelector('[data-jus9-investimentos-menu]')) {
     const mvpLink = Array.from(menu.querySelectorAll('a')).find((a) => (a.textContent || '').trim().toLowerCase().includes('mvp'));
     const investimentoLink = document.createElement('a');
@@ -159,7 +173,7 @@ window.jus9DemoLogin = function(form){
 (function(){
   if ('serviceWorker' in navigator && location.protocol === 'https:') {
     window.addEventListener('load', function(){
-      navigator.serviceWorker.register('/sw.js').catch(function(error){
+      navigator.serviceWorker.register('/service-worker.js').catch(function(error){
         console.warn('Service worker Jus 9 não registrado:', error);
       });
     });
