@@ -1,47 +1,59 @@
-﻿{
-  "name": "Jus 9 MVP",
+{
+  "name": "Jus 9 Tecnologia Jurídica",
   "short_name": "Jus 9",
-  "description": "Aplicativo demonstrativo do MVP Jus 9 Tecnologia Jurídica.",
-  "start_url": "/app.html",
+  "description": "Legaltech brasileira em MVP, com Direito, organização documental, educação jurídica e I.A Generativa Multimodal Jurista com governança humana e revisão humana.",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "id": "/?source=pwa",
+  "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone", "browser"],
+  "orientation": "portrait-primary",
   "background_color": "#07111f",
-  "theme_color": "#07111f",
-  "orientation": "portrait",
-  "lang": "pt-BR",
-  "categories": ["productivity", "business", "legal"],
+  "theme_color": "#d4a72c",
+  "categories": ["business", "education", "productivity"],
   "icons": [
     {
       "src": "/assets/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/jus9-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ],
   "shortcuts": [
     {
-      "name": "Agenda",
-      "short_name": "Agenda",
-      "url": "/app-agenda.html",
+      "name": "MVPs / Demos",
+      "short_name": "MVPs",
+      "description": "Abrir os MVPs e demos da Jus 9 Tecnologia Jurídica.",
+      "url": "/mvp.html#demos-jus9",
       "icons": [{ "src": "/assets/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
     },
     {
-      "name": "Painel MVP",
-      "short_name": "Painel",
-      "url": "/app-demo-advogar.html",
+      "name": "MVP Advogado",
+      "short_name": "Demo 1",
+      "description": "Abrir o MVP principal Advogado / Defensor Público.",
+      "url": "/demo-01-advogado-defensor.html",
       "icons": [{ "src": "/assets/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
     },
     {
-      "name": "IA Profissional",
-      "short_name": "IA",
-      "url": "/app-ia-profissional.html",
+      "name": "Investidores",
+      "short_name": "Investir",
+      "description": "Abrir a área de investimentos e parceiros.",
+      "url": "https://investimentos.jus9tecnologia.com.br/",
       "icons": [{ "src": "/assets/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
     },
     {
-      "name": "WhatsApp Privado",
-      "short_name": "WhatsApp",
-      "url": "/app-whatsapp.html",
+      "name": "Jus9 Verde",
+      "short_name": "Verde",
+      "description": "Abrir o Braço Forte Social da Jus 9 Tecnologia Jurídica.",
+      "url": "https://jus9verde.jus9tecnologia.com.br/",
       "icons": [{ "src": "/assets/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
     }
   ]
