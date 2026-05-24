@@ -15,12 +15,19 @@
     investidoresLink.textContent = 'Investidores';
     investidoresLink.setAttribute('data-jus9-investidores-menu', 'true');
 
+    const instalarLink = document.createElement('a');
+    instalarLink.href = '/instalar-app.html';
+    instalarLink.textContent = 'Instalar App';
+    instalarLink.setAttribute('data-jus9-instalar-menu', 'true');
+
     if (mvpLink && mvpLink.nextSibling) {
       menu.insertBefore(investimentoLink, mvpLink.nextSibling);
       menu.insertBefore(investidoresLink, investimentoLink.nextSibling);
+      menu.insertBefore(instalarLink, investidoresLink.nextSibling);
     } else {
       menu.appendChild(investimentoLink);
       menu.appendChild(investidoresLink);
+      menu.appendChild(instalarLink);
     }
   }
 
@@ -146,5 +153,48 @@ window.jus9DemoLogin = function(form){
     } else {
       alert('Login Google preparado para a rota /auth/google/start. No preview local, falta conectar o backend OAuth.');
     }
+  });
+})();
+
+(function(){
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('/sw.js').catch(function(error){
+        console.warn('Service worker Jus 9 não registrado:', error);
+      });
+    });
+  }
+
+  var installPromptEvent = null;
+  var installButtons = document.querySelectorAll('[data-pwa-install]');
+
+  function updateInstallButtons(enabled) {
+    installButtons.forEach(function(button){
+      button.disabled = !enabled;
+      button.hidden = false;
+      if (!enabled) button.setAttribute('aria-disabled', 'true');
+      else button.removeAttribute('aria-disabled');
+    });
+  }
+
+  window.addEventListener('beforeinstallprompt', function(event){
+    event.preventDefault();
+    installPromptEvent = event;
+    updateInstallButtons(true);
+  });
+
+  installButtons.forEach(function(button){
+    button.addEventListener('click', function(){
+      if (!installPromptEvent) {
+        var help = document.querySelector('[data-pwa-help]');
+        if (help) help.hidden = false;
+        return;
+      }
+      installPromptEvent.prompt();
+      installPromptEvent.userChoice.finally(function(){
+        installPromptEvent = null;
+        updateInstallButtons(false);
+      });
+    });
   });
 })();
