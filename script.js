@@ -162,10 +162,10 @@ window.jus9DemoLogin = function(form){
     if (!isStaticPreview) return;
     event.preventDefault();
     if (msg) {
-      msg.textContent = 'Login Google preparado para a rota /auth/google/start. No preview local, falta conectar o backend OAuth.';
+      msg.textContent = 'Google OAuth preparado, mas sem Google Cloud ativo nesta fase. Use o acesso demo.';
       msg.hidden = false;
     } else {
-      alert('Login Google preparado para a rota /auth/google/start. No preview local, falta conectar o backend OAuth.');
+      alert('Google OAuth preparado, mas sem Google Cloud ativo nesta fase. Use o acesso demo.');
     }
   });
 })();
