@@ -54,6 +54,15 @@ DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridic
       <span class="badge secret">Demo sem dados reais</span>
     </section>
 
+    <section class="daj-card">
+      <h2>Modo atual da Agenda</h2>
+      <div class="timeline-list">
+        <div class="timeline-entry"><strong>Funciona agora</strong><p>Salvar no navegador, listar compromissos demonstrativos, baixar ICS e abrir link manual do Google Calendar.</p></div>
+        <div class="timeline-entry"><strong>Sem Google Cloud ativo</strong><p>Nenhum OAuth, token, agenda real ou dado sensivel e enviado ao Google nesta fase.</p></div>
+        <div class="timeline-entry"><strong>Proximo contrato</strong><p>O backend validara eventos em ambiente seguro antes de qualquer integracao real de calendario.</p></div>
+      </div>
+    </section>
+
     <section class="agenda-grid">
       <article class="daj-card">
         <h2>Novo compromisso</h2>
@@ -67,9 +76,10 @@ DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridic
           <div class="form-field full"><label>Descrição</label><textarea id="portalAgendaDescription">Compromisso demonstrativo da Agenda Jus 9. Não usar dados reais no MVP público.</textarea></div>
           <div class="link-actions full">
             <button class="mvp-button" type="submit">Salvar no navegador</button>
-            <button class="mvp-button" type="button" id="portalGoogleButton">Abrir no Google Agenda</button>
+            <button class="mvp-button" type="button" id="portalGoogleButton">Abrir link manual Google</button>
             <button class="mvp-button" type="button" id="portalIcsButton">Baixar ICS</button>
           </div>
+          <div class="warning-note full" id="portalAgendaFeedback">Modo demonstrativo: nada e enviado a Google Cloud, backend real ou agenda externa automaticamente.</div>
         </form>
       </article>
       <article class="daj-card">
@@ -169,9 +179,16 @@ document.addEventListener("DOMContentLoaded", () => {
     events.unshift(item);
     portalSave(events.slice(0, 12));
     portalRender();
+    document.getElementById("portalAgendaFeedback").textContent = "Compromisso salvo neste navegador. Use somente dados ficticios; nenhum dado foi enviado a Google Cloud ou backend real.";
   });
-  document.getElementById("portalGoogleButton").addEventListener("click", () => window.open(portalGoogleUrl(portalEvent()), "_blank", "noopener"));
-  document.getElementById("portalIcsButton").addEventListener("click", () => portalDownloadIcs(portalEvent()));
+  document.getElementById("portalGoogleButton").addEventListener("click", () => {
+    document.getElementById("portalAgendaFeedback").textContent = "Abrindo link manual do Google Calendar. Revise o conteudo antes de salvar fora da Jus 9.";
+    window.open(portalGoogleUrl(portalEvent()), "_blank", "noopener");
+  });
+  document.getElementById("portalIcsButton").addEventListener("click", () => {
+    document.getElementById("portalAgendaFeedback").textContent = "Arquivo ICS gerado localmente. Revise antes de importar em qualquer agenda externa.";
+    portalDownloadIcs(portalEvent());
+  });
 });
 </script>
 <footer class="jus9-autoria-rodape" role="contentinfo" aria-label="Direitos autorais e origem da produção do site" style="font-size: 0.85rem; line-height: 1.5; text-align: center; padding: 1rem 0.75rem; margin-top: 2rem; background: rgba(15, 23, 42, 0.96); color: #f8fafc;">Produção do site: © Jus 9 Tecnologia Jurídica. Software livre com autoria, origem e direitos autorais preservados.</footer>
