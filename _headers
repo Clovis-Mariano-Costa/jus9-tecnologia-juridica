@@ -24,3 +24,24 @@
 
 /assets/*.webp
   Content-Type: image/webp
+
+/mvp
+  Cache-Control: no-store, max-age=0
+
+/mvp.html
+  Cache-Control: no-store, max-age=0
+
+/login/
+  Cache-Control: no-store, max-age=0
+
+/auth/google/start
+  Cache-Control: no-store, max-age=0
+
+/auth/google/start/
+  Cache-Control: no-store, max-age=0
+
+/auth/google/callback
+  Cache-Control: no-store, max-age=0
+
+/api/auth/me
+  Cache-Control: no-store, max-age=0

@@ -6,5 +6,6 @@
 /login /login/ 301
 /login/ /mvp.html#acesso 302
 /login.html /login/ 301
-/auth/google/start/ /auth/google/start 301
+/auth/google/start /auth/google/start/index.html 302
+/auth/google/start/ /auth/google/start/index.html 302
 /auth/google/callback/ /auth/google/callback 301
