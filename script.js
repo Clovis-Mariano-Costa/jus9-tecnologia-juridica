@@ -212,3 +212,38 @@ window.jus9DemoLogin = function(form){
     });
   });
 })();
+
+(function(){
+  function bindPhotoDemo(field){
+    var input = field.querySelector('[data-demo-photo-input]');
+    var preview = field.querySelector('[data-demo-photo-preview]');
+    var clear = field.querySelector('[data-demo-photo-clear]');
+    if (!input || !preview) return;
+    var original = preview.textContent || 'IMG';
+    input.addEventListener('change', function(){
+      var file = input.files && input.files[0];
+      if (!file) return;
+      if (!file.type || file.type.indexOf('image/') !== 0) {
+        input.value = '';
+        alert('Use apenas imagem demonstrativa neste campo.');
+        return;
+      }
+      var reader = new FileReader();
+      reader.onload = function(event){
+        preview.innerHTML = '';
+        var img = document.createElement('img');
+        img.src = event.target.result;
+        img.alt = 'Previa da imagem demonstrativa';
+        preview.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+    if (clear) {
+      clear.addEventListener('click', function(){
+        input.value = '';
+        preview.innerHTML = original;
+      });
+    }
+  }
+  document.querySelectorAll('[data-demo-photo-field]').forEach(bindPhotoDemo);
+})();
