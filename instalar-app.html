@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Instalar App | Jus 9 Tecnologia Jurídica</title>
-  <meta name="description" content="Instale a Jus 9 Tecnologia Jurídica como aplicativo no Android ou na tela inicial do celular.">
+  <meta name="description" content="Instale a Jus 9 Tecnologia Jurídica como aplicativo web/PWA no iPhone, iPad, Android ou navegador compatível.">
   <meta name="theme-color" content="#d4a72c">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
@@ -12,14 +12,92 @@
   <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
 </head>
 <body class="mvp-page">
-<div class="jus9-autoria-topo" role="note" style="font-size:.82rem;line-height:1.4;text-align:center;padding:.45rem .75rem;background:rgba(15,23,42,.94);color:#f8fafc;letter-spacing:.01em;">Jus 9 Tecnologia Jurídica — software livre, autoria preservada.</div>
-<header class="header"><div class="container nav"><a href="index.html" class="logo"><img src="assets/jus9-logo.svg" alt="Jus 9 Tecnologia Jurídica"></a><nav class="menu"><a href="index.html">Início</a><a href="mvp.html#demos-jus9">MVPs / Demos</a><a href="demo-01-advogado-defensor.html">MVP Advogado</a><a href="https://investimentos.jus9tecnologia.com.br/">Investimentos</a><a href="https://jus9verde.jus9tecnologia.com.br/">Jus9 Verde</a></nav><a class="cta" href="mvp.html#demos-jus9">Abrir MVPs</a><button class="mobile-toggle" aria-label="Abrir menu">☰</button></div></header>
+<div class="jus9-autoria-topo" role="note" style="font-size:.82rem;line-height:1.4;text-align:center;padding:.45rem .75rem;background:rgba(15,23,42,.94);color:#f8fafc;letter-spacing:.01em;">Jus 9 Tecnologia Jurídica - software livre, autoria preservada.</div>
+<header class="header">
+  <div class="container nav">
+    <a href="/" class="logo"><img src="assets/jus9-logo.svg" alt="Jus 9 Tecnologia Jurídica"></a>
+    <nav class="menu">
+      <a href="/">Início</a>
+      <a href="/mvp#demos-jus9">MVPs / Demos</a>
+      <a href="demo-01-advogado-defensor.html">MVP Advogado</a>
+      <a href="https://investimentos.jus9tecnologia.com.br/">Investimentos</a>
+      <a href="https://jus9verde.jus9tecnologia.com.br/">Jus 9 Verde</a>
+    </nav>
+    <a class="cta" href="/mvp#demos-jus9">Abrir MVPs</a>
+    <button class="mobile-toggle" aria-label="Abrir menu">☰</button>
+  </div>
+</header>
+
 <main>
-  <section class="mvp-hero"><div class="container mvp-layout"><div><div class="eyebrow">PWA v1 — aplicativo instalável</div><h1 class="mvp-title">Instale a Jus 9 Tecnologia Jurídica no celular.</h1><p class="mvp-lead">Esta versão transforma o site da Jus 9 Tecnologia Jurídica em um aplicativo instalável no Android e em navegadores compatíveis, sem Play Store nesta fase.</p><p class="mvp-lead"><strong>Fase atual:</strong> aplicativo demonstrativo/PWA para acesso rápido ao site, MVPs, Investimentos e Jus9 Verde.</p><div class="hero-actions"><button class="btn primary" data-pwa-install disabled>Instalar app</button><a class="ghost-button" href="mvp.html#demos-jus9">Abrir MVPs / Demos</a><a class="ghost-button" href="https://investimentos.jus9tecnologia.com.br/">Investimentos</a></div><p data-pwa-help hidden class="mvp-lead"><strong>Instalação manual:</strong> no Chrome Android, toque no menu ⋮ e escolha “Instalar app” ou “Adicionar à tela inicial”. No computador, procure o ícone de instalação na barra de endereço.</p></div><aside class="mvp-panel"><img src="assets/jus9-logo.svg" alt="Jus 9" style="height:56px;margin-bottom:16px"><h2 style="font-size:30px;color:#0b1728">Jus 9 App</h2><p style="color:#51627a">Acesso rápido ao ecossistema, MVP principal Advogado / Defensor Público, 13 prévias demonstrativas, Investimentos e Jus9 Verde.</p><div class="pill-row"><span class="pill">MVP</span><span class="pill">DAJ</span><span class="pill">Investidores</span><span class="pill">Jus9 Verde</span></div></aside></div></section>
-  <section class="mvp-section"><div class="container"><div class="section-head"><div><div class="eyebrow">Como instalar</div><h2>Passos simples no Android.</h2></div><p>O recurso depende do navegador, HTTPS, manifest e service worker. Alguns aparelhos mostram o botão automaticamente; outros exigem instalação pelo menu do navegador.</p></div><div class="mvp-grid cols-3"><article class="mvp-card"><div class="mvp-icon">1</div><h3>Abra no Chrome</h3><p>Acesse o site da Jus 9 Tecnologia Jurídica pelo Chrome ou navegador compatível no Android.</p></article><article class="mvp-card"><div class="mvp-icon">2</div><h3>Toque em Instalar</h3><p>Use o botão desta página ou o menu ⋮ do navegador e escolha “Instalar app” ou “Adicionar à tela inicial”.</p></article><article class="mvp-card"><div class="mvp-icon">3</div><h3>Acesse pelo ícone</h3><p>Depois da instalação, abra a Jus 9 diretamente pela tela inicial, como aplicativo.</p></article></div></div></section>
-  <section class="mvp-section"><div class="container"><article class="manifesto-card"><div class="eyebrow">Aviso de estágio</div><h2 style="color:#0b1728">PWA não substitui aplicativo nativo final.</h2><p>Este é o melhor caminho para a fase atual de MVP e Web Summit: simples, leve, rápido e compatível com a estrutura já publicada. Um app Android nativo poderá ser estudado depois de login, backend, usuários reais e integrações estarem mais maduros.</p></article></div></section>
+  <section class="mvp-hero">
+    <div class="container mvp-layout">
+      <div>
+        <div class="eyebrow">PWA v1 - aplicativo instalável</div>
+        <h1 class="mvp-title">Instale a Jus 9 Tecnologia Jurídica no celular.</h1>
+        <p class="mvp-lead">Esta versão transforma o site da Jus 9 Tecnologia Jurídica em aplicativo web instalável no iPhone, iPad, Android e navegadores compatíveis, sem Play Store ou App Store nesta fase.</p>
+        <p class="mvp-lead"><strong>Fase atual:</strong> aplicativo demonstrativo/PWA para acesso rápido ao site, MVPs, Investimentos e Jus 9 Verde.</p>
+        <div class="hero-actions">
+          <button class="btn primary" data-pwa-install disabled>Instalar app</button>
+          <a class="ghost-button" href="/mvp#demos-jus9">Abrir MVPs / Demos</a>
+          <a class="ghost-button" href="https://investimentos.jus9tecnologia.com.br/instalar-app">Guia iOS / Android</a>
+        </div>
+        <p data-pwa-help hidden class="mvp-lead"><strong>Instalação manual:</strong> no iPhone/iPad, abra no Safari, toque em compartilhar e escolha "Adicionar à Tela de Início". No Chrome Android, toque no menu e escolha "Instalar app" ou "Adicionar à tela inicial".</p>
+      </div>
+      <aside class="mvp-panel">
+        <img src="assets/jus9-logo.svg" alt="Jus 9" style="height:56px;margin-bottom:16px">
+        <h2 style="font-size:30px;color:#0b1728">Jus 9 App</h2>
+        <p style="color:#51627a">Acesso rápido ao ecossistema, MVP principal Advogado / Defensor Público, 13 prévias demonstrativas, Investimentos e Jus 9 Verde.</p>
+        <div class="pill-row"><span class="pill">MVP</span><span class="pill">DAJ</span><span class="pill">Investidores</span><span class="pill">Jus 9 Verde</span></div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="mvp-section">
+    <div class="container">
+      <div class="section-head">
+        <div><div class="eyebrow">Como instalar no iOS</div><h2>Passos no iPhone ou iPad.</h2></div>
+        <p>Use o Safari para instalar o atalho na tela inicial. Esse é o caminho esperado para PWA no iOS.</p>
+      </div>
+      <div class="mvp-grid cols-3">
+        <article class="mvp-card"><div class="mvp-icon">1</div><h3>Abra no Safari</h3><p>Acesse esta página pelo Safari do iPhone ou iPad.</p></article>
+        <article class="mvp-card"><div class="mvp-icon">2</div><h3>Toque em compartilhar</h3><p>Use o botão de compartilhar do Safari e procure a opção de tela inicial.</p></article>
+        <article class="mvp-card"><div class="mvp-icon">3</div><h3>Adicionar à Tela de Início</h3><p>Confirme o nome Jus 9 e abra depois pelo ícone instalado.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="mvp-section">
+    <div class="container">
+      <div class="section-head">
+        <div><div class="eyebrow">Como instalar no Android</div><h2>Passos simples no Chrome.</h2></div>
+        <p>O recurso depende do navegador, HTTPS, manifest e service worker. Alguns aparelhos mostram o botão automaticamente; outros exigem instalação pelo menu do navegador.</p>
+      </div>
+      <div class="mvp-grid cols-3">
+        <article class="mvp-card"><div class="mvp-icon">1</div><h3>Abra no Chrome</h3><p>Acesse o site da Jus 9 Tecnologia Jurídica pelo Chrome ou navegador compatível no Android.</p></article>
+        <article class="mvp-card"><div class="mvp-icon">2</div><h3>Toque em Instalar</h3><p>Use o botão desta página ou o menu do navegador e escolha "Instalar app" ou "Adicionar à tela inicial".</p></article>
+        <article class="mvp-card"><div class="mvp-icon">3</div><h3>Acesse pelo ícone</h3><p>Depois da instalação, abra a Jus 9 diretamente pela tela inicial, como aplicativo.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="mvp-section">
+    <div class="container">
+      <article class="manifesto-card">
+        <div class="eyebrow">Aviso de estágio</div>
+        <h2 style="color:#0b1728">PWA não substitui aplicativo nativo final.</h2>
+        <p>Este é o melhor caminho para a fase atual de MVP e Web Summit: simples, leve, rápido e compatível com a estrutura já publicada. Um app nativo poderá ser estudado depois de login, backend, usuários reais e integrações estarem mais maduros.</p>
+        <p>A I.A da Jus 9 deve ser apresentada como I.A Generativa Multimodal Jurista, com governança humana e revisão humana.</p>
+      </article>
+    </div>
+  </section>
 </main>
-<footer class="mvp-footer"><div class="container" style="display:flex;justify-content:space-between;gap:20px;align-items:center;flex-wrap:wrap"><img class="mvp-mini-logo" src="assets/jus9-logo.svg" alt="Jus 9"><p>© Jus 9 Tecnologia Jurídica — software livre, autoria preservada.</p></div></footer>
+
+<footer class="mvp-footer">
+  <div class="container" style="display:flex;justify-content:space-between;gap:20px;align-items:center;flex-wrap:wrap">
+    <img class="mvp-mini-logo" src="assets/jus9-logo.svg" alt="Jus 9">
+    <p>Jus 9 Tecnologia Jurídica - software livre, autoria preservada.</p>
+  </div>
+</footer>
 <script src="script.js"></script>
 </body>
 </html>

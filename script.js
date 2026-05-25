@@ -30,7 +30,7 @@
     investidoresLink.setAttribute('data-jus9-investidores-menu', 'true');
 
     const instalarLink = document.createElement('a');
-    instalarLink.href = '/instalar-app.html';
+    instalarLink.href = '/instalar-app';
     instalarLink.textContent = 'Instalar App';
     instalarLink.setAttribute('data-jus9-instalar-menu', 'true');
 

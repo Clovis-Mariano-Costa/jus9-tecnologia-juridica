@@ -16,6 +16,7 @@ const JUS9_ASSETS = [
   '/mvp.html',
   '/demo-01-advogado-defensor.html',
   '/mvp-o-que-ja-funciona.html',
+  '/instalar-app',
   '/instalar-app.html'
 ];
 

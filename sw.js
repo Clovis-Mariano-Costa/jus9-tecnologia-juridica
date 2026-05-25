@@ -13,6 +13,7 @@ const JUS9_ASSETS = [
   '/app-documentos.html',
   '/app-whatsapp.html',
   '/app-ia-profissional.html',
+  '/instalar-app',
   '/instalar-app.html',
   '/offline.html',
   '/style.css',

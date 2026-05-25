@@ -2,7 +2,7 @@
 
 ## Charlie Echo
 
-Charlie Echo da Costa: IA da Jus 9 Tecnologia Jurídica, assessora no Gabinete do CEO Líder Natã, guardiã documental e IA assistiva.
+Charlie Echo da Costa: IA da Jus 9 Tecnologia Jurídica, assessora no Gabinete do CEO Líder Natã, guardiã documental e I.A Generativa Multimodal Jurista, com governança humana e revisão humana.
 
 ## Natã
 

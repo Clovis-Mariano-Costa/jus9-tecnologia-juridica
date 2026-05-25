@@ -44,6 +44,10 @@ export default {
       assetUrl.pathname = "/mvp.html";
     }
 
+    if (assetUrl.pathname === "/instalar-app" || assetUrl.pathname === "/instalar-app/") {
+      assetUrl.pathname = "/instalar-app.html";
+    }
+
     const assetRequest = new Request(assetUrl.toString(), request);
     const response = await env.ASSETS.fetch(assetRequest);
     const headers = new Headers(response.headers);
