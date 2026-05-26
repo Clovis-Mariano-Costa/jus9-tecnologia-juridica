@@ -247,3 +247,49 @@ window.jus9DemoLogin = function(form){
   }
   document.querySelectorAll('[data-demo-photo-field]').forEach(bindPhotoDemo);
 })();
+
+(function(){
+  function textForMode(mode, code, focus, question){
+    var cleanQuestion = question || 'pergunta demonstrativa';
+    if (mode === 'social') {
+      return 'Em linguagem simples: vamos organizar isso com calma. Para ' + code + ', eu olharia primeiro o objetivo, separaria o que e ficticio, evitaria dados reais e chamaria uma pessoa habilitada quando houver risco, prazo ou decisao importante. Pergunta recebida: "' + cleanQuestion + '".';
+    }
+    if (mode === 'especialista') {
+      return 'Como especialista do ' + code + ', eu focaria em: ' + focus + '. Proximo passo demonstrativo: transformar sua pergunta em tarefa, documento, prazo ou item do dossie, sempre com revisao humana. Pergunta recebida: "' + cleanQuestion + '".';
+    }
+    return 'Como jurista, eu partiria da doutrina, do metodo, da prudencia e da revisao humana. Antes de qualquer conclusao, separaria fatos ficticios, norma aplicavel, fontes, riscos, competencias e limites da IA. Pergunta recebida: "' + cleanQuestion + '".';
+  }
+
+  function bindAiChat(card){
+    var form = card.querySelector('[data-ai-chat-form]');
+    var input = card.querySelector('[data-ai-chat-input]');
+    var windowEl = card.querySelector('[data-ai-chat-window]');
+    if (!form || !input || !windowEl) return;
+    var code = card.getAttribute('data-ai-code') || 'MVP';
+    var focus = card.getAttribute('data-ai-focus') || 'contexto demonstrativo do MVP';
+    form.addEventListener('submit', function(event){
+      event.preventDefault();
+      var question = (input.value || '').trim();
+      if (!question) {
+        input.focus();
+        return;
+      }
+      var modeInput = card.querySelector('input[type="radio"]:checked');
+      var mode = modeInput ? modeInput.value : 'jurista';
+      var userMsg = document.createElement('div');
+      userMsg.className = 'ai-message ai-message-user';
+      userMsg.innerHTML = '<strong>Voce:</strong> ' + question.replace(/[<>&]/g, function(ch){
+        return ({'<':'&lt;','>':'&gt;','&':'&amp;'}[ch]);
+      });
+      var echoMsg = document.createElement('div');
+      echoMsg.className = 'ai-message ai-message-echo';
+      echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + textForMode(mode, code, focus, question);
+      windowEl.appendChild(userMsg);
+      windowEl.appendChild(echoMsg);
+      input.value = '';
+      windowEl.scrollTop = windowEl.scrollHeight;
+    });
+  }
+
+  document.querySelectorAll('[data-ai-chat]').forEach(bindAiChat);
+})();

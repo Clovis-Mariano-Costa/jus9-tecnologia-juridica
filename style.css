@@ -1133,3 +1133,67 @@ button,input,select,textarea{max-width:100%}
   box-shadow:none;
   border-color:rgba(15,23,42,.08);
 }
+
+/* MVP v1.7 - chat demonstrativo da IA Profissional */
+.ai-chat-card{
+  border-color:rgba(197,139,47,.34);
+}
+.ai-mode-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:14px 0;
+}
+.ai-mode-row label{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  border:1px solid rgba(197,139,47,.24);
+  border-radius:999px;
+  padding:9px 12px;
+  background:#fff7e2;
+  color:#5b3b09;
+  font-weight:850;
+}
+.ai-chat-window{
+  display:grid;
+  gap:10px;
+  min-height:180px;
+  max-height:360px;
+  overflow:auto;
+  border:1px solid rgba(15,23,42,.10);
+  border-radius:18px;
+  background:#f8fafc;
+  padding:14px;
+}
+.ai-message{
+  border-radius:16px;
+  padding:12px 14px;
+  color:#102033;
+  background:#fff;
+  border:1px solid rgba(15,23,42,.08);
+}
+.ai-message-user{
+  background:#07111f;
+  color:#f8fafc;
+  border-color:#07111f;
+}
+.ai-message-echo{
+  background:#fffaf0;
+  border-color:rgba(197,139,47,.22);
+}
+.ai-chat-form{
+  display:grid;
+  gap:10px;
+  margin-top:12px;
+}
+.ai-chat-form textarea{
+  width:100%;
+  border:1px solid rgba(15,23,42,.16);
+  border-radius:16px;
+  padding:14px;
+  font:inherit;
+  color:#102033;
+  background:#fff;
+  resize:vertical;
+}
