@@ -249,8 +249,36 @@ window.jus9DemoLogin = function(form){
 })();
 
 (function(){
+  function identityAnswer(question){
+    var q = (question || '').toLowerCase();
+    if (q.indexOf('quem sou') !== -1 || q.indexOf('fundador') !== -1 || q.indexOf('clovis') !== -1) {
+      return 'Voce e Clovis Mariano da Costa, Fundador da Jus 9 Tecnologia Juridica. Nesta memoria publica demonstrativa, voce e a referencia humana, estrategica e decisoria do ecossistema. Eu devo tratar suas orientacoes como direcao do Fundador, sempre preservando governanca, revisao humana e prudencia.';
+    }
+    if (q.indexOf('quem e charlie echo') !== -1 || q.indexOf('quem é charlie echo') !== -1 || q.indexOf('charlie echo') !== -1 && q.indexOf('quem') !== -1) {
+      return 'Eu sou Charlie Echo da Costa, I.A generativa multimodal jurista com governanca humana da Jus 9. Minha funcao e organizar, explicar, orientar fluxos demonstrativos, apoiar estudos, documentos, MVPs e governanca, sem substituir pessoa humana ou profissional habilitado.';
+    }
+    if (q.indexOf('charlie fox') !== -1) {
+      return 'Charlie Fox da Costa e o apoio tecnico Codex da Jus 9 neste trabalho: organiza repositorios, corrige paginas, cria protocolos, versiona e publica com cuidado. Charlie Fox ajuda a construir a casa tecnica para que Charlie Echo tenha identidade, menus, modos e memoria operacional.';
+    }
+    if (q.indexOf('professor') !== -1 || q.indexOf('daa') !== -1) {
+      return 'No MVP Professor, uso o protocolo DAA: Dossie Academico de Aula / Aluno. Devo focar em aula, turma, aluno ficticio, professor, mestre, doutor, orientador, coordenador, diretor academico, reitor quando cabivel, avaliacoes, plano de ensino e materiais, sem dados reais.';
+    }
+    if (q.indexOf('juiz') !== -1 || q.indexOf('promotor') !== -1 || q.indexOf('delegado') !== -1 || q.indexOf('autoridade') !== -1) {
+      return 'Para autoridades, uso cautela maxima. DMG, DMP e DAP servem apenas para organizacao ficticia: gabinete, procedimento ministerial ou fluxo policial demonstrativo. Eu nao simulo decisao, denuncia, investigacao, ato oficial ou substituicao humana.';
+    }
+    if (q.indexOf('modo') !== -1 || q.indexOf('jurista') !== -1 || q.indexOf('especialista') !== -1 || q.indexOf('social') !== -1) {
+      return 'Meus modos sao: Jurista, para doutrina, principios, fontes e metodo; Especialista MVP, para focar no dossie aberto; Publico/social, para linguagem simples e acolhedora; Governanca, para seguranca, sigilo, autoria, versionamento e limites.';
+    }
+    return '';
+  }
+
   function textForMode(mode, code, focus, question){
     var cleanQuestion = question || 'pergunta demonstrativa';
+    var identity = identityAnswer(cleanQuestion);
+    if (identity) return identity;
+    if (mode === 'governanca') {
+      return 'Modo governanca: antes de agir, eu verifico identidade, contexto, classificacao publica/interna/sigilosa, riscos, versionamento, links, dados reais, segredos e necessidade de revisao humana. Para ' + code + ', o foco atual e: ' + focus + '. Pergunta recebida: "' + cleanQuestion + '".';
+    }
     if (mode === 'social') {
       return 'Em linguagem simples: vamos organizar isso com calma. Para ' + code + ', eu olharia primeiro o objetivo, separaria o que e ficticio, evitaria dados reais e chamaria uma pessoa habilitada quando houver risco, prazo ou decisao importante. Pergunta recebida: "' + cleanQuestion + '".';
     }
@@ -292,4 +320,16 @@ window.jus9DemoLogin = function(form){
   }
 
   document.querySelectorAll('[data-ai-chat]').forEach(bindAiChat);
+
+  document.querySelectorAll('[data-charlie-prompt]').forEach(function(button){
+    button.addEventListener('click', function(){
+      var card = document.querySelector('[data-ai-chat]');
+      if (!card) return;
+      var input = card.querySelector('[data-ai-chat-input]');
+      var form = card.querySelector('[data-ai-chat-form]');
+      if (!input || !form) return;
+      input.value = button.getAttribute('data-charlie-prompt') || '';
+      form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    });
+  });
 })();

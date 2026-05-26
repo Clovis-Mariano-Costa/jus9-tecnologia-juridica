@@ -8,6 +8,6 @@ Links públicos estratégicos:
 - [Equipe Jus 9](https://www.jus9tecnologia.com.br/equipe/)
 - [Investidores Jus 9](https://investimentos.jus9tecnologia.com.br/)
 - [MVP Jus 9](https://www.jus9tecnologia.com.br/lider-mvp)
-- [Charlie Echo](https://charlieecho.jus9tecnologia.com.br/)
+- [Charlie Echo](https://charlieecho.jus9tecnologia.com.br/ia-profissional)
 
 Diretriz: transformar URLs públicas, e-mails e referências institucionais em links clicáveis sempre que for útil, sem criar links para conteúdo sigiloso, secreto, cofre ou dados protegidos.

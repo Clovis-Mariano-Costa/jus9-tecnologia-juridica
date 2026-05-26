@@ -48,6 +48,10 @@ export default {
       assetUrl.pathname = "/instalar-app.html";
     }
 
+    if (assetUrl.pathname === "/ia-profissional" || assetUrl.pathname === "/ia-profissional/") {
+      assetUrl.pathname = "/ia-profissional.html";
+    }
+
     const assetRequest = new Request(assetUrl.toString(), request);
     const response = await env.ASSETS.fetch(assetRequest);
     const headers = new Headers(response.headers);

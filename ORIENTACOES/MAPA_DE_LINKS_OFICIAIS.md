@@ -6,7 +6,7 @@ Use estes destinos sempre que houver referência pública correspondente:
 - Equipe Jus 9 Tecnologia Jurídica: https://equipe.jus9tecnologia.com.br/
 - Investidores: https://investimentos.jus9tecnologia.com.br/
 - MVP: https://jus9tecnologia.com.br/mvp#demos-jus9
-- Charlie Echo: https://charlieecho.jus9tecnologia.com.br/
+- Charlie Echo: https://charlieecho.jus9tecnologia.com.br/ia-profissional
 - Charlie Echo Social / Inteligência Artificial CRETA: https://jus9verde.jus9tecnologia.com.br/charlie-echo-social#chat-social
 - Jus9 Verde: https://jus9verde.jus9tecnologia.com.br/
 - Livros: https://livros.jus9tecnologia.com.br/
