@@ -56,7 +56,7 @@ Uso:
 ### Páginas de encaminhamento já criadas
 
 - `https://investimentos.jus9tecnologia.com.br/instalar-app.html`
-- `https://charlieecho.jus9tecnologia.com.br/ia-profissionalinstalar-app.html`
+- `https://charlieecho.jus9tecnologia.com.br/instalar-app.html`
 - `https://carta.jus9tecnologia.com.br/instalar-app.html`
 - `https://equipe.jus9tecnologia.com.br/instalar-app.html`
 

@@ -20,7 +20,7 @@ Links principais:
 Páginas de encaminhamento para instalação também foram criadas em repertórios cabíveis:
 
 - Investimentos: `https://investimentos.jus9tecnologia.com.br/instalar-app.html`
-- Charlie Echo: `https://charlieecho.jus9tecnologia.com.br/ia-profissionalinstalar-app.html`
+- Charlie Echo: `https://charlieecho.jus9tecnologia.com.br/instalar-app.html`
 - Carta: `https://carta.jus9tecnologia.com.br/instalar-app.html`
 - Equipe: `https://equipe.jus9tecnologia.com.br/instalar-app.html`
 
