@@ -50,6 +50,7 @@ DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridic
         <div class="eyebrow">Agenda Jus 9</div>
         <h1 style="font-size:42px;color:#0b1728;margin-top:8px">Agenda híbrida para o evento.</h1>
         <p style="color:#51627a;margin:8px 0 0">A Jus 9 mantém agenda própria para prazos, DAJ, processo, cliente, equipe e auditoria. Google Calendar entra como lembrete e convite sem dados sensíveis.</p>
+        <div class="warning-note" style="margin-top:14px"><strong>Google Agenda visivel, ainda nao conectado:</strong> o botao abre apenas um rascunho manual. Nenhum OAuth, token ou calendario real esta conectado nesta fase.</div>
       </div>
       <span class="badge secret">Demo sem dados reais</span>
     </section>
@@ -67,6 +68,7 @@ DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridic
       <article class="daj-card">
         <h2>Novo compromisso</h2>
         <form class="agenda-form" id="portalAgendaForm">
+          <div class="form-field full"><label>MVP / area da agenda</label><select id="portalAgendaMvp"><option value="demo-01-advogado-defensor">Demo 1 - Advogado / Defensor Publico</option><option value="demo-02-professor">Demo 2 - Professor</option><option value="demo-03-estudante">Demo 3 - Estudante</option><option value="demo-04-cidadao">Demo 4 - Cidadao / Interessado</option><option value="demo-05-empresa">Demo 5 - Empresa / Juridico interno</option><option value="demo-06-investidor">Demo 6 - Investidor / Parceiro</option><option value="demo-07-delegado">Demo 7 - Delegado / Policia Judiciaria</option><option value="demo-08-juiz">Demo 8 - Juiz / Gabinete</option><option value="demo-09-estagiario">Demo 9 - Estagiario / Aprendiz</option><option value="demo-10-cartorio">Demo 10 - Cartorio / Secretaria</option><option value="demo-11-administrador">Demo 11 - Administrador / Gestao</option><option value="demo-12-promotor">Demo 12 - Promotor / Ministerio Publico</option><option value="demo-13-orgao-publico">Demo 13 - Orgao Publico</option></select></div>
           <div class="form-field"><label>Título</label><input id="portalAgendaTitle" value="Reunião Jus 9 - Web Summit" required></div>
           <div class="form-field"><label>Tipo</label><select id="portalAgendaType"><option>Reunião com investidor</option><option>Audiência</option><option>Prazo interno</option><option>Retorno ao cliente</option><option>Aula / laboratório</option><option>Tarefa de equipe</option></select></div>
           <div class="form-field"><label>Data e hora</label><input id="portalAgendaStart" type="datetime-local" required></div>
@@ -76,7 +78,7 @@ DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridic
           <div class="form-field full"><label>Descrição</label><textarea id="portalAgendaDescription">Compromisso demonstrativo da Agenda Jus 9. Não usar dados reais no MVP público.</textarea></div>
           <div class="link-actions full">
             <button class="mvp-button" type="submit">Salvar no navegador</button>
-            <button class="mvp-button" type="button" id="portalGoogleButton">Abrir link manual Google</button>
+            <button class="mvp-button" type="button" id="portalGoogleButton">Abrir Google Agenda (modo contrato)</button>
             <button class="mvp-button" type="button" id="portalIcsButton">Baixar ICS</button>
           </div>
           <div class="warning-note full" id="portalAgendaFeedback">Modo demonstrativo: nada e enviado a Google Cloud, backend real ou agenda externa automaticamente.</div>
@@ -129,6 +131,7 @@ function portalEvent() {
   const end = new Date(start.getTime() + Number(document.getElementById("portalAgendaDuration").value || 45) * 60000);
   return {
     title: document.getElementById("portalAgendaTitle").value,
+    mvp: document.getElementById("portalAgendaMvp").value,
     type: document.getElementById("portalAgendaType").value,
     start: start.toISOString(),
     end: end.toISOString(),
@@ -143,7 +146,7 @@ function portalSave(events) { localStorage.setItem(portalAgendaKey, JSON.stringi
 function portalGoogleUrl(event) {
   const start = new Date(event.start);
   const end = new Date(event.end);
-  const params = new URLSearchParams({ action: "TEMPLATE", text: event.title, dates: `${portalStamp(start)}/${portalStamp(end)}`, details: `${event.type}. ${event.description}`, location: event.location });
+  const params = new URLSearchParams({ action: "TEMPLATE", text: event.title, dates: `${portalStamp(start)}/${portalStamp(end)}`, details: `MVP: ${event.mvp}. ${event.type}. ${event.description}`, location: event.location });
   return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }
 function portalRender() {
@@ -151,13 +154,13 @@ function portalRender() {
   const events = portalEvents();
   box.innerHTML = events.length ? events.map((event) => {
     const start = new Date(event.start);
-    return `<div class="timeline-entry"><strong>${portalPad(start.getDate())}/${portalPad(start.getMonth()+1)} ${portalPad(start.getHours())}:${portalPad(start.getMinutes())} - ${event.title}</strong><p>${event.type} • ${event.location}</p></div>`;
+    return `<div class="timeline-entry"><strong>${portalPad(start.getDate())}/${portalPad(start.getMonth()+1)} ${portalPad(start.getHours())}:${portalPad(start.getMinutes())} - ${event.title}</strong><p>${event.mvp || "MVP geral"} - ${event.type} - ${event.location}</p></div>`;
   }).join("") : '<div class="timeline-entry"><strong>Nenhum compromisso salvo</strong><p>Crie um compromisso acima para testar a Agenda Jus 9.</p></div>';
 }
 function portalDownloadIcs(event) {
   const start = new Date(event.start);
   const end = new Date(event.end);
-  const ics = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Jus 9 Tecnologia Juridica//Portal Agenda//PT-BR","BEGIN:VEVENT",`UID:${Date.now()}@jus9tecnologia.com.br`,`DTSTAMP:${portalStamp(new Date())}`,`DTSTART:${portalStamp(start)}`,`DTEND:${portalStamp(end)}`,`SUMMARY:${event.title}`,`LOCATION:${event.location}`,`DESCRIPTION:${event.type} - ${event.description}`,"END:VEVENT","END:VCALENDAR"].join("\r\n");
+  const ics = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Jus 9 Tecnologia Juridica//Portal Agenda//PT-BR","BEGIN:VEVENT",`UID:${Date.now()}@jus9tecnologia.com.br`,`DTSTAMP:${portalStamp(new Date())}`,`DTSTART:${portalStamp(start)}`,`DTEND:${portalStamp(end)}`,`SUMMARY:${event.title}`,`LOCATION:${event.location}`,`DESCRIPTION:MVP: ${event.mvp} - ${event.type} - ${event.description}`,"END:VEVENT","END:VCALENDAR"].join("\r\n");
   const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -182,7 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("portalAgendaFeedback").textContent = "Compromisso salvo neste navegador. Use somente dados ficticios; nenhum dado foi enviado a Google Cloud ou backend real.";
   });
   document.getElementById("portalGoogleButton").addEventListener("click", () => {
-    document.getElementById("portalAgendaFeedback").textContent = "Abrindo link manual do Google Calendar. Revise o conteudo antes de salvar fora da Jus 9.";
+    document.getElementById("portalAgendaFeedback").textContent = "Abrindo rascunho manual no Google Agenda. Revise antes de salvar; ainda nao ha conexao OAuth real.";
     window.open(portalGoogleUrl(portalEvent()), "_blank", "noopener");
   });
   document.getElementById("portalIcsButton").addEventListener("click", () => {
