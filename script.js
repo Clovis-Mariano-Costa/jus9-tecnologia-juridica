@@ -288,6 +288,39 @@ window.jus9DemoLogin = function(form){
     return 'Como jurista, eu partiria da doutrina, do metodo, da prudencia e da revisao humana. Antes de qualquer conclusao, separaria fatos ficticios, norma aplicavel, fontes, riscos, competencias e limites da IA. Pergunta recebida: "' + cleanQuestion + '".';
   }
 
+  function apiModeFor(mode){
+    if (mode === 'social') return 'social';
+    return 'profissional';
+  }
+
+  function buildApiMessage(mode, code, focus, question){
+    return [
+      'Contexto publico demonstrativo da Jus 9 Tecnologia Juridica.',
+      'MVP/dossie: ' + code + '.',
+      'Foco do ambiente: ' + focus + '.',
+      'Modo solicitado no frontend: ' + mode + '.',
+      'Responda como Charlie Echo da Costa, I.A generativa multimodal jurista com governanca humana.',
+      'Nao solicite dados reais, processos reais, WhatsApp, documentos sigilosos, tokens, senhas ou segredos.',
+      'Pergunta do usuario: ' + question
+    ].join('\n');
+  }
+
+  async function askCharlieApi(mode, code, focus, question){
+    var response = await fetch('https://charlieecho.jus9tecnologia.com.br/api/ia', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        mode: apiModeFor(mode),
+        message: buildApiMessage(mode, code, focus, question)
+      })
+    });
+    var data = await response.json().catch(function(){ return null; });
+    if (response.ok && data && typeof data.answer === 'string' && data.answer.trim()) {
+      return data.answer.trim();
+    }
+    throw new Error((data && (data.error || data.message)) || 'API sem resposta textual reconhecida.');
+  }
+
   function bindAiChat(card){
     var form = card.querySelector('[data-ai-chat-form]');
     var input = card.querySelector('[data-ai-chat-input]');
@@ -295,7 +328,7 @@ window.jus9DemoLogin = function(form){
     if (!form || !input || !windowEl) return;
     var code = card.getAttribute('data-ai-code') || 'MVP';
     var focus = card.getAttribute('data-ai-focus') || 'contexto demonstrativo do MVP';
-    form.addEventListener('submit', function(event){
+    form.addEventListener('submit', async function(event){
       event.preventDefault();
       var question = (input.value || '').trim();
       if (!question) {
@@ -311,11 +344,27 @@ window.jus9DemoLogin = function(form){
       });
       var echoMsg = document.createElement('div');
       echoMsg.className = 'ai-message ai-message-echo';
-      echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + textForMode(mode, code, focus, question);
+      var localIdentity = identityAnswer(question);
+      if (localIdentity) {
+        echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + localIdentity;
+      } else {
+        echoMsg.innerHTML = '<strong>Charlie Echo:</strong> Consultando API segura da Charlie Echo...';
+      }
       windowEl.appendChild(userMsg);
       windowEl.appendChild(echoMsg);
       input.value = '';
       windowEl.scrollTop = windowEl.scrollHeight;
+      if (!localIdentity) {
+        try {
+          var answer = await askCharlieApi(mode, code, focus, question);
+          echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + answer.replace(/[<>&]/g, function(ch){
+            return ({'<':'&lt;','>':'&gt;','&':'&amp;'}[ch]);
+          }).replace(/\n/g, '<br>');
+        } catch (error) {
+          echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + textForMode(mode, code, focus, question) + '<br><br><em>API segura indisponivel agora; mantive fallback local sem dados reais.</em>';
+        }
+        windowEl.scrollTop = windowEl.scrollHeight;
+      }
     });
   }
 
