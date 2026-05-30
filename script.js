@@ -249,6 +249,55 @@ window.jus9DemoLogin = function(form){
 })();
 
 (function(){
+  var trustedLinks = [
+    { label:'Site principal da Jus 9', url:'https://www.jus9tecnologia.com.br/' },
+    { label:'Equipe Jus 9', url:'https://www.jus9tecnologia.com.br/equipe/' },
+    { label:'MVPs e demos Jus 9', url:'https://www.jus9tecnologia.com.br/mvp' },
+    { label:'Investimentos Jus 9', url:'https://investimentos.jus9tecnologia.com.br/' },
+    { label:'Livros gratuitos Jus 9', url:'https://livros.jus9tecnologia.com.br/' },
+    { label:'Charlie Echo', url:'https://charlieecho.jus9tecnologia.com.br/' },
+    { label:'Charlie Echo Social', url:'https://jus9verde.jus9tecnologia.com.br/charlie-echo-social' },
+    { label:'Quando o Desenho Fala', url:'https://quandoodesenhofala.jus9tecnologia.com.br/' }
+  ];
+
+  function escapeHtml(text){
+    return String(text || '').replace(/[<>&"]/g, function(ch){
+      return ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[ch]);
+    });
+  }
+
+  function renderEchoAnswer(text){
+    return escapeHtml(text)
+      .replace(/(https:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>')
+      .replace(/\n/g, '<br>');
+  }
+
+  function asksForLinks(question){
+    var q = (question || '').toLowerCase();
+    return q.indexOf('link') !== -1 || q.indexOf('site') !== -1 || q.indexOf('url') !== -1 ||
+      q.indexOf('download') !== -1 || q.indexOf('baixar') !== -1 || q.indexOf('onde encontro') !== -1 ||
+      q.indexOf('onde acesso') !== -1 || q.indexOf('endereco') !== -1;
+  }
+
+  function linksAnswer(question){
+    var q = (question || '').toLowerCase();
+    var selected = trustedLinks.filter(function(link){
+      var label = link.label.toLowerCase();
+      if(label.indexOf('desenho') !== -1 && (q.indexOf('desenho') !== -1 || q.indexOf('identidade visual') !== -1)) return true;
+      if(label.indexOf('investimentos') !== -1 && q.indexOf('invest') !== -1) return true;
+      if(label.indexOf('livros') !== -1 && (q.indexOf('livro') !== -1 || q.indexOf('leitura') !== -1)) return true;
+      if(label.indexOf('equipe') !== -1 && q.indexOf('equipe') !== -1) return true;
+      if(label.indexOf('mvps') !== -1 && (q.indexOf('mvp') !== -1 || q.indexOf('demo') !== -1)) return true;
+      if(label.indexOf('social') !== -1 && (q.indexOf('social') !== -1 || q.indexOf('verde') !== -1)) return true;
+      if(label === 'charlie echo' && q.indexOf('charlie echo') !== -1 && q.indexOf('social') === -1) return true;
+      return false;
+    });
+    var links = selected.length ? selected : trustedLinks;
+    return 'Links publicos confiaveis que posso oferecer:\n\n' +
+      links.map(function(link){ return '- ' + link.label + ': ' + link.url; }).join('\n') +
+      '\n\nConteudo sigiloso, secreto ou de cofre nao recebe link publico.';
+  }
+
   function identityAnswer(question){
     var q = (question || '').toLowerCase();
     if (q.indexOf('quem sou') !== -1 || q.indexOf('fundador') !== -1 || q.indexOf('clovis') !== -1) {
@@ -344,9 +393,9 @@ window.jus9DemoLogin = function(form){
       });
       var echoMsg = document.createElement('div');
       echoMsg.className = 'ai-message ai-message-echo';
-      var localIdentity = identityAnswer(question);
+      var localIdentity = asksForLinks(question) ? linksAnswer(question) : identityAnswer(question);
       if (localIdentity) {
-        echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + localIdentity;
+        echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(localIdentity);
       } else {
         echoMsg.innerHTML = '<strong>Charlie Echo:</strong> Consultando API segura da Charlie Echo...';
       }
@@ -357,9 +406,7 @@ window.jus9DemoLogin = function(form){
       if (!localIdentity) {
         try {
           var answer = await askCharlieApi(mode, code, focus, question);
-          echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + answer.replace(/[<>&]/g, function(ch){
-            return ({'<':'&lt;','>':'&gt;','&':'&amp;'}[ch]);
-          }).replace(/\n/g, '<br>');
+          echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(answer);
         } catch (error) {
           echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + textForMode(mode, code, focus, question) + '<br><br><em>API segura indisponivel agora; mantive fallback local sem dados reais.</em>';
         }
