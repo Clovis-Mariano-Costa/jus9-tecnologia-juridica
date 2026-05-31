@@ -29,6 +29,7 @@ npm run dev
 - `GET /auth/google/start`
 - `GET /auth/google/callback`
 - `GET /api/auth/me`
+- `GET /api/auth/permissions`
 - `POST /auth/logout`
 - `GET /api/profiles`
 - `GET /api/dajs`
@@ -82,3 +83,9 @@ Secreto/Cofre pertence ao advogado titular do DAJ, processo ou documento. Advoga
 O endpoint ainda usa memoria do processo Node e nao substitui banco remoto. A
 migracao PostgreSQL correspondente esta em
 `database/migrations/003_adapted_dossiers.sql`.
+
+## Banco remoto e RLS
+
+A migração `database/migrations/005_rls_titularidade_e_auditoria.sql` prepara RLS por titularidade. Ao integrar PostgreSQL/Supabase ao backend, cada transação autenticada deve definir `app.current_user_id` e `app.current_user_profile` com `set_config(..., true)` antes das consultas protegidas.
+
+Não ativar dados reais enquanto o backend ainda estiver usando arrays em memória.

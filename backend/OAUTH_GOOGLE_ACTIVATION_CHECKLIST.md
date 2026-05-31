@@ -77,6 +77,18 @@ Validar:
 - `POST /api/processos/consulta` exige `processes:read`.
 - `POST /api/auditoria` exige `audit:write`.
 
+## Banco remoto e RLS
+
+Antes de inserir dados reais:
+
+1. aplicar as migrações `001` a `005` em banco de homologação;
+2. integrar o backend ao banco remoto;
+3. definir `app.current_user_id` e `app.current_user_profile` dentro de cada transação autenticada;
+4. testar advogado titular, advogado líder não titular e administrador;
+5. confirmar que `secreto/cofre` não aparece para liderança sem titularidade;
+6. validar trilha de auditoria;
+7. somente depois repetir em produção.
+
 ## Rollback
 
 Se houver falha:
