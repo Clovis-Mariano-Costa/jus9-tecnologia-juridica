@@ -54,9 +54,16 @@ for (const [code, page] of Object.entries(priorityAiPages)) {
   const html = await fs.readFile(new URL(`../${page}`, import.meta.url), "utf8");
   assert(html.includes("data-ai-chat"), `${code}: chat ausente em ${page}`);
   assert(html.includes(`data-ai-code="${code}"`), `${code}: codigo incorreto em ${page}`);
+  assert(html.includes('script.js?v=20260531-mvp-flow-v1'), `${code}: script sem versao em ${page}`);
   console.log(`AI_PAGE_OK ${code} page=${page}`);
+}
+
+for (const page of ["app-demo-advogar.html", "app-demo-professor.html", "app-demo-estudante.html", "app-demo-perito.html", "app-demo-empresa.html"]) {
+  const html = await fs.readFile(new URL(`../${page}`, import.meta.url), "utf8");
+  assert(html.includes('script.js?v=20260531-mvp-flow-v1'), `painel sem versao de script: ${page}`);
 }
 
 console.log("STATIC_OK chat-compartilhado-13-mvps");
 console.log("STATIC_OK fluxos-aprofundados-DAJ-DAA-DEJ-DPJ-DEJI");
+console.log("STATIC_OK cache-bust-paginas-prioritarias");
 console.log("PUBLIC_MVPS_REGRESSION_OK");
