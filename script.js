@@ -1,5 +1,9 @@
 ﻿// Jus 9 - scripts consolidados pre-Movimento 2
 (function(){
+  if (location.hostname === 'www.jus9tecnologia.com.br') {
+    location.replace('https://jus9tecnologia.com.br' + location.pathname + location.search + location.hash);
+    return;
+  }
   const toggle = document.querySelector('.mobile-toggle');
   const menu = document.querySelector('.menu');
 
