@@ -455,10 +455,29 @@ window.jus9DemoLogin = function(form){
     }[code] || 'app-ia-profissional.html';
   }
 
+  function initTeamMenuLink(){
+    var file = location.pathname.split('/').pop() || '';
+    var profile = adaptedProfiles[file];
+    var nav = document.querySelector('.demo-sidebar nav');
+    if (!profile || !nav || nav.querySelector('[data-team-menu-link]')) return;
+    var link = document.createElement('a');
+    link.href = 'app-equipe.html?mvp=' + encodeURIComponent(profile.code);
+    link.textContent = 'Equipe';
+    link.setAttribute('data-team-menu-link', profile.code);
+    var profilesLink = Array.from(nav.querySelectorAll('a')).find(function(item){
+      return (item.textContent || '').trim().toLowerCase() === 'perfis';
+    });
+    var exitLink = Array.from(nav.querySelectorAll('a')).find(function(item){
+      return (item.textContent || '').trim().toLowerCase().indexOf('sair') === 0;
+    });
+    nav.insertBefore(link, profilesLink || exitLink || null);
+  }
+
   document.addEventListener('DOMContentLoaded', function(){
     renderSessionNotice();
     initAdaptedDossier();
     initPriorityWorkflow();
+    initTeamMenuLink();
   });
 })();
 
@@ -816,4 +835,182 @@ window.jus9DemoLogin = function(form){
   document.addEventListener('DOMContentLoaded', function(){
     document.querySelectorAll('[data-ai-chat]').forEach(initGuidedPrompts);
   });
+})();
+
+(function(){
+  var membersStorageKey = 'jus9MvpTeamMembersV1';
+  var auditStorageKey = 'jus9MvpTeamAuditV1';
+
+  function readLocal(key){
+    try { return JSON.parse(localStorage.getItem(key) || '[]'); }
+    catch(e) { return []; }
+  }
+
+  function writeLocal(key, value){
+    try { localStorage.setItem(key, JSON.stringify(value)); }
+    catch(e) {}
+  }
+
+  function createId(){
+    if (window.crypto && typeof window.crypto.randomUUID === 'function') return window.crypto.randomUUID();
+    return 'team-' + Date.now() + '-' + Math.random().toString(16).slice(2);
+  }
+
+  function appendText(parent, tag, className, text){
+    var element = document.createElement(tag);
+    if (className) element.className = className;
+    element.textContent = text;
+    parent.appendChild(element);
+    return element;
+  }
+
+  function addAudit(code, action){
+    var entries = readLocal(auditStorageKey);
+    entries.unshift({ id:createId(), code:code, action:action, at:new Date().toISOString() });
+    writeLocal(auditStorageKey, entries.slice(0, 80));
+  }
+
+  function initTeamPage(){
+    var root = document.querySelector('[data-team-page]');
+    if (!root) return;
+    var requestedCode = (new URLSearchParams(location.search).get('mvp') || 'DAJ').toUpperCase();
+    fetch('data-publica/mvp-perfis.json', { cache:'no-store' })
+      .then(function(response){
+        if (!response.ok) throw new Error('Catalogo indisponivel.');
+        return response.json();
+      })
+      .then(function(catalog){
+        var profile = catalog.profiles.find(function(item){
+          return item.dossier_code === requestedCode || (item.legacy_aliases || []).indexOf(requestedCode) !== -1;
+        });
+        if (!profile) throw new Error('MVP nao reconhecido.');
+        bindTeamPage(root, profile);
+      })
+      .catch(function(error){
+        var status = root.querySelector('[data-team-status]');
+        if (status) status.textContent = 'Nao foi possivel carregar a equipe demonstrativa: ' + error.message;
+      });
+  }
+
+  function bindTeamPage(root, profile){
+    var form = root.querySelector('[data-team-form]');
+    var list = root.querySelector('[data-team-list]');
+    var audit = root.querySelector('[data-team-audit]');
+    var status = root.querySelector('[data-team-status]');
+    var profileSelect = form.querySelector('[name="profile"]');
+    var editingId = form.querySelector('[name="editing_id"]');
+    root.querySelector('[data-team-code]').textContent = profile.dossier_code;
+    root.querySelector('[data-team-title]').textContent = 'Equipe do ' + profile.dossier_code + ' - ' + profile.label;
+    root.querySelector('[data-team-subtitle]').textContent = profile.dossier_label + '. Cadastros ficticios salvos apenas neste navegador.';
+    root.querySelector('[data-team-panel-link]').href = profile.entry_page;
+    root.querySelector('[data-team-profiles-link]').href = profile.profiles_page;
+
+    profile.subprofiles.forEach(function(label){
+      var option = document.createElement('option');
+      option.value = label;
+      option.textContent = label;
+      profileSelect.appendChild(option);
+    });
+
+    function membersForProfile(){
+      return readLocal(membersStorageKey).filter(function(member){ return member.code === profile.dossier_code; });
+    }
+
+    function resetForm(){
+      form.reset();
+      editingId.value = '';
+      form.querySelector('[data-team-submit]').textContent = 'Cadastrar membro ficticio';
+      status.textContent = 'Cadastro local pronto. Use somente nomes e enderecos demonstrativos.';
+    }
+
+    function render(){
+      list.textContent = '';
+      var members = membersForProfile();
+      if (!members.length) appendText(list, 'p', 'fine-note', 'Nenhum membro ficticio cadastrado neste MVP.');
+      members.forEach(function(member){
+        var card = document.createElement('article');
+        card.className = 'team-member-card';
+        appendText(card, 'h3', '', member.name);
+        appendText(card, 'p', '', member.profile + ' | ' + member.area);
+        appendText(card, 'p', 'fine-note', member.email);
+        appendText(card, 'span', 'badge' + (member.active ? '' : ' secret'), member.active ? 'Ativo ficticio' : 'Inativo ficticio');
+        var actions = document.createElement('div');
+        actions.className = 'link-actions team-actions';
+        var edit = document.createElement('button');
+        edit.type = 'button';
+        edit.textContent = 'Editar';
+        edit.addEventListener('click', function(){
+          editingId.value = member.id;
+          form.querySelector('[name="name"]').value = member.name;
+          profileSelect.value = member.profile;
+          form.querySelector('[name="area"]').value = member.area;
+          form.querySelector('[name="email"]').value = member.email;
+          form.querySelector('[data-team-submit]').textContent = 'Salvar alteracao local';
+          status.textContent = 'Editando cadastro ficticio de ' + member.name + '.';
+          form.scrollIntoView({ behavior:'smooth', block:'start' });
+        });
+        var toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.textContent = member.active ? 'Desativar' : 'Reativar';
+        toggle.addEventListener('click', function(){
+          var all = readLocal(membersStorageKey);
+          var target = all.find(function(item){ return item.id === member.id; });
+          if (!target) return;
+          target.active = !target.active;
+          target.updatedAt = new Date().toISOString();
+          writeLocal(membersStorageKey, all);
+          addAudit(profile.dossier_code, (target.active ? 'Reativou' : 'Desativou') + ' membro ficticio: ' + target.name);
+          render();
+        });
+        actions.appendChild(edit);
+        actions.appendChild(toggle);
+        card.appendChild(actions);
+        list.appendChild(card);
+      });
+
+      audit.textContent = '';
+      var entries = readLocal(auditStorageKey).filter(function(item){ return item.code === profile.dossier_code; }).slice(0, 8);
+      if (!entries.length) appendText(audit, 'p', 'fine-note', 'Sem eventos locais neste MVP.');
+      entries.forEach(function(entry){
+        appendText(audit, 'p', 'fine-note', new Date(entry.at).toLocaleString('pt-BR') + ' - ' + entry.action);
+      });
+    }
+
+    form.addEventListener('submit', function(event){
+      event.preventDefault();
+      var name = form.querySelector('[name="name"]').value.trim();
+      var email = form.querySelector('[name="email"]').value.trim().toLowerCase();
+      var area = form.querySelector('[name="area"]').value.trim();
+      if (!name || !area || !email.endsWith('@jus9.invalid')) {
+        status.textContent = 'Preencha nome, area e um e-mail ficticio terminado em @jus9.invalid.';
+        return;
+      }
+      var all = readLocal(membersStorageKey);
+      var id = editingId.value;
+      var member = id ? all.find(function(item){ return item.id === id; }) : null;
+      if (member) {
+        member.name = name;
+        member.profile = profileSelect.value;
+        member.area = area;
+        member.email = email;
+        member.updatedAt = new Date().toISOString();
+        addAudit(profile.dossier_code, 'Editou membro ficticio: ' + name);
+      } else {
+        all.push({
+          id:createId(), code:profile.dossier_code, name:name, profile:profileSelect.value,
+          area:area, email:email, active:true, createdAt:new Date().toISOString()
+        });
+        addAudit(profile.dossier_code, 'Cadastrou membro ficticio: ' + name);
+      }
+      writeLocal(membersStorageKey, all);
+      resetForm();
+      render();
+    });
+
+    root.querySelector('[data-team-reset]').addEventListener('click', resetForm);
+    resetForm();
+    render();
+  }
+
+  document.addEventListener('DOMContentLoaded', initTeamPage);
 })();

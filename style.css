@@ -1385,3 +1385,43 @@ button,input,select,textarea{max-width:100%}
   .charlie-topbar,.charlie-chat-head{display:grid}
   .charlie-mode-grid,.protocol-table div{grid-template-columns:1fr}
 }
+
+.team-warning{
+  border-left:4px solid #c58b2f;
+  background:#fffaf0;
+}
+.team-warning p{color:#51627a}
+.team-form{
+  display:grid;
+  gap:12px;
+  margin-top:16px;
+}
+.team-form label{
+  display:grid;
+  gap:6px;
+  color:#0b1728;
+  font-weight:850;
+}
+.team-form input,.team-form select{
+  width:100%;
+  border:1px solid rgba(15,23,42,.16);
+  border-radius:12px;
+  padding:11px 12px;
+  background:#fff;
+  color:#0b1728;
+}
+.team-member-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:14px;
+  margin-top:14px;
+}
+.team-member-card{
+  border:1px solid rgba(15,23,42,.1);
+  border-radius:16px;
+  padding:16px;
+  background:#fff;
+}
+.team-member-card h3{margin:0 0 8px;color:#0b1728}
+.team-member-card p{margin:6px 0;color:#51627a}
+.team-actions{margin-top:12px}

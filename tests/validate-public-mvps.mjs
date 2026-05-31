@@ -31,11 +31,18 @@ for (const profile of catalog.profiles) {
 }
 
 const sharedScript = await fs.readFile(new URL("../script.js", import.meta.url), "utf8");
+const teamPage = await fs.readFile(new URL("../app-equipe.html", import.meta.url), "utf8");
 assert(sharedScript.includes("https://charlieecho.jus9tecnologia.com.br/api/ia"), "chat compartilhado nao aponta para API publica");
 assert(sharedScript.includes("asksAboutCharlieModes"), "roteamento explicito de modos ausente");
 assert(sharedScript.includes("socialResponsibilityFallback"), "fallback tematico empresarial ausente");
 assert(sharedScript.includes("initPriorityWorkflow"), "fluxos aprofundados compartilhados ausentes");
 assert(sharedScript.includes("initGuidedPrompts"), "perguntas guiadas compartilhadas ausentes");
+assert(sharedScript.includes("initTeamMenuLink"), "menu compartilhado de equipe ausente");
+assert(sharedScript.includes("initTeamPage"), "pagina compartilhada de equipe ausente");
+assert(sharedScript.includes("jus9MvpTeamMembersV1"), "persistencia local de equipe ausente");
+assert(sharedScript.includes("jus9MvpTeamAuditV1"), "auditoria local de equipe ausente");
+assert(teamPage.includes("data-team-page"), "pagina compartilhada de equipe sem raiz");
+assert(teamPage.includes("data-team-form"), "pagina compartilhada de equipe sem formulario");
 
 for (const code of expectedCodes) {
   assert(sharedScript.includes(`${code}: [`), `${code}: perguntas guiadas ausentes`);
@@ -68,10 +75,11 @@ for (const [code, page] of Object.entries(priorityAiPages)) {
 
 for (const page of catalog.profiles.map((profile) => profile.entry_page)) {
   const html = await fs.readFile(new URL(`../${page}`, import.meta.url), "utf8");
-  assert(html.includes('script.js?v=20260531-mvp-flow-v2'), `painel sem versao de script: ${page}`);
+  assert(html.includes('script.js?v=20260531-team-v1'), `painel sem versao de script da equipe: ${page}`);
 }
 
 console.log("STATIC_OK chat-compartilhado-13-mvps");
 console.log("STATIC_OK fluxos-aprofundados-13-mvps");
-console.log("STATIC_OK cache-bust-13-mvps");
+console.log("STATIC_OK equipe-local-13-mvps");
+console.log("STATIC_OK cache-bust-equipe-13-mvps");
 console.log("PUBLIC_MVPS_REGRESSION_OK");

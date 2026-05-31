@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Equipe por MVP | Jus 9 Tecnologia Juridica</title>
+  <meta name="description" content="Cadastro local e demonstrativo de equipe por MVP da Jus 9 Tecnologia Juridica.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
+  <meta name="theme-color" content="#07111f">
+  <link rel="manifest" href="manifest.webmanifest">
+</head>
+<body class="demo-shell" data-team-page>
+<div class="jus9-autoria-topo" role="note" style="font-size:.82rem;line-height:1.4;text-align:center;padding:.45rem .75rem;background:rgba(15,23,42,.94);color:#f8fafc;letter-spacing:.01em;">Jus 9 Tecnologia Juridica - software livre, autoria preservada.</div>
+<div class="demo-layout">
+  <aside class="demo-sidebar">
+    <img src="assets/jus9-logo.svg" alt="Jus 9">
+    <nav>
+      <a data-team-panel-link href="mvp.html#demos-jus9">Painel do MVP</a>
+      <a class="active" href="#">Equipe</a>
+      <a data-team-profiles-link href="mvp.html#demos-jus9">Perfis</a>
+      <a href="mvp.html#demos-jus9">Sair do demo</a>
+    </nav>
+  </aside>
+  <main class="demo-main">
+    <section class="demo-topbar">
+      <div>
+        <div class="eyebrow">Equipe por MVP - <span data-team-code>...</span></div>
+        <h1 data-team-title style="font-size:42px;color:#0b1728;margin-top:8px">Carregando equipe demonstrativa...</h1>
+        <p data-team-subtitle style="color:#51627a;margin:8px 0 0">Carregando catalogo publico de perfis.</p>
+      </div>
+      <span class="badge secret">LOCAL - SEM DADOS REAIS</span>
+    </section>
+
+    <section class="demo-card team-warning">
+      <h2 style="color:#0b1728">Cadastro demonstrativo</h2>
+      <p>Esta tela organiza perfis do MVP escolhido. Ela nao cria conta real, permissao real ou acesso a servidor. Use somente nomes ficticios e e-mails terminados em <code>@jus9.invalid</code>.</p>
+    </section>
+
+    <section class="demo-grid-2 team-workbench">
+      <article class="demo-card">
+        <div class="eyebrow">Novo membro da equipe</div>
+        <h2 style="color:#0b1728">Cadastro local ficticio</h2>
+        <form class="team-form" data-team-form>
+          <input type="hidden" name="editing_id">
+          <label>Nome ficticio<input name="name" required placeholder="Ex.: Ana Demonstrativa"></label>
+          <label>Perfil do MVP<select name="profile" required></select></label>
+          <label>Area demonstrativa<input name="area" required placeholder="Ex.: Compliance demonstrativo"></label>
+          <label>E-mail ficticio<input name="email" required placeholder="ana@jus9.invalid"></label>
+          <div class="link-actions">
+            <button class="primary-action" type="submit" data-team-submit>Cadastrar membro ficticio</button>
+            <button type="button" data-team-reset>Limpar formulario</button>
+          </div>
+        </form>
+        <p class="fine-note" data-team-status>Carregando perfis...</p>
+      </article>
+
+      <article class="demo-card">
+        <div class="eyebrow">Auditoria demonstrativa</div>
+        <h2 style="color:#0b1728">Eventos salvos neste navegador</h2>
+        <div data-team-audit></div>
+      </article>
+    </section>
+
+    <section class="demo-card">
+      <div class="eyebrow">Membros do MVP</div>
+      <h2 style="color:#0b1728">Equipe ficticia cadastrada</h2>
+      <div class="team-member-grid" data-team-list></div>
+    </section>
+  </main>
+</div>
+<footer class="jus9-autoria-rodape" role="contentinfo" style="font-size:.85rem;line-height:1.5;text-align:center;padding:1rem .75rem;margin-top:2rem;background:rgba(15,23,42,.96);color:#f8fafc;">Producao do site: Jus 9 Tecnologia Juridica. Software livre com autoria, origem e direitos autorais preservados.</footer>
+<script src="script.js?v=20260531-team-v1"></script>
+<script src="assets/js/pwa-install.js"></script>
+</body>
+</html>
