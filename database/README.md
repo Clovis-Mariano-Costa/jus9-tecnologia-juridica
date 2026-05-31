@@ -55,4 +55,11 @@ Antes de aplicar a migração de titularidade em homologação, valide sua estru
 
 ```bash
 node database/scripts/validate-rls-structure.js
+node database/scripts/validate-homologation-package.js
+```
+
+O pacote controlado para `DAJ` e `DEJI` fica em `database/homologation/`. Para aplicá-lo, use somente banco privado de homologação e execute:
+
+```powershell
+.\database\scripts\apply-homologation.ps1 -ConfirmTarget jus9-homologacao
 ```

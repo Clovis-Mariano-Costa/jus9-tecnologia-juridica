@@ -89,3 +89,15 @@ migracao PostgreSQL correspondente esta em
 A migração `database/migrations/005_rls_titularidade_e_auditoria.sql` prepara RLS por titularidade. Ao integrar PostgreSQL/Supabase ao backend, cada transação autenticada deve definir `app.current_user_id` e `app.current_user_profile` com `set_config(..., true)` antes das consultas protegidas.
 
 Não ativar dados reais enquanto o backend ainda estiver usando arrays em memória.
+
+## Homologacao autenticada privada
+
+O pacote inicial para validar `DAJ` e `DEJI` com identidades ficticias esta documentado em `HOMOLOGATION_CONTROLLED_ACCOUNTS.md`.
+
+Execute localmente, sem banco remoto:
+
+```bash
+node ../database/scripts/validate-homologation-package.js
+node ../tests/validate-worker-auth.mjs
+node ../tests/validate-rls-controlled-matrix.mjs
+```
