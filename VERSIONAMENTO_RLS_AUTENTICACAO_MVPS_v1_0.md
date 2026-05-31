@@ -8,6 +8,7 @@ Data: 2026-05-31
 - Reforcada a protecao de `secreto/cofre`.
 - Criada rota Cloudflare Pages Functions `GET /api/auth/permissions`.
 - Criada matriz compartilhada de permissoes para a camada Cloudflare.
+- Integrada a rota `GET /api/auth/permissions` ao Worker principal publicado.
 - Atualizados guias de banco, backend e checklist OAuth.
 
 ## Ativacao remota

@@ -14,6 +14,7 @@ import {
   signPayload,
   verifyPayload
 } from "./functions/_shared/oauth.js";
+import { getPermissions } from "./functions/_shared/permissions.js";
 
 export default {
   async fetch(request, env) {
@@ -30,6 +31,10 @@ export default {
 
     if (originalUrl.pathname === "/api/auth/me") {
       return handleAuthMe(request, env);
+    }
+
+    if (originalUrl.pathname === "/api/auth/permissions") {
+      return handleAuthPermissions(request, env);
     }
 
     if (originalUrl.pathname === "/auth/logout") {
@@ -226,6 +231,19 @@ async function handleAuthMe(request, env) {
     profile: session.profile,
     emailHash: session.emailHash,
     expiresAt: new Date(session.expiresAt).toISOString()
+  });
+}
+
+async function handleAuthPermissions(request, env) {
+  if (request.method !== "GET") {
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { Allow: "GET" });
+  }
+  const session = await getSession(request, env);
+  if (!session) return jsonResponse({ authenticated: false }, 401);
+  return jsonResponse({
+    authenticated: true,
+    profile: session.profile,
+    permissions: getPermissions(session.profile)
   });
 }
 

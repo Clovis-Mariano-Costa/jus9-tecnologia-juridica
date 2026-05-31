@@ -26,6 +26,7 @@ Nao foram encontradas credenciais de banco remoto, `psql` ou CLI Supabase config
 - Reforcada a regra: `secreto/cofre` pertence ao advogado titular.
 - Criada a rota Cloudflare Pages Functions `GET /api/auth/permissions`.
 - Criada matriz compartilhada de permissoes para a rota publica autenticada.
+- Integrada a rota ao `worker.js`, roteador efetivamente publicado no dominio principal.
 
 ## Restricoes intencionais
 
