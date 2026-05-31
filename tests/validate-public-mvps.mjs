@@ -37,7 +37,7 @@ assert(sharedScript.includes("socialResponsibilityFallback"), "fallback tematico
 assert(sharedScript.includes("initPriorityWorkflow"), "fluxos aprofundados compartilhados ausentes");
 assert(sharedScript.includes("initGuidedPrompts"), "perguntas guiadas compartilhadas ausentes");
 
-for (const code of ["DAJ", "DAA", "DEJ", "DPJ", "DEJI"]) {
+for (const code of expectedCodes) {
   assert(sharedScript.includes(`${code}: [`), `${code}: perguntas guiadas ausentes`);
   assert(sharedScript.includes(`${code}: {`), `${code}: fluxo aprofundado ausente`);
 }
@@ -48,22 +48,30 @@ const priorityAiPages = {
   DEJ: "app-ia-estudante.html",
   DPJ: "app-ia-perito.html",
   DEJI: "app-ia-empresa.html",
+  DIC: "app-ia-cidadao.html",
+  DIP: "app-ia-investidor.html",
+  DEE: "app-ia-escritorio.html",
+  DOI: "app-ia-orgao-publico.html",
+  DGE: "app-ia-administrador.html",
+  DMG: "app-ia-juiz.html",
+  DMP: "app-ia-promotor.html",
+  DAP: "app-ia-delegado.html",
 };
 
 for (const [code, page] of Object.entries(priorityAiPages)) {
   const html = await fs.readFile(new URL(`../${page}`, import.meta.url), "utf8");
   assert(html.includes("data-ai-chat"), `${code}: chat ausente em ${page}`);
   assert(html.includes(`data-ai-code="${code}"`), `${code}: codigo incorreto em ${page}`);
-  assert(html.includes('script.js?v=20260531-mvp-flow-v1'), `${code}: script sem versao em ${page}`);
+  assert(html.includes('script.js?v=20260531-mvp-flow-v2'), `${code}: script sem versao em ${page}`);
   console.log(`AI_PAGE_OK ${code} page=${page}`);
 }
 
-for (const page of ["app-demo-advogar.html", "app-demo-professor.html", "app-demo-estudante.html", "app-demo-perito.html", "app-demo-empresa.html"]) {
+for (const page of catalog.profiles.map((profile) => profile.entry_page)) {
   const html = await fs.readFile(new URL(`../${page}`, import.meta.url), "utf8");
-  assert(html.includes('script.js?v=20260531-mvp-flow-v1'), `painel sem versao de script: ${page}`);
+  assert(html.includes('script.js?v=20260531-mvp-flow-v2'), `painel sem versao de script: ${page}`);
 }
 
 console.log("STATIC_OK chat-compartilhado-13-mvps");
-console.log("STATIC_OK fluxos-aprofundados-DAJ-DAA-DEJ-DPJ-DEJI");
-console.log("STATIC_OK cache-bust-paginas-prioritarias");
+console.log("STATIC_OK fluxos-aprofundados-13-mvps");
+console.log("STATIC_OK cache-bust-13-mvps");
 console.log("PUBLIC_MVPS_REGRESSION_OK");

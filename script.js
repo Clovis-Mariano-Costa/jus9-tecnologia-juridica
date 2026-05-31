@@ -210,6 +210,46 @@ window.jus9DemoLogin = function(form){
       title: 'Fluxo DPJ - pericia demonstrativa',
       intro: 'Organize quesitos, metodo, diligencias, anexos ficticios e revisao tecnica.',
       steps: ['Escopo pericial ficticio', 'Quesitos demonstrativos', 'Metodo e diligencias', 'Anexos e cadeia tecnica', 'Revisao tecnica registrada']
+    },
+    DIC: {
+      title: 'Fluxo DIC - orientacao inicial do cidadao',
+      intro: 'Organize a demanda informativa, a fonte oficial e o encaminhamento humano adequado.',
+      steps: ['Demanda ficticia descrita', 'Tema informativo identificado', 'Fonte oficial conferida', 'Encaminhamento humano sugerido', 'Revisao da orientacao']
+    },
+    DIP: {
+      title: 'Fluxo DIP - investimento e parceria',
+      intro: 'Organize apresentacao, indicadores, governanca, pendencias e acompanhamento ficticio.',
+      steps: ['Perfil da parceria ficticia', 'Material institucional', 'Indicadores demonstrativos', 'Governanca e pendencias', 'Follow-up registrado']
+    },
+    DEE: {
+      title: 'Fluxo DEE - escritorio juridico',
+      intro: 'Organize equipe, distribuicao demonstrativa, documentos, prazos e auditoria.',
+      steps: ['Demanda ficticia recebida', 'Responsavel demonstrativo', 'Distribuicao de tarefas', 'Documentos e prazos', 'Auditoria e revisao humana']
+    },
+    DOI: {
+      title: 'Fluxo DOI - orgao ou instituicao',
+      intro: 'Organize atendimento institucional ficticio, protocolo, rastreabilidade e controle interno.',
+      steps: ['Demanda institucional ficticia', 'Setor responsavel', 'Protocolo demonstrativo', 'Rastreabilidade e controle', 'Revisao humana registrada']
+    },
+    DGE: {
+      title: 'Fluxo DGE - governanca do ecossistema',
+      intro: 'Organize catalogos, perfis, permissoes, versoes e auditoria demonstrativa.',
+      steps: ['Catalogo ou modulo identificado', 'Perfil demonstrativo conferido', 'Permissao revisada', 'Versao e registro de auditoria', 'Revisao humana registrada']
+    },
+    DMG: {
+      title: 'Fluxo DMG - gabinete demonstrativo',
+      intro: 'Organize fila e documentos ficticios sem simular decisao, despacho ou ato oficial.',
+      steps: ['Item ficticio recebido', 'Classificacao demonstrativa', 'Documentos organizados', 'Fila interna revisada', 'Sem decisao automatizada']
+    },
+    DMP: {
+      title: 'Fluxo DMP - ministerio publico demonstrativo',
+      intro: 'Organize procedimento ficticio sem simular denuncia, manifestacao ou ato oficial.',
+      steps: ['Noticia ficticia registrada', 'Classificacao demonstrativa', 'Documentos organizados', 'Pendencias internas revisadas', 'Sem ato oficial automatizado']
+    },
+    DAP: {
+      title: 'Fluxo DAP - autoridade policial demonstrativa',
+      intro: 'Organize fluxo ficticio sem simular investigacao, diligencia policial real ou ato oficial.',
+      steps: ['Registro ficticio recebido', 'Classificacao demonstrativa', 'Documentos organizados', 'Fluxo interno revisado', 'Sem investigacao automatizada']
     }
   };
 
@@ -403,7 +443,15 @@ window.jus9DemoLogin = function(form){
       DAA: 'app-ia-professor.html',
       DEJ: 'app-ia-estudante.html',
       DPJ: 'app-ia-perito.html',
-      DEJI: 'app-ia-empresa.html'
+      DEJI: 'app-ia-empresa.html',
+      DIC: 'app-ia-cidadao.html',
+      DIP: 'app-ia-investidor.html',
+      DEE: 'app-ia-escritorio.html',
+      DOI: 'app-ia-orgao-publico.html',
+      DGE: 'app-ia-administrador.html',
+      DMG: 'app-ia-juiz.html',
+      DMP: 'app-ia-promotor.html',
+      DAP: 'app-ia-delegado.html'
     }[code] || 'app-ia-profissional.html';
   }
 
@@ -699,6 +747,46 @@ window.jus9DemoLogin = function(form){
       'No DPJ do Perito Judicial, quais campos devo conferir antes de iniciar uma pericia demonstrativa?',
       'No DPJ do Perito Judicial, crie um checklist ficticio de quesitos, metodo, diligencias e anexos.',
       'No DPJ do Perito Judicial, como preservar cadeia tecnica e revisao humana em uma pericia demonstrativa?'
+    ],
+    DIC: [
+      'No DIC, organize uma orientacao inicial ficticia para um cidadao sem solicitar dados pessoais.',
+      'No DIC, como priorizar fontes oficiais e encaminhamento humano adequado?',
+      'No DIC, ofereca o link oficial do portal gov.br e explique brevemente o destino.'
+    ],
+    DIP: [
+      'No DIP, crie um checklist demonstrativo para avaliar uma parceria institucional ficticia.',
+      'No DIP, organize indicadores e pendencias de follow-up sem usar dados reais.',
+      'No DIP, sugira uma estrutura prudente para apresentacao a investidor ficticio.'
+    ],
+    DEE: [
+      'No DEE, organize a distribuicao demonstrativa de uma demanda entre equipe juridica ficticia.',
+      'No DEE, crie um checklist de documentos, prazos e revisao humana.',
+      'No DEE, como registrar auditoria sem expor dados sigilosos?'
+    ],
+    DOI: [
+      'No DOI, organize um atendimento institucional ficticio com protocolo e rastreabilidade.',
+      'No DOI, crie um checklist demonstrativo de controle interno e revisao humana.',
+      'No DOI, como oferecer fonte oficial externa sem inventar URL?'
+    ],
+    DGE: [
+      'No DGE, crie um checklist de governanca para revisar perfil, permissao e auditoria.',
+      'No DGE, como versionar uma alteracao demonstrativa antes da revisao humana?',
+      'No DGE, organize uma matriz simples de modulos e responsaveis ficticios.'
+    ],
+    DMG: [
+      'No DMG demonstrativo, organize uma fila ficticia de documentos sem simular decisao ou despacho.',
+      'No DMG demonstrativo, crie um checklist de classificacao e revisao humana sem ato oficial.',
+      'No DMG, explique os limites da Charlie Echo para apoio a gabinete.'
+    ],
+    DMP: [
+      'No DMP demonstrativo, organize documentos ficticios sem simular denuncia ou manifestacao oficial.',
+      'No DMP demonstrativo, crie um checklist de pendencias internas e revisao humana.',
+      'No DMP, explique os limites da Charlie Echo para apoio ministerial.'
+    ],
+    DAP: [
+      'No DAP demonstrativo, organize documentos ficticios sem simular investigacao policial.',
+      'No DAP demonstrativo, crie um checklist de fluxo interno e revisao humana sem ato oficial.',
+      'No DAP, explique os limites da Charlie Echo para apoio a autoridade policial.'
     ]
   };
 
