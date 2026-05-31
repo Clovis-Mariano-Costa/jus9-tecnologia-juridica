@@ -249,17 +249,6 @@ window.jus9DemoLogin = function(form){
 })();
 
 (function(){
-  var trustedLinks = [
-    { label:'Site principal da Jus 9', url:'https://www.jus9tecnologia.com.br/' },
-    { label:'Equipe Jus 9', url:'https://www.jus9tecnologia.com.br/equipe/' },
-    { label:'MVPs e demos Jus 9', url:'https://www.jus9tecnologia.com.br/mvp' },
-    { label:'Investimentos Jus 9', url:'https://investimentos.jus9tecnologia.com.br/' },
-    { label:'Livros gratuitos Jus 9', url:'https://livros.jus9tecnologia.com.br/' },
-    { label:'Charlie Echo', url:'https://charlieecho.jus9tecnologia.com.br/' },
-    { label:'Charlie Echo Social', url:'https://jus9verde.jus9tecnologia.com.br/charlie-echo-social' },
-    { label:'Quando o Desenho Fala', url:'https://quandoodesenhofala.jus9tecnologia.com.br/' }
-  ];
-
   function escapeHtml(text){
     return String(text || '').replace(/[<>&"]/g, function(ch){
       return ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[ch]);
@@ -268,34 +257,12 @@ window.jus9DemoLogin = function(form){
 
   function renderEchoAnswer(text){
     return escapeHtml(text)
-      .replace(/(https:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>')
+      .replace(/https:\/\/[^\s<>"']+/g, function(raw){
+        var url = raw, suffix = '';
+        while(/[),.;:!?]$/.test(url)){ suffix = url.slice(-1) + suffix; url = url.slice(0, -1); }
+        return '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + url + '</a>' + suffix;
+      })
       .replace(/\n/g, '<br>');
-  }
-
-  function asksForLinks(question){
-    var q = (question || '').toLowerCase();
-    return q.indexOf('link') !== -1 || q.indexOf('site') !== -1 || q.indexOf('url') !== -1 ||
-      q.indexOf('download') !== -1 || q.indexOf('baixar') !== -1 || q.indexOf('onde encontro') !== -1 ||
-      q.indexOf('onde acesso') !== -1 || q.indexOf('endereco') !== -1;
-  }
-
-  function linksAnswer(question){
-    var q = (question || '').toLowerCase();
-    var selected = trustedLinks.filter(function(link){
-      var label = link.label.toLowerCase();
-      if(label.indexOf('desenho') !== -1 && (q.indexOf('desenho') !== -1 || q.indexOf('identidade visual') !== -1)) return true;
-      if(label.indexOf('investimentos') !== -1 && q.indexOf('invest') !== -1) return true;
-      if(label.indexOf('livros') !== -1 && (q.indexOf('livro') !== -1 || q.indexOf('leitura') !== -1)) return true;
-      if(label.indexOf('equipe') !== -1 && q.indexOf('equipe') !== -1) return true;
-      if(label.indexOf('mvps') !== -1 && (q.indexOf('mvp') !== -1 || q.indexOf('demo') !== -1)) return true;
-      if(label.indexOf('social') !== -1 && (q.indexOf('social') !== -1 || q.indexOf('verde') !== -1)) return true;
-      if(label === 'charlie echo' && q.indexOf('charlie echo') !== -1 && q.indexOf('social') === -1) return true;
-      return false;
-    });
-    var links = selected.length ? selected : trustedLinks;
-    return 'Links publicos confiaveis que posso oferecer:\n\n' +
-      links.map(function(link){ return '- ' + link.label + ': ' + link.url; }).join('\n') +
-      '\n\nConteudo sigiloso, secreto ou de cofre nao recebe link publico.';
   }
 
   function identityAnswer(question){
@@ -393,7 +360,7 @@ window.jus9DemoLogin = function(form){
       });
       var echoMsg = document.createElement('div');
       echoMsg.className = 'ai-message ai-message-echo';
-      var localIdentity = asksForLinks(question) ? linksAnswer(question) : identityAnswer(question);
+      var localIdentity = identityAnswer(question);
       if (localIdentity) {
         echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(localIdentity);
       } else {
