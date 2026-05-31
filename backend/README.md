@@ -34,6 +34,8 @@ npm run dev
 - `GET /api/dajs`
 - `POST /api/dajs`
 - `GET /api/dajs/:id/documentos`
+- `GET /api/dossiers`
+- `POST /api/dossiers`
 - `POST /api/processos/consulta`
 - `POST /api/auditoria`
 
@@ -71,3 +73,10 @@ sessao e permissao nos endpoints de DAJ, documentos, processos e auditoria.
 ## Regra central de sigilo
 
 Secreto/Cofre pertence ao advogado titular do DAJ, processo ou documento. Advogado Líder só acessa se também for titular.
+
+## Dossies adaptados
+
+`/api/dossiers` prepara a replicacao do nucleo organizacional para os 13 MVPs.
+O endpoint ainda usa memoria do processo Node e nao substitui banco remoto. A
+migracao PostgreSQL correspondente esta em
+`database/migrations/003_adapted_dossiers.sql`.

@@ -141,6 +141,15 @@ window.jus9DemoLogin = function(form){
   var password = ((form.querySelector('[name="password"]') || {}).value || '');
   var msg = document.querySelector('[data-login-message]');
   if(jus9DemoRoutes[email] && password === 'Jus9MVP#2026'){
+    try {
+      localStorage.setItem('jus9DemoSessionV1', JSON.stringify({
+        kind: 'jus9_demo_session',
+        email: email,
+        route: jus9DemoRoutes[email],
+        issuedAt: Date.now(),
+        expiresAt: Date.now() + 8 * 60 * 60 * 1000
+      }));
+    } catch(e) {}
     window.location.href = jus9DemoRoutes[email];
     return false;
   }
@@ -152,6 +161,166 @@ window.jus9DemoLogin = function(form){
   }
   return false;
 };
+
+(function(){
+  var storageKey = 'jus9MvpDossiersV1';
+  var sessionKey = 'jus9DemoSessionV1';
+  var adaptedProfiles = {
+    'app-demo-advogar.html': { code:'DAJ', label:'Dossie Administrativo Juridico', area:'Advocacia / Defensoria' },
+    'app-demo-professor.html': { code:'DAA', label:'Dossie Academico de Aula / Aluno', area:'Professor / Academia' },
+    'app-demo-estudante.html': { code:'DEJ', label:'Dossie de Estudos Juridicos', area:'Estudante' },
+    'app-demo-cidadao.html': { code:'DIC', label:'Dossie Informativo do Cidadao', area:'Cidadao / Interessado' },
+    'app-demo-perito.html': { code:'DPJ', label:'Dossie Pericial Judicial', area:'Perito Judicial' },
+    'app-demo-investidor.html': { code:'DIP', label:'Dossie de Investimento e Parceria', area:'Investidor / Parceiro' },
+    'app-demo-escritorio.html': { code:'DEE', label:'Dossie de Escritorio Juridico', area:'Escritorio Juridico' },
+    'app-demo-empresa.html': { code:'DEJI', label:'Dossie Empresarial Juridico Interno', area:'Empresa / Juridico Interno' },
+    'app-demo-orgao-publico.html': { code:'DOI', label:'Dossie de Orgao ou Instituicao', area:'Orgao Publico / Instituicao' },
+    'app-demo-administrador.html': { code:'DGE', label:'Dossie de Governanca do Ecossistema', area:'Administrador Jus 9' },
+    'app-demo-juiz.html': { code:'DMG', label:'Dossie Demonstrativo de Magistratura', area:'Juiz / Magistrado' },
+    'app-demo-promotor.html': { code:'DMP', label:'Dossie Demonstrativo do Ministerio Publico', area:'Promotor / Ministerio Publico' },
+    'app-demo-delegado.html': { code:'DAP', label:'Dossie Demonstrativo de Autoridade Policial', area:'Delegado / Autoridade Policial' }
+  };
+
+  function readJson(key, fallback){
+    try { return JSON.parse(localStorage.getItem(key) || '') || fallback; } catch(e) { return fallback; }
+  }
+
+  function writeJson(key, value){
+    try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch(e) { return false; }
+  }
+
+  function cleanText(value, max){
+    return String(value || '').replace(/[<>]/g, '').replace(/\s+/g, ' ').trim().slice(0, max || 120);
+  }
+
+  function getDemoSession(){
+    var session = readJson(sessionKey, null);
+    if (!session || session.kind !== 'jus9_demo_session' || !session.expiresAt || Date.now() > session.expiresAt) {
+      try { localStorage.removeItem(sessionKey); } catch(e) {}
+      return null;
+    }
+    return session;
+  }
+
+  function renderSessionNotice(){
+    if (!document.body || !document.body.classList.contains('demo-shell')) return;
+    var main = document.querySelector('.demo-main');
+    if (!main || main.querySelector('[data-demo-session-notice]')) return;
+    var session = getDemoSession();
+    var notice = document.createElement('section');
+    notice.className = 'demo-session-notice';
+    notice.setAttribute('data-demo-session-notice', 'true');
+    var text = session
+      ? 'Sessao demonstrativa local ativa ate ' + new Date(session.expiresAt).toLocaleString('pt-BR') + '. Nenhum dado foi enviado ao servidor.'
+      : 'Sessao demonstrativa local nao iniciada. Os paineis continuam acessiveis para apresentacao publica sem dados reais.';
+    notice.innerHTML = '<strong>MVP local-controlado:</strong> <span></span> <button type="button" data-demo-session-clear>Encerrar sessao demo</button>';
+    notice.querySelector('span').textContent = text;
+    notice.querySelector('[data-demo-session-clear]').addEventListener('click', function(){
+      try { localStorage.removeItem(sessionKey); } catch(e) {}
+      renderSessionNoticeRefresh();
+    });
+    main.insertBefore(notice, main.firstChild);
+  }
+
+  function renderSessionNoticeRefresh(){
+    var current = document.querySelector('[data-demo-session-notice]');
+    if (current) current.remove();
+    renderSessionNotice();
+  }
+
+  function nextNumber(items, code){
+    var count = items.filter(function(item){ return item.code === code; }).length + 1;
+    return code + '-2026-' + String(count).padStart(4, '0');
+  }
+
+  function dossierRow(item){
+    var article = document.createElement('article');
+    article.className = 'local-dossier-row';
+    article.innerHTML = '<div><strong></strong><p></p></div><span class="badge"></span>';
+    article.querySelector('strong').textContent = item.number + ' - ' + item.title;
+    article.querySelector('p').textContent = item.area + ' | Responsavel ficticio: ' + item.owner + ' | Atencao: ' + item.attention;
+    article.querySelector('.badge').textContent = item.secrecy;
+    return article;
+  }
+
+  function initAdaptedDossier(){
+    var file = location.pathname.split('/').pop() || '';
+    var profile = adaptedProfiles[file];
+    var host = document.querySelector('#novo-dossie');
+    if (!profile || !host || host.querySelector('[data-local-dossier-form]')) return;
+
+    var panel = document.createElement('section');
+    panel.className = 'local-dossier-panel';
+    panel.innerHTML =
+      '<div class="eyebrow">Persistencia local demonstrativa</div>' +
+      '<h3>Criar ' + profile.code + ' ficticio neste navegador</h3>' +
+      '<p>Use somente nomes e cenarios inventados. Este registro fica apenas neste navegador e prepara a futura integracao com autenticacao e banco remoto.</p>' +
+      '<form data-local-dossier-form class="local-dossier-form">' +
+        '<label>Titulo ficticio<input name="title" required maxlength="100" placeholder="Ex.: Caso contratual demonstrativo"></label>' +
+        '<label>Responsavel ficticio<input name="owner" required maxlength="80" placeholder="Ex.: Equipe demo"></label>' +
+        '<label>Razao de atencao<select name="attention"><option>revisao humana</option><option>prazo demonstrativo</option><option>documento ficticio pendente</option><option>retorno demonstrativo</option></select></label>' +
+        '<label>Classificacao<select name="secrecy"><option>comum</option><option>restrito</option></select></label>' +
+        '<div class="form-actions"><button type="submit">Salvar localmente</button><button type="button" data-local-dossier-clear>Limpar registros deste perfil</button></div>' +
+      '</form>' +
+      '<p class="fine-note" data-local-dossier-status>Pronto para criar registros ficticios.</p>' +
+      '<div class="local-dossier-list" data-local-dossier-list></div>';
+    host.appendChild(panel);
+
+    var form = panel.querySelector('[data-local-dossier-form]');
+    var status = panel.querySelector('[data-local-dossier-status]');
+    var list = panel.querySelector('[data-local-dossier-list]');
+
+    function render(){
+      list.innerHTML = '';
+      var items = readJson(storageKey, []).filter(function(item){ return item.code === profile.code; });
+      if (!items.length) {
+        list.textContent = 'Nenhum ' + profile.code + ' local criado neste navegador.';
+        return;
+      }
+      items.slice().reverse().forEach(function(item){ list.appendChild(dossierRow(item)); });
+    }
+
+    form.addEventListener('submit', function(event){
+      event.preventDefault();
+      var items = readJson(storageKey, []);
+      var item = {
+        id: 'local_' + Date.now(),
+        code: profile.code,
+        number: nextNumber(items, profile.code),
+        type: profile.label,
+        area: profile.area,
+        title: cleanText(form.elements.title.value, 100),
+        owner: cleanText(form.elements.owner.value, 80),
+        attention: cleanText(form.elements.attention.value, 60),
+        secrecy: cleanText(form.elements.secrecy.value, 20),
+        source: 'browser_local_demo',
+        createdAt: new Date().toISOString()
+      };
+      if (!item.title || !item.owner) return;
+      items.push(item);
+      if (writeJson(storageKey, items)) {
+        status.textContent = item.number + ' salvo localmente. Persistencia demonstrativa ativa somente neste navegador.';
+        form.reset();
+        render();
+      } else {
+        status.textContent = 'O navegador nao permitiu salvar o registro local.';
+      }
+    });
+
+    panel.querySelector('[data-local-dossier-clear]').addEventListener('click', function(){
+      var kept = readJson(storageKey, []).filter(function(item){ return item.code !== profile.code; });
+      writeJson(storageKey, kept);
+      status.textContent = 'Registros locais de ' + profile.code + ' removidos deste navegador.';
+      render();
+    });
+    render();
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    renderSessionNotice();
+    initAdaptedDossier();
+  });
+})();
 
 (function(){
   var googleLogin = document.querySelector('[data-google-login]');

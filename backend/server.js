@@ -67,6 +67,24 @@ const dajs = [
   }
 ];
 
+const dossierTypes = {
+  DAJ: "Dossie Administrativo Juridico",
+  DAA: "Dossie Academico de Aula / Aluno",
+  DEJ: "Dossie de Estudos Juridicos",
+  DIC: "Dossie Informativo do Cidadao",
+  DPJ: "Dossie Pericial Judicial",
+  DIP: "Dossie de Investimento e Parceria",
+  DEE: "Dossie de Escritorio Juridico",
+  DEJI: "Dossie Empresarial Juridico Interno",
+  DOI: "Dossie de Orgao ou Instituicao",
+  DGE: "Dossie de Governanca do Ecossistema",
+  DMG: "Dossie Demonstrativo de Magistratura",
+  DMP: "Dossie Demonstrativo do Ministerio Publico",
+  DAP: "Dossie Demonstrativo de Autoridade Policial"
+};
+
+const dossiers = [];
+
 const documentos = [
   {
     id: "doc_001",
@@ -437,6 +455,34 @@ app.post("/api/dajs", protectWhenEnabled("dajs:write"), (req, res) => {
 
 app.get("/api/dajs/:id/documentos", protectWhenEnabled("documents:read"), (req, res) => {
   res.json({ items: documentos.filter((d) => d.dajId === req.params.id) });
+});
+
+app.get("/api/dossiers", protectWhenEnabled("dajs:read"), (req, res) => {
+  const code = String(req.query.code || "").toUpperCase();
+  const items = code ? dossiers.filter((item) => item.code === code) : dossiers;
+  res.json({ items, types: dossierTypes });
+});
+
+app.post("/api/dossiers", protectWhenEnabled("dajs:write"), (req, res) => {
+  const code = String(req.body.code || "").toUpperCase();
+  if (!dossierTypes[code]) {
+    return res.status(400).json({ ok: false, error: "tipo_dossie_invalido", allowed: Object.keys(dossierTypes) });
+  }
+  const sameTypeCount = dossiers.filter((item) => item.code === code).length + 1;
+  const next = {
+    id: `dossier_${Date.now()}`,
+    code,
+    number: `${code}-2026-${String(sameTypeCount).padStart(4, "0")}`,
+    type: dossierTypes[code],
+    title: String(req.body.title || "Dossie sem titulo").slice(0, 120),
+    owner: String(req.body.owner || "A definir").slice(0, 100),
+    attention: String(req.body.attention || "revisao_humana").slice(0, 80),
+    secrecy: ["comum", "restrito"].includes(req.body.secrecy) ? req.body.secrecy : "comum",
+    status: "em_triagem",
+    createdAt: new Date().toISOString()
+  };
+  dossiers.push(next);
+  res.status(201).json(next);
 });
 
 app.post("/api/processos/consulta", protectWhenEnabled("processes:read"), (req, res) => {
