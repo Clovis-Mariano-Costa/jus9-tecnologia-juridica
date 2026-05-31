@@ -1425,3 +1425,24 @@ button,input,select,textarea{max-width:100%}
 .team-member-card h3{margin:0 0 8px;color:#0b1728}
 .team-member-card p{margin:6px 0;color:#51627a}
 .team-actions{margin-top:12px}
+
+.workspace-social-panel{
+  border-left:4px solid #c58b2f;
+}
+.workspace-social-panel h2,.workspace-social-panel h3{color:#0b1728}
+.workspace-social-panel p{color:#51627a}
+.workspace-social-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+  margin-top:16px;
+}
+.workspace-social-grid article{
+  border:1px solid rgba(15,23,42,.1);
+  border-radius:16px;
+  padding:16px;
+  background:#fff;
+}
+@media(max-width:820px){
+  .workspace-social-grid{grid-template-columns:1fr}
+}

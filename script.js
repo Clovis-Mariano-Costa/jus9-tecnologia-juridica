@@ -1014,3 +1014,70 @@ window.jus9DemoLogin = function(form){
 
   document.addEventListener('DOMContentLoaded', initTeamPage);
 })();
+
+(function(){
+  var socialProfiles = {
+    linkedin: 'https://www.linkedin.com/company/jus-9-tecnologia-jurídica',
+    facebook: 'https://www.facebook.com/AeonPrimevo'
+  };
+  var publicShareUrl = 'https://jus9tecnologia.com.br/mvp.html#demos-jus9';
+  var publicShareTitle = 'MVPs da Jus 9 Tecnologia Juridica';
+  var publicShareText = 'Conheca os ambientes demonstrativos publicos da Jus 9 Tecnologia Juridica.';
+
+  function workspacePage(){
+    return /^app-workspace(?:-[a-z-]+)?\.html$/.test(location.pathname.split('/').pop() || '');
+  }
+
+  function createSocialLink(parent, href, text){
+    var link = document.createElement('a');
+    link.href = href;
+    link.textContent = text;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    parent.appendChild(link);
+  }
+
+  function setSocialStatus(status, text){
+    status.textContent = text;
+  }
+
+  function initWorkspaceSocialLinks(){
+    if (!workspacePage()) return;
+    var main = document.querySelector('.demo-main');
+    if (!main || main.querySelector('[data-workspace-social]')) return;
+    var panel = document.createElement('section');
+    panel.className = 'demo-card workspace-social-panel';
+    panel.setAttribute('data-workspace-social', 'true');
+    panel.innerHTML =
+      '<div class="eyebrow">Pontes publicas do workspace</div>' +
+      '<h2>Redes sociais e compartilhamento publico</h2>' +
+      '<p>Divulgue somente a vitrine publica dos MVPs. Nao compartilhe dossies, nomes, documentos, arquivos internos, dados pessoais ou informacoes sigilosas.</p>' +
+      '<div class="workspace-social-grid">' +
+        '<article><h3>LinkedIn</h3><p>Pagina institucional e compartilhamento da vitrine publica.</p><div class="link-actions" data-social-linkedin></div></article>' +
+        '<article><h3>Facebook</h3><p>Perfil publico e compartilhamento da vitrine publica.</p><div class="link-actions" data-social-facebook></div></article>' +
+        '<article><h3>Outros aplicativos</h3><p>Use o compartilhamento nativo do aparelho quando estiver disponivel.</p><div class="link-actions"><button type="button" data-social-native-share>Compartilhar link publico</button><a href="' + publicShareUrl + '" target="_blank" rel="noopener noreferrer">Abrir vitrine publica</a></div></article>' +
+      '</div>' +
+      '<p class="fine-note" data-social-status>Nenhuma publicacao automatica e realizada. A decisao final permanece com a pessoa usuaria.</p>';
+    var institutionalLinks = main.querySelector('.links-semanticos-jus9-v1-5');
+    if (institutionalLinks) main.insertBefore(panel, institutionalLinks);
+    else main.appendChild(panel);
+
+    createSocialLink(panel.querySelector('[data-social-linkedin]'), socialProfiles.linkedin, 'Abrir LinkedIn Jus 9');
+    createSocialLink(panel.querySelector('[data-social-linkedin]'), 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(publicShareUrl), 'Compartilhar no LinkedIn');
+    createSocialLink(panel.querySelector('[data-social-facebook]'), socialProfiles.facebook, 'Abrir Facebook publico');
+    createSocialLink(panel.querySelector('[data-social-facebook]'), 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(publicShareUrl), 'Compartilhar no Facebook');
+
+    var status = panel.querySelector('[data-social-status]');
+    panel.querySelector('[data-social-native-share]').addEventListener('click', function(){
+      if (navigator.share) {
+        navigator.share({ title:publicShareTitle, text:publicShareText, url:publicShareUrl })
+          .then(function(){ setSocialStatus(status, 'Compartilhamento publico iniciado pelo aparelho.'); })
+          .catch(function(){ setSocialStatus(status, 'Compartilhamento cancelado. Nenhum dado foi enviado pelo workspace.'); });
+        return;
+      }
+      setSocialStatus(status, 'Compartilhamento nativo indisponivel neste navegador. Abra a vitrine publica e compartilhe o endereco: ' + publicShareUrl);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initWorkspaceSocialLinks);
+})();

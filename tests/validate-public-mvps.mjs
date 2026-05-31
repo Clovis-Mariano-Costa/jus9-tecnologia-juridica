@@ -78,8 +78,35 @@ for (const page of catalog.profiles.map((profile) => profile.entry_page)) {
   assert(html.includes('script.js?v=20260531-team-v1'), `painel sem versao de script da equipe: ${page}`);
 }
 
+const workspacePages = [
+  "app-workspace.html",
+  "app-workspace-professor.html",
+  "app-workspace-estudante.html",
+  "app-workspace-cidadao.html",
+  "app-workspace-perito.html",
+  "app-workspace-investidor.html",
+  "app-workspace-escritorio.html",
+  "app-workspace-empresa.html",
+  "app-workspace-orgao-publico.html",
+  "app-workspace-administrador.html",
+  "app-workspace-juiz.html",
+  "app-workspace-promotor.html",
+  "app-workspace-delegado.html",
+];
+
+assert(sharedScript.includes("initWorkspaceSocialLinks"), "integracao social compartilhada ausente");
+assert(sharedScript.includes("https://www.linkedin.com/sharing/share-offsite/"), "compartilhamento LinkedIn ausente");
+assert(sharedScript.includes("https://www.facebook.com/sharer/sharer.php"), "compartilhamento Facebook ausente");
+assert(sharedScript.includes("navigator.share"), "compartilhamento nativo ausente");
+
+for (const page of workspacePages) {
+  const html = await fs.readFile(new URL(`../${page}`, import.meta.url), "utf8");
+  assert(html.includes('script.js?v=20260531-workspace-social-v1'), `workspace sem versao social: ${page}`);
+}
+
 console.log("STATIC_OK chat-compartilhado-13-mvps");
 console.log("STATIC_OK fluxos-aprofundados-13-mvps");
 console.log("STATIC_OK equipe-local-13-mvps");
 console.log("STATIC_OK cache-bust-equipe-13-mvps");
+console.log("STATIC_OK redes-sociais-workspace-13-mvps");
 console.log("PUBLIC_MVPS_REGRESSION_OK");
