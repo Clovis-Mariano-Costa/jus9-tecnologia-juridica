@@ -16,6 +16,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const crypto = require("crypto");
+const mvpProfileCatalog = require("../data-publica/mvp-perfis.json");
 
 const app = express();
 const port = process.env.PORT || 3009;
@@ -43,7 +44,7 @@ app.use(
 app.use(express.json({ limit: "2mb" }));
 app.use(morgan("dev"));
 
-const profiles = [
+const internalProfiles = [
   "admin_sistema",
   "advogado_lider",
   "advogado",
@@ -67,21 +68,17 @@ const dajs = [
   }
 ];
 
-const dossierTypes = {
-  DAJ: "Dossie Administrativo Juridico",
-  DAA: "Dossie Academico de Aula / Aluno",
-  DEJ: "Dossie de Estudos Juridicos",
-  DIC: "Dossie Informativo do Cidadao",
-  DPJ: "Dossie Pericial Judicial",
-  DIP: "Dossie de Investimento e Parceria",
-  DEE: "Dossie de Escritorio Juridico",
-  DEJI: "Dossie Empresarial Juridico Interno",
-  DOI: "Dossie de Orgao ou Instituicao",
-  DGE: "Dossie de Governanca do Ecossistema",
-  DMG: "Dossie Demonstrativo de Magistratura",
-  DMP: "Dossie Demonstrativo do Ministerio Publico",
-  DAP: "Dossie Demonstrativo de Autoridade Policial"
-};
+const mvpProfiles = mvpProfileCatalog.profiles;
+
+const dossierTypes = Object.fromEntries(
+  mvpProfiles.map((profile) => [profile.dossier_code, profile.dossier_label])
+);
+
+const dossierAliases = Object.fromEntries(
+  mvpProfiles.flatMap((profile) =>
+    (profile.legacy_aliases || []).map((alias) => [alias, profile.dossier_code])
+  )
+);
 
 const dossiers = [];
 
@@ -433,7 +430,14 @@ app.post("/auth/logout", (req, res) => {
   res.status(204).end();
 });
 
-app.get("/api/profiles", (_, res) => res.json({ profiles }));
+app.get("/api/profiles", (_, res) =>
+  res.json({
+    schema: mvpProfileCatalog.schema,
+    profiles: mvpProfiles,
+    internalProfiles,
+    aliases: dossierAliases
+  })
+);
 
 app.get("/api/dajs", protectWhenEnabled("dajs:read"), (_, res) => res.json({ items: dajs }));
 
@@ -458,13 +462,15 @@ app.get("/api/dajs/:id/documentos", protectWhenEnabled("documents:read"), (req, 
 });
 
 app.get("/api/dossiers", protectWhenEnabled("dajs:read"), (req, res) => {
-  const code = String(req.query.code || "").toUpperCase();
+  const requestedCode = String(req.query.code || "").toUpperCase();
+  const code = dossierAliases[requestedCode] || requestedCode;
   const items = code ? dossiers.filter((item) => item.code === code) : dossiers;
   res.json({ items, types: dossierTypes });
 });
 
 app.post("/api/dossiers", protectWhenEnabled("dajs:write"), (req, res) => {
-  const code = String(req.body.code || "").toUpperCase();
+  const requestedCode = String(req.body.code || "").toUpperCase();
+  const code = dossierAliases[requestedCode] || requestedCode;
   if (!dossierTypes[code]) {
     return res.status(400).json({ ok: false, error: "tipo_dossie_invalido", allowed: Object.keys(dossierTypes) });
   }

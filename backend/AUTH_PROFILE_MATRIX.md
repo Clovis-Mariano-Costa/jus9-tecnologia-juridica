@@ -26,17 +26,23 @@ Esta matriz e inicial. Antes de dados reais, deve passar por revisao humana, jur
 | `admin_sistema` | `demo10@jus9tecnologia.com.br` | `central-tecnica.html` | `auth:read`, `dajs:read`, `dajs:write`, `documents:read`, `processes:read`, `audit:write` |
 | `advogado_lider` | `demo@jus9tecnologia.com.br` | `app-demo-advogar.html` | `auth:read`, `dajs:read`, `dajs:write`, `documents:read`, `processes:read`, `audit:write` |
 | `advogado` | `demo1@jus9tecnologia.com.br` | `app-demo-advogar.html` | `auth:read`, `dajs:read`, `dajs:write`, `documents:read`, `processes:read`, `audit:write` |
-| `academia` | `demo2@jus9tecnologia.com.br` | `app-perfis.html` | `auth:read` |
-| `estudante` | `demo3@jus9tecnologia.com.br` | `app-perfis.html` | `auth:read` |
-| `cidadao` | `demo4@jus9tecnologia.com.br` | `app-perfis.html` | `auth:read` |
-| `perito` | `demo5@jus9tecnologia.com.br` | `app-perfis.html` | `auth:read`, `documents:read` |
-| `parceiro` | `demo6@jus9tecnologia.com.br` | `pontes-e-parcerias.html` | `auth:read` |
-| `escritorio` | `demo7@jus9tecnologia.com.br` | `app-workspace.html` | `auth:read`, `dajs:read`, `documents:read`, `processes:read` |
-| `empresa` | `demo8@jus9tecnologia.com.br` | `app-documentos.html` | `auth:read`, `documents:read` |
-| `orgao_publico` | `demo9@jus9tecnologia.com.br` | `app-workspace.html` | `auth:read`, `processes:read` |
-| `magistrado` | `demo11@jus9tecnologia.com.br` | `app-processos.html` | `auth:read`, `processes:read` |
-| `ministerio_publico` | `demo12@jus9tecnologia.com.br` | `app-processos.html` | `auth:read`, `processes:read` |
-| `autoridade_policial` | `demo13@jus9tecnologia.com.br` | `app-documentos.html` | `auth:read`, `documents:read`, `processes:read` |
+| `academia` | `demo2@jus9tecnologia.com.br` | `app-demo-professor.html` | `auth:read` |
+| `estudante` | `demo3@jus9tecnologia.com.br` | `app-demo-estudante.html` | `auth:read` |
+| `cidadao` | `demo4@jus9tecnologia.com.br` | `app-demo-cidadao.html` | `auth:read` |
+| `perito` | `demo5@jus9tecnologia.com.br` | `app-demo-perito.html` | `auth:read`, `documents:read` |
+| `parceiro` | `demo6@jus9tecnologia.com.br` | `app-demo-investidor.html` | `auth:read` |
+| `escritorio` | `demo7@jus9tecnologia.com.br` | `app-demo-escritorio.html` | `auth:read`, `dajs:read`, `documents:read`, `processes:read` |
+| `empresa` | `demo8@jus9tecnologia.com.br` | `app-demo-empresa.html` | `auth:read`, `documents:read` |
+| `orgao_publico` | `demo9@jus9tecnologia.com.br` | `app-demo-orgao-publico.html` | `auth:read`, `processes:read` |
+| `magistrado` | `demo11@jus9tecnologia.com.br` | `app-demo-juiz.html` | `auth:read`, `processes:read` |
+| `ministerio_publico` | `demo12@jus9tecnologia.com.br` | `app-demo-promotor.html` | `auth:read`, `processes:read` |
+| `autoridade_policial` | `demo13@jus9tecnologia.com.br` | `app-demo-delegado.html` | `auth:read`, `documents:read`, `processes:read` |
+
+## Catalogo publico canonico
+
+O contrato publico dos 13 ambientes demonstrativos fica em `data-publica/mvp-perfis.json`.
+
+Ele registra codigo de dossie, aliases legados, tela inicial, tela de perfis e subperfis demonstrativos. O endpoint `GET /api/profiles` deriva sua resposta desse arquivo.
 
 ## Perfis internos herdados do backend
 

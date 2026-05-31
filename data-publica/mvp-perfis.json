@@ -1,0 +1,170 @@
+{
+  "schema": "jus9.mvp.profiles.public.v1",
+  "updated_at": "2026-05-31",
+  "classification": "PUBLICO / MVP DEMONSTRATIVO / SEM DADOS REAIS",
+  "notes": [
+    "Os perfis organizam ambientes demonstrativos e nao concedem permissao real.",
+    "Autenticacao, autorizacao, titularidade, RLS, logs e revisao humana continuam obrigatorios antes de dados reais.",
+    "INV e ORG sao aliases legados aceitos para compatibilidade; os codigos canonicos sao DIP e DOI."
+  ],
+  "profiles": [
+    {
+      "demo": 1,
+      "slug": "advogado-defensor",
+      "label": "Advogado / Defensor Publico",
+      "auth_profile": "advogado",
+      "dossier_code": "DAJ",
+      "dossier_label": "Dossie Administrativo Juridico",
+      "demo_email": "demo1@jus9tecnologia.com.br",
+      "entry_page": "app-demo-advogar.html",
+      "profiles_page": "app-perfis.html",
+      "subprofiles": ["Advogado Lider", "Advogado", "Defensor Publico", "Assessor Chefe", "Assessor", "Secretaria", "Estagio"]
+    },
+    {
+      "demo": 2,
+      "slug": "professor-academia",
+      "label": "Professor / Academia",
+      "auth_profile": "academia",
+      "dossier_code": "DAA",
+      "dossier_label": "Dossie Academico de Aula / Aluno",
+      "demo_email": "demo2@jus9tecnologia.com.br",
+      "entry_page": "app-demo-professor.html",
+      "profiles_page": "app-perfis-professor.html",
+      "subprofiles": ["Aluno", "Professor", "Mestre", "Doutor", "Orientador", "Coordenador", "Diretor academico", "Reitor"]
+    },
+    {
+      "demo": 3,
+      "slug": "estudante",
+      "label": "Estudante",
+      "auth_profile": "estudante",
+      "dossier_code": "DEJ",
+      "dossier_label": "Dossie de Estudos Juridicos",
+      "demo_email": "demo3@jus9tecnologia.com.br",
+      "entry_page": "app-demo-estudante.html",
+      "profiles_page": "app-perfis-estudante.html",
+      "subprofiles": ["Estudante", "Professor ficticio", "Orientador", "Monitor", "Grupo de estudo", "Biblioteca publica"]
+    },
+    {
+      "demo": 4,
+      "slug": "cidadao-interessado",
+      "label": "Cidadao / Interessado",
+      "auth_profile": "cidadao",
+      "dossier_code": "DIC",
+      "dossier_label": "Dossie Informativo do Cidadao",
+      "demo_email": "demo4@jus9tecnologia.com.br",
+      "entry_page": "app-demo-cidadao.html",
+      "profiles_page": "app-perfis-cidadao.html",
+      "subprofiles": ["Cidadao interessado", "Familiar autorizado ficticio", "Atendente demonstrativo", "Advogado ou Defensoria indicada", "Orgao de atendimento ficticio", "Servico publico informativo", "Mediador comunitario"]
+    },
+    {
+      "demo": 5,
+      "slug": "perito-judicial",
+      "label": "Perito Judicial",
+      "auth_profile": "perito",
+      "dossier_code": "DPJ",
+      "dossier_label": "Dossie Pericial Judicial",
+      "demo_email": "demo5@jus9tecnologia.com.br",
+      "entry_page": "app-demo-perito.html",
+      "profiles_page": "app-perfis-perito.html",
+      "subprofiles": ["Perito judicial", "Assistente tecnico", "Solicitante ficticio", "Parte interessada ficticia", "Revisor tecnico", "Orgao parceiro ficticio"]
+    },
+    {
+      "demo": 6,
+      "slug": "investidor-parceiro",
+      "label": "Investidor / Parceiro",
+      "auth_profile": "parceiro",
+      "dossier_code": "DIP",
+      "legacy_aliases": ["INV"],
+      "dossier_label": "Dossie de Investimento e Parceria",
+      "demo_email": "demo6@jus9tecnologia.com.br",
+      "entry_page": "app-demo-investidor.html",
+      "profiles_page": "app-perfis-investidor.html",
+      "subprofiles": ["Investidor interessado", "Parceiro institucional", "Mentor", "Equipe Jus 9", "Responsavel por follow-up", "Avaliador de due diligence"]
+    },
+    {
+      "demo": 7,
+      "slug": "escritorio-juridico",
+      "label": "Escritorio Juridico",
+      "auth_profile": "escritorio",
+      "dossier_code": "DEE",
+      "dossier_label": "Dossie de Escritorio Juridico",
+      "demo_email": "demo7@jus9tecnologia.com.br",
+      "entry_page": "app-demo-escritorio.html",
+      "profiles_page": "app-perfis-escritorio.html",
+      "subprofiles": ["Socio", "Advogado Lider", "Advogado", "Assessor", "Secretaria", "Estagio", "Cliente ficticio autorizado"]
+    },
+    {
+      "demo": 8,
+      "slug": "empresa-juridico-interno",
+      "label": "Empresa / Juridico Interno",
+      "auth_profile": "empresa",
+      "dossier_code": "DEJI",
+      "dossier_label": "Dossie Empresarial Juridico Interno",
+      "demo_email": "demo8@jus9tecnologia.com.br",
+      "entry_page": "app-demo-empresa.html",
+      "profiles_page": "app-perfis-empresa.html",
+      "subprofiles": ["Gestor empresarial", "Juridico interno", "Compliance", "Financeiro ficticio", "RH ficticio", "Fornecedor ficticio", "Advogado externo autorizado"]
+    },
+    {
+      "demo": 9,
+      "slug": "orgao-publico-instituicao",
+      "label": "Orgao Publico / Instituicao",
+      "auth_profile": "orgao_publico",
+      "dossier_code": "DOI",
+      "legacy_aliases": ["ORG"],
+      "dossier_label": "Dossie de Orgao ou Instituicao",
+      "demo_email": "demo9@jus9tecnologia.com.br",
+      "entry_page": "app-demo-orgao-publico.html",
+      "profiles_page": "app-perfis-orgao-publico.html",
+      "subprofiles": ["Gestor institucional", "Servidor ficticio", "Setor tecnico", "Protocolo demonstrativo", "Controle interno", "Ouvidoria ficticia"]
+    },
+    {
+      "demo": 10,
+      "slug": "administrador-jus9",
+      "label": "Administrador Jus 9",
+      "auth_profile": "admin_sistema",
+      "dossier_code": "DGE",
+      "dossier_label": "Dossie de Governanca do Ecossistema",
+      "demo_email": "demo10@jus9tecnologia.com.br",
+      "entry_page": "app-demo-administrador.html",
+      "profiles_page": "app-perfis-administrador.html",
+      "subprofiles": ["Administrador demonstrativo", "Gestor de versoes", "Auditor ficticio", "Responsavel por seguranca", "Suporte ficticio", "Revisor humano"]
+    },
+    {
+      "demo": 11,
+      "slug": "juiz-magistrado",
+      "label": "Juiz / Magistrado",
+      "auth_profile": "magistrado",
+      "dossier_code": "DMG",
+      "dossier_label": "Dossie Demonstrativo de Magistratura",
+      "demo_email": "demo11@jus9tecnologia.com.br",
+      "entry_page": "app-demo-juiz.html",
+      "profiles_page": "app-perfis-juiz.html",
+      "subprofiles": ["Magistrado ficticio", "Assessor", "Chefe de gabinete", "Escrivao ou secretaria", "Oficial de justica ficticio", "Auxiliar do juizo"]
+    },
+    {
+      "demo": 12,
+      "slug": "promotor-ministerio-publico",
+      "label": "Promotor / Ministerio Publico",
+      "auth_profile": "ministerio_publico",
+      "dossier_code": "DMP",
+      "dossier_label": "Dossie Demonstrativo do Ministerio Publico",
+      "demo_email": "demo12@jus9tecnologia.com.br",
+      "entry_page": "app-demo-promotor.html",
+      "profiles_page": "app-perfis-promotor.html",
+      "subprofiles": ["Membro do MP ficticio", "Assessor", "Servidor de apoio", "Noticiante ficticio", "Vitima ficticia", "Orgao parceiro ficticio"]
+    },
+    {
+      "demo": 13,
+      "slug": "delegado-autoridade-policial",
+      "label": "Delegado / Autoridade Policial",
+      "auth_profile": "autoridade_policial",
+      "dossier_code": "DAP",
+      "dossier_label": "Dossie Demonstrativo de Autoridade Policial",
+      "demo_email": "demo13@jus9tecnologia.com.br",
+      "entry_page": "app-demo-delegado.html",
+      "profiles_page": "app-perfis-delegado.html",
+      "subprofiles": ["Delegado ficticio", "Escrivao", "Investigador", "Agente", "Vitima ficticia", "Testemunha ficticia", "Perito ou orgao parceiro ficticio"]
+    }
+  ]
+}

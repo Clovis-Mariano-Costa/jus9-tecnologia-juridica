@@ -1,5 +1,6 @@
 -- Jus 9 v1.3 - Dossies adaptados dos 13 MVPs
 -- Aplicar somente em ambiente PostgreSQL/Supabase revisado.
+-- Fonte publica canonica: data-publica/mvp-perfis.json
 
 create table if not exists adapted_dossiers (
   id uuid primary key default gen_random_uuid(),
