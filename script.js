@@ -455,16 +455,31 @@ window.jus9DemoLogin = function(form){
     if (q.indexOf('juiz') !== -1 || q.indexOf('promotor') !== -1 || q.indexOf('delegado') !== -1 || q.indexOf('autoridade') !== -1) {
       return 'Para autoridades, uso cautela maxima. DMG, DMP e DAP servem apenas para organizacao ficticia: gabinete, procedimento ministerial ou fluxo policial demonstrativo. Eu nao simulo decisao, denuncia, investigacao, ato oficial ou substituicao humana.';
     }
-    if (q.indexOf('modo') !== -1 || q.indexOf('jurista') !== -1 || q.indexOf('especialista') !== -1 || q.indexOf('social') !== -1) {
+    if (asksAboutCharlieModes(q)) {
       return 'Meus modos sao: Jurista, para doutrina, principios, fontes e metodo; Especialista MVP, para focar no dossie aberto; Publico/social, para linguagem simples e acolhedora; Governanca, para seguranca, sigilo, autoria, versionamento e limites.';
     }
     return '';
+  }
+
+  function asksAboutCharlieModes(q){
+    return q.indexOf('seus modos') !== -1 ||
+      q.indexOf('meus modos') !== -1 ||
+      /\b(quais|qual|liste|explique|apresente|descreva|mostre)\b.{0,32}\bmodos?\b/.test(q) ||
+      /\b(ative|ativar|usar|use|entre no|responda em)\b.{0,24}\bmodo (jurista|especialista|social|publico|público|governanca|governança)\b/.test(q);
+  }
+
+  function socialResponsibilityFallback(question){
+    var q = (question || '').toLowerCase();
+    if (q.indexOf('responsabilidade social') === -1 || q.indexOf('empresa') === -1) return '';
+    return 'Responsabilidade social empresarial e o compromisso de considerar os impactos da empresa sobre pessoas, comunidade e meio ambiente. Na pratica, envolve trabalho digno, respeito a diversidade, protecao de dados, relacao etica com fornecedores, reducao de impactos ambientais, transparencia e dialogo com a comunidade. Um bom proximo passo e mapear impactos, definir metas verificaveis e publicar resultados com honestidade, evitando tratar acao social apenas como publicidade.';
   }
 
   function textForMode(mode, code, focus, question){
     var cleanQuestion = question || 'pergunta demonstrativa';
     var identity = identityAnswer(cleanQuestion);
     if (identity) return identity;
+    var socialResponsibility = socialResponsibilityFallback(cleanQuestion);
+    if (socialResponsibility) return socialResponsibility;
     if (mode === 'governanca') {
       return 'Modo governanca: antes de agir, eu verifico identidade, contexto, classificacao publica/interna/sigilosa, riscos, versionamento, links, dados reais, segredos e necessidade de revisao humana. Para ' + code + ', o foco atual e: ' + focus + '. Pergunta recebida: "' + cleanQuestion + '".';
     }

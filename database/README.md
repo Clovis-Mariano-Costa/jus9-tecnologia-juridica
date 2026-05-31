@@ -48,3 +48,11 @@ O terceiro argumento `true` limita o contexto à transação atual.
 - permissões de perfil não substituem titularidade;
 - `clients` permanece restrito ao administrador nesta primeira versão até receber vínculo seguro por DAJ;
 - ativação remota exige teste com contas controladas e auditoria.
+
+## Validação local sem banco remoto
+
+Antes de aplicar a migração de titularidade em homologação, valide sua estrutura localmente:
+
+```bash
+node database/scripts/validate-rls-structure.js
+```
