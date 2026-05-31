@@ -169,6 +169,7 @@ window.jus9DemoLogin = function(form){
 (function(){
   var storageKey = 'jus9MvpDossiersV1';
   var sessionKey = 'jus9DemoSessionV1';
+  var workflowStorageKey = 'jus9MvpWorkflowChecksV1';
   var adaptedProfiles = {
     'app-demo-advogar.html': { code:'DAJ', label:'Dossie Administrativo Juridico', area:'Advocacia / Defensoria' },
     'app-demo-professor.html': { code:'DAA', label:'Dossie Academico de Aula / Aluno', area:'Professor / Academia' },
@@ -183,6 +184,33 @@ window.jus9DemoLogin = function(form){
     'app-demo-juiz.html': { code:'DMG', label:'Dossie Demonstrativo de Magistratura', area:'Juiz / Magistrado' },
     'app-demo-promotor.html': { code:'DMP', label:'Dossie Demonstrativo do Ministerio Publico', area:'Promotor / Ministerio Publico' },
     'app-demo-delegado.html': { code:'DAP', label:'Dossie Demonstrativo de Autoridade Policial', area:'Delegado / Autoridade Policial' }
+  };
+  var priorityWorkflows = {
+    DAJ: {
+      title: 'Fluxo DAJ - atendimento juridico ficticio',
+      intro: 'Organize a triagem, a classificacao documental, os prazos e a revisao humana do dossie.',
+      steps: ['Triagem inicial ficticia', 'Responsavel titular demonstrativo', 'Classificacao documental', 'Agenda e prazos', 'Revisao humana registrada']
+    },
+    DEJI: {
+      title: 'Fluxo DEJI - demanda empresarial ficticia',
+      intro: 'Organize contrato, risco, compliance, responsabilidade social e aprovacao humana.',
+      steps: ['Triagem da demanda interna', 'Contrato ou documento ficticio', 'Matriz preliminar de riscos', 'Compliance e responsabilidade social', 'Revisao humana registrada']
+    },
+    DAA: {
+      title: 'Fluxo DAA - aula e acompanhamento academico',
+      intro: 'Organize aula, turma, materiais, atividades e revisao docente.',
+      steps: ['Objetivo da aula', 'Turma ou perfil ficticio', 'Plano didatico', 'Materiais e referencias publicas', 'Revisao docente registrada']
+    },
+    DEJ: {
+      title: 'Fluxo DEJ - plano de estudos juridicos',
+      intro: 'Organize meta, disciplina, materiais, revisoes e acompanhamento do aprendizado.',
+      steps: ['Meta de aprendizagem', 'Disciplina em estudo', 'Roteiro semanal', 'Fontes publicas e materiais', 'Revisao do progresso']
+    },
+    DPJ: {
+      title: 'Fluxo DPJ - pericia demonstrativa',
+      intro: 'Organize quesitos, metodo, diligencias, anexos ficticios e revisao tecnica.',
+      steps: ['Escopo pericial ficticio', 'Quesitos demonstrativos', 'Metodo e diligencias', 'Anexos e cadeia tecnica', 'Revisao tecnica registrada']
+    }
   };
 
   function readJson(key, fallback){
@@ -320,9 +348,69 @@ window.jus9DemoLogin = function(form){
     render();
   }
 
+  function initPriorityWorkflow(){
+    var file = location.pathname.split('/').pop() || '';
+    var profile = adaptedProfiles[file];
+    var workflow = profile && priorityWorkflows[profile.code];
+    var main = document.querySelector('.demo-main');
+    if (!workflow || !main || main.querySelector('[data-mvp-workflow]')) return;
+
+    var checks = readJson(workflowStorageKey, {});
+    var selected = checks[profile.code] || [];
+    var panel = document.createElement('section');
+    panel.className = 'demo-card mvp-workflow-card';
+    panel.setAttribute('data-mvp-workflow', profile.code);
+    panel.innerHTML =
+      '<div class="eyebrow">Fluxo demonstrativo aprofundado</div>' +
+      '<h2>' + workflow.title + '</h2>' +
+      '<p>' + workflow.intro + ' Os marcadores ficam somente neste navegador.</p>' +
+      '<div class="mvp-workflow-list"></div>' +
+      '<p class="fine-note" data-mvp-workflow-status></p>' +
+      '<div class="link-actions"><a href="' + aiPageFor(profile.code) + '">Abrir perguntas guiadas na Charlie Echo</a><button type="button" data-mvp-workflow-clear>Limpar checklist local</button></div>';
+    var institutionalLinks = main.querySelector('.links-semanticos-jus9-v1-5');
+    if (institutionalLinks) main.insertBefore(panel, institutionalLinks);
+    else main.appendChild(panel);
+
+    var list = panel.querySelector('.mvp-workflow-list');
+    var status = panel.querySelector('[data-mvp-workflow-status]');
+
+    function save(){
+      checks[profile.code] = Array.prototype.slice.call(list.querySelectorAll('input:checked')).map(function(input){ return input.value; });
+      writeJson(workflowStorageKey, checks);
+      status.textContent = checks[profile.code].length + ' de ' + workflow.steps.length + ' etapas marcadas localmente.';
+    }
+
+    workflow.steps.forEach(function(step, index){
+      var label = document.createElement('label');
+      label.className = 'mvp-workflow-step';
+      label.innerHTML = '<input type="checkbox" value="' + index + '"><span></span>';
+      label.querySelector('span').textContent = (index + 1) + '. ' + step;
+      label.querySelector('input').checked = selected.indexOf(String(index)) !== -1;
+      label.querySelector('input').addEventListener('change', save);
+      list.appendChild(label);
+    });
+
+    panel.querySelector('[data-mvp-workflow-clear]').addEventListener('click', function(){
+      list.querySelectorAll('input').forEach(function(input){ input.checked = false; });
+      save();
+    });
+    save();
+  }
+
+  function aiPageFor(code){
+    return {
+      DAJ: 'app-ia-profissional.html',
+      DAA: 'app-ia-professor.html',
+      DEJ: 'app-ia-estudante.html',
+      DPJ: 'app-ia-perito.html',
+      DEJI: 'app-ia-empresa.html'
+    }[code] || 'app-ia-profissional.html';
+  }
+
   document.addEventListener('DOMContentLoaded', function(){
     renderSessionNotice();
     initAdaptedDossier();
+    initPriorityWorkflow();
   });
 })();
 
@@ -582,5 +670,62 @@ window.jus9DemoLogin = function(form){
       input.value = button.getAttribute('data-charlie-prompt') || '';
       form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
     });
+  });
+})();
+
+(function(){
+  var guidedPrompts = {
+    DAJ: [
+      'Organize uma triagem inicial para atendimento juridico ficticio sem solicitar dados reais.',
+      'Como classificar um documento sigiloso no DAJ sem expor o cofre?',
+      'Crie um checklist demonstrativo de prazos e revisao humana para um DAJ.'
+    ],
+    DEJI: [
+      'Crie um roteiro de revisao de contrato empresarial ficticio.',
+      'Fale sobre responsabilidade social de uma empresa e sugira metas verificaveis.',
+      'Ofereca o link clicavel oficial da ANPD e explique brevemente o destino.'
+    ],
+    DAA: [
+      'Crie um plano de aula demonstrativo sobre LGPD para uma turma ficticia.',
+      'Sugira uma rubrica simples para avaliar um trabalho academico ficticio.',
+      'Ofereca fontes publicas confiaveis para uma aula introdutoria de cidadania digital.'
+    ],
+    DEJ: [
+      'Monte um plano de estudo demonstrativo de 30 minutos sobre Direito Constitucional.',
+      'Explique LGPD em linguagem simples para estudante.',
+      'Sugira fontes publicas confiaveis para iniciar um estudo juridico.'
+    ],
+    DPJ: [
+      'No DPJ do Perito Judicial, quais campos devo conferir antes de iniciar uma pericia demonstrativa?',
+      'No DPJ do Perito Judicial, crie um checklist ficticio de quesitos, metodo, diligencias e anexos.',
+      'No DPJ do Perito Judicial, como preservar cadeia tecnica e revisao humana em uma pericia demonstrativa?'
+    ]
+  };
+
+  function initGuidedPrompts(card){
+    var code = card.getAttribute('data-ai-code') || '';
+    var prompts = guidedPrompts[code];
+    var input = card.querySelector('[data-ai-chat-input]');
+    if (!prompts || !input || card.querySelector('[data-ai-guided-prompts]')) return;
+    var panel = document.createElement('div');
+    panel.className = 'ai-guided-prompts';
+    panel.setAttribute('data-ai-guided-prompts', code);
+    panel.innerHTML = '<strong>Perguntas guiadas do ' + code + '</strong><div class="link-actions"></div>';
+    var actions = panel.querySelector('.link-actions');
+    prompts.forEach(function(prompt){
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = prompt;
+      button.addEventListener('click', function(){
+        input.value = prompt;
+        input.focus();
+      });
+      actions.appendChild(button);
+    });
+    card.insertBefore(panel, card.querySelector('[data-ai-chat-window]'));
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('[data-ai-chat]').forEach(initGuidedPrompts);
   });
 })();

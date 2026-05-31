@@ -34,6 +34,29 @@ const sharedScript = await fs.readFile(new URL("../script.js", import.meta.url),
 assert(sharedScript.includes("https://charlieecho.jus9tecnologia.com.br/api/ia"), "chat compartilhado nao aponta para API publica");
 assert(sharedScript.includes("asksAboutCharlieModes"), "roteamento explicito de modos ausente");
 assert(sharedScript.includes("socialResponsibilityFallback"), "fallback tematico empresarial ausente");
+assert(sharedScript.includes("initPriorityWorkflow"), "fluxos aprofundados compartilhados ausentes");
+assert(sharedScript.includes("initGuidedPrompts"), "perguntas guiadas compartilhadas ausentes");
+
+for (const code of ["DAJ", "DAA", "DEJ", "DPJ", "DEJI"]) {
+  assert(sharedScript.includes(`${code}: [`), `${code}: perguntas guiadas ausentes`);
+  assert(sharedScript.includes(`${code}: {`), `${code}: fluxo aprofundado ausente`);
+}
+
+const priorityAiPages = {
+  DAJ: "app-ia-profissional.html",
+  DAA: "app-ia-professor.html",
+  DEJ: "app-ia-estudante.html",
+  DPJ: "app-ia-perito.html",
+  DEJI: "app-ia-empresa.html",
+};
+
+for (const [code, page] of Object.entries(priorityAiPages)) {
+  const html = await fs.readFile(new URL(`../${page}`, import.meta.url), "utf8");
+  assert(html.includes("data-ai-chat"), `${code}: chat ausente em ${page}`);
+  assert(html.includes(`data-ai-code="${code}"`), `${code}: codigo incorreto em ${page}`);
+  console.log(`AI_PAGE_OK ${code} page=${page}`);
+}
 
 console.log("STATIC_OK chat-compartilhado-13-mvps");
+console.log("STATIC_OK fluxos-aprofundados-DAJ-DAA-DEJ-DPJ-DEJI");
 console.log("PUBLIC_MVPS_REGRESSION_OK");

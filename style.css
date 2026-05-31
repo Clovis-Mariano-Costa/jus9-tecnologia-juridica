@@ -678,6 +678,10 @@ h3{font-size:24px}
 .local-dossier-form .form-actions{grid-column:1/-1}.local-dossier-list{display:grid;gap:9px;margin-top:12px}
 .local-dossier-row{display:flex;gap:12px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;border:1px solid rgba(15,23,42,.10);border-radius:14px;padding:12px;background:#fff}
 .local-dossier-row p{margin:.35rem 0 0;font-size:.9rem}
+.mvp-workflow-card h2{color:#0b1728;margin:.45rem 0}.mvp-workflow-card p{color:#51627a}
+.mvp-workflow-list{display:grid;gap:9px;margin-top:14px}
+.mvp-workflow-step{display:flex;gap:10px;align-items:center;border:1px solid rgba(15,23,42,.10);border-radius:14px;padding:12px;background:#fff;color:#102033;font-weight:800}
+.mvp-workflow-step input{width:18px;height:18px;accent-color:#8a5a12}
 .alert-config{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 .alert-row{background:#fff;border:1px solid rgba(15,23,42,.10);border-radius:18px;padding:16px}
 .alert-row strong{color:#0b1728}.alert-row span{display:block;color:#51627a;margin-top:4px}
@@ -1207,6 +1211,9 @@ button,input,select,textarea{max-width:100%}
   background:#fff;
   resize:vertical;
 }
+.ai-guided-prompts{margin:14px 0;padding:14px;border:1px solid rgba(197,139,47,.24);border-radius:16px;background:#fffdf8;color:#102033}
+.ai-guided-prompts .link-actions{margin-bottom:0}
+.ai-guided-prompts button{text-align:left}
 
 /* Charlie Echo - cockpit profissional */
 .charlie-workbench-page{
