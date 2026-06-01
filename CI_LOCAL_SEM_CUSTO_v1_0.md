@@ -24,6 +24,9 @@ node scripts/run-local-ci.mjs
 - política `fail closed` do backend local;
 - regressão pública ao vivo da Charlie Echo.
 
+- auditoria das seis paginas publicas de instalacao e das duas PWAs completas.
+- validacao dos QR Codes publicos mantidos no portal de Investimentos.
+
 ## GitHub Actions
 
 GitHub Actions permanece opcional. Em repositórios privados, a execução em runners hospedados pelo GitHub consome franquia mensal e pode gerar cobrança quando excedida, dependendo da configuração da conta. Por isso, esta etapa usa execução local.

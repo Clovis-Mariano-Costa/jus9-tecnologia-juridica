@@ -47,6 +47,18 @@ const checks = [
     cwd: path.join(githubRoot, "charlieecho-jus9-tecnologia-juridica"),
     command: process.execPath,
     args: ["tests/charlie-echo-public-regression.mjs"]
+  },
+  {
+    label: "Paginas publicas de instalacao",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-public-install-pages.mjs"]
+  },
+  {
+    label: "QR Codes publicos",
+    cwd: path.join(githubRoot, "investimentos-jus9-tecnologia-juridica"),
+    command: process.execPath,
+    args: ["scripts/validate-public-qr-codes.mjs"]
   }
 ];
 
@@ -64,4 +76,4 @@ for (const check of checks) {
   }
 }
 
-console.log("\nLOCAL_CI_OK portal,rls,sql-homologacao,worker-auth,backend-local,charlie-echo");
+console.log("\nLOCAL_CI_OK portal,rls,sql-homologacao,worker-auth,backend-local,charlie-echo,instalacao-publica,qr-codes");

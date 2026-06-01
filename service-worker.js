@@ -4,29 +4,40 @@
   Não armazena dados sensíveis. Não altera login, backend ou rotas protegidas.
 */
 
-const JUS9_CACHE = 'jus9-pwa-v3-2026-06-01';
+const JUS9_CACHE = 'jus9-pwa-v4-2026-06-01';
 const JUS9_ASSETS = [
   '/',
   '/index.html',
+  '/mvp.html',
+  '/mvp-o-que-ja-funciona.html',
+  '/demo-01-advogado-defensor.html',
+  '/app-demo-advogar.html',
+  '/app-agenda.html',
+  '/app-clientes.html',
+  '/app-daj.html',
+  '/app-prazos.html',
+  '/app-documentos.html',
+  '/app-whatsapp.html',
+  '/app-ia-profissional.html',
+  '/instalar-app',
+  '/instalar-app.html',
+  '/offline.html',
   '/style.css',
   '/script.js',
   '/manifest.webmanifest',
+  '/assets/js/whatsapp-local-demo.js',
   '/assets/favicon.svg',
   '/assets/jus9-logo.svg',
-  '/mvp.html',
-  '/demo-01-advogado-defensor.html',
-  '/mvp-o-que-ja-funciona.html',
-  '/instalar-app',
-  '/instalar-app.html'
+  '/assets/css/visual-jus9-fase-final.css'
 ];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(JUS9_CACHE)
-      .then((cache) => cache.addAll(JUS9_ASSETS))
-      .then(() => self.skipWaiting())
-      .catch(() => self.skipWaiting())
+    caches.open(JUS9_CACHE).then((cache) =>
+      Promise.allSettled(JUS9_ASSETS.map((asset) => cache.add(asset)))
+    )
   );
+  self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
@@ -38,21 +49,43 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  const request = event.request;
-  const url = new URL(request.url);
+  if (event.request.method !== 'GET') return;
 
-  if (request.method !== 'GET') return;
-  if (url.pathname.startsWith('/auth/') || url.pathname.startsWith('/api/')) return;
+  const requestUrl = new URL(event.request.url);
+  const sameOrigin = requestUrl.origin === self.location.origin;
+  const acceptsHtml = event.request.mode === 'navigate' ||
+    (event.request.headers.get('accept') || '').includes('text/html');
+
+  if (!sameOrigin) return;
+  if (requestUrl.pathname.startsWith('/auth/') || requestUrl.pathname.startsWith('/api/')) return;
+
+  if (acceptsHtml) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          const copy = response.clone();
+          if (response.ok) {
+            caches.open(JUS9_CACHE).then((cache) => cache.put(event.request, copy));
+          }
+          return response;
+        })
+        .catch(() => caches.match(event.request).then((cached) => cached || caches.match('/offline.html')))
+    );
+    return;
+  }
 
   event.respondWith(
-    fetch(request)
-      .then((response) => {
-        const copy = response.clone();
-        if (response.ok && url.origin === self.location.origin) {
-          caches.open(JUS9_CACHE).then((cache) => cache.put(request, copy));
-        }
-        return response;
-      })
-      .catch(() => caches.match(request).then((cached) => cached || caches.match('/index.html')))
+    caches.match(event.request).then((cached) => {
+      if (cached) return cached;
+      return fetch(event.request)
+        .then((response) => {
+          const copy = response.clone();
+          if (response.ok) {
+            caches.open(JUS9_CACHE).then((cache) => cache.put(event.request, copy));
+          }
+          return response;
+        })
+        .catch(() => Response.error());
+    })
   );
 });
