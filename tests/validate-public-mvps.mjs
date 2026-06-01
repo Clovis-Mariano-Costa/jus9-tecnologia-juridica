@@ -32,6 +32,7 @@ for (const profile of catalog.profiles) {
 
 const sharedScript = await fs.readFile(new URL("../script.js", import.meta.url), "utf8");
 const teamPage = await fs.readFile(new URL("../app-equipe.html", import.meta.url), "utf8");
+const installPage = await fs.readFile(new URL("../instalar-app.html", import.meta.url), "utf8");
 assert(sharedScript.includes("https://charlieecho.jus9tecnologia.com.br/api/ia"), "chat compartilhado nao aponta para API publica");
 assert(sharedScript.includes("asksAboutCharlieModes"), "roteamento explicito de modos ausente");
 assert(sharedScript.includes("socialResponsibilityFallback"), "fallback tematico empresarial ausente");
@@ -43,6 +44,8 @@ assert(sharedScript.includes("jus9MvpTeamMembersV1"), "persistencia local de equ
 assert(sharedScript.includes("jus9MvpTeamAuditV1"), "auditoria local de equipe ausente");
 assert(teamPage.includes("data-team-page"), "pagina compartilhada de equipe sem raiz");
 assert(teamPage.includes("data-team-form"), "pagina compartilhada de equipe sem formulario");
+assert(installPage.includes("install-app-green-card"), "card da Jus 9 Verde ausente na pagina de instalacao");
+assert(installPage.includes("https://jus9verde.jus9tecnologia.com.br/instalar-app.html"), "link de instalacao da Jus 9 Verde ausente");
 
 for (const code of expectedCodes) {
   assert(sharedScript.includes(`${code}: [`), `${code}: perguntas guiadas ausentes`);
@@ -109,4 +112,5 @@ console.log("STATIC_OK fluxos-aprofundados-13-mvps");
 console.log("STATIC_OK equipe-local-13-mvps");
 console.log("STATIC_OK cache-bust-equipe-13-mvps");
 console.log("STATIC_OK redes-sociais-workspace-13-mvps");
+console.log("STATIC_OK card-instalacao-jus9-verde");
 console.log("PUBLIC_MVPS_REGRESSION_OK");
