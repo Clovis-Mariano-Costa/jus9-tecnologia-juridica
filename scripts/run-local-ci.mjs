@@ -19,6 +19,18 @@ const checks = [
     args: ["tests/validate-rls-controlled-matrix.mjs"]
   },
   {
+    label: "Estrutura SQL de RLS",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["database/scripts/validate-rls-structure.js"]
+  },
+  {
+    label: "Pacote SQL de homologacao ficticia",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["database/scripts/validate-homologation-package.js"]
+  },
+  {
     label: "Autenticacao do Worker",
     cwd: portalRoot,
     command: process.execPath,
@@ -52,4 +64,4 @@ for (const check of checks) {
   }
 }
 
-console.log("\nLOCAL_CI_OK portal,rls,worker-auth,backend-local,charlie-echo");
+console.log("\nLOCAL_CI_OK portal,rls,sql-homologacao,worker-auth,backend-local,charlie-echo");

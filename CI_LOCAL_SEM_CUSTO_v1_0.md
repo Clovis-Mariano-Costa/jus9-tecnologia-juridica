@@ -18,6 +18,8 @@ node scripts/run-local-ci.mjs
 
 - portal público e 13 MVPs;
 - matriz controlada de RLS;
+- estrutura SQL com tabelas e políticas RLS esperadas;
+- pacote SQL de homologação fictícia para `DAJ` e `DEJI`;
 - autenticação do Worker;
 - política `fail closed` do backend local;
 - regressão pública ao vivo da Charlie Echo.
