@@ -46,6 +46,7 @@ assert(teamPage.includes("data-team-page"), "pagina compartilhada de equipe sem 
 assert(teamPage.includes("data-team-form"), "pagina compartilhada de equipe sem formulario");
 assert(installPage.includes("install-app-green-card"), "card da Jus 9 Verde ausente na pagina de instalacao");
 assert(installPage.includes("https://jus9verde.jus9tecnologia.com.br/instalar-app.html"), "link de instalacao da Jus 9 Verde ausente");
+assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de instalacao sem atualizacao imediata do estilo verde");
 
 for (const code of expectedCodes) {
   assert(sharedScript.includes(`${code}: [`), `${code}: perguntas guiadas ausentes`);
