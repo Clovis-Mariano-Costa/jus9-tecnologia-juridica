@@ -29,7 +29,7 @@
     investimentoLink.setAttribute('data-jus9-investimentos-menu', 'true');
 
     const investidoresLink = document.createElement('a');
-    investidoresLink.href = 'https://investimentos.jus9tecnologia.com.br/web-summit';
+    investidoresLink.href = 'https://investimentos.jus9tecnologia.com.br/';
     investidoresLink.textContent = 'Investidores';
     investidoresLink.setAttribute('data-jus9-investidores-menu', 'true');
 

@@ -1,5 +1,8 @@
 # Prospecção de Investimentos — Jus 9 Tecnologia Jurídica v1
 
+## Atualizacao financeira - ciclo pos-evento
+A fase de captacao emergencial pre-evento foi encerrada por decisao institucional. O mapa estrutural renovavel de 12 meses passa a usar R$ 706 mil como cenario-base: R$ 208 mil em 0 a 90 dias, R$ 226 mil em 90 a 180 dias e R$ 272 mil em 180 a 365 dias. Valores de viagem, evento e publicidade permanecem como historico e exigem nova cotacao antes de qualquer reutilizacao.
+
 ## Estratégia escolhida
 Conservadora nos custos e ambiciosa na visão.
 

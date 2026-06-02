@@ -1,4 +1,7 @@
 <!--
+
+## Atualizacao financeira - ciclo pos-evento
+A Jus 9 encerrou a fase de captacao emergencial pre-evento. O cenario-base estrutural renovavel para 12 meses e de R$ 706 mil, distribuido em R$ 208 mil para 0 a 90 dias, R$ 226 mil para 90 a 180 dias e R$ 272 mil para 180 a 365 dias. Calculos logisticos anteriores permanecem apenas como memoria de planejamento e devem ser renovados por cotacao real.
 Jus 9 Tecnologia Jurídica
 Repositório: jus9-tecnologia-juridica
 Software livre com autoria preservada.
