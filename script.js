@@ -21,32 +21,32 @@
     document.head.appendChild(theme);
   }
 
-  if (menu && !menu.querySelector('[data-jus9-investimentos-menu]')) {
+  if (menu) {
+    Array.from(menu.querySelectorAll('a')).forEach((a) => {
+      const label = (a.textContent || '').trim().toLowerCase();
+      if (label === 'investidores') a.remove();
+      if (label === 'equipe') a.href = 'https://equipe.jus9tecnologia.com.br/';
+    });
+
     const segurancaLink = Array.from(menu.querySelectorAll('a')).find((a) => (a.textContent || '').trim().toLowerCase().includes('segurança'));
-    const investimentoLink = document.createElement('a');
-    investimentoLink.href = 'https://investimentos.jus9tecnologia.com.br/';
-    investimentoLink.textContent = 'Investimentos';
-    investimentoLink.setAttribute('data-jus9-investimentos-menu', 'true');
 
-    const livrosLink = document.createElement('a');
-    livrosLink.href = 'https://livros.jus9tecnologia.com.br/';
-    livrosLink.textContent = 'Livros e Doutrina';
-    livrosLink.setAttribute('data-jus9-livros-menu', 'true');
-
-    const instalarLink = document.createElement('a');
-    instalarLink.href = '/instalar-app';
-    instalarLink.textContent = 'Instalar App';
-    instalarLink.setAttribute('data-jus9-instalar-menu', 'true');
-
-    if (segurancaLink) {
-      menu.insertBefore(investimentoLink, segurancaLink);
-      menu.insertBefore(livrosLink, segurancaLink);
-      menu.insertBefore(instalarLink, segurancaLink);
-    } else {
-      menu.appendChild(investimentoLink);
-      menu.appendChild(livrosLink);
-      menu.appendChild(instalarLink);
+    function ensureMenuLink(text, href, attr) {
+      const exists = Array.from(menu.querySelectorAll('a')).some((a) => {
+        return (a.textContent || '').trim().toLowerCase() === text.toLowerCase() || a.href === href;
+      });
+      if (exists) return;
+      const link = document.createElement('a');
+      link.href = href;
+      link.textContent = text;
+      link.setAttribute(attr, 'true');
+      if (segurancaLink) menu.insertBefore(link, segurancaLink);
+      else menu.appendChild(link);
     }
+
+    ensureMenuLink('Investimentos', 'https://investimentos.jus9tecnologia.com.br/', 'data-jus9-investimentos-menu');
+    ensureMenuLink('Livros e Doutrina', 'https://livros.jus9tecnologia.com.br/', 'data-jus9-livros-menu');
+    ensureMenuLink('Universidade do Futuro', 'https://universidadedofuturo.jus9tecnologia.com.br/', 'data-jus9-universidade-menu');
+    ensureMenuLink('Instalar App', '/instalar-app', 'data-jus9-instalar-menu');
   }
 
   if (toggle && menu) {
