@@ -22,29 +22,29 @@
   }
 
   if (menu && !menu.querySelector('[data-jus9-investimentos-menu]')) {
-    const mvpLink = Array.from(menu.querySelectorAll('a')).find((a) => (a.textContent || '').trim().toLowerCase().includes('mvp'));
+    const segurancaLink = Array.from(menu.querySelectorAll('a')).find((a) => (a.textContent || '').trim().toLowerCase().includes('segurança'));
     const investimentoLink = document.createElement('a');
     investimentoLink.href = 'https://investimentos.jus9tecnologia.com.br/';
     investimentoLink.textContent = 'Investimentos';
     investimentoLink.setAttribute('data-jus9-investimentos-menu', 'true');
 
-    const investidoresLink = document.createElement('a');
-    investidoresLink.href = 'https://investimentos.jus9tecnologia.com.br/';
-    investidoresLink.textContent = 'Investidores';
-    investidoresLink.setAttribute('data-jus9-investidores-menu', 'true');
+    const livrosLink = document.createElement('a');
+    livrosLink.href = 'https://livros.jus9tecnologia.com.br/';
+    livrosLink.textContent = 'Livros e Doutrina';
+    livrosLink.setAttribute('data-jus9-livros-menu', 'true');
 
     const instalarLink = document.createElement('a');
     instalarLink.href = '/instalar-app';
     instalarLink.textContent = 'Instalar App';
     instalarLink.setAttribute('data-jus9-instalar-menu', 'true');
 
-    if (mvpLink && mvpLink.nextSibling) {
-      menu.insertBefore(investimentoLink, mvpLink.nextSibling);
-      menu.insertBefore(investidoresLink, investimentoLink.nextSibling);
-      menu.insertBefore(instalarLink, investidoresLink.nextSibling);
+    if (segurancaLink) {
+      menu.insertBefore(investimentoLink, segurancaLink);
+      menu.insertBefore(livrosLink, segurancaLink);
+      menu.insertBefore(instalarLink, segurancaLink);
     } else {
       menu.appendChild(investimentoLink);
-      menu.appendChild(investidoresLink);
+      menu.appendChild(livrosLink);
       menu.appendChild(instalarLink);
     }
   }
