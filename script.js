@@ -717,7 +717,7 @@ window.jus9DemoLogin = function(form){
     panel.className = 'chat-room-panel mvp-chat-room-panel';
     panel.setAttribute('data-mvp-room-panel', code);
     panel.innerHTML = '<div><strong>Salas da Charlie Echo</strong><p>Memoria curta local por sala demonstrativa.</p></div><div class="chat-room-actions"><button class="mini primary" type="button" data-room-new>Nova sala</button><button class="mini" type="button" data-room-rename>Renomear sala</button><button class="mini" type="button" data-room-archive>Arquivar</button><button class="mini" type="button" data-room-delete>Excluir</button></div><div class="chat-room-list" data-room-list></div>';
-    var target = card.querySelector('[data-ai-chat-window]'); if(target) card.insertBefore(panel, target);
+    var target = card.querySelector('[data-ai-chat-window]'); if(target) target.insertBefore(panel, target.firstChild);
     function render(){ var data = loadChatRooms(code), list = panel.querySelector('[data-room-list]'); list.innerHTML = data.rooms.filter(function(r){ return r.status !== 'deleted'; }).map(function(r){ return '<button class="chat-room-pill' + (r.id===data.activeId?' active':'') + (r.status==='archived'?' archived':'') + '" type="button" data-id="' + r.id + '">' + (r.status==='archived' ? r.title + ' (arquivada)' : r.title) + '</button>'; }).join(''); list.querySelectorAll('[data-id]').forEach(function(btn){ btn.addEventListener('click', function(){ data.activeId = btn.getAttribute('data-id'); saveChatRooms(code, data); render(); }); }); }
     panel.querySelector('[data-room-new]').addEventListener('click', function(){ var data = loadChatRooms(code), room = createChatRoom(code, 'Sala ' + code + ' ' + (data.rooms.length + 1)); data.rooms.unshift(room); data.activeId = room.id; saveChatRooms(code, data); render(); });
     panel.querySelector('[data-room-rename]').addEventListener('click', function(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); if(!room) return; var title = prompt('Novo nome da sala:', room.title || 'Sala ' + code); if(!title) return; room.title = title.trim().slice(0, 80) || room.title; room.updatedAt = new Date().toISOString(); saveChatRooms(code, data); render(); });
@@ -818,6 +818,10 @@ window.jus9DemoLogin = function(form){
       if (!localIdentity) {
         try {
           var answer = await askCharlieApi(mode, code, focus, contextualQuestion, room);
+          if(asksPreviousQuestion(question)){
+            var recall = previousQuestionAnswer(question, room);
+            if(recall) answer = recall;
+          }
           echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(answer);
           rememberChatExchange(code, question, answer);
         } catch (error) {

@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
+const expectedScriptVersion = "script.js?v=20260604-charlie-rooms-v4-4";
 
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), "utf8");
@@ -11,7 +12,7 @@ const checks = [
   {
     name: "chat MVP tem memoria curta por sala",
     file: "script.js",
-    patterns: ["chatRoomKey", "rememberChatExchange", "buildQuestionWithRoom", "previousQuestionAnswer"],
+    patterns: ["chatRoomKey", "rememberChatExchange", "buildQuestionWithRoom", "previousQuestionAnswer", "target.insertBefore(panel, target.firstChild)"],
   },
   {
     name: "chat MVP envia message para API da Charlie",
@@ -47,6 +48,20 @@ for (const check of checks) {
     if (!text.includes(pattern)) {
       failures.push(`${check.name}: ausente "${pattern}" em ${check.file}`);
     }
+  }
+}
+
+const appIaFiles = fs.readdirSync(root).filter((name) => /^app-ia-.*\.html$/.test(name));
+if (appIaFiles.length !== 13) {
+  failures.push(`esperados 13 arquivos app-ia-*.html, encontrados ${appIaFiles.length}`);
+}
+for (const file of appIaFiles) {
+  const html = read(file);
+  if (!html.includes(expectedScriptVersion)) {
+    failures.push(`${file}: versao de script diferente de ${expectedScriptVersion}`);
+  }
+  if (!html.includes("data-ai-chat")) {
+    failures.push(`${file}: ausente data-ai-chat`);
   }
 }
 
