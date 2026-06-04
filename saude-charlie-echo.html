@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Saúde da Charlie Echo | Jus 9 Tecnologia Jurídica</title>
+  <meta name="description" content="Painel público simples de saúde operacional da Charlie Echo nos módulos da Jus 9.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
+  <meta name="theme-color" content="#07111f">
+  <link rel="manifest" href="manifest.webmanifest">
+</head>
+<body>
+<div class="jus9-autoria-topo" role="note" style="font-size:.82rem;line-height:1.4;text-align:center;padding:.45rem .75rem;background:rgba(15,23,42,.94);color:#f8fafc;letter-spacing:.01em;">Jus 9 Tecnologia Jurídica - software livre, autoria preservada.</div>
+<header class="header"><div class="container nav"><a href="index.html" class="logo"><img src="assets/jus9-logo.svg" alt="Jus 9"></a><nav class="menu"><a href="index.html">Início</a><a href="app-ia-profissional.html#chat-ia">Charlie Echo</a><a href="manual-charlie-echo.html">Manual Charlie</a><a href="versionamento.html">Versionamento</a><a href="mvp.html#demos-jus9">MVPs</a></nav><a class="cta" href="app-ia-profissional.html#chat-ia">Abrir chat</a><button class="mobile-toggle" aria-label="Abrir menu">☰</button></div></header>
+<main class="doc-page"><div class="container"><div class="doc-shell">
+  <div class="eyebrow">Painel de saúde</div>
+  <h1>Saúde operacional da Charlie Echo</h1>
+  <p class="lead">Visão pública e simples dos recursos que precisam permanecer vivos nos módulos da Charlie Echo.</p>
+
+  <div class="charlie-health-grid">
+    <article class="charlie-health-card"><strong>API Charlie Echo</strong><span id="health-api" class="charlie-status-warn">Verificando...</span><p>Consulta pública ao endpoint seguro da Charlie.</p></article>
+    <article class="charlie-health-card"><strong>Salas de chat</strong><span class="charlie-status-ok">Ativas localmente</span><p>Nova sala, memória curta, arquivar e excluir por sessão.</p></article>
+    <article class="charlie-health-card"><strong>Memória persistente</strong><span class="charlie-status-warn">Agendada para revisão</span><p>Usuário, dispositivo, datas e banco real ficam para pacote futuro.</p></article>
+    <article class="charlie-health-card"><strong>Links e downloads</strong><span class="charlie-status-ok">Ativos</span><p>Links HTTPS clicáveis e pacote local em Markdown nos chats MVP.</p></article>
+    <article class="charlie-health-card"><strong>OCR e anexos</strong><span class="charlie-status-ok">Ativo na casa da Charlie</span><p>Leitura local de imagens/PDFs quando o módulo possui anexos.</p></article>
+    <article class="charlie-health-card"><strong>Protocolo 4.1</strong><span class="charlie-status-ok">Ativo</span><p>Resposta por intenção: explicar, resumir, listar, minuta, link, aula e continuidade.</p></article>
+  </div>
+
+  <h2>Checklist de teste vivo</h2>
+  <ul class="charlie-manual-list">
+    <li>Perguntar: "Fale sobre responsabilidade social de uma empresa."</li>
+    <li>Perguntar em seguida: "Qual foi minha pergunta anterior?"</li>
+    <li>Pedir: "Me mande o link do Tribunal de Justiça de Santa Catarina."</li>
+    <li>Usar os botões: Melhorar resposta, Transformar em pacote, Nova sala, Arquivar e Excluir.</li>
+    <li>Testar anexos/OCR na casa da Charlie Echo quando disponível.</li>
+  </ul>
+</div></div></main>
+<footer class="jus9-autoria-rodape" role="contentinfo" style="font-size:.85rem;line-height:1.5;text-align:center;padding:1rem .75rem;margin-top:2rem;background:rgba(15,23,42,.96);color:#f8fafc;">© Jus 9 Tecnologia Jurídica - Charlie Echo com governança humana.</footer>
+<script src="script.js"></script>
+<script>
+(function(){
+  var el = document.getElementById('health-api');
+  if(!el) return;
+  fetch('https://charlieecho.jus9tecnologia.com.br/api/ia')
+    .then(function(res){ return res.ok ? res.json() : Promise.reject(new Error('HTTP ' + res.status)); })
+    .then(function(data){ el.textContent = data && data.ok ? 'Online' : 'Respondendo com ressalva'; el.className = data && data.ok ? 'charlie-status-ok' : 'charlie-status-warn'; })
+    .catch(function(){ el.textContent = 'Não confirmado agora'; el.className = 'charlie-status-warn'; });
+})();
+</script>
+</body>
+</html>

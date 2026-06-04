@@ -46,6 +46,8 @@
     ensureMenuLink('Investimentos', 'https://investimentos.jus9tecnologia.com.br/', 'data-jus9-investimentos-menu');
     ensureMenuLink('Livros e Doutrina', 'https://livros.jus9tecnologia.com.br/', 'data-jus9-livros-menu');
     ensureMenuLink('Universidade do Futuro', 'https://universidadedofuturo.jus9tecnologia.com.br/', 'data-jus9-universidade-menu');
+    ensureMenuLink('Saúde Charlie', '/saude-charlie-echo.html', 'data-jus9-charlie-health-menu');
+    ensureMenuLink('Manual Charlie', '/manual-charlie-echo.html', 'data-jus9-charlie-manual-menu');
     ensureMenuLink('Instalar App', '/instalar-app', 'data-jus9-instalar-menu');
   }
 
@@ -647,6 +649,21 @@ window.jus9DemoLogin = function(form){
     return 'Como jurista, eu partiria da doutrina, do metodo, da prudencia e da revisao humana. Antes de qualquer conclusao, separaria fatos ficticios, norma aplicavel, fontes, riscos, competencias e limites da IA. Pergunta recebida: "' + cleanQuestion + '".';
   }
 
+  function asksPreviousQuestion(question){
+    var q = (question || '').toLowerCase();
+    return /\b(qual|quais|lembra|lembrar|recorda|recordar)\b.{0,60}\b(pergunta|pedido|mensagem)\b.{0,40}\b(anterior|passada|ultima|última)\b/.test(q) ||
+      /\b(o que eu perguntei|minha pergunta anterior|pergunta anterior|ultima pergunta|última pergunta)\b/.test(q);
+  }
+
+  function previousQuestionAnswer(question, room){
+    if(!asksPreviousQuestion(question)) return '';
+    var previous = (room && room.messages || []).filter(function(msg){ return msg.role === 'user' && msg.content; }).slice(-1)[0];
+    if(previous && previous.content){
+      return 'Sim. A sua pergunta anterior nesta sala foi:\n\n"' + previous.content + '"\n\nPosso continuar a partir dela, resumir, aprofundar ou transformar em proximo passo.';
+    }
+    return 'Nesta sala eu ainda nao encontrei pergunta anterior salva. Se voce abriu uma nova sala, atualizou a pagina ou limpou a conversa, a memoria local desta sessao pode ter sido reiniciada.';
+  }
+
   function apiModeFor(mode){
     if (mode === 'social') return 'social';
     return 'profissional';
@@ -709,6 +726,56 @@ window.jus9DemoLogin = function(form){
   }
   function buildQuestionWithRoom(question, room){ var recent = (room && room.messages || []).slice(-16).map(function(m){ return (m.role === 'assistant' ? 'Charlie: ' : 'Usuario: ') + String(m.content || '').slice(0, 700); }).join('\n'); return (room && (room.summary || recent)) ? '[MEMORIA CURTA DA SALA]\n' + (room.summary || '') + '\n' + recent + '\n\n[PERGUNTA ATUAL]\n' + question : question; }
 
+  function downloadText(filename, content){
+    var blob = new Blob([content || ''], { type:'text/plain;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 500);
+  }
+
+  function slug(text){
+    return String(text || 'charlie-echo').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60) || 'charlie-echo';
+  }
+
+  function addChatUtilityActions(card, code, focus){
+    if(card.querySelector('[data-ai-utility-actions]')) return;
+    var form = card.querySelector('[data-ai-chat-form]');
+    if(!form) return;
+    var bar = document.createElement('div');
+    bar.className = 'chat-utility-actions';
+    bar.setAttribute('data-ai-utility-actions', 'true');
+    bar.innerHTML = '<button class="mini" type="button" data-ai-improve>Melhorar resposta</button><button class="mini" type="button" data-ai-package>Transformar em pacote</button><button class="mini" type="button" data-ai-recall>Qual foi minha pergunta anterior?</button>';
+    form.parentNode.insertBefore(bar, form.nextSibling);
+    function lastEchoText(){ var msgs = card.querySelectorAll('.ai-message-echo'); return msgs.length ? (msgs[msgs.length - 1].textContent || '').replace(/^Charlie Echo:\s*/i, '').trim() : ''; }
+    function lastUserText(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); var msg = room && (room.messages || []).filter(function(m){ return m.role === 'user'; }).slice(-1)[0]; return msg ? msg.content : ''; }
+    function appendEcho(text){ var windowEl = card.querySelector('[data-ai-chat-window]'); if(!windowEl) return; var echoMsg = document.createElement('div'); echoMsg.className = 'ai-message ai-message-echo'; echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(text); windowEl.appendChild(echoMsg); windowEl.scrollTop = windowEl.scrollHeight; rememberChatExchange(code, '', text); }
+    bar.querySelector('[data-ai-improve]').addEventListener('click', async function(){
+      var room = activeChatRoom(code), lastQuestion = lastUserText(), lastAnswer = lastEchoText();
+      if(!lastQuestion && !lastAnswer) return appendEcho('Ainda nao ha resposta suficiente para melhorar nesta sala.');
+      try{
+        var improved = await askCharlieApi('jurista', code, focus, 'Refaca a resposta anterior com: resposta direta, exemplo pratico, riscos/limites, proximo passo e fonte/link confiavel quando cabivel.\n\nPergunta anterior: ' + lastQuestion + '\n\nResposta anterior: ' + lastAnswer, room);
+        appendEcho(improved);
+      }catch(err){
+        appendEcho('Versao melhorada local: resposta direta primeiro; depois exemplo pratico; em seguida riscos, limites e proximo passo. Se houver link, priorize fonte oficial HTTPS. Pergunta-base: ' + (lastQuestion || 'sem pergunta registrada') + '.');
+      }
+    });
+    bar.querySelector('[data-ai-package]').addEventListener('click', function(){
+      var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }) || activeChatRoom(code);
+      var lines = ['# Pacote Charlie Echo - ' + (room.title || code), '', '- MVP: ' + code, '- Foco: ' + focus, '- Gerado em: ' + new Date().toLocaleString('pt-BR'), '', '## Memoria da sala', '', room.summary || 'Sem resumo salvo.', '', '## Historico recente', ''];
+      (room.messages || []).slice(-16).forEach(function(m){ lines.push('**' + (m.role === 'assistant' ? 'Charlie Echo' : 'Usuario') + ':** ' + m.content); lines.push(''); });
+      downloadText(slug('pacote-' + code + '-' + (room.title || 'sala')) + '.md', lines.join('\n'));
+      appendEcho('Preparei um pacote local em Markdown com a memoria e o historico recente desta sala.');
+    });
+    bar.querySelector('[data-ai-recall]').addEventListener('click', function(){
+      appendEcho(previousQuestionAnswer('qual foi minha pergunta anterior', activeChatRoom(code)));
+    });
+  }
+
   function bindAiChat(card){
     var form = card.querySelector('[data-ai-chat-form]');
     var input = card.querySelector('[data-ai-chat-input]');
@@ -717,6 +784,7 @@ window.jus9DemoLogin = function(form){
     var code = card.getAttribute('data-ai-code') || 'MVP';
     var focus = card.getAttribute('data-ai-focus') || 'contexto demonstrativo do MVP';
     injectChatRooms(card, code);
+    addChatUtilityActions(card, code, focus);
     form.addEventListener('submit', async function(event){
       event.preventDefault();
       var question = (input.value || '').trim();
@@ -735,7 +803,7 @@ window.jus9DemoLogin = function(form){
       });
       var echoMsg = document.createElement('div');
       echoMsg.className = 'ai-message ai-message-echo';
-      var localIdentity = identityAnswer(question);
+      var localIdentity = previousQuestionAnswer(question, room) || identityAnswer(question);
       if (localIdentity) {
         echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(localIdentity);
         rememberChatExchange(code, question, localIdentity);
