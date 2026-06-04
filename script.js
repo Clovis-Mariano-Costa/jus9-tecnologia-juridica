@@ -734,6 +734,10 @@ window.jus9DemoLogin = function(form){
 
   function downloadText(filename, content){
     var blob = new Blob([content || ''], { type:'text/plain;charset=utf-8' });
+    downloadBlob(filename, blob);
+  }
+
+  function downloadBlob(filename, blob){
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url;
@@ -742,6 +746,78 @@ window.jus9DemoLogin = function(form){
     a.click();
     a.remove();
     setTimeout(function(){ URL.revokeObjectURL(url); }, 500);
+  }
+
+  function pdfHex(text){
+    var value = String(text || '');
+    var hex = 'FEFF';
+    for(var i = 0; i < value.length; i++){
+      hex += value.charCodeAt(i).toString(16).toUpperCase().padStart(4, '0');
+    }
+    return '<' + hex + '>';
+  }
+
+  function wrapPdfLine(text, limit){
+    var words = String(text || '').replace(/\s+/g, ' ').trim().split(' ');
+    var lines = [], current = '';
+    words.forEach(function(word){
+      var next = current ? current + ' ' + word : word;
+      if(next.length > limit && current){ lines.push(current); current = word; }
+      else current = next;
+    });
+    if(current) lines.push(current);
+    return lines.length ? lines : [''];
+  }
+
+  function buildPdfBlob(title, rawLines){
+    var printable = [];
+    printable.push(title);
+    printable.push('Gerado localmente pela Charlie Echo - Jus 9 Tecnologia Juridica');
+    printable.push('');
+    (rawLines || []).forEach(function(line){
+      wrapPdfLine(line, 88).forEach(function(wrapped){ printable.push(wrapped); });
+    });
+
+    var pages = [], pageLines = [];
+    printable.forEach(function(line){
+      pageLines.push(line);
+      if(pageLines.length >= 44){ pages.push(pageLines); pageLines = []; }
+    });
+    if(pageLines.length) pages.push(pageLines);
+    if(!pages.length) pages.push(['Pacote sem conteudo registrado.']);
+
+    var objects = [];
+    function addObject(content){ objects.push(content); return objects.length; }
+    var catalogId = addObject('');
+    var pagesId = addObject('');
+    var fontId = addObject('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
+    var pageIds = [];
+    pages.forEach(function(lines, pageIndex){
+      var content = 'BT\n/F1 11 Tf\n50 792 Td\n15 TL\n';
+      lines.forEach(function(line, index){
+        var text = line;
+        if(pageIndex === 0 && index === 0) text = String(text || '').toUpperCase();
+        content += pdfHex(text) + ' Tj\nT*\n';
+      });
+      content += 'ET\n';
+      var contentId = addObject('<< /Length ' + content.length + ' >>\nstream\n' + content + 'endstream');
+      var pageId = addObject('<< /Type /Page /Parent ' + pagesId + ' 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 ' + fontId + ' 0 R >> >> /Contents ' + contentId + ' 0 R >>');
+      pageIds.push(pageId);
+    });
+    objects[catalogId - 1] = '<< /Type /Catalog /Pages ' + pagesId + ' 0 R >>';
+    objects[pagesId - 1] = '<< /Type /Pages /Kids [' + pageIds.map(function(id){ return id + ' 0 R'; }).join(' ') + '] /Count ' + pageIds.length + ' >>';
+
+    var pdf = '%PDF-1.4\n';
+    var offsets = [0];
+    objects.forEach(function(content, index){
+      offsets.push(pdf.length);
+      pdf += (index + 1) + ' 0 obj\n' + content + '\nendobj\n';
+    });
+    var xrefAt = pdf.length;
+    pdf += 'xref\n0 ' + (objects.length + 1) + '\n0000000000 65535 f \n';
+    for(var o = 1; o < offsets.length; o++) pdf += String(offsets[o]).padStart(10, '0') + ' 00000 n \n';
+    pdf += 'trailer\n<< /Size ' + (objects.length + 1) + ' /Root ' + catalogId + ' 0 R >>\nstartxref\n' + xrefAt + '\n%%EOF';
+    return new Blob([pdf], { type:'application/pdf' });
   }
 
   function slug(text){
@@ -772,10 +848,11 @@ window.jus9DemoLogin = function(form){
     });
     bar.querySelector('[data-ai-package]').addEventListener('click', function(){
       var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }) || activeChatRoom(code);
-      var lines = ['# Pacote Charlie Echo - ' + (room.title || code), '', '- MVP: ' + code, '- Foco: ' + focus, '- Gerado em: ' + new Date().toLocaleString('pt-BR'), '', '## Memoria da sala', '', room.summary || 'Sem resumo salvo.', '', '## Historico recente', ''];
-      (room.messages || []).slice(-16).forEach(function(m){ lines.push('**' + (m.role === 'assistant' ? 'Charlie Echo' : 'Usuario') + ':** ' + m.content); lines.push(''); });
-      downloadText(slug('pacote-' + code + '-' + (room.title || 'sala')) + '.md', lines.join('\n'));
-      appendEcho('Preparei um pacote local em Markdown com a memoria e o historico recente desta sala.');
+      var title = 'Pacote Charlie Echo - ' + (room.title || code);
+      var lines = ['MVP: ' + code, 'Foco: ' + focus, 'Gerado em: ' + new Date().toLocaleString('pt-BR'), '', 'Memoria da sala', '', room.summary || 'Sem resumo salvo.', '', 'Historico recente', ''];
+      (room.messages || []).slice(-16).forEach(function(m){ lines.push((m.role === 'assistant' ? 'Charlie Echo' : 'Usuario') + ': ' + m.content); lines.push(''); });
+      downloadBlob(slug('pacote-' + code + '-' + (room.title || 'sala')) + '.pdf', buildPdfBlob(title, lines));
+      appendEcho('Preparei um pacote local em PDF com a memoria e o historico recente desta sala.');
     });
     bar.querySelector('[data-ai-recall]').addEventListener('click', function(){
       appendEcho(previousQuestionAnswer('qual foi minha pergunta anterior', activeChatRoom(code)));

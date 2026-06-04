@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
-const expectedScriptVersion = "script.js?v=20260604-charlie-rooms-v4-4";
+const expectedScriptVersion = "script.js?v=20260604-charlie-pdf-package-v4-5";
 
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), "utf8");
@@ -22,7 +22,7 @@ const checks = [
   {
     name: "chat MVP possui ferramentas de qualidade",
     file: "script.js",
-    patterns: ["Melhorar resposta", "Transformar em pacote", "Qual foi minha pergunta anterior?", "Renomear sala"],
+    patterns: ["Melhorar resposta", "Transformar em pacote", "Qual foi minha pergunta anterior?", "Renomear sala", "application/pdf", ".pdf", "buildPdfBlob"],
   },
   {
     name: "lider MVP lista ambientes prontos",
