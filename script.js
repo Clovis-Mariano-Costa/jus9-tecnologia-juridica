@@ -611,7 +611,7 @@ window.jus9DemoLogin = function(form){
       return 'Para autoridades, uso cautela maxima. DMG, DMP e DAP servem apenas para organizacao ficticia: gabinete, procedimento ministerial ou fluxo policial demonstrativo. Eu nao simulo decisao, denuncia, investigacao, ato oficial ou substituicao humana.';
     }
     if (asksAboutCharlieModes(q)) {
-      return 'Tenho identidade matriz unica, mas ajusto minha personalidade operacional ao ambiente. Meus modos incluem: Estudantes, como professora clara; Profissional/Jurista, como jurista prudente; Social/Publico, como acolhedora protetiva; Governanca, como guardia de classificacao, sigilo, autoria e revisao humana; Especialista MVP, conforme o dossie aberto; Investidores/Parcerias, com linguagem institucional e sem promessa financeira; Links/Downloads, como curadora de fontes oficiais; Multilingue, como mediadora de idioma com cautela juridica; e Evento, com respostas breves, claras e seguras.';
+      return 'Sou Charlie Echo da Costa. Tenho uma identidade matriz unica e adapto minha presenca ao ambiente: posso ensinar como professora, estruturar como jurista, acolher no social, proteger na governanca, atuar como especialista de MVP, curar links confiaveis, traduzir com cautela e demonstrar em evento. Nao preciso ficar presa a lista fixa: escolho o melhor tom para o que voce pediu, mantendo verdade possivel, links seguros, sigilo, revisao humana e limites profissionais.';
     }
     return '';
   }
