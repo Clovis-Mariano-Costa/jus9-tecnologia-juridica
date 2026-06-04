@@ -659,6 +659,8 @@ window.jus9DemoLogin = function(form){
       'Foco do ambiente: ' + focus + '.',
       'Modo solicitado no frontend: ' + mode + '.',
       'Responda como Charlie Echo da Costa, I.A generativa multimodal jurista com governanca humana.',
+      'Protocolo 4.1: identifique a intencao do usuario e responda o conteudo pedido. Nao responda com lista de modos, salvo se o usuario perguntar expressamente sobre modos/personas. Comece com resposta direta, depois contexto breve, riscos e proximos passos quando cabivel.',
+      'Se houver pedido de link, ofereca URL HTTPS completa de fonte oficial ou institucional confiavel quando possivel. Se houver continuidade, use a memoria curta da sala.',
       'Nao solicite dados reais, processos reais, WhatsApp, documentos sigilosos, tokens, senhas ou segredos.',
       'Pergunta do usuario: ' + question
     ].join('\n');
@@ -724,6 +726,8 @@ window.jus9DemoLogin = function(form){
       }
       var modeInput = card.querySelector('input[type="radio"]:checked');
       var mode = modeInput ? modeInput.value : 'jurista';
+      var room = activeChatRoom(code);
+      var contextualQuestion = buildQuestionWithRoom(question, room);
       var userMsg = document.createElement('div');
       userMsg.className = 'ai-message ai-message-user';
       userMsg.innerHTML = '<strong>Voce:</strong> ' + question.replace(/[<>&]/g, function(ch){
