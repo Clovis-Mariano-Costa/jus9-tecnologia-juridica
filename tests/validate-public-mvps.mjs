@@ -53,7 +53,7 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v4-2026-06-01"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("jus9-pwa-v4-2026-06-04-charlie-rooms-v4-4-1"), "cache PWA principal desatualizado");
 assert(canonicalServiceWorker.includes(".catch(() => Response.error())"), "fallback de arquivos estaticos do worker principal incorreto");
 
 for (const code of expectedCodes) {
@@ -81,7 +81,7 @@ for (const [code, page] of Object.entries(priorityAiPages)) {
   const html = await fs.readFile(new URL(`../${page}`, import.meta.url), "utf8");
   assert(html.includes("data-ai-chat"), `${code}: chat ausente em ${page}`);
   assert(html.includes(`data-ai-code="${code}"`), `${code}: codigo incorreto em ${page}`);
-  assert(html.includes('script.js?v=20260531-mvp-flow-v2'), `${code}: script sem versao em ${page}`);
+  assert(html.includes('script.js?v=20260604-charlie-rooms-v4-4'), `${code}: script sem versao em ${page}`);
   console.log(`AI_PAGE_OK ${code} page=${page}`);
 }
 

@@ -4,7 +4,7 @@
   Não armazena dados sensíveis. Não altera login, backend ou rotas protegidas.
 */
 
-const JUS9_CACHE = 'jus9-pwa-v4-2026-06-01';
+const JUS9_CACHE = 'jus9-pwa-v4-2026-06-04-charlie-rooms-v4-4-1';
 const JUS9_ASSETS = [
   '/',
   '/index.html',
@@ -18,12 +18,9 @@ const JUS9_ASSETS = [
   '/app-prazos.html',
   '/app-documentos.html',
   '/app-whatsapp.html',
-  '/app-ia-profissional.html',
   '/instalar-app',
   '/instalar-app.html',
   '/offline.html',
-  '/style.css',
-  '/script.js',
   '/manifest.webmanifest',
   '/assets/js/whatsapp-local-demo.js',
   '/assets/favicon.svg',
@@ -48,6 +45,33 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
+});
+
+function isFreshMvpAsset(url, request) {
+  const pathname = url.pathname;
+  const isAppIaPage = /^\/app-ia-[^/]+\.html$/.test(pathname);
+  const isCoreScript = pathname === '/script.js';
+  const isCoreStyle = pathname === '/style.css';
+  const acceptsHtml = request.mode === 'navigate' ||
+    (request.headers.get('accept') || '').includes('text/html');
+
+  return isCoreScript || isCoreStyle || (acceptsHtml && isAppIaPage);
+}
+
+function networkFirst(request) {
+  return fetch(request, { cache: 'reload' })
+    .then((response) => {
+      const copy = response.clone();
+      if (response.ok) {
+        caches.open(JUS9_CACHE).then((cache) => cache.put(request, copy));
+      }
+      return response;
+    })
+    .catch(() => caches.match(request).then((cached) => cached || caches.match('/offline.html')));
+}
+
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
@@ -59,18 +83,13 @@ self.addEventListener('fetch', (event) => {
   if (!sameOrigin) return;
   if (requestUrl.pathname.startsWith('/auth/') || requestUrl.pathname.startsWith('/api/')) return;
 
+  if (isFreshMvpAsset(requestUrl, event.request)) {
+    event.respondWith(networkFirst(event.request));
+    return;
+  }
+
   if (acceptsHtml) {
-    event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          const copy = response.clone();
-          if (response.ok) {
-            caches.open(JUS9_CACHE).then((cache) => cache.put(event.request, copy));
-          }
-          return response;
-        })
-        .catch(() => caches.match(event.request).then((cached) => cached || caches.match('/offline.html')))
-    );
+    event.respondWith(networkFirst(event.request));
     return;
   }
 

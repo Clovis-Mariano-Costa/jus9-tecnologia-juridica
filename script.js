@@ -503,7 +503,12 @@ window.jus9DemoLogin = function(form){
 (function(){
   if ('serviceWorker' in navigator && location.protocol === 'https:') {
     window.addEventListener('load', function(){
-      navigator.serviceWorker.register('/service-worker.js').catch(function(error){
+      navigator.serviceWorker.register('/service-worker.js').then(function(registration){
+        registration.update();
+        if (registration.waiting) {
+          registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+        }
+      }).catch(function(error){
         console.warn('Service worker Jus 9 não registrado:', error);
       });
     });

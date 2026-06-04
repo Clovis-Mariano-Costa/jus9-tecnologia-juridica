@@ -12,7 +12,7 @@ const checks = [
   {
     name: "chat MVP tem memoria curta por sala",
     file: "script.js",
-    patterns: ["chatRoomKey", "rememberChatExchange", "buildQuestionWithRoom", "previousQuestionAnswer", "target.insertBefore(panel, target.firstChild)"],
+    patterns: ["chatRoomKey", "rememberChatExchange", "buildQuestionWithRoom", "previousQuestionAnswer", "target.insertBefore(panel, target.firstChild)", "registration.update()", "SKIP_WAITING"],
   },
   {
     name: "chat MVP envia message para API da Charlie",
@@ -38,6 +38,11 @@ const checks = [
     name: "manual publico publicado",
     file: "manual-charlie-echo.html",
     patterns: ["Como conversar com a Charlie Echo", "Peça por intenção", "Fontes confiáveis"],
+  },
+  {
+    name: "service worker nao prende MVP antigo",
+    file: "service-worker.js",
+    patterns: ["jus9-pwa-v4-2026-06-04-charlie-rooms-v4-4-1", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
   },
 ];
 
