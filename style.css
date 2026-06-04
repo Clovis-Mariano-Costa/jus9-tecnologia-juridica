@@ -1487,3 +1487,122 @@ button,input,select,textarea{max-width:100%}
   .install-app-green-card{grid-template-columns:1fr}
   .install-app-green-symbol{display:none}
 }
+
+/* MVP v4.2 - governanca visual dos demos */
+.demo-shell{
+  --demo-focus:#c58b2f;
+  --demo-focus-soft:#fff7e2;
+  --demo-ink:#0b1728;
+  --demo-muted:#51627a;
+}
+.demo-main{
+  align-content:start;
+}
+.demo-topbar{
+  position:relative;
+  overflow:hidden;
+}
+.demo-topbar::before{
+  content:"";
+  position:absolute;
+  inset:0 auto 0 0;
+  width:6px;
+  background:linear-gradient(180deg,#ffe7a6,#c58b2f);
+}
+.demo-topbar > *{
+  position:relative;
+  z-index:1;
+}
+.demo-shell .badge.secret,
+.demo-shell .badge[class*="secret"]{
+  border-color:rgba(197,139,47,.42);
+  background:linear-gradient(135deg,#07111f,#14253b);
+  color:#ffe7a6;
+  letter-spacing:.03em;
+  text-transform:uppercase;
+}
+.demo-topbar .badge.secret{
+  box-shadow:0 10px 26px rgba(7,17,31,.16);
+  white-space:nowrap;
+}
+.demo-card{
+  transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+.demo-card:hover{
+  border-color:rgba(197,139,47,.24);
+  box-shadow:0 18px 54px rgba(15,23,42,.10);
+  transform:translateY(-1px);
+}
+.demo-card h2,
+.demo-card h3{
+  color:var(--demo-ink);
+  letter-spacing:-.015em;
+}
+.demo-card p,
+.demo-card li,
+.demo-card td{
+  color:var(--demo-muted);
+}
+.demo-card strong,
+.demo-table strong{
+  color:var(--demo-ink);
+}
+.demo-table th{
+  background:#f7f4ee;
+  color:#5c687a;
+}
+.demo-sidebar nav a{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  min-height:42px;
+}
+.demo-sidebar a[href*="app-ia"],
+.demo-sidebar a[href*="app-agenda"],
+.demo-sidebar a[href*="mvp.html"]{
+  border:1px solid rgba(231,195,108,.34);
+  background:rgba(231,195,108,.08);
+}
+.link-actions a,
+.link-actions button,
+.daj-actions-fixed a{
+  min-height:42px;
+  box-shadow:0 8px 22px rgba(197,139,47,.10);
+}
+.link-actions a:hover,
+.link-actions button:hover,
+.daj-actions-fixed a:hover,
+.origin-links a:hover{
+  transform:translateY(-1px);
+}
+.mvp-card .origin-links,
+.demo-card .link-actions,
+.daj-card .link-actions{
+  align-items:center;
+}
+.mvp-page .mvp-card,
+.demo-shell .demo-card,
+.demo-shell .daj-card{
+  scroll-margin-top:96px;
+}
+.demo-session-notice{
+  box-shadow:0 10px 28px rgba(197,139,47,.10);
+}
+.demo-session-notice strong,
+.fine-note strong,
+.notice-box strong{
+  color:#5b3b09;
+}
+@media(max-width:760px){
+  .demo-topbar{
+    display:grid;
+    justify-items:start;
+  }
+  .demo-topbar .badge.secret{
+    white-space:normal;
+  }
+  .demo-sidebar nav a{
+    justify-content:center;
+  }
+}
