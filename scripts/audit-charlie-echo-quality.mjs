@@ -21,7 +21,12 @@ const checks = [
   {
     name: "chat MVP possui ferramentas de qualidade",
     file: "script.js",
-    patterns: ["Melhorar resposta", "Transformar em pacote", "Qual foi minha pergunta anterior?"],
+    patterns: ["Melhorar resposta", "Transformar em pacote", "Qual foi minha pergunta anterior?", "Renomear sala"],
+  },
+  {
+    name: "lider MVP lista ambientes prontos",
+    file: "lider-mvp.html",
+    patterns: ["Acesso rapido aos 13 ambientes demonstrativos", "app-demo-advogar.html", "app-demo-delegado.html", "app-ia-profissional.html#chat-ia"],
   },
   {
     name: "painel de saude publicado",
