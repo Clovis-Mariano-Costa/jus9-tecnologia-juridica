@@ -664,21 +664,48 @@ window.jus9DemoLogin = function(form){
     ].join('\n');
   }
 
-  async function askCharlieApi(mode, code, focus, question){
+  async function askCharlieApi(mode, code, focus, question, room){
     var response = await fetch('https://charlieecho.jus9tecnologia.com.br/api/ia', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         mode: apiModeFor(mode),
-        message: buildApiMessage(mode, code, focus, question)
+        message: buildApiMessage(mode, code, focus, question),
+        room: room ? {
+          title: room.title || '',
+          summary: room.summary || '',
+          currentTopic: room.currentTopic || '',
+          lastUserIntent: room.lastUserIntent || '',
+          messages: (room.messages || []).slice(-16)
+        } : null
       })
     });
     var data = await response.json().catch(function(){ return null; });
-    if (response.ok && data && typeof data.answer === 'string' && data.answer.trim()) {
-      return data.answer.trim();
-    }
+    if (response.ok && data && typeof data.answer === 'string' && data.answer.trim()) return data.answer.trim();
     throw new Error((data && (data.error || data.message)) || 'API sem resposta textual reconhecida.');
   }
+
+  function chatRoomKey(code){ return 'jus9CharlieRooms_' + String(code || 'MVP').replace(/[^A-Z0-9_-]/gi, '_') + '_v1'; }
+  function createChatRoom(code, title){ var now = new Date().toISOString(); return { id:String(code || 'MVP') + '-' + Date.now(), title:title || 'Sala ' + code, status:'active', createdAt:now, updatedAt:now, summary:'', currentTopic:'', lastUserIntent:'', messages:[] }; }
+  function loadChatRooms(code){ try{ var parsed = JSON.parse(sessionStorage.getItem(chatRoomKey(code)) || 'null'); if(parsed && parsed.activeId && Array.isArray(parsed.rooms) && parsed.rooms.length){ parsed.rooms.forEach(function(r){ if(!r.status) r.status='active'; }); return parsed; } }catch(err){} var first = createChatRoom(code, 'Sala ' + code + ' 1'); return { activeId:first.id, rooms:[first] }; }
+  function saveChatRooms(code, data){ try{ sessionStorage.setItem(chatRoomKey(code), JSON.stringify(data)); }catch(err){} }
+  function activeChatRoom(code){ var data = loadChatRooms(code); var room = data.rooms.find(function(r){ return r.id === data.activeId && r.status !== 'deleted'; }) || data.rooms.find(function(r){ return r.status !== 'deleted' && r.status !== 'archived'; }) || data.rooms.find(function(r){ return r.status !== 'deleted'; }); if(!room){ room = createChatRoom(code, 'Sala ' + code + ' 1'); data.rooms.unshift(room); } data.activeId = room.id; saveChatRooms(code, data); return room; }
+  function summarizeChatRoom(room, question, answer){ var recent = (room.messages || []).slice(-10).map(function(m){ return (m.role === 'assistant' ? 'Charlie: ' : 'Usuario: ') + String(m.content || '').replace(/\s+/g, ' ').slice(0, 180); }).join(' | '); room.currentTopic = (question || room.currentTopic || room.title || '').slice(0, 120); room.lastUserIntent = (question || '').slice(0, 240); room.summary = ('Assunto ativo: ' + (room.currentTopic || room.title) + '. Ultima pergunta: ' + (question || '').slice(0,220) + '. Ultima resposta: ' + (answer || '').slice(0,220) + '. Historico recente: ' + recent + '.').slice(0, 1800); room.updatedAt = new Date().toISOString(); }
+  function rememberChatExchange(code, question, answer){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }) || activeChatRoom(code); if(question) room.messages.push({ role:'user', content:question, createdAt:new Date().toISOString() }); if(answer) room.messages.push({ role:'assistant', content:answer, createdAt:new Date().toISOString() }); room.messages = room.messages.slice(-24); summarizeChatRoom(room, question, answer); saveChatRooms(code, data); return room; }
+  function injectChatRooms(card, code){
+    if(card.querySelector('[data-mvp-room-panel]')) return;
+    var panel = document.createElement('div');
+    panel.className = 'chat-room-panel mvp-chat-room-panel';
+    panel.setAttribute('data-mvp-room-panel', code);
+    panel.innerHTML = '<div><strong>Salas da Charlie Echo</strong><p>Memoria curta local por sala demonstrativa.</p></div><div class="chat-room-actions"><button class="mini primary" type="button" data-room-new>Nova sala</button><button class="mini" type="button" data-room-archive>Arquivar</button><button class="mini" type="button" data-room-delete>Excluir</button></div><div class="chat-room-list" data-room-list></div>';
+    var target = card.querySelector('[data-ai-chat-window]'); if(target) card.insertBefore(panel, target);
+    function render(){ var data = loadChatRooms(code), list = panel.querySelector('[data-room-list]'); list.innerHTML = data.rooms.filter(function(r){ return r.status !== 'deleted'; }).map(function(r){ return '<button class="chat-room-pill' + (r.id===data.activeId?' active':'') + (r.status==='archived'?' archived':'') + '" type="button" data-id="' + r.id + '">' + (r.status==='archived' ? r.title + ' (arquivada)' : r.title) + '</button>'; }).join(''); list.querySelectorAll('[data-id]').forEach(function(btn){ btn.addEventListener('click', function(){ data.activeId = btn.getAttribute('data-id'); saveChatRooms(code, data); render(); }); }); }
+    panel.querySelector('[data-room-new]').addEventListener('click', function(){ var data = loadChatRooms(code), room = createChatRoom(code, 'Sala ' + code + ' ' + (data.rooms.length + 1)); data.rooms.unshift(room); data.activeId = room.id; saveChatRooms(code, data); render(); });
+    panel.querySelector('[data-room-archive]').addEventListener('click', function(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); if(!room) return; room.status = room.status === 'archived' ? 'active' : 'archived'; var next = data.rooms.find(function(r){ return r.status !== 'deleted' && r.status !== 'archived'; }); if(room.status==='archived' && next) data.activeId = next.id; saveChatRooms(code, data); render(); });
+    panel.querySelector('[data-room-delete]').addEventListener('click', function(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); if(!room || !confirm('Excluir esta sala local?')) return; room.status='deleted'; var next = data.rooms.find(function(r){ return r.status !== 'deleted' && r.status !== 'archived'; }) || data.rooms.find(function(r){ return r.status !== 'deleted'; }); if(!next){ next = createChatRoom(code, 'Sala ' + code + ' 1'); data.rooms.unshift(next); } data.activeId = next.id; saveChatRooms(code, data); render(); });
+    render();
+  }
+  function buildQuestionWithRoom(question, room){ var recent = (room && room.messages || []).slice(-16).map(function(m){ return (m.role === 'assistant' ? 'Charlie: ' : 'Usuario: ') + String(m.content || '').slice(0, 700); }).join('\n'); return (room && (room.summary || recent)) ? '[MEMORIA CURTA DA SALA]\n' + (room.summary || '') + '\n' + recent + '\n\n[PERGUNTA ATUAL]\n' + question : question; }
 
   function bindAiChat(card){
     var form = card.querySelector('[data-ai-chat-form]');
@@ -687,6 +714,7 @@ window.jus9DemoLogin = function(form){
     if (!form || !input || !windowEl) return;
     var code = card.getAttribute('data-ai-code') || 'MVP';
     var focus = card.getAttribute('data-ai-focus') || 'contexto demonstrativo do MVP';
+    injectChatRooms(card, code);
     form.addEventListener('submit', async function(event){
       event.preventDefault();
       var question = (input.value || '').trim();
@@ -706,6 +734,7 @@ window.jus9DemoLogin = function(form){
       var localIdentity = identityAnswer(question);
       if (localIdentity) {
         echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(localIdentity);
+        rememberChatExchange(code, question, localIdentity);
       } else {
         echoMsg.innerHTML = '<strong>Charlie Echo:</strong> Consultando API segura da Charlie Echo...';
       }
@@ -715,10 +744,14 @@ window.jus9DemoLogin = function(form){
       windowEl.scrollTop = windowEl.scrollHeight;
       if (!localIdentity) {
         try {
-          var answer = await askCharlieApi(mode, code, focus, question);
+          var answer = await askCharlieApi(mode, code, focus, contextualQuestion, room);
           echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(answer);
+          rememberChatExchange(code, question, answer);
         } catch (error) {
-          echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + textForMode(mode, code, focus, question) + '<br><br><em>API segura indisponivel agora; mantive fallback local sem dados reais.</em>';
+          var fallback = textForMode(mode, code, focus, question);
+          if(room.summary) fallback = 'Vou continuar pela memoria curta desta sala. ' + room.summary + '\n\n' + fallback;
+          echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(fallback) + '<br><br><em>API segura indisponivel agora; mantive fallback local sem dados reais.</em>';
+          rememberChatExchange(code, question, fallback);
         }
         windowEl.scrollTop = windowEl.scrollHeight;
       }
