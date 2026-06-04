@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
-const expectedScriptVersion = "script.js?v=20260604-charlie-pdf-package-v4-5";
+const expectedScriptVersion = "script.js?v=20260604-charlie-clean-shell-v4-6";
 
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), "utf8");
@@ -12,7 +12,7 @@ const checks = [
   {
     name: "chat MVP tem memoria curta por sala",
     file: "script.js",
-    patterns: ["chatRoomKey", "rememberChatExchange", "buildQuestionWithRoom", "previousQuestionAnswer", "target.insertBefore(panel, target.firstChild)", "registration.update()", "SKIP_WAITING"],
+    patterns: ["chatRoomKey", "rememberChatExchange", "buildQuestionWithRoom", "previousQuestionAnswer", "target.insertBefore(panel, target.firstChild)", "registration.update()", "SKIP_WAITING", "initCharlieMvpShell", "charlie-mvp-env-list"],
   },
   {
     name: "chat MVP envia message para API da Charlie",
@@ -44,6 +44,11 @@ const checks = [
     file: "service-worker.js",
     patterns: ["jus9-pwa-v4-2026-06-04-charlie-rooms-v4-4-1", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
   },
+  {
+    name: "casa propria da Charlie Echo publicada",
+    file: "charlie-echo.html",
+    patterns: ["Casa propria da IA", "data-ai-chat", "app-ia-profissional.html#chat-ia", "script.js?v=20260604-charlie-clean-shell-v4-6"],
+  },
 ];
 
 const failures = [];
@@ -64,6 +69,9 @@ for (const file of appIaFiles) {
   const html = read(file);
   if (!html.includes(expectedScriptVersion)) {
     failures.push(`${file}: versao de script diferente de ${expectedScriptVersion}`);
+  }
+  if (!html.includes("charlie-mvp-shell")) {
+    failures.push(`${file}: ausente classe visual charlie-mvp-shell`);
   }
   if (!html.includes("data-ai-chat")) {
     failures.push(`${file}: ausente data-ai-chat`);

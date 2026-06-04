@@ -475,11 +475,71 @@ window.jus9DemoLogin = function(form){
     nav.insertBefore(link, profilesLink || exitLink || null);
   }
 
+  function initCharlieMvpShell(){
+    if (!document.body || !document.body.classList.contains('charlie-mvp-shell')) return;
+    var card = document.querySelector('[data-ai-chat]');
+    var main = document.querySelector('.demo-main');
+    var sidebar = document.querySelector('.demo-sidebar');
+    if (!card || !main || !sidebar || sidebar.querySelector('[data-charlie-mvp-menu]')) return;
+
+    var code = card.getAttribute('data-ai-code') || 'MVP';
+    var title = card.getAttribute('data-ai-title') || 'Charlie Echo';
+    var focus = card.getAttribute('data-ai-focus') || 'ambiente demonstrativo';
+    var topbar = main.querySelector('.demo-topbar');
+    if (topbar && topbar.nextSibling !== card) main.insertBefore(card, topbar.nextSibling);
+
+    var environments = [
+      ['DAJ', 'Jurista geral', 'app-ia-profissional.html'],
+      ['DAA', 'Professor', 'app-ia-professor.html'],
+      ['DEJ', 'Estudante', 'app-ia-estudante.html'],
+      ['DIC', 'Cidadao', 'app-ia-cidadao.html'],
+      ['DPJ', 'Perito', 'app-ia-perito.html'],
+      ['DIP', 'Investidor', 'app-ia-investidor.html'],
+      ['DEE', 'Escritorio', 'app-ia-escritorio.html'],
+      ['DEJI', 'Empresa', 'app-ia-empresa.html'],
+      ['DOI', 'Orgao publico', 'app-ia-orgao-publico.html'],
+      ['DGE', 'Administrador', 'app-ia-administrador.html'],
+      ['DMG', 'Juiz', 'app-ia-juiz.html'],
+      ['DMP', 'Promotor', 'app-ia-promotor.html'],
+      ['DAP', 'Delegado', 'app-ia-delegado.html']
+    ];
+
+    var menu = document.createElement('div');
+    menu.className = 'charlie-mvp-menu';
+    menu.setAttribute('data-charlie-mvp-menu', code);
+    menu.innerHTML =
+      '<div class="charlie-mvp-brand"><span>Charlie Echo</span><small></small></div>' +
+      '<div class="charlie-mvp-room-note"><strong>Casa propria</strong><p>Conversa limpa, salas locais, pacote PDF e foco por MVP.</p></div>' +
+      '<nav class="charlie-mvp-env-list" aria-label="Ambientes da Charlie Echo"></nav>' +
+      '<div class="charlie-mvp-side-tools"><a href="charlie-echo.html">Pagina central</a><a href="ia-profissional.html">Identidade publica</a><a href="lider-mvp.html">Lider MVP</a><a href="versionamento.html">Versionamento</a></div>';
+    menu.querySelector('small').textContent = title + ' - ' + code;
+    var envNav = menu.querySelector('.charlie-mvp-env-list');
+    environments.forEach(function(env){
+      var link = document.createElement('a');
+      link.href = env[2] + '#chat-ia';
+      link.className = env[0] === code ? 'active' : '';
+      link.innerHTML = '<strong>' + env[0] + '</strong><span>' + env[1] + '</span>';
+      envNav.appendChild(link);
+    });
+    sidebar.appendChild(menu);
+
+    if (!card.querySelector('[data-charlie-mvp-head]')) {
+      var head = document.createElement('div');
+      head.className = 'charlie-mvp-chat-head';
+      head.setAttribute('data-charlie-mvp-head', code);
+      head.innerHTML = '<div><span class="eyebrow">Ambiente atual</span><h2></h2><p></p></div><div class="charlie-mvp-head-actions"><a href="charlie-echo.html">Central Charlie</a><a href="mvp.html#demos-jus9">MVPs</a></div>';
+      head.querySelector('h2').textContent = title;
+      head.querySelector('p').textContent = focus;
+      card.insertBefore(head, card.firstChild);
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', function(){
     renderSessionNotice();
     initAdaptedDossier();
     initPriorityWorkflow();
     initTeamMenuLink();
+    initCharlieMvpShell();
   });
 })();
 

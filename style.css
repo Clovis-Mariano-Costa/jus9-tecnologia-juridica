@@ -1613,3 +1613,294 @@ button,input,select,textarea{max-width:100%}
 
 /* Charlie Echo quality tools v4.2 */
 .ai-chat-window .chat-room-panel{position:sticky;top:0;z-index:2;margin:0 0 12px;border-color:rgba(197,139,47,.42);box-shadow:0 12px 30px rgba(15,23,42,.08)}.chat-utility-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0}.chat-utility-actions .mini{border:1px solid rgba(15,23,42,.14);border-radius:999px;background:#fff;color:#07111f;padding:8px 12px;font-weight:850;cursor:pointer}.chat-utility-actions .mini:hover{background:#07111f;color:#e7c36c}.charlie-health-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:20px}.charlie-health-card{border:1px solid rgba(197,139,47,.28);border-radius:22px;background:#fffaf0;padding:18px;color:#07111f}.charlie-health-card strong{display:block;margin-bottom:8px}.charlie-status-ok{color:#176b38;font-weight:900}.charlie-status-warn{color:#9a5b00;font-weight:900}.charlie-manual-list{display:grid;gap:12px;margin-top:18px}.charlie-manual-list li{background:#fffaf0;border:1px solid rgba(197,139,47,.24);border-radius:16px;padding:12px}
+
+/* Charlie Echo v4.6 - casa propria limpa por MVP */
+.charlie-mvp-shell{
+  background:#f6f5f1;
+}
+.charlie-mvp-shell .jus9-autoria-topo{
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+.charlie-mvp-shell .demo-layout{
+  grid-template-columns:320px minmax(0,1fr);
+  gap:0;
+  padding:0;
+  min-height:calc(100vh - 34px);
+}
+.charlie-mvp-shell .demo-sidebar{
+  position:sticky;
+  top:34px;
+  height:calc(100vh - 34px);
+  overflow:auto;
+  border-radius:0;
+  padding:22px;
+  background:#07111f;
+  border-right:1px solid rgba(231,195,108,.18);
+}
+.charlie-mvp-shell .demo-sidebar img{
+  height:46px;
+  margin-bottom:18px;
+}
+.charlie-mvp-shell .demo-sidebar > nav{
+  padding-bottom:16px;
+  margin-bottom:16px;
+  border-bottom:1px solid rgba(231,195,108,.12);
+}
+.charlie-mvp-shell .demo-sidebar > nav a{
+  min-height:38px;
+  padding:10px 12px;
+  border-radius:12px;
+  font-size:.92rem;
+}
+.charlie-mvp-menu{
+  display:grid;
+  gap:14px;
+}
+.charlie-mvp-brand{
+  display:grid;
+  gap:4px;
+  padding:14px;
+  border:1px solid rgba(231,195,108,.22);
+  border-radius:18px;
+  background:rgba(255,255,255,.04);
+}
+.charlie-mvp-brand span{
+  color:#f8fafc;
+  font-size:1.15rem;
+  font-weight:950;
+}
+.charlie-mvp-brand small{
+  color:#cfd6e5;
+  line-height:1.35;
+}
+.charlie-mvp-room-note{
+  padding:13px;
+  border-radius:16px;
+  background:#fffaf0;
+  color:#0b1728;
+}
+.charlie-mvp-room-note strong{
+  display:block;
+  margin-bottom:3px;
+}
+.charlie-mvp-room-note p{
+  margin:0;
+  color:#51627a;
+  font-size:.92rem;
+}
+.charlie-mvp-env-list{
+  display:grid;
+  gap:7px;
+}
+.charlie-mvp-env-list a{
+  display:grid;
+  grid-template-columns:48px minmax(0,1fr);
+  align-items:center;
+  gap:8px;
+  padding:9px 10px;
+  border:1px solid rgba(231,195,108,.10);
+  border-radius:14px;
+  color:#cfd6e5;
+  background:rgba(255,255,255,.02);
+  text-decoration:none;
+}
+.charlie-mvp-env-list a strong{
+  color:#f7d77f;
+  font-size:.86rem;
+}
+.charlie-mvp-env-list a span{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:.92rem;
+}
+.charlie-mvp-env-list a.active,
+.charlie-mvp-env-list a:hover{
+  border-color:rgba(231,195,108,.42);
+  background:rgba(231,195,108,.12);
+  color:#fff;
+}
+.charlie-mvp-side-tools{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.charlie-mvp-side-tools a{
+  justify-content:center;
+  min-height:38px;
+  padding:9px;
+  border:1px solid rgba(231,195,108,.18);
+  border-radius:12px;
+  color:#f8fafc;
+  background:rgba(255,255,255,.04);
+  text-align:center;
+  text-decoration:none;
+  font-weight:850;
+}
+.charlie-mvp-shell .demo-main{
+  max-width:1240px;
+  width:100%;
+  margin:0 auto;
+  padding:28px;
+  gap:18px;
+}
+.charlie-mvp-shell .demo-topbar,
+.charlie-mvp-shell .demo-card,
+.charlie-mvp-shell .daj-card,
+.charlie-mvp-shell .mvp-card{
+  border-radius:22px;
+  box-shadow:0 16px 42px rgba(15,23,42,.07);
+}
+.charlie-mvp-shell .demo-topbar{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:start;
+  background:#fff;
+}
+.charlie-mvp-shell .demo-topbar h1{
+  max-width:920px;
+  font-size:clamp(32px,4vw,56px)!important;
+  letter-spacing:-.04em;
+  line-height:1.02;
+}
+.charlie-mvp-shell .demo-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+}
+.charlie-mvp-shell .demo-grid .mvp-card{
+  padding:16px;
+  background:#fff;
+  box-shadow:none;
+}
+.charlie-mvp-shell .demo-grid .mvp-card h3{
+  font-size:1rem;
+}
+.charlie-mvp-shell .demo-grid .mvp-card p{
+  font-size:.92rem;
+}
+.charlie-mvp-shell .ai-chat-card{
+  display:grid;
+  gap:14px;
+  padding:18px;
+  border-color:rgba(197,139,47,.26);
+  background:#fff;
+}
+.charlie-mvp-chat-head{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:flex-start;
+  padding:16px;
+  border:1px solid rgba(15,23,42,.08);
+  border-radius:18px;
+  background:#f8fafc;
+}
+.charlie-mvp-chat-head h2{
+  margin:4px 0;
+  font-size:clamp(24px,3vw,38px);
+}
+.charlie-mvp-chat-head p{
+  margin:0;
+  max-width:820px;
+  color:#51627a;
+}
+.charlie-mvp-head-actions{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  gap:8px;
+}
+.charlie-mvp-head-actions a{
+  display:inline-flex;
+  align-items:center;
+  min-height:38px;
+  padding:8px 12px;
+  border-radius:999px;
+  background:#07111f;
+  color:#f8fafc;
+  font-weight:900;
+  text-decoration:none;
+}
+.charlie-mvp-shell .ai-chat-window{
+  min-height:420px;
+  max-height:62vh;
+  background:#f8fafc;
+  border-radius:22px;
+  padding:16px;
+}
+.charlie-mvp-shell .ai-message{
+  max-width:860px;
+  line-height:1.55;
+}
+.charlie-mvp-shell .ai-message-user{
+  justify-self:end;
+  max-width:760px;
+}
+.charlie-mvp-shell .ai-mode-row{
+  margin:0;
+}
+.charlie-mvp-shell .ai-mode-row label{
+  background:#fff;
+}
+.charlie-mvp-shell .ai-chat-form{
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:end;
+}
+.charlie-mvp-shell .ai-chat-form textarea{
+  min-height:72px;
+  max-height:180px;
+  border-radius:20px;
+}
+.charlie-mvp-shell .ai-chat-form button{
+  min-height:72px;
+  border-radius:20px;
+}
+.charlie-mvp-shell .chat-utility-actions{
+  margin:0;
+}
+.charlie-mvp-shell .links-semanticos-jus9-v1-5{
+  max-width:none!important;
+  margin:0!important;
+}
+@media(max-width:1180px){
+  .charlie-mvp-shell .demo-layout{
+    grid-template-columns:280px minmax(0,1fr);
+  }
+  .charlie-mvp-shell .demo-grid{
+    grid-template-columns:1fr 1fr;
+  }
+}
+@media(max-width:860px){
+  .charlie-mvp-shell .demo-layout{
+    display:block;
+  }
+  .charlie-mvp-shell .demo-sidebar{
+    position:static;
+    height:auto;
+    border-radius:0 0 22px 22px;
+  }
+  .charlie-mvp-env-list{
+    grid-template-columns:1fr 1fr;
+  }
+  .charlie-mvp-shell .demo-main{
+    padding:16px;
+  }
+  .charlie-mvp-shell .demo-topbar,
+  .charlie-mvp-chat-head,
+  .charlie-mvp-shell .ai-chat-form{
+    grid-template-columns:1fr;
+    display:grid;
+  }
+  .charlie-mvp-shell .ai-chat-form button{
+    min-height:52px;
+  }
+}
+@media(max-width:560px){
+  .charlie-mvp-env-list,
+  .charlie-mvp-side-tools,
+  .charlie-mvp-shell .demo-grid{
+    grid-template-columns:1fr;
+  }
+}
