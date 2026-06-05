@@ -44,19 +44,59 @@ Alteracoes:
 - adicionada resposta estavel para `Quais sao seus modos?`, preservando identidade matriz, especialista de MVP, social, governanca, curadoria de links/downloads e mediacao multilingue;
 - o ajuste nao altera Constituicao, DNA, Prioritario ou clausulas petreas; e governanca operacional de resposta publica.
 
-Verificacao local:
+Verificacao:
 
 - `node --check functions/api/ia.js` passou.
+- `node tests/charlie-echo-public-regression.mjs` passou depois do push/deploy refletido na API publica.
+- A falha antiga em `modos` foi corrigida e validada ao vivo.
 
-Observacao: a regressao publica ao vivo so refletira esta correcao depois do deploy/publicacao do repositorio da Charlie Echo.
+### Teste estatico da Charlie Echo
+
+Arquivo ajustado:
+
+- `tests/charlie-echo-public-regression.mjs`
+
+Alteracao:
+
+- o teste `cockpit profissional API-first` foi atualizado para reconhecer a chamada atual da API com memoria de sala (`getActiveRoom('prof')`), sem voltar ao padrao antigo sem sala.
+
+Verificacao:
+
+- `CHARLIE_ECHO_REGRESSION_OK` passou.
+
+## Commits publicados
+
+Portal principal:
+
+- `e26d1c2 chore: registrar varredura GitHub completa`
+
+Charlie Echo:
+
+- `447c1af fix: estabilizar resposta de modos da Charlie Echo`
+- `d69d65e test: reconhecer cockpit profissional com memoria de sala`
+
+## Verificacao final ampla
+
+No portal principal, `node scripts/run-local-ci.mjs` passou integralmente:
+
+- portal publico e 13 MVPs;
+- Charlie Echo portal publico;
+- matriz RLS;
+- estrutura SQL de RLS;
+- pacote SQL de homologacao ficticia;
+- autenticacao do Worker;
+- backend local fail closed;
+- Charlie Echo publica ao vivo;
+- paginas publicas de instalacao;
+- QR codes publicos.
 
 ## Proximos passos sugeridos
 
-1. Publicar/deployar `charlieecho-jus9-tecnologia-juridica` para que a resposta canonica de modos entre no ar.
-2. Rodar novamente `node scripts/run-local-ci.mjs` no portal principal depois do deploy da Charlie, pois a falha atual depende da API publica ao vivo.
-3. Criar um auditor dedicado para todos os modulos da Charlie Echo, cobrindo: memoria curta, salas, renomear/arquivar/excluir, OCR/anexos, downloads PDF, links externos confiaveis, pesquisa juridica guiada e apresentacao por ambiente.
-4. Criar uma pagina de matriz de MVPs pronta para evento, com status por modulo: pronto, demonstrativo, em revisao, pendente de backend.
-5. Evoluir pesquisa de doutrina/jurisprudencia em duas camadas: orientacao segura sem backend e, futuramente, busca real via backend com fontes oficiais.
+1. Criar um auditor dedicado para todos os modulos da Charlie Echo, cobrindo: memoria curta, salas, renomear/arquivar/excluir, OCR/anexos, downloads PDF, links externos confiaveis, pesquisa juridica guiada e apresentacao por ambiente.
+2. Criar uma pagina de matriz de MVPs pronta para evento, com status por modulo: pronto, demonstrativo, em revisao, pendente de backend.
+3. Evoluir pesquisa de doutrina/jurisprudencia em duas camadas: orientacao segura sem backend e, futuramente, busca real via backend com fontes oficiais.
+4. Criar uma auditoria recorrente de menus/favicons por subdominio, para detectar quando itens removidos reaparecem por cache, template antigo ou duplicacao de arquivo.
+5. Preparar um checklist curto de demo presencial: roteiro, links, fallback offline, QR codes, responsavel humano e limite de uso demonstrativo.
 
 ## Recomendacao de governanca
 
