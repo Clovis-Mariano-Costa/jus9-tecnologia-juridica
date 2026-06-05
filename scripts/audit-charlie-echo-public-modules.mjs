@@ -1,5 +1,5 @@
 const baseUrl = "https://jus9tecnologia.com.br";
-const expectedScript = "script.js?v=20260605-charlie-sources-v5-1-1";
+const expectedScript = "script.js?v=20260605-charlie-creative-v5-4";
 
 const pages = [
   "app-ia-profissional.html",
@@ -38,17 +38,17 @@ for (const page of pages) {
   if ((page.startsWith("app-ia-") || page === "charlie-echo.html" || page === "ia-profissional") && !html.includes(expectedScript)) {
     failures.push(`${page}: script diferente de ${expectedScript}`);
   }
-  if (page === "manual-charlie-echo.html" && (!html.includes("Baixar PDF") || !html.includes("Atualizar resumo") || !html.includes("Doutrina e jurisprudencia") || !html.includes("Fontes"))) {
+  if (page === "manual-charlie-echo.html" && (!html.includes("Baixar PDF") || !html.includes("Atualizar resumo") || !html.includes("Doutrina e jurisprudencia") || !html.includes("Fontes") || !html.includes("Criatividade governada") || !html.includes("Leitura do pedido"))) {
     failures.push(`${page}: governanca de download desatualizada`);
   }
-  if (page === "saude-charlie-echo.html" && (!html.includes("Gerar PDF") || !html.includes("Salas inteligentes") || !html.includes("doutrina/jurisprudencia") || !html.includes("Fontes"))) {
+  if (page === "saude-charlie-echo.html" && (!html.includes("Gerar PDF") || !html.includes("Salas inteligentes") || !html.includes("doutrina/jurisprudencia") || !html.includes("Fontes") || !html.includes("Centelha Criativa 5.4"))) {
     failures.push(`${page}: painel de saude desatualizado`);
   }
 }
 
 const scriptResponse = await fetch(`${baseUrl}/script.js?audit=charlie-script-${Date.now()}`);
 const script = await scriptResponse.text();
-for (const pattern of ["pdfSafeText", "pdfLiteral", "Baixar PDF", "buildPdfBlob", "eef4ff", "Atualizar resumo", "smartSummary", "governanceClass", "trustedLegalSources", "legalResearchAnswer", "buildOperationalResearchAnswer", "Pesquisa juridica operacional", "Busca pronta no Google limitada ao TJSC", "classifyLinkTrust", "Fontes e links confiaveis"]) {
+for (const pattern of ["pdfSafeText", "pdfLiteral", "Baixar PDF", "buildPdfBlob", "eef4ff", "Atualizar resumo", "smartSummary", "governanceClass", "trustedLegalSources", "legalResearchAnswer", "buildOperationalResearchAnswer", "Pesquisa juridica operacional", "Busca pronta no Google limitada ao TJSC", "classifyLinkTrust", "Fontes e links confiaveis", "Protocolo Centelha Criativa 5.4", "applyCreativeReasoningFrame", "Proximo passo criativo"]) {
   if (!script.includes(pattern)) failures.push(`script.js: ausente ${pattern}`);
 }
 

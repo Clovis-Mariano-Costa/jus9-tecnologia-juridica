@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
-const expectedScriptVersion = "script.js?v=20260605-charlie-sources-v5-1-1";
+const expectedScriptVersion = "script.js?v=20260605-charlie-creative-v5-4";
 
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), "utf8");
@@ -17,7 +17,7 @@ const checks = [
   {
     name: "chat MVP envia message para API da Charlie",
     file: "script.js",
-    patterns: ["https://charlieecho.jus9tecnologia.com.br/api/ia", "message: buildApiMessage"],
+    patterns: ["https://charlieecho.jus9tecnologia.com.br/api/ia", "message: buildApiMessage", "Protocolo Centelha Criativa 5.4", "applyCreativeReasoningFrame", "Leitura do pedido", "Caminho escolhido", "Proximo passo criativo"],
   },
   {
     name: "chat MVP possui ferramentas de qualidade",
@@ -37,12 +37,12 @@ const checks = [
   {
     name: "painel de saude publicado",
     file: "saude-charlie-echo.html",
-    patterns: ["operacional da Charlie Echo", "Protocolo 4.1", "Salas inteligentes", "Atualizar resumo", "Onde paramos?", "Fontes", "doutrina/jurisprudencia", "Baixar PDF", "Gerar PDF"],
+    patterns: ["operacional da Charlie Echo", "Protocolo 4.1", "Centelha Criativa 5.4", "Salas inteligentes", "Atualizar resumo", "Onde paramos?", "Fontes", "doutrina/jurisprudencia", "Baixar PDF", "Gerar PDF"],
   },
   {
     name: "manual publico publicado",
     file: "manual-charlie-echo.html",
-    patterns: ["Como conversar com a Charlie Echo", "Fontes", "Doutrina e jurisprudencia", "botao <strong>Fontes</strong>", "Atualizar resumo", "resumo executivo vivo", "Downloads", "Baixar PDF"],
+    patterns: ["Como conversar com a Charlie Echo", "Fontes", "Doutrina e jurisprudencia", "botao <strong>Fontes</strong>", "Atualizar resumo", "resumo executivo vivo", "Criatividade governada", "Leitura do pedido", "Proximo passo criativo", "Downloads", "Baixar PDF"],
   },
   {
     name: "capacidades publicas da Charlie publicadas",
@@ -62,12 +62,12 @@ const checks = [
   {
     name: "casa propria da Charlie Echo publicada",
     file: "charlie-echo.html",
-    patterns: ["Casa propria da IA", "data-ai-chat", "app-ia-profissional.html#chat-ia", "script.js?v=20260605-charlie-sources-v5-1-1"],
+    patterns: ["Casa propria da IA", "data-ai-chat", "app-ia-profissional.html#chat-ia", "script.js?v=20260605-charlie-creative-v5-4"],
   },
   {
     name: "pagina publica da Charlie usa script versionado",
     file: "ia-profissional.html",
-    patterns: ["data-ai-chat", "script.js?v=20260605-charlie-sources-v5-1-1"],
+    patterns: ["data-ai-chat", "script.js?v=20260605-charlie-creative-v5-4"],
   },
 ];
 

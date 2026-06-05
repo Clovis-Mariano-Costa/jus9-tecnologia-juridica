@@ -941,6 +941,7 @@ window.jus9DemoLogin = function(form){
       'Modo solicitado no frontend: ' + mode + '.',
       'Responda como Charlie Echo da Costa, I.A generativa multimodal jurista com governanca humana.',
       'Protocolo 4.1: identifique a intencao do usuario e responda o conteudo pedido. Nao responda com lista de modos, salvo se o usuario perguntar expressamente sobre modos/personas. Comece com resposta direta, depois contexto breve, riscos e proximos passos quando cabivel.',
+      'Protocolo Centelha Criativa 5.4: ofereca sensacao de raciocinio vivo sem fingir consciencia. Use, quando util, uma estrutura breve com Leitura do pedido, Caminho escolhido, Resposta e Proximo passo criativo. Mostre metodo, criterio e imaginacao pratica; nao revele pensamento interno oculto, nao diga que possui consciencia e nao invente certeza.',
       'Se houver pedido de link externo, ofereca URL HTTPS completa de fonte oficial, institucional ou academica confiavel quando possivel. Classifique a confianca do link por dominio, autoria, data, fonte primaria e risco. Nao use lista fixa como limite: avalie links novos com criterio.',
       'Se o pedido envolver doutrina ou jurisprudencia, separe doutrina de jurisprudencia, priorize tribunais oficiais, Planalto, LexML, CAPES, SciELO e bases academicas, explique por que a fonte e confiavel e avise que inteiro teor e revisao humana sao obrigatorios para uso real.',
       'Se houver arquivo gerado localmente, ofereca tambem link clicavel de download. Se houver continuidade, use a memoria curta da sala.',
@@ -970,6 +971,54 @@ window.jus9DemoLogin = function(form){
     var data = await response.json().catch(function(){ return null; });
     if (response.ok && data && typeof data.answer === 'string' && data.answer.trim()) return data.answer.trim();
     throw new Error((data && (data.error || data.message)) || 'API sem resposta textual reconhecida.');
+  }
+
+  function plainQuestionText(question){
+    var text = String(question || '');
+    var current = /\[PERGUNTA ATUAL\]\s*([\s\S]+)$/i.exec(text);
+    if(current && current[1]) text = current[1];
+    text = text.replace(/\[RESUMO EXECUTIVO DA SALA\][\s\S]*?\[PERGUNTA ATUAL\]/i, '');
+    return text.replace(/\s+/g, ' ').trim();
+  }
+
+  function inferCreativeIntent(question){
+    var q = String(question || '').toLowerCase();
+    if(/\b(jurisprudencia|jurisprudência|doutrina|fonte|fontes|pesquise|pesquisar)\b/.test(q)) return 'pesquisa juridica guiada';
+    if(/\b(link|url|site|download|baixar)\b/.test(q)) return 'curadoria de link ou arquivo';
+    if(/\b(minuta|modelo|contrato|peti[cç][aã]o|documento|oficio|ofício)\b/.test(q)) return 'producao documental demonstrativa';
+    if(/\b(resuma|resumo|sintese|síntese|organize|checklist)\b/.test(q)) return 'organizacao e sintese';
+    if(/\b(continue|anterior|sobre isso|onde paramos|lembra)\b/.test(q)) return 'continuidade da sala';
+    if(/\b(crie|inove|ideia|criativ|estrategia|estratégia)\b/.test(q)) return 'criacao orientada por governanca';
+    return 'explicacao aplicada ao ambiente';
+  }
+
+  function creativeNextStep(intent, code){
+    if(intent === 'pesquisa juridica guiada') return 'montar uma ficha de conferencia com fonte, tese, data, inteiro teor e revisao humana.';
+    if(intent === 'curadoria de link ou arquivo') return 'separar links oficiais, institucionais e cautelosos, mantendo URLs HTTPS completas.';
+    if(intent === 'producao documental demonstrativa') return 'transformar a resposta em minuta, checklist ou PDF local para revisao humana.';
+    if(intent === 'continuidade da sala') return 'atualizar o resumo executivo da sala antes de mudar de assunto.';
+    if(intent === 'criacao orientada por governanca') return 'gerar tres alternativas: conservadora, equilibrada e ousada, todas com limites claros.';
+    return 'converter a resposta em um pequeno plano de acao do MVP ' + code + '.';
+  }
+
+  function applyCreativeReasoningFrame(answer, question, code, focus){
+    var text = String(answer || '').trim();
+    if(!text || /Leitura do pedido:/i.test(text) || /Caminho escolhido:/i.test(text)) return text;
+    var cleanQuestion = plainQuestionText(question);
+    if(asksAboutCharlieModes(cleanQuestion) || asksPreviousQuestion(cleanQuestion) || asksWhereStopped(cleanQuestion)) return text;
+    var intent = inferCreativeIntent(cleanQuestion);
+    var reading = cleanQuestion
+      ? 'Voce pediu ' + intent + ' em ' + code + ', dentro de ' + focus + '.'
+      : 'Vou tratar o pedido como ' + intent + ' no ambiente ' + code + '.';
+    return [
+      'Leitura do pedido: ' + reading,
+      'Caminho escolhido: responder com utilidade pratica, criatividade governada, fonte ou limite quando houver risco.',
+      '',
+      'Resposta:',
+      text,
+      '',
+      'Proximo passo criativo: ' + creativeNextStep(intent, code)
+    ].join('\n');
   }
 
   function chatRoomKey(code){ return 'jus9CharlieRooms_' + String(code || 'MVP').replace(/[^A-Z0-9_-]/gi, '_') + '_v1'; }
@@ -1326,12 +1375,14 @@ window.jus9DemoLogin = function(form){
             var recall = previousQuestionAnswer(question, room);
             if(recall) answer = recall;
           }
+          answer = applyCreativeReasoningFrame(answer, question, code, focus);
           echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(answer);
           var remembered = rememberChatExchange(code, question, answer);
           updateRoomIntelligence(code, remembered, focus);
         } catch (error) {
           var fallback = textForMode(mode, code, focus, question);
           if(room.summary) fallback = 'Vou continuar pela memoria curta desta sala. ' + room.summary + '\n\n' + fallback;
+          fallback = applyCreativeReasoningFrame(fallback, question, code, focus);
           echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(fallback) + '<br><br><em>API segura indisponivel agora; mantive fallback local sem dados reais.</em>';
           var rememberedFallback = rememberChatExchange(code, question, fallback);
           updateRoomIntelligence(code, rememberedFallback, focus);

@@ -38,6 +38,9 @@ const canonicalServiceWorker = await fs.readFile(new URL("../service-worker.js",
 const legacyServiceWorker = await fs.readFile(new URL("../sw.js", import.meta.url), "utf8");
 assert(sharedScript.includes("https://charlieecho.jus9tecnologia.com.br/api/ia"), "chat compartilhado nao aponta para API publica");
 assert(sharedScript.includes("asksAboutCharlieModes"), "roteamento explicito de modos ausente");
+assert(sharedScript.includes("Protocolo Centelha Criativa 5.4"), "protocolo de criatividade governada ausente");
+assert(sharedScript.includes("applyCreativeReasoningFrame"), "superficie de raciocinio aparente ausente");
+assert(sharedScript.includes("Leitura do pedido"), "estrutura de leitura do pedido ausente");
 assert(sharedScript.includes("socialResponsibilityFallback"), "fallback tematico empresarial ausente");
 assert(sharedScript.includes("initPriorityWorkflow"), "fluxos aprofundados compartilhados ausentes");
 assert(sharedScript.includes("initGuidedPrompts"), "perguntas guiadas compartilhadas ausentes");
@@ -81,7 +84,7 @@ for (const [code, page] of Object.entries(priorityAiPages)) {
   const html = await fs.readFile(new URL(`../${page}`, import.meta.url), "utf8");
   assert(html.includes("data-ai-chat"), `${code}: chat ausente em ${page}`);
   assert(html.includes(`data-ai-code="${code}"`), `${code}: codigo incorreto em ${page}`);
-  assert(html.includes('script.js?v=20260605-charlie-sources-v5-1-1'), `${code}: script sem versao em ${page}`);
+  assert(html.includes('script.js?v=20260605-charlie-creative-v5-4'), `${code}: script sem versao em ${page}`);
   assert(html.includes('charlie-mvp-shell'), `${code}: pagina da Charlie sem shell visual em ${page}`);
   console.log(`AI_PAGE_OK ${code} page=${page}`);
 }
