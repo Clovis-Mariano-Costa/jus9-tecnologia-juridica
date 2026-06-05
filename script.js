@@ -729,6 +729,55 @@ window.jus9DemoLogin = function(form){
     return 'Nesta sala eu ainda nao encontrei pergunta anterior salva. Se voce abriu uma nova sala, atualizou a pagina ou limpou a conversa, a memoria local desta sessao pode ter sido reiniciada.';
   }
 
+  function asksWhereStopped(question){
+    var q = (question || '').toLowerCase();
+    return /\b(onde paramos|onde parei|em que ponto estamos|qual o estado da sala|resumo da sala|resumo executivo|o que ficou decidido|quais pendencias|próximo passo|proximo passo)\b/.test(q);
+  }
+
+  function classifyRoomGovernance(room, focus){
+    var text = [focus || '', room && room.summary || '', (room && room.messages || []).map(function(m){ return m.content || ''; }).join(' ')].join(' ').toLowerCase();
+    if(/\b(senha|token|segredo|sigiloso|sigilosa|cofre|documento real|processo real|cpf|cnpj|whatsapp|dados pessoais|dado pessoal)\b/.test(text)) return 'sensivel - exige revisao humana';
+    if(/\b(prazo|decisao|decisão|peticao|petição|minuta|contrato|investimento|laudo|autoridade|juiz|promotor|delegado)\b/.test(text)) return 'interno demonstrativo - revisar antes de uso real';
+    return 'publico demonstrativo';
+  }
+
+  function buildRoomExecutiveSummary(room, code, focus){
+    var messages = (room && room.messages || []);
+    var users = messages.filter(function(m){ return m.role === 'user' && m.content; });
+    var assistants = messages.filter(function(m){ return m.role === 'assistant' && m.content; });
+    var lastUser = users.length ? users[users.length - 1].content : 'Ainda sem pergunta registrada.';
+    var lastAssistant = assistants.length ? assistants[assistants.length - 1].content : 'Ainda sem resposta registrada.';
+    var topic = (room && room.currentTopic) || lastUser || room && room.title || code;
+    var governance = classifyRoomGovernance(room, focus);
+    var pending = users.length ? 'Continuar a partir da ultima pergunta, confirmar objetivo e pedir revisao humana se houver uso real.' : 'Iniciar a conversa com uma pergunta ficticia e objetivo claro.';
+    return [
+      'Assunto principal: ' + String(topic || '').replace(/\s+/g, ' ').slice(0, 220),
+      'Ultima pergunta: ' + String(lastUser || '').replace(/\s+/g, ' ').slice(0, 260),
+      'Ultima resposta: ' + String(lastAssistant || '').replace(/\s+/g, ' ').slice(0, 300),
+      'Pendencias: ' + pending,
+      'Proximo passo sugerido: transformar o ponto atual em checklist, documento, link confiavel ou tarefa do MVP ' + code + '.',
+      'Governanca: ' + governance + '.'
+    ].join('\n');
+  }
+
+  function updateRoomIntelligence(code, room, focus){
+    var data = loadChatRooms(code);
+    var target = data.rooms.find(function(r){ return room && r.id === room.id; }) || data.rooms.find(function(r){ return r.id === data.activeId; });
+    if(!target) return room;
+    target.focus = focus || target.focus || '';
+    target.governanceClass = classifyRoomGovernance(target, focus);
+    target.smartSummary = buildRoomExecutiveSummary(target, code, focus);
+    target.updatedAt = new Date().toISOString();
+    saveChatRooms(code, data);
+    return target;
+  }
+
+  function whereStoppedAnswer(question, room, code, focus){
+    if(!asksWhereStopped(question)) return '';
+    var smart = updateRoomIntelligence(code, room, focus);
+    return 'Resumo executivo vivo desta sala:\n\n' + (smart && smart.smartSummary || buildRoomExecutiveSummary(room, code, focus));
+  }
+
   function apiModeFor(mode){
     if (mode === 'social') return 'social';
     return 'profissional';
@@ -758,6 +807,8 @@ window.jus9DemoLogin = function(form){
         room: room ? {
           title: room.title || '',
           summary: room.summary || '',
+          smartSummary: room.smartSummary || '',
+          governanceClass: room.governanceClass || '',
           currentTopic: room.currentTopic || '',
           lastUserIntent: room.lastUserIntent || '',
           messages: (room.messages || []).slice(-16)
@@ -790,7 +841,7 @@ window.jus9DemoLogin = function(form){
     panel.querySelector('[data-room-delete]').addEventListener('click', function(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); if(!room || !confirm('Excluir esta sala local?')) return; room.status='deleted'; var next = data.rooms.find(function(r){ return r.status !== 'deleted' && r.status !== 'archived'; }) || data.rooms.find(function(r){ return r.status !== 'deleted'; }); if(!next){ next = createChatRoom(code, 'Sala ' + code + ' 1'); data.rooms.unshift(next); } data.activeId = next.id; saveChatRooms(code, data); render(); });
     render();
   }
-  function buildQuestionWithRoom(question, room){ var recent = (room && room.messages || []).slice(-16).map(function(m){ return (m.role === 'assistant' ? 'Charlie: ' : 'Usuario: ') + String(m.content || '').slice(0, 700); }).join('\n'); return (room && (room.summary || recent)) ? '[MEMORIA CURTA DA SALA]\n' + (room.summary || '') + '\n' + recent + '\n\n[PERGUNTA ATUAL]\n' + question : question; }
+  function buildQuestionWithRoom(question, room){ var recent = (room && room.messages || []).slice(-16).map(function(m){ return (m.role === 'assistant' ? 'Charlie: ' : 'Usuario: ') + String(m.content || '').slice(0, 700); }).join('\n'); return (room && (room.summary || room.smartSummary || recent)) ? '[RESUMO EXECUTIVO DA SALA]\n' + (room.smartSummary || '') + '\n\n[MEMORIA CURTA DA SALA]\n' + (room.summary || '') + '\n' + recent + '\n\n[PERGUNTA ATUAL]\n' + question : question; }
 
   function downloadText(filename, content){
     var blob = new Blob([content || ''], { type:'text/plain;charset=utf-8' });
@@ -866,8 +917,12 @@ window.jus9DemoLogin = function(form){
   function buildPdfBlob(title, rawLines){
     var source = rawLines || [];
     var meta = source.filter(function(line){ return /^(MVP|Foco|Gerado em):/.test(line || ''); });
+    var executiveIndex = source.indexOf('Resumo executivo');
     var memoryIndex = source.indexOf('Memoria da sala');
     var historyIndex = source.indexOf('Historico recente');
+    var executiveLines = executiveIndex >= 0
+      ? source.slice(executiveIndex + 1, memoryIndex >= 0 ? memoryIndex : (historyIndex >= 0 ? historyIndex : source.length)).filter(function(line){ return String(line || '').trim(); })
+      : [];
     var memoryLines = memoryIndex >= 0
       ? source.slice(memoryIndex + 1, historyIndex >= 0 ? historyIndex : source.length).filter(function(line){ return String(line || '').trim(); })
       : [];
@@ -962,6 +1017,9 @@ window.jus9DemoLogin = function(form){
     addWrapped('Memoria curta, historico recente e contexto demonstrativo da sala. Use como apoio de organizacao, sempre com revisao humana.', { size:11.5, lineHeight:17, color:'#51627a' });
     y -= 8;
     addMetaCard();
+    addSection('Resumo executivo');
+    if(executiveLines.length) executiveLines.forEach(function(line){ addWrapped(line, { size:11, lineHeight:16, color:'#24344a' }); y -= 4; });
+    else addWrapped('Sem resumo executivo salvo nesta sala.', { size:11, lineHeight:16, color:'#51627a' });
     addSection('Memoria da sala');
     if(memoryLines.length) memoryLines.forEach(function(line){ addWrapped(line, { size:11, lineHeight:16, color:'#24344a' }); y -= 4; });
     else addWrapped('Sem resumo salvo nesta sala.', { size:11, lineHeight:16, color:'#51627a' });
@@ -1015,7 +1073,7 @@ window.jus9DemoLogin = function(form){
     var bar = document.createElement('div');
     bar.className = 'chat-utility-actions';
     bar.setAttribute('data-ai-utility-actions', 'true');
-    bar.innerHTML = '<button class="mini" type="button" data-ai-improve>Melhorar resposta</button><button class="mini primary" type="button" data-ai-package>Gerar PDF</button>';
+    bar.innerHTML = '<button class="mini" type="button" data-ai-improve>Melhorar resposta</button><button class="mini" type="button" data-ai-summary>Atualizar resumo</button><button class="mini primary" type="button" data-ai-package>Gerar PDF</button>';
     form.parentNode.insertBefore(bar, form.nextSibling);
     function lastEchoText(){ var msgs = card.querySelectorAll('.ai-message-echo'); return msgs.length ? (msgs[msgs.length - 1].textContent || '').replace(/^Charlie Echo:\s*/i, '').trim() : ''; }
     function lastUserText(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); var msg = room && (room.messages || []).filter(function(m){ return m.role === 'user'; }).slice(-1)[0]; return msg ? msg.content : ''; }
@@ -1041,10 +1099,15 @@ window.jus9DemoLogin = function(form){
         appendEcho('Versao melhorada local: resposta direta primeiro; depois exemplo pratico; em seguida riscos, limites e proximo passo. Se houver link, priorize fonte oficial HTTPS. Pergunta-base: ' + (lastQuestion || 'sem pergunta registrada') + '.');
       }
     });
+    bar.querySelector('[data-ai-summary]').addEventListener('click', function(){
+      var room = updateRoomIntelligence(code, activeChatRoom(code), focus);
+      appendEcho('Resumo executivo atualizado:\n\n' + (room.smartSummary || buildRoomExecutiveSummary(room, code, focus)));
+    });
     bar.querySelector('[data-ai-package]').addEventListener('click', function(){
       var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }) || activeChatRoom(code);
+      room = updateRoomIntelligence(code, room, focus);
       var title = 'Pacote Charlie Echo - ' + (room.title || code);
-      var lines = ['MVP: ' + code, 'Foco: ' + focus, 'Gerado em: ' + new Date().toLocaleString('pt-BR'), '', 'Memoria da sala', '', room.summary || 'Sem resumo salvo.', '', 'Historico recente', ''];
+      var lines = ['MVP: ' + code, 'Foco: ' + focus, 'Gerado em: ' + new Date().toLocaleString('pt-BR'), '', 'Resumo executivo', '', room.smartSummary || buildRoomExecutiveSummary(room, code, focus), '', 'Memoria da sala', '', room.summary || 'Sem resumo salvo.', '', 'Historico recente', ''];
       (room.messages || []).slice(-16).forEach(function(m){ lines.push((m.role === 'assistant' ? 'Charlie Echo' : 'Usuario') + ': ' + m.content); lines.push(''); });
       var filename = slug('pacote-' + code + '-' + (room.title || 'sala')) + '.pdf';
       var file = downloadBlob(filename, buildPdfBlob(title, lines), true);
@@ -1079,10 +1142,11 @@ window.jus9DemoLogin = function(form){
       });
       var echoMsg = document.createElement('div');
       echoMsg.className = 'ai-message ai-message-echo';
-      var localIdentity = previousQuestionAnswer(question, room) || identityAnswer(question);
+      var localIdentity = previousQuestionAnswer(question, room) || whereStoppedAnswer(question, room, code, focus) || identityAnswer(question);
       if (localIdentity) {
         echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(localIdentity);
-        rememberChatExchange(code, question, localIdentity);
+        var rememberedLocal = rememberChatExchange(code, question, localIdentity);
+        updateRoomIntelligence(code, rememberedLocal, focus);
       } else {
         echoMsg.innerHTML = '<strong>Charlie Echo:</strong> Consultando API segura da Charlie Echo...';
       }
@@ -1098,12 +1162,14 @@ window.jus9DemoLogin = function(form){
             if(recall) answer = recall;
           }
           echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(answer);
-          rememberChatExchange(code, question, answer);
+          var remembered = rememberChatExchange(code, question, answer);
+          updateRoomIntelligence(code, remembered, focus);
         } catch (error) {
           var fallback = textForMode(mode, code, focus, question);
           if(room.summary) fallback = 'Vou continuar pela memoria curta desta sala. ' + room.summary + '\n\n' + fallback;
           echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(fallback) + '<br><br><em>API segura indisponivel agora; mantive fallback local sem dados reais.</em>';
-          rememberChatExchange(code, question, fallback);
+          var rememberedFallback = rememberChatExchange(code, question, fallback);
+          updateRoomIntelligence(code, rememberedFallback, focus);
         }
         windowEl.scrollTop = windowEl.scrollHeight;
       }

@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
-const expectedScriptVersion = "script.js?v=20260605-charlie-pdf-clean-v4-9";
+const expectedScriptVersion = "script.js?v=20260605-charlie-smart-rooms-v5-0";
 
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), "utf8");
@@ -12,7 +12,7 @@ const checks = [
   {
     name: "chat MVP tem memoria curta por sala",
     file: "script.js",
-    patterns: ["chatRoomKey", "rememberChatExchange", "buildQuestionWithRoom", "previousQuestionAnswer", "target.parentNode.insertBefore(panel, target)", "registration.update()", "SKIP_WAITING", "initCharlieMvpShell", "charlie-mvp-env-list"],
+    patterns: ["chatRoomKey", "rememberChatExchange", "buildQuestionWithRoom", "previousQuestionAnswer", "whereStoppedAnswer", "updateRoomIntelligence", "smartSummary", "governanceClass", "target.parentNode.insertBefore(panel, target)", "registration.update()", "SKIP_WAITING", "initCharlieMvpShell", "charlie-mvp-env-list"],
   },
   {
     name: "chat MVP envia message para API da Charlie",
@@ -22,7 +22,7 @@ const checks = [
   {
     name: "chat MVP possui ferramentas de qualidade",
     file: "script.js",
-    patterns: ["Melhorar resposta", "Gerar PDF", "Baixar PDF", "link clicavel de download", "Renomear", "application/pdf", ".pdf", "buildPdfBlob", "download-link", "Helvetica-Bold", "Informacoes do pacote", "Historico recente", "Pagina ", "pdfSafeText", "pdfLiteral", "eef4ff"],
+    patterns: ["Melhorar resposta", "Atualizar resumo", "Resumo executivo", "Gerar PDF", "Baixar PDF", "link clicavel de download", "Renomear", "application/pdf", ".pdf", "buildPdfBlob", "download-link", "Helvetica-Bold", "Informacoes do pacote", "Historico recente", "Pagina ", "pdfSafeText", "pdfLiteral", "eef4ff"],
   },
   {
     name: "lider MVP lista ambientes prontos",
@@ -32,12 +32,12 @@ const checks = [
   {
     name: "painel de saude publicado",
     file: "saude-charlie-echo.html",
-    patterns: ["Saúde operacional da Charlie Echo", "Protocolo 4.1", "Memória persistente", "PDF limpo", "Baixar PDF", "Gerar PDF"],
+    patterns: ["Saúde operacional da Charlie Echo", "Protocolo 4.1", "Memória persistente", "Salas inteligentes", "Atualizar resumo", "Onde paramos?", "PDF limpo", "Baixar PDF", "Gerar PDF"],
   },
   {
     name: "manual publico publicado",
     file: "manual-charlie-echo.html",
-    patterns: ["Como conversar com a Charlie Echo", "Peça por intenção", "Fontes confiáveis", "Downloads", "Baixar PDF", "não é enviado ao servidor"],
+    patterns: ["Como conversar com a Charlie Echo", "Peça por intenção", "Fontes confiáveis", "Atualizar resumo", "resumo executivo vivo", "Downloads", "Baixar PDF", "não é enviado ao servidor"],
   },
   {
     name: "service worker nao prende MVP antigo",
@@ -47,12 +47,12 @@ const checks = [
   {
     name: "casa propria da Charlie Echo publicada",
     file: "charlie-echo.html",
-    patterns: ["Casa propria da IA", "data-ai-chat", "app-ia-profissional.html#chat-ia", "script.js?v=20260605-charlie-pdf-clean-v4-9"],
+    patterns: ["Casa propria da IA", "data-ai-chat", "app-ia-profissional.html#chat-ia", "script.js?v=20260605-charlie-smart-rooms-v5-0"],
   },
   {
     name: "pagina publica da Charlie usa script versionado",
     file: "ia-profissional.html",
-    patterns: ["data-ai-chat", "script.js?v=20260605-charlie-pdf-clean-v4-9"],
+    patterns: ["data-ai-chat", "script.js?v=20260605-charlie-smart-rooms-v5-0"],
   },
 ];
 
