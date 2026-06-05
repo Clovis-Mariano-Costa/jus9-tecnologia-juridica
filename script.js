@@ -830,39 +830,127 @@ window.jus9DemoLogin = function(form){
     return lines.length ? lines : [''];
   }
 
-  function buildPdfBlob(title, rawLines){
-    var printable = [];
-    printable.push(title);
-    printable.push('Gerado localmente pela Charlie Echo - Jus 9 Tecnologia Juridica');
-    printable.push('');
-    (rawLines || []).forEach(function(line){
-      wrapPdfLine(line, 88).forEach(function(wrapped){ printable.push(wrapped); });
-    });
+  function pdfColor(hex){
+    hex = String(hex || '#000000').replace('#', '');
+    var r = parseInt(hex.slice(0, 2), 16) / 255;
+    var g = parseInt(hex.slice(2, 4), 16) / 255;
+    var b = parseInt(hex.slice(4, 6), 16) / 255;
+    return [r, g, b].map(function(n){ return Number.isFinite(n) ? n.toFixed(3) : '0'; }).join(' ');
+  }
 
-    var pages = [], pageLines = [];
-    printable.forEach(function(line){
-      pageLines.push(line);
-      if(pageLines.length >= 44){ pages.push(pageLines); pageLines = []; }
+  function pdfText(text, x, y, size, font, color){
+    return 'BT\n' + pdfColor(color || '#0b1728') + ' rg\n/' + (font || 'F1') + ' ' + (size || 11) + ' Tf\n1 0 0 1 ' + x + ' ' + y + ' Tm\n' + pdfHex(text) + ' Tj\nET\n';
+  }
+
+  function pdfRect(x, y, width, height, color){
+    return 'q\n' + pdfColor(color) + ' rg\n' + x + ' ' + y + ' ' + width + ' ' + height + ' re f\nQ\n';
+  }
+
+  function buildPdfBlob(title, rawLines){
+    var source = rawLines || [];
+    var meta = source.filter(function(line){ return /^(MVP|Foco|Gerado em):/.test(line || ''); });
+    var memoryIndex = source.indexOf('Memoria da sala');
+    var historyIndex = source.indexOf('Historico recente');
+    var memoryLines = memoryIndex >= 0
+      ? source.slice(memoryIndex + 1, historyIndex >= 0 ? historyIndex : source.length).filter(function(line){ return String(line || '').trim(); })
+      : [];
+    var historyLines = historyIndex >= 0
+      ? source.slice(historyIndex + 1).filter(function(line){ return String(line || '').trim(); })
+      : [];
+
+    var pages = [[]], pageNumber = 1, y = 0;
+    var pageWidth = 595, pageHeight = 842, margin = 48, contentWidth = pageWidth - margin * 2;
+
+    function current(){ return pages[pages.length - 1]; }
+    function startPage(){
+      pages.push([]);
+      pageNumber += 1;
+      y = 782;
+      current().push(pdfText('Charlie Echo da Costa - Pacote da sala', margin, 806, 10, 'F2', '#8a5a12'));
+      current().push(pdfRect(margin, 790, contentWidth, 1, '#e7c36c'));
+    }
+    function ensure(space){
+      if(y - space < 74) startPage();
+    }
+    function addWrapped(text, opts){
+      opts = opts || {};
+      var size = opts.size || 11;
+      var lineHeight = opts.lineHeight || Math.round(size * 1.45);
+      var width = opts.width || contentWidth;
+      var limit = Math.max(24, Math.floor(width / (size * 0.50)));
+      wrapPdfLine(text, limit).forEach(function(line){
+        ensure(lineHeight + 2);
+        current().push(pdfText(line, opts.x || margin, y, size, opts.font || 'F1', opts.color || '#24344a'));
+        y -= lineHeight;
+      });
+    }
+    function addSection(label){
+      ensure(44);
+      y -= 10;
+      current().push(pdfRect(margin, y - 7, 4, 22, '#c58b2f'));
+      current().push(pdfText(label, margin + 12, y, 15, 'F2', '#0b1728'));
+      y -= 26;
+    }
+    function addMetaCard(){
+      ensure(96);
+      current().push(pdfRect(margin, y - 82, contentWidth, 94, '#fff7e2'));
+      current().push(pdfText('Informacoes do pacote', margin + 18, y - 12, 13, 'F2', '#5b3b09'));
+      var metaY = y - 34;
+      (meta.length ? meta : ['MVP: demonstrativo', 'Gerado em: ' + new Date().toLocaleString('pt-BR')]).forEach(function(line){
+        current().push(pdfText(line, margin + 18, metaY, 10.5, 'F1', '#24344a'));
+        metaY -= 17;
+      });
+      y -= 108;
+    }
+    function addMessageBlock(line){
+      var isCharlie = /^Charlie Echo:/.test(line || '');
+      var isUser = /^Usuario:/.test(line || '');
+      var label = isCharlie ? 'Charlie Echo' : (isUser ? 'Usuario' : '');
+      var text = String(line || '').replace(/^(Charlie Echo|Usuario):\s*/, '');
+      ensure(48);
+      if(label){
+        current().push(pdfText(label, margin, y, 10.5, 'F2', isCharlie ? '#8a5a12' : '#07111f'));
+        y -= 16;
+      }
+      addWrapped(text, { size:10.5, lineHeight:15, x:margin + (label ? 12 : 0), width:contentWidth - (label ? 12 : 0), color:'#24344a' });
+      y -= 7;
+    }
+
+    y = 782;
+    current().push(pdfRect(0, 0, pageWidth, pageHeight, '#fbfaf7'));
+    current().push(pdfRect(0, 760, pageWidth, 82, '#07111f'));
+    current().push(pdfText('Jus 9 Tecnologia Juridica', margin, 810, 11, 'F2', '#e7c36c'));
+    current().push(pdfText('Pacote local da Charlie Echo', margin, 790, 18, 'F2', '#ffffff'));
+    current().push(pdfText('Gerado no navegador, sem envio de dados ao servidor.', margin, 770, 10.5, 'F1', '#dbe5f3'));
+    y = 718;
+    addWrapped(title || 'Pacote Charlie Echo', { size:22, lineHeight:28, font:'F2', color:'#0b1728' });
+    addWrapped('Memoria curta, historico recente e contexto demonstrativo da sala. Use como apoio de organizacao, sempre com revisao humana.', { size:11.5, lineHeight:17, color:'#51627a' });
+    y -= 8;
+    addMetaCard();
+    addSection('Memoria da sala');
+    if(memoryLines.length) memoryLines.forEach(function(line){ addWrapped(line, { size:11, lineHeight:16, color:'#24344a' }); y -= 4; });
+    else addWrapped('Sem resumo salvo nesta sala.', { size:11, lineHeight:16, color:'#51627a' });
+    addSection('Historico recente');
+    if(historyLines.length) historyLines.forEach(addMessageBlock);
+    else addWrapped('Sem historico recente registrado.', { size:11, lineHeight:16, color:'#51627a' });
+
+    pages.forEach(function(commands, index){
+      commands.push(pdfRect(margin, 52, contentWidth, 1, '#eadfca'));
+      commands.push(pdfText('Charlie Echo da Costa - Jus 9 Tecnologia Juridica', margin, 34, 9, 'F1', '#51627a'));
+      commands.push(pdfText('Pagina ' + (index + 1) + ' de ' + pages.length, pageWidth - margin - 70, 34, 9, 'F1', '#51627a'));
     });
-    if(pageLines.length) pages.push(pageLines);
-    if(!pages.length) pages.push(['Pacote sem conteudo registrado.']);
 
     var objects = [];
     function addObject(content){ objects.push(content); return objects.length; }
     var catalogId = addObject('');
     var pagesId = addObject('');
     var fontId = addObject('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
+    var boldFontId = addObject('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>');
     var pageIds = [];
-    pages.forEach(function(lines, pageIndex){
-      var content = 'BT\n/F1 11 Tf\n50 792 Td\n15 TL\n';
-      lines.forEach(function(line, index){
-        var text = line;
-        if(pageIndex === 0 && index === 0) text = String(text || '').toUpperCase();
-        content += pdfHex(text) + ' Tj\nT*\n';
-      });
-      content += 'ET\n';
+    pages.forEach(function(commands){
+      var content = commands.join('');
       var contentId = addObject('<< /Length ' + content.length + ' >>\nstream\n' + content + 'endstream');
-      var pageId = addObject('<< /Type /Page /Parent ' + pagesId + ' 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 ' + fontId + ' 0 R >> >> /Contents ' + contentId + ' 0 R >>');
+      var pageId = addObject('<< /Type /Page /Parent ' + pagesId + ' 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 ' + fontId + ' 0 R /F2 ' + boldFontId + ' 0 R >> >> /Contents ' + contentId + ' 0 R >>');
       pageIds.push(pageId);
     });
     objects[catalogId - 1] = '<< /Type /Catalog /Pages ' + pagesId + ' 0 R >>';
