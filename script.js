@@ -818,8 +818,25 @@ window.jus9DemoLogin = function(form){
     return '<' + hex + '>';
   }
 
+  function pdfSafeText(text){
+    return String(text || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[–—]/g, '-')
+      .replace(/[“”]/g, '"')
+      .replace(/[‘’]/g, "'")
+      .replace(/[•·]/g, '-')
+      .replace(/[^\x09\x0A\x0D\x20-\x7E]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function pdfLiteral(text){
+    return '(' + pdfSafeText(text).replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)') + ')';
+  }
+
   function wrapPdfLine(text, limit){
-    var words = String(text || '').replace(/\s+/g, ' ').trim().split(' ');
+    var words = pdfSafeText(text).replace(/\s+/g, ' ').trim().split(' ');
     var lines = [], current = '';
     words.forEach(function(word){
       var next = current ? current + ' ' + word : word;
@@ -839,7 +856,7 @@ window.jus9DemoLogin = function(form){
   }
 
   function pdfText(text, x, y, size, font, color){
-    return 'BT\n' + pdfColor(color || '#0b1728') + ' rg\n/' + (font || 'F1') + ' ' + (size || 11) + ' Tf\n1 0 0 1 ' + x + ' ' + y + ' Tm\n' + pdfHex(text) + ' Tj\nET\n';
+    return 'BT\n' + pdfColor(color || '#0b1728') + ' rg\n/' + (font || 'F1') + ' ' + (size || 11) + ' Tf\n1 0 0 1 ' + x + ' ' + y + ' Tm\n' + pdfLiteral(text) + ' Tj\nET\n';
   }
 
   function pdfRect(x, y, width, height, color){
@@ -866,6 +883,7 @@ window.jus9DemoLogin = function(form){
       pages.push([]);
       pageNumber += 1;
       y = 782;
+      current().push(pdfRect(0, 0, pageWidth, pageHeight, '#fbfaf7'));
       current().push(pdfText('Charlie Echo da Costa - Pacote da sala', margin, 806, 10, 'F2', '#8a5a12'));
       current().push(pdfRect(margin, 790, contentWidth, 1, '#e7c36c'));
     }
@@ -893,27 +911,44 @@ window.jus9DemoLogin = function(form){
     }
     function addMetaCard(){
       ensure(96);
-      current().push(pdfRect(margin, y - 82, contentWidth, 94, '#fff7e2'));
+      var metaLines = [];
+      (meta.length ? meta : ['MVP: demonstrativo', 'Gerado em: ' + new Date().toLocaleString('pt-BR')]).forEach(function(line){
+        wrapPdfLine(line, 74).forEach(function(wrapped){ metaLines.push(wrapped); });
+      });
+      var cardHeight = 42 + metaLines.length * 15;
+      ensure(cardHeight + 20);
+      current().push(pdfRect(margin, y - cardHeight, contentWidth, cardHeight + 10, '#fff7e2'));
+      current().push(pdfRect(margin, y - cardHeight, 5, cardHeight + 10, '#c58b2f'));
       current().push(pdfText('Informacoes do pacote', margin + 18, y - 12, 13, 'F2', '#5b3b09'));
       var metaY = y - 34;
-      (meta.length ? meta : ['MVP: demonstrativo', 'Gerado em: ' + new Date().toLocaleString('pt-BR')]).forEach(function(line){
+      metaLines.forEach(function(line){
         current().push(pdfText(line, margin + 18, metaY, 10.5, 'F1', '#24344a'));
-        metaY -= 17;
+        metaY -= 15;
       });
-      y -= 108;
+      y -= cardHeight + 24;
     }
     function addMessageBlock(line){
       var isCharlie = /^Charlie Echo:/.test(line || '');
       var isUser = /^Usuario:/.test(line || '');
       var label = isCharlie ? 'Charlie Echo' : (isUser ? 'Usuario' : '');
       var text = String(line || '').replace(/^(Charlie Echo|Usuario):\s*/, '');
-      ensure(48);
+      var textX = margin + 16;
+      var textWidth = contentWidth - 32;
+      var lines = [];
+      wrapPdfLine(text, Math.floor(textWidth / (10.5 * 0.50))).forEach(function(wrapped){ lines.push(wrapped); });
+      var blockHeight = 28 + (lines.length || 1) * 15;
+      ensure(blockHeight + 12);
+      current().push(pdfRect(margin, y - blockHeight + 4, contentWidth, blockHeight, isCharlie ? '#fffaf0' : '#eef4ff'));
+      current().push(pdfRect(margin, y - blockHeight + 4, 4, blockHeight, isCharlie ? '#c58b2f' : '#07111f'));
       if(label){
-        current().push(pdfText(label, margin, y, 10.5, 'F2', isCharlie ? '#8a5a12' : '#07111f'));
-        y -= 16;
+        current().push(pdfText(label, textX, y - 10, 10.5, 'F2', isCharlie ? '#8a5a12' : '#07111f'));
+        y -= 27;
       }
-      addWrapped(text, { size:10.5, lineHeight:15, x:margin + (label ? 12 : 0), width:contentWidth - (label ? 12 : 0), color:'#24344a' });
-      y -= 7;
+      lines.forEach(function(wrapped){
+        current().push(pdfText(wrapped, textX, y, 10.5, 'F1', '#24344a'));
+        y -= 15;
+      });
+      y -= 14;
     }
 
     y = 782;
