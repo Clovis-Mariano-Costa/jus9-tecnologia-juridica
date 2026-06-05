@@ -32,12 +32,12 @@ const checks = [
   {
     name: "painel de saude publicado",
     file: "saude-charlie-echo.html",
-    patterns: ["Saúde operacional da Charlie Echo", "Protocolo 4.1", "Memória persistente"],
+    patterns: ["Saúde operacional da Charlie Echo", "Protocolo 4.1", "Memória persistente", "PDF limpo", "Baixar PDF", "Gerar PDF"],
   },
   {
     name: "manual publico publicado",
     file: "manual-charlie-echo.html",
-    patterns: ["Como conversar com a Charlie Echo", "Peça por intenção", "Fontes confiáveis"],
+    patterns: ["Como conversar com a Charlie Echo", "Peça por intenção", "Fontes confiáveis", "Downloads", "Baixar PDF", "não é enviado ao servidor"],
   },
   {
     name: "service worker nao prende MVP antigo",

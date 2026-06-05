@@ -13,6 +13,12 @@ const checks = [
     args: ["tests/validate-public-mvps.mjs"]
   },
   {
+    label: "Charlie Echo portal publico",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-charlie-echo-public-modules.mjs"]
+  },
+  {
     label: "Matriz controlada de RLS",
     cwd: portalRoot,
     command: process.execPath,
