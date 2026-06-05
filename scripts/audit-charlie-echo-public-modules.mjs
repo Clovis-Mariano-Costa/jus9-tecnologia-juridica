@@ -1,5 +1,5 @@
 const baseUrl = "https://jus9tecnologia.com.br";
-const expectedScript = "script.js?v=20260605-charlie-smart-rooms-v5-0";
+const expectedScript = "script.js?v=20260605-charlie-sources-v5-1";
 
 const pages = [
   "app-ia-profissional.html",
@@ -38,17 +38,17 @@ for (const page of pages) {
   if ((page.startsWith("app-ia-") || page === "charlie-echo.html" || page === "ia-profissional") && !html.includes(expectedScript)) {
     failures.push(`${page}: script diferente de ${expectedScript}`);
   }
-  if (page === "manual-charlie-echo.html" && (!html.includes("Baixar PDF") || !html.includes("não é enviado ao servidor") || !html.includes("Atualizar resumo"))) {
+  if (page === "manual-charlie-echo.html" && (!html.includes("Baixar PDF") || !html.includes("Atualizar resumo") || !html.includes("Doutrina e jurisprudencia") || !html.includes("Fontes"))) {
     failures.push(`${page}: governanca de download desatualizada`);
   }
-  if (page === "saude-charlie-echo.html" && (!html.includes("PDF limpo") || !html.includes("Gerar PDF") || !html.includes("Salas inteligentes"))) {
+  if (page === "saude-charlie-echo.html" && (!html.includes("Gerar PDF") || !html.includes("Salas inteligentes") || !html.includes("doutrina/jurisprudencia") || !html.includes("Fontes"))) {
     failures.push(`${page}: painel de saude desatualizado`);
   }
 }
 
 const scriptResponse = await fetch(`${baseUrl}/script.js?audit=charlie-script-${Date.now()}`);
 const script = await scriptResponse.text();
-for (const pattern of ["pdfSafeText", "pdfLiteral", "Baixar PDF", "buildPdfBlob", "eef4ff", "Atualizar resumo", "smartSummary", "governanceClass"]) {
+for (const pattern of ["pdfSafeText", "pdfLiteral", "Baixar PDF", "buildPdfBlob", "eef4ff", "Atualizar resumo", "smartSummary", "governanceClass", "trustedLegalSources", "legalResearchAnswer", "classifyLinkTrust", "Fontes e links confiaveis"]) {
   if (!script.includes(pattern)) failures.push(`script.js: ausente ${pattern}`);
 }
 

@@ -696,12 +696,105 @@ window.jus9DemoLogin = function(form){
     return 'Responsabilidade social empresarial e o compromisso de considerar os impactos da empresa sobre pessoas, comunidade e meio ambiente. Na pratica, envolve trabalho digno, respeito a diversidade, protecao de dados, relacao etica com fornecedores, reducao de impactos ambientais, transparencia e dialogo com a comunidade. Um bom proximo passo e mapear impactos, definir metas verificaveis e publicar resultados com honestidade, evitando tratar acao social apenas como publicidade.';
   }
 
+  var trustedLegalSources = [
+    { kind:'jurisprudencia', name:'STF - Pesquisa de jurisprudencia', url:'https://jurisprudencia.stf.jus.br/', trust:'oficial', note:'precedentes, acordaos, repercussao geral e temas constitucionais' },
+    { kind:'jurisprudencia', name:'STJ - Pesquisa de jurisprudencia', url:'https://processo.stj.jus.br/SCON/', trust:'oficial', note:'jurisprudencia infraconstitucional, repetitivos e pesquisa por termos/processos' },
+    { kind:'jurisprudencia', name:'TST - Pesquisa de jurisprudencia', url:'https://jurisprudencia.tst.jus.br/', trust:'oficial', note:'jurisprudencia trabalhista do TST e CSJT' },
+    { kind:'jurisprudencia', name:'TJSC - Portal da jurisprudencia', url:'https://www.tjsc.jus.br/web/jurisprudencia', trust:'oficial', note:'jurisprudencia catarinense, informativos, enunciados e revista do TJSC' },
+    { kind:'legislacao', name:'Planalto - Legislacao', url:'https://www4.planalto.gov.br/legislacao', trust:'oficial', note:'leis federais, constituicao e atos normativos do Executivo federal' },
+    { kind:'legislacao', name:'LexML Brasil', url:'https://www.lexml.gov.br/', trust:'oficial/institucional', note:'legislacao, jurisprudencia e doutrina em rede de informacao legislativa e juridica' },
+    { kind:'doutrina', name:'Portal de Periodicos CAPES', url:'https://www.periodicos.capes.gov.br/', trust:'academico/institucional', note:'artigos cientificos, bases academicas, teses, periodicos e referencias' },
+    { kind:'doutrina', name:'SciELO Brasil', url:'https://www.scielo.br/', trust:'academico/institucional', note:'artigos cientificos de acesso aberto, inclusive pesquisa juridica interdisciplinar' },
+    { kind:'doutrina', name:'Google Academico', url:'https://scholar.google.com.br/', trust:'academico com cautela', note:'metabusca academica; confira autor, revista, data, citacoes e acesso ao texto' }
+  ];
+
+  function classifyLinkTrust(url){
+    var u = String(url || '').toLowerCase();
+    if(!/^https:\/\//.test(u)) return { level:'nao recomendado', reason:'prefira HTTPS e evite links sem seguranca' };
+    if(/\.(jus|gov|leg|mp|def)\.br\b/.test(u) || /\/\/(www\.)?(stf|stj|tst|tse|cnj|tjsc)\.jus\.br\b/.test(u)) return { level:'oficial', reason:'dominio publico institucional do sistema de justica ou governo' };
+    if(/(periodicos\.capes\.gov\.br|scielo\.br|lexml\.gov\.br|edu\.br|scholar\.google)/.test(u)) return { level:'academico/institucional', reason:'base academica, biblioteca ou metabusca de pesquisa' };
+    if(/(bit\.ly|tinyurl|t\.co|goo\.gl|encurtador)/.test(u)) return { level:'cautela alta', reason:'link encurtado dificulta verificar destino' };
+    if(/(blog|noticia|jornal|linkedin|facebook|instagram|youtube)/.test(u)) return { level:'cautela', reason:'pode ajudar no contexto, mas deve ser confirmado em fonte oficial ou academica' };
+    return { level:'cautela', reason:'verifique autoria, data, dominio, fonte primaria e coerencia com fontes oficiais' };
+  }
+
+  function extractUrls(text){
+    return (String(text || '').match(/https:\/\/[^\s<>"']+/g) || []).map(function(raw){
+      return raw.replace(/[),.;:!?]+$/, '');
+    }).filter(function(url, index, list){ return list.indexOf(url) === index; });
+  }
+
+  function asksSources(question){
+    var q = (question || '').toLowerCase();
+    return /\b(link|fonte|fontes|confiavel|confiáveis|confiaveis|oficial|pesquisar|pesquisa|jurisprudencia|jurisprudência|doutrina|precedente|acordao|acórdão|lei|legislacao|legislação)\b/.test(q);
+  }
+
+  function legalResearchAnswer(question){
+    var q = (question || '').toLowerCase();
+    if(!asksSources(q)) return '';
+    var wantsDoctrine = /\b(doutrina|artigo cientifico|artigo científico|academico|acadêmico|livro|periodico|periódico|tese|dissertacao|dissertação)\b/.test(q);
+    var wantsJuris = /\b(jurisprudencia|jurisprudência|precedente|acordao|acórdão|repetitivo|repercussao|repercussão|tese|tribunal|tjsc|stf|stj|tst)\b/.test(q);
+    var wantsLink = /\b(link|fonte|fontes|oficial|confiavel|confiáveis|confiaveis)\b/.test(q);
+    if(!wantsDoctrine && !wantsJuris && !wantsLink) return '';
+    var selected = trustedLegalSources.filter(function(source){
+      if(wantsDoctrine && source.kind === 'doutrina') return true;
+      if(wantsJuris && source.kind === 'jurisprudencia') return true;
+      if(!wantsDoctrine && !wantsJuris && wantsLink) return ['jurisprudencia','legislacao'].indexOf(source.kind) !== -1;
+      return false;
+    });
+    if(!selected.length) selected = trustedLegalSources.slice(0, 6);
+    var lines = [
+      'Para pesquisar doutrina e jurisprudencia com seguranca, eu sigo este protocolo:',
+      '',
+      '1. Primeiro separo o tema juridico, os termos de busca, o tribunal/ramo e o periodo.',
+      '2. Para jurisprudencia, priorizo bases oficiais dos tribunais e confiro numero do processo, relator, orgao julgador, data e inteiro teor.',
+      '3. Para doutrina, priorizo bases academicas/institucionais e confiro autor, titulacao, periodico/editora, ano e citacoes.',
+      '4. Nunca trato ementa isolada, blog ou resumo comercial como prova suficiente sem confirmar na fonte primaria.',
+      '',
+      'Fontes recomendadas:'
+    ];
+    selected.forEach(function(source){
+      lines.push('- ' + source.name + ': ' + source.url + ' | confianca: ' + source.trust + ' | uso: ' + source.note + '.');
+    });
+    lines.push('');
+    lines.push('Cuidado: eu posso orientar o caminho e oferecer links confiaveis, mas uso real em peca, prazo ou decisao precisa de revisao humana e conferencia do inteiro teor.');
+    return lines.join('\n');
+  }
+
+  function trustedSourcesSummary(room){
+    var sourceText = (room && room.messages || []).map(function(msg){ return msg.content || ''; }).join('\n');
+    var urls = extractUrls(sourceText);
+    var lines = ['Fontes e links confiaveis desta sala:'];
+    if(urls.length){
+      urls.slice(0, 12).forEach(function(url){
+        var trust = classifyLinkTrust(url);
+        lines.push('- ' + url + ' | confianca: ' + trust.level + ' | criterio: ' + trust.reason + '.');
+      });
+      lines.push('');
+      lines.push('Use estes links como trilha de verificacao: fonte oficial ou academica primeiro, leitura do inteiro teor depois, revisao humana antes de uso real.');
+      return lines.join('\n');
+    }
+    trustedLegalSources.slice(0, 9).forEach(function(source){
+      lines.push('- ' + source.name + ': ' + source.url + ' | confianca: ' + source.trust + ' | uso: ' + source.note + '.');
+    });
+    lines.push('');
+    lines.push('Eu nao dependo de lista fixa: quando voce trouxer outro link HTTPS, eu classifico por dominio, autoria, data, fonte primaria, finalidade e risco.');
+    return lines.join('\n');
+  }
+
+  function buildSourceLinesFromRoom(room){
+    var summary = trustedSourcesSummary(room).split('\n').filter(function(line){ return String(line || '').trim(); });
+    return summary.length ? summary : ['Nenhum link registrado nesta sala. Peça fontes, doutrina ou jurisprudencia antes de gerar o PDF.'];
+  }
+
   function textForMode(mode, code, focus, question){
     var cleanQuestion = question || 'pergunta demonstrativa';
     var identity = identityAnswer(cleanQuestion);
     if (identity) return identity;
     var socialResponsibility = socialResponsibilityFallback(cleanQuestion);
     if (socialResponsibility) return socialResponsibility;
+    var legalResearch = legalResearchAnswer(cleanQuestion);
+    if (legalResearch) return legalResearch;
     if (mode === 'governanca') {
       return 'Modo governanca: antes de agir, eu verifico identidade, contexto, classificacao publica/interna/sigilosa, riscos, versionamento, links, dados reais, segredos e necessidade de revisao humana. Para ' + code + ', o foco atual e: ' + focus + '. Pergunta recebida: "' + cleanQuestion + '".';
     }
@@ -791,7 +884,9 @@ window.jus9DemoLogin = function(form){
       'Modo solicitado no frontend: ' + mode + '.',
       'Responda como Charlie Echo da Costa, I.A generativa multimodal jurista com governanca humana.',
       'Protocolo 4.1: identifique a intencao do usuario e responda o conteudo pedido. Nao responda com lista de modos, salvo se o usuario perguntar expressamente sobre modos/personas. Comece com resposta direta, depois contexto breve, riscos e proximos passos quando cabivel.',
-      'Se houver pedido de link externo, ofereca URL HTTPS completa de fonte oficial ou institucional confiavel quando possivel. Se houver arquivo gerado localmente, ofereca tambem link clicavel de download. Se houver continuidade, use a memoria curta da sala.',
+      'Se houver pedido de link externo, ofereca URL HTTPS completa de fonte oficial, institucional ou academica confiavel quando possivel. Classifique a confianca do link por dominio, autoria, data, fonte primaria e risco. Nao use lista fixa como limite: avalie links novos com criterio.',
+      'Se o pedido envolver doutrina ou jurisprudencia, separe doutrina de jurisprudencia, priorize tribunais oficiais, Planalto, LexML, CAPES, SciELO e bases academicas, explique por que a fonte e confiavel e avise que inteiro teor e revisao humana sao obrigatorios para uso real.',
+      'Se houver arquivo gerado localmente, ofereca tambem link clicavel de download. Se houver continuidade, use a memoria curta da sala.',
       'Nao solicite dados reais, processos reais, WhatsApp, documentos sigilosos, tokens, senhas ou segredos.',
       'Pergunta do usuario: ' + question
     ].join('\n');
@@ -919,12 +1014,16 @@ window.jus9DemoLogin = function(form){
     var meta = source.filter(function(line){ return /^(MVP|Foco|Gerado em):/.test(line || ''); });
     var executiveIndex = source.indexOf('Resumo executivo');
     var memoryIndex = source.indexOf('Memoria da sala');
+    var sourcesIndex = source.indexOf('Fontes e links confiaveis');
     var historyIndex = source.indexOf('Historico recente');
     var executiveLines = executiveIndex >= 0
-      ? source.slice(executiveIndex + 1, memoryIndex >= 0 ? memoryIndex : (historyIndex >= 0 ? historyIndex : source.length)).filter(function(line){ return String(line || '').trim(); })
+      ? source.slice(executiveIndex + 1, memoryIndex >= 0 ? memoryIndex : (sourcesIndex >= 0 ? sourcesIndex : (historyIndex >= 0 ? historyIndex : source.length))).filter(function(line){ return String(line || '').trim(); })
       : [];
     var memoryLines = memoryIndex >= 0
-      ? source.slice(memoryIndex + 1, historyIndex >= 0 ? historyIndex : source.length).filter(function(line){ return String(line || '').trim(); })
+      ? source.slice(memoryIndex + 1, sourcesIndex >= 0 ? sourcesIndex : (historyIndex >= 0 ? historyIndex : source.length)).filter(function(line){ return String(line || '').trim(); })
+      : [];
+    var sourceLines = sourcesIndex >= 0
+      ? source.slice(sourcesIndex + 1, historyIndex >= 0 ? historyIndex : source.length).filter(function(line){ return String(line || '').trim(); })
       : [];
     var historyLines = historyIndex >= 0
       ? source.slice(historyIndex + 1).filter(function(line){ return String(line || '').trim(); })
@@ -1023,6 +1122,9 @@ window.jus9DemoLogin = function(form){
     addSection('Memoria da sala');
     if(memoryLines.length) memoryLines.forEach(function(line){ addWrapped(line, { size:11, lineHeight:16, color:'#24344a' }); y -= 4; });
     else addWrapped('Sem resumo salvo nesta sala.', { size:11, lineHeight:16, color:'#51627a' });
+    addSection('Fontes e links confiaveis');
+    if(sourceLines.length) sourceLines.forEach(function(line){ addWrapped(line, { size:10.5, lineHeight:15, color:'#24344a' }); y -= 3; });
+    else addWrapped('Sem fontes registradas nesta sala. Peça jurisprudencia, doutrina ou links confiaveis antes de gerar o pacote.', { size:11, lineHeight:16, color:'#51627a' });
     addSection('Historico recente');
     if(historyLines.length) historyLines.forEach(addMessageBlock);
     else addWrapped('Sem historico recente registrado.', { size:11, lineHeight:16, color:'#51627a' });
@@ -1073,7 +1175,7 @@ window.jus9DemoLogin = function(form){
     var bar = document.createElement('div');
     bar.className = 'chat-utility-actions';
     bar.setAttribute('data-ai-utility-actions', 'true');
-    bar.innerHTML = '<button class="mini" type="button" data-ai-improve>Melhorar resposta</button><button class="mini" type="button" data-ai-summary>Atualizar resumo</button><button class="mini primary" type="button" data-ai-package>Gerar PDF</button>';
+    bar.innerHTML = '<button class="mini" type="button" data-ai-improve>Melhorar resposta</button><button class="mini" type="button" data-ai-sources>Fontes</button><button class="mini" type="button" data-ai-summary>Atualizar resumo</button><button class="mini primary" type="button" data-ai-package>Gerar PDF</button>';
     form.parentNode.insertBefore(bar, form.nextSibling);
     function lastEchoText(){ var msgs = card.querySelectorAll('.ai-message-echo'); return msgs.length ? (msgs[msgs.length - 1].textContent || '').replace(/^Charlie Echo:\s*/i, '').trim() : ''; }
     function lastUserText(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); var msg = room && (room.messages || []).filter(function(m){ return m.role === 'user'; }).slice(-1)[0]; return msg ? msg.content : ''; }
@@ -1103,11 +1205,17 @@ window.jus9DemoLogin = function(form){
       var room = updateRoomIntelligence(code, activeChatRoom(code), focus);
       appendEcho('Resumo executivo atualizado:\n\n' + (room.smartSummary || buildRoomExecutiveSummary(room, code, focus)));
     });
+    bar.querySelector('[data-ai-sources]').addEventListener('click', function(){
+      var room = activeChatRoom(code);
+      appendEcho(trustedSourcesSummary(room));
+    });
     bar.querySelector('[data-ai-package]').addEventListener('click', function(){
       var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }) || activeChatRoom(code);
       room = updateRoomIntelligence(code, room, focus);
       var title = 'Pacote Charlie Echo - ' + (room.title || code);
-      var lines = ['MVP: ' + code, 'Foco: ' + focus, 'Gerado em: ' + new Date().toLocaleString('pt-BR'), '', 'Resumo executivo', '', room.smartSummary || buildRoomExecutiveSummary(room, code, focus), '', 'Memoria da sala', '', room.summary || 'Sem resumo salvo.', '', 'Historico recente', ''];
+      var lines = ['MVP: ' + code, 'Foco: ' + focus, 'Gerado em: ' + new Date().toLocaleString('pt-BR'), '', 'Resumo executivo', '', room.smartSummary || buildRoomExecutiveSummary(room, code, focus), '', 'Memoria da sala', '', room.summary || 'Sem resumo salvo.', '', 'Fontes e links confiaveis', ''];
+      buildSourceLinesFromRoom(room).forEach(function(line){ lines.push(line); });
+      lines.push('', 'Historico recente', '');
       (room.messages || []).slice(-16).forEach(function(m){ lines.push((m.role === 'assistant' ? 'Charlie Echo' : 'Usuario') + ': ' + m.content); lines.push(''); });
       var filename = slug('pacote-' + code + '-' + (room.title || 'sala')) + '.pdf';
       var file = downloadBlob(filename, buildPdfBlob(title, lines), true);
@@ -1142,7 +1250,7 @@ window.jus9DemoLogin = function(form){
       });
       var echoMsg = document.createElement('div');
       echoMsg.className = 'ai-message ai-message-echo';
-      var localIdentity = previousQuestionAnswer(question, room) || whereStoppedAnswer(question, room, code, focus) || identityAnswer(question);
+      var localIdentity = previousQuestionAnswer(question, room) || whereStoppedAnswer(question, room, code, focus) || identityAnswer(question) || legalResearchAnswer(question);
       if (localIdentity) {
         echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(localIdentity);
         var rememberedLocal = rememberChatExchange(code, question, localIdentity);
