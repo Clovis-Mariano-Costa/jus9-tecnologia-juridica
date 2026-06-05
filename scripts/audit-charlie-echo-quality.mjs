@@ -45,6 +45,16 @@ const checks = [
     patterns: ["Como conversar com a Charlie Echo", "Fontes", "Doutrina e jurisprudencia", "botao <strong>Fontes</strong>", "Atualizar resumo", "resumo executivo vivo", "Downloads", "Baixar PDF"],
   },
   {
+    name: "capacidades publicas da Charlie publicadas",
+    file: "capacidades-charlie-echo.html",
+    patterns: ["Capacidades demonstrativas da Charlie Echo", "Pesquisa jurídica orientada", "Links confiáveis", "Salas de conversa", "PDF local", "Governança humana", "Teste rápido sugerido"],
+  },
+  {
+    name: "roteiro de demo atualizado",
+    file: "roteiro-demo-7-minutos.html",
+    patterns: ["Demonstração Jus 9 em 7 minutos", "Acompanhe os MVPs / Demos", "pesquisa jurídica operacional", "PDF", "Dashboard investimentos", "Plano B"],
+  },
+  {
     name: "service worker nao prende MVP antigo",
     file: "service-worker.js",
     patterns: ["jus9-pwa-v4-2026-06-04-charlie-rooms-v4-4-1", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
