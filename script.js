@@ -729,6 +729,59 @@ window.jus9DemoLogin = function(form){
     return /\b(link|fonte|fontes|confiavel|confiáveis|confiaveis|oficial|pesquisar|pesquisa|jurisprudencia|jurisprudência|doutrina|precedente|acordao|acórdão|lei|legislacao|legislação)\b/.test(q);
   }
 
+  function compactLegalTopic(value, fallback){
+    var text = String(value || '').toLowerCase();
+    text = text.replace(/[“”"']/g, ' ');
+    text = text.replace(/\b(pesquise|pesquisar|pesquisa|jurisprudencia|jurisprudência|doutrina|academica|acadêmica|indique|sobre|do|da|de|no|na|em|e|tambem|também|tjsc|stf|stj|tst|tribunal)\b/g, ' ');
+    text = text.replace(/\s+/g, ' ').trim();
+    return text || fallback;
+  }
+
+  function searchLink(label, url, trust, use){
+    return '- ' + label + ': ' + url + ' | confianca: ' + trust + ' | usar para: ' + use + '.';
+  }
+
+  function buildOperationalResearchAnswer(question, wantsDoctrine, wantsJuris){
+    var raw = String(question || '');
+    var q = raw.toLowerCase();
+    var jurisTopic = q.indexOf('responsabilidade civil') !== -1 ? 'responsabilidade civil' : compactLegalTopic(raw, 'tema juridico informado');
+    var doctrineTopic = q.indexOf('responsabilidade social') !== -1 ? 'responsabilidade social empresarial' : compactLegalTopic(raw, 'tema academico informado');
+    var tjscQuery = encodeURIComponent('site:tjsc.jus.br jurisprudencia "' + jurisTopic + '"');
+    var tjscGoogleQuery = 'https://www.google.com/search?q=' + tjscQuery;
+    var tjscPortal = 'https://www.tjsc.jus.br/web/jurisprudencia';
+    var lexmlJuris = 'https://www.lexml.gov.br/busca/search?keyword=' + encodeURIComponent(jurisTopic + ' jurisprudencia');
+    var scholar = 'https://scholar.google.com.br/scholar?hl=pt-BR&q=' + encodeURIComponent(doctrineTopic);
+    var scielo = 'https://search.scielo.org/?lang=pt&q=' + encodeURIComponent(doctrineTopic);
+    var capes = 'https://www.periodicos.capes.gov.br/';
+    var googleBooks = 'https://books.google.com.br/books?q=' + encodeURIComponent(doctrineTopic + ' direito');
+    var lines = ['Pesquisa juridica operacional da Charlie Echo:'];
+    lines.push('');
+    lines.push('Tema de jurisprudencia identificado: ' + jurisTopic + '.');
+    lines.push('Tema de doutrina identificado: ' + doctrineTopic + '.');
+    lines.push('');
+    if(wantsJuris){
+      lines.push('Jurisprudencia - roteiro TJSC:');
+      lines.push(searchLink('Abrir portal oficial do TJSC', tjscPortal, 'oficial', 'pesquisar no proprio tribunal, filtrar por inteiro teor, relator, orgao julgador e data'));
+      lines.push(searchLink('Busca pronta no Google limitada ao TJSC', tjscGoogleQuery, 'cautela util', 'encontrar paginas publicas do TJSC quando o portal nao aceita busca direta por URL'));
+      lines.push(searchLink('LexML com tema de jurisprudencia', lexmlJuris, 'institucional', 'localizar registros juridicos relacionados e conferir fonte primaria'));
+      lines.push('Termos sugeridos no portal do TJSC: "' + jurisTopic + '", "' + jurisTopic + ' dano moral", "' + jurisTopic + ' dever de indenizar", "' + jurisTopic + ' nexo causal".');
+      lines.push('Como fichar cada resultado: numero do processo; camara/turma; relator; data do julgamento; tese da ementa; trecho do inteiro teor; observacao de aplicabilidade.');
+      lines.push('');
+    }
+    if(wantsDoctrine){
+      lines.push('Doutrina academica - roteiro inicial:');
+      lines.push(searchLink('Google Academico com busca pronta', scholar, 'academico com cautela', 'localizar artigos, livros, citacoes e autores; conferir fonte original'));
+      lines.push(searchLink('SciELO com busca pronta', scielo, 'academico/institucional', 'buscar artigos cientificos de acesso aberto'));
+      lines.push(searchLink('Portal de Periodicos CAPES', capes, 'academico/institucional', 'aprofundar em periodicos, bases e referencias quando houver acesso'));
+      lines.push(searchLink('Google Livros com busca pronta', googleBooks, 'apoio bibliografico com cautela', 'identificar livros e autores para posterior conferencia'));
+      lines.push('Termos sugeridos: "' + doctrineTopic + '", "' + doctrineTopic + ' ESG", "' + doctrineTopic + ' funcao social da empresa", "' + doctrineTopic + ' compliance".');
+      lines.push('Como fichar doutrina: autor; titulo; ano; editora/periodico; argumento central; pagina/trecho; relacao com o problema; qualidade da fonte.');
+      lines.push('');
+    }
+    lines.push('Minha conclusao operacional: eu ainda nao devo inventar julgados, autores ou paginas. Eu devo abrir caminhos clicaveis, orientar termos de busca e pedir que o resultado escolhido seja conferido no inteiro teor antes de uso real.');
+    return lines.join('\n');
+  }
+
   function legalResearchAnswer(question){
     var q = (question || '').toLowerCase();
     if(!asksSources(q)) return '';
@@ -736,6 +789,9 @@ window.jus9DemoLogin = function(form){
     var wantsJuris = /\b(jurisprudencia|jurisprudência|precedente|acordao|acórdão|repetitivo|repercussao|repercussão|tese|tribunal|tjsc|stf|stj|tst)\b/.test(q);
     var wantsLink = /\b(link|fonte|fontes|oficial|confiavel|confiáveis|confiaveis)\b/.test(q);
     if(!wantsDoctrine && !wantsJuris && !wantsLink) return '';
+    if(/\b(pesquise|pesquisar|pesquisa|busque|buscar|procure|procurar|indique)\b/.test(q) && (wantsDoctrine || wantsJuris)){
+      return buildOperationalResearchAnswer(question, wantsDoctrine, wantsJuris);
+    }
     var selected = trustedLegalSources.filter(function(source){
       if(wantsDoctrine && source.kind === 'doutrina') return true;
       if(wantsJuris && source.kind === 'jurisprudencia') return true;

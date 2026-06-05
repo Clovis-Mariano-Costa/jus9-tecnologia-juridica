@@ -1,5 +1,5 @@
 const baseUrl = "https://jus9tecnologia.com.br";
-const expectedScript = "script.js?v=20260605-charlie-sources-v5-1";
+const expectedScript = "script.js?v=20260605-charlie-sources-v5-1-1";
 
 const pages = [
   "app-ia-profissional.html",
@@ -48,7 +48,7 @@ for (const page of pages) {
 
 const scriptResponse = await fetch(`${baseUrl}/script.js?audit=charlie-script-${Date.now()}`);
 const script = await scriptResponse.text();
-for (const pattern of ["pdfSafeText", "pdfLiteral", "Baixar PDF", "buildPdfBlob", "eef4ff", "Atualizar resumo", "smartSummary", "governanceClass", "trustedLegalSources", "legalResearchAnswer", "classifyLinkTrust", "Fontes e links confiaveis"]) {
+for (const pattern of ["pdfSafeText", "pdfLiteral", "Baixar PDF", "buildPdfBlob", "eef4ff", "Atualizar resumo", "smartSummary", "governanceClass", "trustedLegalSources", "legalResearchAnswer", "buildOperationalResearchAnswer", "Pesquisa juridica operacional", "Busca pronta no Google limitada ao TJSC", "classifyLinkTrust", "Fontes e links confiaveis"]) {
   if (!script.includes(pattern)) failures.push(`script.js: ausente ${pattern}`);
 }
 
