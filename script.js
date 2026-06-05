@@ -742,7 +742,7 @@ window.jus9DemoLogin = function(form){
       'Modo solicitado no frontend: ' + mode + '.',
       'Responda como Charlie Echo da Costa, I.A generativa multimodal jurista com governanca humana.',
       'Protocolo 4.1: identifique a intencao do usuario e responda o conteudo pedido. Nao responda com lista de modos, salvo se o usuario perguntar expressamente sobre modos/personas. Comece com resposta direta, depois contexto breve, riscos e proximos passos quando cabivel.',
-      'Se houver pedido de link, ofereca URL HTTPS completa de fonte oficial ou institucional confiavel quando possivel. Se houver continuidade, use a memoria curta da sala.',
+      'Se houver pedido de link externo, ofereca URL HTTPS completa de fonte oficial ou institucional confiavel quando possivel. Se houver arquivo gerado localmente, ofereca tambem link clicavel de download. Se houver continuidade, use a memoria curta da sala.',
       'Nao solicite dados reais, processos reais, WhatsApp, documentos sigilosos, tokens, senhas ou segredos.',
       'Pergunta do usuario: ' + question
     ].join('\n');
@@ -781,8 +781,8 @@ window.jus9DemoLogin = function(form){
     var panel = document.createElement('div');
     panel.className = 'chat-room-panel mvp-chat-room-panel';
     panel.setAttribute('data-mvp-room-panel', code);
-    panel.innerHTML = '<div><strong>Salas da Charlie Echo</strong><p>Memoria curta local por sala demonstrativa.</p></div><div class="chat-room-actions"><button class="mini primary" type="button" data-room-new>Nova sala</button><button class="mini" type="button" data-room-rename>Renomear sala</button><button class="mini" type="button" data-room-archive>Arquivar</button><button class="mini" type="button" data-room-delete>Excluir</button></div><div class="chat-room-list" data-room-list></div>';
-    var target = card.querySelector('[data-ai-chat-window]'); if(target) target.insertBefore(panel, target.firstChild);
+    panel.innerHTML = '<div><strong>Salas da Charlie Echo</strong><p>Memoria curta local por sala demonstrativa.</p></div><div class="chat-room-actions"><button class="mini primary" type="button" data-room-new>Nova sala</button><button class="mini" type="button" data-room-rename>Renomear</button><details class="chat-room-more"><summary>Mais</summary><button class="mini" type="button" data-room-archive>Arquivar</button><button class="mini danger" type="button" data-room-delete>Excluir</button></details></div><div class="chat-room-list" data-room-list></div>';
+    var target = card.querySelector('[data-ai-chat-window]'); if(target && target.parentNode) target.parentNode.insertBefore(panel, target);
     function render(){ var data = loadChatRooms(code), list = panel.querySelector('[data-room-list]'); list.innerHTML = data.rooms.filter(function(r){ return r.status !== 'deleted'; }).map(function(r){ return '<button class="chat-room-pill' + (r.id===data.activeId?' active':'') + (r.status==='archived'?' archived':'') + '" type="button" data-id="' + r.id + '">' + (r.status==='archived' ? r.title + ' (arquivada)' : r.title) + '</button>'; }).join(''); list.querySelectorAll('[data-id]').forEach(function(btn){ btn.addEventListener('click', function(){ data.activeId = btn.getAttribute('data-id'); saveChatRooms(code, data); render(); }); }); }
     panel.querySelector('[data-room-new]').addEventListener('click', function(){ var data = loadChatRooms(code), room = createChatRoom(code, 'Sala ' + code + ' ' + (data.rooms.length + 1)); data.rooms.unshift(room); data.activeId = room.id; saveChatRooms(code, data); render(); });
     panel.querySelector('[data-room-rename]').addEventListener('click', function(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); if(!room) return; var title = prompt('Novo nome da sala:', room.title || 'Sala ' + code); if(!title) return; room.title = title.trim().slice(0, 80) || room.title; room.updatedAt = new Date().toISOString(); saveChatRooms(code, data); render(); });
@@ -797,7 +797,7 @@ window.jus9DemoLogin = function(form){
     downloadBlob(filename, blob);
   }
 
-  function downloadBlob(filename, blob){
+  function downloadBlob(filename, blob, keepUrl){
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url;
@@ -805,7 +805,8 @@ window.jus9DemoLogin = function(form){
     document.body.appendChild(a);
     a.click();
     a.remove();
-    setTimeout(function(){ URL.revokeObjectURL(url); }, 500);
+    if(!keepUrl) setTimeout(function(){ URL.revokeObjectURL(url); }, 500);
+    return { url:url, filename:filename };
   }
 
   function pdfHex(text){
@@ -891,11 +892,22 @@ window.jus9DemoLogin = function(form){
     var bar = document.createElement('div');
     bar.className = 'chat-utility-actions';
     bar.setAttribute('data-ai-utility-actions', 'true');
-    bar.innerHTML = '<button class="mini" type="button" data-ai-improve>Melhorar resposta</button><button class="mini" type="button" data-ai-package>Transformar em pacote</button><button class="mini" type="button" data-ai-recall>Qual foi minha pergunta anterior?</button>';
+    bar.innerHTML = '<button class="mini" type="button" data-ai-improve>Melhorar resposta</button><button class="mini primary" type="button" data-ai-package>Gerar PDF</button>';
     form.parentNode.insertBefore(bar, form.nextSibling);
     function lastEchoText(){ var msgs = card.querySelectorAll('.ai-message-echo'); return msgs.length ? (msgs[msgs.length - 1].textContent || '').replace(/^Charlie Echo:\s*/i, '').trim() : ''; }
     function lastUserText(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); var msg = room && (room.messages || []).filter(function(m){ return m.role === 'user'; }).slice(-1)[0]; return msg ? msg.content : ''; }
     function appendEcho(text){ var windowEl = card.querySelector('[data-ai-chat-window]'); if(!windowEl) return; var echoMsg = document.createElement('div'); echoMsg.className = 'ai-message ai-message-echo'; echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(text); windowEl.appendChild(echoMsg); windowEl.scrollTop = windowEl.scrollHeight; rememberChatExchange(code, '', text); }
+    function appendDownloadEcho(filename, url){
+      var windowEl = card.querySelector('[data-ai-chat-window]');
+      if(!windowEl) return;
+      var echoMsg = document.createElement('div');
+      echoMsg.className = 'ai-message ai-message-echo';
+      var safeName = escapeHtml(filename);
+      echoMsg.innerHTML = '<strong>Charlie Echo:</strong> Preparei o pacote local em PDF. <a class="download-link" href="' + url + '" download="' + safeName + '">Baixar PDF</a>';
+      windowEl.appendChild(echoMsg);
+      windowEl.scrollTop = windowEl.scrollHeight;
+      rememberChatExchange(code, '', 'Preparei o pacote local em PDF e ofereci um link clicavel de download: ' + filename + '.');
+    }
     bar.querySelector('[data-ai-improve]').addEventListener('click', async function(){
       var room = activeChatRoom(code), lastQuestion = lastUserText(), lastAnswer = lastEchoText();
       if(!lastQuestion && !lastAnswer) return appendEcho('Ainda nao ha resposta suficiente para melhorar nesta sala.');
@@ -911,11 +923,9 @@ window.jus9DemoLogin = function(form){
       var title = 'Pacote Charlie Echo - ' + (room.title || code);
       var lines = ['MVP: ' + code, 'Foco: ' + focus, 'Gerado em: ' + new Date().toLocaleString('pt-BR'), '', 'Memoria da sala', '', room.summary || 'Sem resumo salvo.', '', 'Historico recente', ''];
       (room.messages || []).slice(-16).forEach(function(m){ lines.push((m.role === 'assistant' ? 'Charlie Echo' : 'Usuario') + ': ' + m.content); lines.push(''); });
-      downloadBlob(slug('pacote-' + code + '-' + (room.title || 'sala')) + '.pdf', buildPdfBlob(title, lines));
-      appendEcho('Preparei um pacote local em PDF com a memoria e o historico recente desta sala.');
-    });
-    bar.querySelector('[data-ai-recall]').addEventListener('click', function(){
-      appendEcho(previousQuestionAnswer('qual foi minha pergunta anterior', activeChatRoom(code)));
+      var filename = slug('pacote-' + code + '-' + (room.title || 'sala')) + '.pdf';
+      var file = downloadBlob(filename, buildPdfBlob(title, lines), true);
+      appendDownloadEcho(file.filename, file.url);
     });
   }
 

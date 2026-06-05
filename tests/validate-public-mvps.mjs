@@ -81,7 +81,7 @@ for (const [code, page] of Object.entries(priorityAiPages)) {
   const html = await fs.readFile(new URL(`../${page}`, import.meta.url), "utf8");
   assert(html.includes("data-ai-chat"), `${code}: chat ausente em ${page}`);
   assert(html.includes(`data-ai-code="${code}"`), `${code}: codigo incorreto em ${page}`);
-  assert(html.includes('script.js?v=20260604-charlie-clean-shell-v4-6'), `${code}: script sem versao em ${page}`);
+  assert(html.includes('script.js?v=20260604-charlie-links-clean-v4-7'), `${code}: script sem versao em ${page}`);
   assert(html.includes('charlie-mvp-shell'), `${code}: pagina da Charlie sem shell visual em ${page}`);
   console.log(`AI_PAGE_OK ${code} page=${page}`);
 }

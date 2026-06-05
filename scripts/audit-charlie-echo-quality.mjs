@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
-const expectedScriptVersion = "script.js?v=20260604-charlie-clean-shell-v4-6";
+const expectedScriptVersion = "script.js?v=20260604-charlie-links-clean-v4-7";
 
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), "utf8");
@@ -12,7 +12,7 @@ const checks = [
   {
     name: "chat MVP tem memoria curta por sala",
     file: "script.js",
-    patterns: ["chatRoomKey", "rememberChatExchange", "buildQuestionWithRoom", "previousQuestionAnswer", "target.insertBefore(panel, target.firstChild)", "registration.update()", "SKIP_WAITING", "initCharlieMvpShell", "charlie-mvp-env-list"],
+    patterns: ["chatRoomKey", "rememberChatExchange", "buildQuestionWithRoom", "previousQuestionAnswer", "target.parentNode.insertBefore(panel, target)", "registration.update()", "SKIP_WAITING", "initCharlieMvpShell", "charlie-mvp-env-list"],
   },
   {
     name: "chat MVP envia message para API da Charlie",
@@ -22,7 +22,7 @@ const checks = [
   {
     name: "chat MVP possui ferramentas de qualidade",
     file: "script.js",
-    patterns: ["Melhorar resposta", "Transformar em pacote", "Qual foi minha pergunta anterior?", "Renomear sala", "application/pdf", ".pdf", "buildPdfBlob"],
+    patterns: ["Melhorar resposta", "Gerar PDF", "Baixar PDF", "link clicavel de download", "Renomear", "application/pdf", ".pdf", "buildPdfBlob", "download-link"],
   },
   {
     name: "lider MVP lista ambientes prontos",
@@ -47,7 +47,7 @@ const checks = [
   {
     name: "casa propria da Charlie Echo publicada",
     file: "charlie-echo.html",
-    patterns: ["Casa propria da IA", "data-ai-chat", "app-ia-profissional.html#chat-ia", "script.js?v=20260604-charlie-clean-shell-v4-6"],
+    patterns: ["Casa propria da IA", "data-ai-chat", "app-ia-profissional.html#chat-ia", "script.js?v=20260604-charlie-links-clean-v4-7"],
   },
 ];
 
