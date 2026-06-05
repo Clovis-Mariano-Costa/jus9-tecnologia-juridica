@@ -19,6 +19,12 @@ const checks = [
     args: ["scripts/audit-charlie-echo-public-modules.mjs"]
   },
   {
+    label: "Personas MVP da Charlie Echo",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-charlie-echo-mvp-personas.mjs"]
+  },
+  {
     label: "Matriz controlada de RLS",
     cwd: portalRoot,
     command: process.execPath,

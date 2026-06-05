@@ -17,7 +17,7 @@ const checks = [
   {
     name: "chat MVP envia message para API da Charlie",
     file: "script.js",
-    patterns: ["https://charlieecho.jus9tecnologia.com.br/api/ia", "message: buildApiMessage", "Protocolo Centelha Criativa 5.4", "applyCreativeReasoningFrame", "Leitura do pedido", "Caminho escolhido", "Proximo passo criativo"],
+    patterns: ["https://charlieecho.jus9tecnologia.com.br/api/ia", "message: buildApiMessage", "mvpPersonaRules", "mvpPersonalityInstruction", "Personalidade operacional do MVP", "Assinatura criativa do ambiente", "Limite duro do ambiente", "Protocolo Centelha Criativa 5.4", "applyCreativeReasoningFrame", "Leitura do pedido", "Caminho escolhido", "Proximo passo criativo"],
   },
   {
     name: "chat MVP possui ferramentas de qualidade",
