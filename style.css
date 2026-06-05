@@ -52,6 +52,13 @@ img{max-width:100%;display:block}
   box-shadow:0 0 0 1px rgba(255,255,255,.03) inset; font-weight:700;
 }
 .cta.gold{background:linear-gradient(135deg,var(--gold3),var(--gold2)); color:#111827; border:0}
+.mvp-watch-cta{
+  box-shadow:0 12px 34px rgba(197,139,47,.22), 0 0 0 1px rgba(255,230,166,.36) inset;
+  letter-spacing:.01em;
+}
+.mvp-watch-hero{
+  box-shadow:0 16px 44px rgba(197,139,47,.26);
+}
 .mobile-toggle{display:none;background:none;border:1px solid var(--line);color:var(--text);border-radius:12px;padding:10px}
 .hero{position:relative; overflow:hidden; padding:92px 0 56px}
 .hero-grid{display:grid; grid-template-columns:1.05fr .95fr; gap:48px; align-items:center}
