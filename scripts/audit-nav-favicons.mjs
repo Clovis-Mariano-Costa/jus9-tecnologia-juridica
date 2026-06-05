@@ -12,23 +12,6 @@ const ignoredDirs = new Set([
 
 const removedMenuPatterns = [
   {
-    name: "CTA antigo Acompanhe os MVPs / Demos",
-    pattern: /Acompanhe os MVPs \/ Demos/i,
-    allow: [
-      /REGISTRO_CORRECAO_LINKS_MVPS_SEM_WWW_2026_05_23\.md$/,
-      /ORIENTACOES[\\/]MENU_OFICIAL_JUS9_v4_0\.md$/,
-      /scripts[\\/]audit-nav-favicons\.mjs$/,
-    ],
-  },
-  {
-    name: "rotulo antigo MVPs / Demos em link",
-    pattern: /<a\b[^>]*>\s*MVPs \/ Demos\s*<\/a>/i,
-    allow: [
-      /ORIENTACOES[\\/]MENU_OFICIAL_JUS9_v4_0\.md$/,
-      /scripts[\\/]audit-nav-favicons\.mjs$/,
-    ],
-  },
-  {
     name: "rotulo antigo Investidores em link",
     pattern: /<a\b[^>]*>\s*Investidores\s*<\/a>/i,
     allow: [/scripts[\\/]audit-nav-favicons\.mjs$/],
@@ -58,6 +41,11 @@ function isHtmlPage(text) {
   return /<html[\s>]/i.test(text) && /<head[\s>]/i.test(text) && /<\/head>/i.test(text);
 }
 
+function hasMvpCta(text) {
+  return /Acompanhe os MVPs \/ Demos/i.test(text) &&
+    /href=["'][^"']*mvp\.html#demos-jus9["']/i.test(text);
+}
+
 const files = walk(root);
 const htmlFiles = files.filter((file) => file.endsWith(".html"));
 const scannedTextFiles = files.filter((file) => /\.(html|js|md|mjs|json|webmanifest)$/i.test(file));
@@ -81,6 +69,14 @@ for (const file of htmlFiles) {
   const hasFavicon = /rel=["'](?:shortcut )?icon|apple-touch-icon|favicon/i.test(text);
   if (!hasFavicon) {
     failures.push(`${rel(file)}: pagina HTML completa sem favicon`);
+  }
+}
+
+const homeFile = path.join(root, "index.html");
+if (fs.existsSync(homeFile)) {
+  const homeText = fs.readFileSync(homeFile, "utf8");
+  if (!hasMvpCta(homeText)) {
+    failures.push("index.html: CTA Acompanhe os MVPs / Demos ausente ou sem link para mvp.html#demos-jus9");
   }
 }
 
