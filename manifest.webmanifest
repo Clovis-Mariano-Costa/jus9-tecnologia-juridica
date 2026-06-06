@@ -29,7 +29,7 @@
   ],
   "shortcuts": [
     {
-      "name": "MVPs / Demos",
+      "name": "Acompanhe os MVPs / Demos",
       "short_name": "MVPs",
       "description": "Abrir os MVPs e demos da Jus 9 Tecnologia Jurídica.",
       "url": "/mvp.html#demos-jus9",
@@ -43,9 +43,9 @@
       "icons": [{ "src": "/assets/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
     },
     {
-      "name": "Investidores",
+      "name": "Investimentos",
       "short_name": "Investir",
-      "description": "Abrir a área de investimentos e parceiros.",
+      "description": "Abrir a area de investimentos e parcerias.",
       "url": "https://investimentos.jus9tecnologia.com.br/",
       "icons": [{ "src": "/assets/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
     },
