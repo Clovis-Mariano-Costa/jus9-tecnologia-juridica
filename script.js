@@ -812,7 +812,7 @@ window.jus9DemoLogin = function(form){
 
   function asksSources(question){
     var q = (question || '').toLowerCase();
-    return /\b(link|fonte|fontes|confiavel|confiáveis|confiaveis|oficial|pesquisar|pesquisa|jurisprudencia|jurisprudência|doutrina|precedente|acordao|acórdão|lei|legislacao|legislação)\b/.test(q);
+    return /\b(link|fonte|fontes|confiavel|confiáveis|confiaveis|oficial|pesquisar|pesquisa|busque|buscar|procure|procurar|jurisprudencia|jurisprudência|precedente|acordao|acórdão|lei|legislacao|legislação)\b/.test(q);
   }
 
   function compactLegalTopic(value, fallback){
@@ -1155,7 +1155,8 @@ window.jus9DemoLogin = function(form){
 
   function inferCreativeIntent(question){
     var q = String(question || '').toLowerCase();
-    if(/\b(jurisprudencia|jurisprudência|doutrina|fonte|fontes|pesquise|pesquisar)\b/.test(q)) return 'pesquisa juridica guiada';
+    if(/\b(jurisprudencia|jurisprudência|precedente|acordao|acórdão|fonte|fontes|pesquise|pesquisar|busque|buscar|procure|procurar)\b/.test(q)) return 'pesquisa juridica guiada';
+    if(/\b(doutrina|doutrinario|doutrinaria|doutrinário|doutrinária|teoria|conceito juridico|conceito jurídico)\b/.test(q)) return 'producao doutrinaria responsavel';
     if(/\b(link|url|site|download|baixar)\b/.test(q)) return 'curadoria de link ou arquivo';
     if(/\b(minuta|modelo|contrato|peti[cç][aã]o|documento|oficio|ofício)\b/.test(q)) return 'producao documental demonstrativa';
     if(/\b(resuma|resumo|sintese|síntese|organize|checklist)\b/.test(q)) return 'organizacao e sintese';
@@ -1166,6 +1167,7 @@ window.jus9DemoLogin = function(form){
 
   function creativeNextStep(intent, code){
     if(intent === 'pesquisa juridica guiada') return 'montar uma ficha de conferencia com fonte, tese, data, inteiro teor e revisao humana.';
+    if(intent === 'producao doutrinaria responsavel') return 'transformar a sintese em estrutura, argumentos, limites e fontes para conferencia quando necessario.';
     if(intent === 'curadoria de link ou arquivo') return 'separar links oficiais, institucionais e cautelosos, mantendo URLs HTTPS completas.';
     if(intent === 'producao documental demonstrativa') return 'transformar a resposta em minuta, checklist ou PDF local para revisao humana.';
     if(intent === 'continuidade da sala') return 'atualizar o resumo executivo da sala antes de mudar de assunto.';
