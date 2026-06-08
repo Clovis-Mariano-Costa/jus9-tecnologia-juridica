@@ -1666,7 +1666,7 @@ window.jus9DemoLogin = function(form){
     var bar = document.createElement('div');
     bar.className = 'chat-utility-actions';
     bar.setAttribute('data-ai-utility-actions', 'true');
-    bar.innerHTML = '<button class="mini primary" type="button" data-ai-memory>Abrir memoria</button><button class="mini" type="button" data-ai-settings>Painel</button><button class="mini" type="button" data-ai-improve>Melhorar resposta</button><button class="mini" type="button" data-ai-sources>Fontes</button><button class="mini" type="button" data-ai-summary>Atualizar resumo</button><button class="mini" type="button" data-ai-package>Gerar PDF</button>';
+    bar.innerHTML = '<div class="chat-action-menu"><button class="mini primary" type="button" data-action-menu-toggle>Acoes</button><div class="chat-action-popover" data-action-menu-popover hidden><button type="button" data-ai-memory>Memoria</button><button type="button" data-ai-settings>Painel</button><button type="button" data-ai-improve>Melhorar resposta</button><button type="button" data-ai-sources>Fontes</button><button type="button" data-ai-summary>Atualizar resumo</button><button type="button" data-ai-package>Gerar PDF</button></div></div>';
     form.parentNode.insertBefore(bar, form.nextSibling);
     var memoryPanel = document.createElement('div');
     memoryPanel.className = 'charlie-memory-panel';
@@ -1678,6 +1678,17 @@ window.jus9DemoLogin = function(form){
     settingsPanel.hidden = true;
     settingsPanel.innerHTML = '<div class="charlie-memory-head"><div><strong>Painel de configuracoes</strong><p>Preferencias amplas desta sala: memoria, resposta, seguranca, pacote e tela.</p></div><button class="mini" type="button" data-settings-close>Fechar</button></div><div class="charlie-settings-section"><h3>Memoria</h3><div class="charlie-settings-grid"><label><span>Usar memoria</span><select data-setting-memory><option value="true">Sim</option><option value="false">Nao</option></select></label><label><span>Memoria maxima</span><select data-setting-max><option value="48">48 mensagens</option><option value="96">96 mensagens</option><option value="160">160 mensagens</option></select></label></div></div><div class="charlie-settings-section"><h3>Resposta</h3><div class="charlie-settings-grid"><label><span>Detalhe</span><select data-setting-detail><option value="curto">Curto</option><option value="medio">Medio</option><option value="completo">Completo</option></select></label><label><span>Tom</span><select data-setting-tone><option value="direto">Direto</option><option value="didatico">Didatico</option><option value="tecnico">Tecnico</option><option value="social">Social</option></select></label><label><span>Cautela</span><select data-setting-caution><option value="normal">Normal</option><option value="cauteloso">Cauteloso</option><option value="estrito">Estrito</option></select></label><label><span>Formato</span><select data-setting-format><option value="auto">Automatico</option><option value="checklist">Checklist</option><option value="parecer">Parecer</option><option value="resumo">Resumo</option><option value="plano">Plano</option></select></label></div></div><div class="charlie-settings-section"><h3>Tela</h3><div class="charlie-settings-grid"><label><span>Rolagem automatica</span><select data-setting-autoscroll><option value="true">Sim</option><option value="false">Nao</option></select></label></div></div><div class="chat-utility-actions"><button class="mini primary" type="button" data-settings-save>Salvar configuracoes</button></div>';
     form.parentNode.insertBefore(settingsPanel, memoryPanel.nextSibling);
+    var actionMenu = bar.querySelector('[data-action-menu-popover]');
+    var actionToggle = bar.querySelector('[data-action-menu-toggle]');
+    function closeActionMenu(){ if(actionMenu) actionMenu.hidden = true; }
+    if(actionToggle && actionMenu){
+      actionToggle.addEventListener('click', function(event){
+        event.stopPropagation();
+        actionMenu.hidden = !actionMenu.hidden;
+      });
+      actionMenu.addEventListener('click', function(event){ event.stopPropagation(); });
+      document.addEventListener('click', closeActionMenu);
+    }
     function lastEchoText(){ var msgs = card.querySelectorAll('.ai-message-echo'); return msgs.length ? (msgs[msgs.length - 1].textContent || '').replace(/^Charlie Echo:\s*/i, '').trim() : ''; }
     function lastUserText(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); var msg = room && (room.messages || []).filter(function(m){ return m.role === 'user'; }).slice(-1)[0]; return msg ? msg.content : ''; }
     function appendEcho(text, options){ var windowEl = card.querySelector('[data-ai-chat-window]'); if(!windowEl) return; var echoMsg = document.createElement('div'); echoMsg.className = 'ai-message ai-message-echo'; echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(text); windowEl.appendChild(echoMsg); keepChatInView(card, echoMsg); if(!options || options.remember !== false) rememberChatExchange(code, '', text); }
@@ -1721,11 +1732,13 @@ window.jus9DemoLogin = function(form){
       settingsPanel.querySelector('[data-setting-autoscroll]').value = String(settings.autoScroll !== false);
     }
     bar.querySelector('[data-ai-memory]').addEventListener('click', function(){
+      closeActionMenu();
       renderMemoryPanel();
       memoryPanel.hidden = !memoryPanel.hidden;
       settingsPanel.hidden = true;
     });
     bar.querySelector('[data-ai-settings]').addEventListener('click', function(){
+      closeActionMenu();
       renderSettingsPanel();
       settingsPanel.hidden = !settingsPanel.hidden;
       memoryPanel.hidden = true;
@@ -1781,6 +1794,7 @@ window.jus9DemoLogin = function(form){
       appendEcho('Configuracoes salvas para esta sala. Vou respeitar memoria, tom, detalhe, cautela e formato preferido nas proximas respostas.');
     });
     bar.querySelector('[data-ai-improve]').addEventListener('click', async function(){
+      closeActionMenu();
       var room = activeChatRoom(code), lastQuestion = lastUserText(), lastAnswer = lastEchoText();
       if(!lastQuestion && !lastAnswer) return appendEcho('Ainda nao ha resposta suficiente para melhorar nesta sala.');
       try{
@@ -1791,14 +1805,17 @@ window.jus9DemoLogin = function(form){
       }
     });
     bar.querySelector('[data-ai-summary]').addEventListener('click', function(){
+      closeActionMenu();
       var room = updateRoomIntelligence(code, activeChatRoom(code), focus);
       appendEcho('Resumo executivo atualizado:\n\n' + (room.smartSummary || buildRoomExecutiveSummary(room, code, focus)));
     });
     bar.querySelector('[data-ai-sources]').addEventListener('click', function(){
+      closeActionMenu();
       var room = activeChatRoom(code);
       appendEcho(trustedSourcesSummary(room));
     });
     bar.querySelector('[data-ai-package]').addEventListener('click', function(){
+      closeActionMenu();
       var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }) || activeChatRoom(code);
       room = updateRoomIntelligence(code, room, focus);
       var title = 'Pacote Charlie Echo - ' + (room.title || code);

@@ -1627,6 +1627,11 @@ button,input,select,textarea{max-width:100%}
 /* Charlie Echo quality tools v4.2 */
 .ai-chat-window .chat-room-panel{position:static;margin:0 0 12px;border-color:rgba(197,139,47,.42);box-shadow:none}.chat-utility-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0}.chat-utility-actions .mini{border:1px solid rgba(15,23,42,.14);border-radius:999px;background:#fff;color:#07111f;padding:8px 12px;font-weight:850;cursor:pointer}.chat-utility-actions .mini.primary{background:#07111f;color:#e7c36c;border-color:#07111f}.chat-utility-actions .mini:hover{background:#07111f;color:#e7c36c}.charlie-health-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:20px}.charlie-health-card{border:1px solid rgba(197,139,47,.28);border-radius:22px;background:#fffaf0;padding:18px;color:#07111f}.charlie-health-card strong{display:block;margin-bottom:8px}.charlie-status-ok{color:#176b38;font-weight:900}.charlie-status-warn{color:#9a5b00;font-weight:900}.charlie-manual-list{display:grid;gap:12px;margin-top:18px}.charlie-manual-list li{background:#fffaf0;border:1px solid rgba(197,139,47,.24);border-radius:16px;padding:12px}
 .chat-utility-actions .mini.danger{border-color:rgba(154,43,43,.28);color:#8a1f1f}
+.chat-action-menu{position:relative;display:inline-flex}
+.chat-action-popover{position:absolute;right:0;top:calc(100% + 8px);z-index:20;display:grid;min-width:220px;border:1px solid rgba(15,23,42,.12);border-radius:14px;background:#fff;box-shadow:0 18px 42px rgba(7,17,31,.18);padding:8px}
+.chat-action-popover[hidden]{display:none}
+.chat-action-popover button{border:0;background:transparent;color:#07111f;text-align:left;border-radius:10px;padding:10px 11px;font-weight:850;cursor:pointer}
+.chat-action-popover button:hover{background:#fff7e2;color:#5b3b09}
 .charlie-memory-panel{border:1px solid rgba(197,139,47,.28);border-radius:18px;background:#fffaf0;padding:14px;margin:8px 0 0;color:#07111f}
 .charlie-memory-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:12px}
 .charlie-memory-head p{margin:3px 0 0;color:#51627a;font-size:.92rem}
@@ -2023,9 +2028,35 @@ button,input,select,textarea{max-width:100%}
   padding:10px;
   box-shadow:0 16px 38px rgba(7,17,31,.10);
 }
-.charlie-chat-only-page .chat-utility-actions,
 .charlie-chat-only-page .charlie-memory-panel{
   grid-column:2;
+}
+.charlie-chat-only-page .ai-chat-card > .chat-utility-actions{
+  grid-column:1;
+  grid-row:5;
+  justify-content:flex-end;
+  align-items:center;
+}
+.charlie-chat-only-page .chat-action-menu{width:100%}
+.charlie-chat-only-page .chat-action-menu .mini{width:100%;justify-content:center}
+.charlie-chat-only-page .chat-action-popover{left:0;right:auto;width:100%}
+.charlie-chat-only-page .ai-guided-prompts{
+  grid-column:1;
+  grid-row:4;
+  margin:0;
+  padding:12px;
+  max-height:260px;
+  overflow:auto;
+}
+.charlie-chat-only-page .ai-guided-prompts .link-actions{
+  display:grid;
+  gap:8px;
+}
+.charlie-chat-only-page .ai-guided-prompts button{
+  border-radius:12px;
+  padding:9px 10px;
+  font-size:.88rem;
+  line-height:1.25;
 }
 .charlie-settings-section{
   border:1px solid rgba(15,23,42,.08);
@@ -2049,7 +2080,8 @@ button,input,select,textarea{max-width:100%}
   .charlie-chat-only-page .chat-room-panel,
   .charlie-chat-only-page .ai-chat-window,
   .charlie-chat-only-page .ai-chat-form,
-  .charlie-chat-only-page .chat-utility-actions,
+  .charlie-chat-only-page .ai-chat-card > .chat-utility-actions,
+  .charlie-chat-only-page .ai-guided-prompts,
   .charlie-chat-only-page .charlie-memory-panel{
     grid-column:1;
     grid-row:auto;
