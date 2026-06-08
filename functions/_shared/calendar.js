@@ -101,7 +101,10 @@ export async function listCalendarEvents(env, session) {
   const response = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?${params.toString()}`, {
     headers: { Authorization: `Bearer ${accessToken}` }
   });
-  if (!response.ok) return { ok: false, status: 502, payload: { ok: false, error: "falha_listar_agenda_google" } };
+  if (!response.ok) {
+    const reason = await safeGoogleErrorReason(response);
+    return { ok: false, status: 502, payload: { ok: false, error: "falha_listar_agenda_google", reason } };
+  }
   const data = await response.json();
   return {
     ok: true,
@@ -133,7 +136,10 @@ export async function createCalendarEvent(env, session, input) {
     },
     body: JSON.stringify(event)
   });
-  if (!response.ok) return { ok: false, status: 502, payload: { ok: false, error: "falha_criar_evento_google" } };
+  if (!response.ok) {
+    const reason = await safeGoogleErrorReason(response);
+    return { ok: false, status: 502, payload: { ok: false, error: "falha_criar_evento_google", reason } };
+  }
   const data = await response.json();
   return {
     ok: true,
@@ -169,6 +175,16 @@ function cleanText(value, limit) {
     .replace(/\s+/g, " ")
     .trim()
     .slice(0, limit);
+}
+
+async function safeGoogleErrorReason(response) {
+  try {
+    const payload = await response.clone().json();
+    const reason = payload?.error?.errors?.[0]?.reason || payload?.error?.status || payload?.error || "";
+    return cleanText(reason, 80) || `google_http_${response.status}`;
+  } catch (_) {
+    return `google_http_${response.status}`;
+  }
 }
 
 async function encryptJson(payload, env) {

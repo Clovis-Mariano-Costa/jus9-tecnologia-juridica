@@ -137,6 +137,7 @@ DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridic
 <script src="script.js"></script>
 <script>
 const portalAgendaKey = "jus9_portal_agenda_demo_v1";
+let portalCalendarConnected = false;
 const portalPad = (n) => String(n).padStart(2, "0");
 const portalStamp = (date) => `${date.getFullYear()}${portalPad(date.getMonth()+1)}${portalPad(date.getDate())}T${portalPad(date.getHours())}${portalPad(date.getMinutes())}00`;
 function portalEvent() {
@@ -195,34 +196,56 @@ async function portalCalendarJson(url, options = {}) {
 async function portalCalendarStatus() {
   const status = document.getElementById("portalCalendarStatus");
   const eventsBox = document.getElementById("portalCalendarEvents");
+  const connectButton = document.getElementById("portalCalendarConnectButton");
   try {
     const { response, data } = await portalCalendarJson("/api/calendar/status");
     if (response.status === 401) {
       status.textContent = "Entre com Google antes de conectar a Agenda.";
+      portalCalendarConnected = false;
+      connectButton.textContent = "Entrar e conectar Google Agenda";
       return false;
     }
     if (!response.ok) {
       status.textContent = "Agenda real indisponivel para este perfil ou ambiente.";
+      portalCalendarConnected = false;
+      connectButton.textContent = "Conectar Google Agenda";
       return false;
     }
     if (!data.calendar?.connected) {
       status.textContent = "Sessao ativa, mas Google Agenda ainda nao conectada.";
+      portalCalendarConnected = false;
+      connectButton.textContent = "Conectar Google Agenda";
       eventsBox.innerHTML = "";
       return false;
     }
     status.textContent = "Google Agenda conectada com permissao governada.";
+    portalCalendarConnected = true;
+    connectButton.textContent = "Reconectar Google Agenda";
     return true;
   } catch (_) {
     status.textContent = "Nao foi possivel verificar a Agenda agora.";
+    portalCalendarConnected = false;
     return false;
   }
 }
 async function portalCalendarLoadEvents() {
   const eventsBox = document.getElementById("portalCalendarEvents");
   eventsBox.innerHTML = '<div class="timeline-entry"><strong>Carregando</strong><p>Consultando Google Agenda...</p></div>';
+  const connected = portalCalendarConnected || await portalCalendarStatus();
   const { response, data } = await portalCalendarJson("/api/calendar/events");
   if (!response.ok) {
-    eventsBox.innerHTML = '<div class="timeline-entry"><strong>Nao conectado</strong><p>Conecte a Google Agenda antes de listar eventos reais.</p></div>';
+    if (response.status === 401) {
+      eventsBox.innerHTML = '<div class="timeline-entry"><strong>Login necessario</strong><p>Entre com Google antes de listar eventos reais.</p></div>';
+      return;
+    }
+    if (data.error === "agenda_google_nao_conectada" || !connected) {
+      eventsBox.innerHTML = '<div class="timeline-entry"><strong>Agenda nao conectada</strong><p>Conecte a Google Agenda antes de listar eventos reais.</p></div>';
+      return;
+    }
+    const hint = data.reason === "accessNotConfigured" || data.reason === "SERVICE_DISABLED"
+      ? "A conexao foi salva, mas a API Google Calendar pode ainda nao estar ativada no projeto Google Cloud."
+      : "A conexao foi salva, mas o Google nao devolveu a lista agora. Pode ser propagacao de escopo, permissao ou API.";
+    eventsBox.innerHTML = `<div class="timeline-entry"><strong>Conexao salva; listagem pendente</strong><p>${hint}</p></div>`;
     return;
   }
   eventsBox.innerHTML = data.events?.length ? data.events.map((event) => `<div class="timeline-entry"><strong>${event.summary}</strong><p>${event.start || "sem data"}${event.htmlLink ? ` - <a href="${event.htmlLink}" target="_blank" rel="noopener">abrir</a>` : ""}</p></div>`).join("") : '<div class="timeline-entry"><strong>Nenhum evento futuro</strong><p>A conta conectada nao retornou eventos proximos.</p></div>';
