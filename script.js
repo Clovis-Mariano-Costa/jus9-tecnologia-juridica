@@ -562,6 +562,70 @@ window.jus9DemoLogin = function(form){
 })();
 
 (function(){
+  var panels = document.querySelectorAll('[data-auth-panel]');
+  if (!panels.length) return;
+
+  function isStaticPreview(){
+    return location.protocol === 'file:' || location.hostname === '' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+  }
+
+  function setPanel(panel, message, options){
+    var status = panel.querySelector('[data-auth-status]');
+    var permissions = panel.querySelector('[data-auth-permissions]');
+    var login = panel.querySelector('[data-auth-login-link]');
+    var logout = panel.querySelector('[data-auth-logout-button]');
+    if (status) status.textContent = message;
+    if (permissions) {
+      permissions.innerHTML = '';
+      var items = (options && options.permissions) || [];
+      items.forEach(function(item){
+        var pill = document.createElement('span');
+        pill.textContent = item;
+        permissions.appendChild(pill);
+      });
+      permissions.hidden = !items.length;
+    }
+    if (login) login.hidden = !!(options && options.authenticated);
+    if (logout) logout.hidden = !(options && options.authenticated);
+  }
+
+  async function loadAuth(panel){
+    if (isStaticPreview()) {
+      setPanel(panel, 'Previa local: login Google preparado para o ambiente publicado. Use acesso demo nesta tela.', { authenticated:false });
+      return;
+    }
+    try {
+      var me = await fetch('/api/auth/me', { cache:'no-store', credentials:'include' });
+      if (!me.ok) {
+        setPanel(panel, 'Sem sessao Google ativa. Entre com uma conta autorizada ou use o acesso demo.', { authenticated:false });
+        return;
+      }
+      var session = await me.json();
+      var permissionsResponse = await fetch('/api/auth/permissions', { cache:'no-store', credentials:'include' });
+      var permissionsPayload = permissionsResponse.ok ? await permissionsResponse.json() : {};
+      setPanel(panel, 'Sessao Google ativa. Perfil operacional: ' + (session.profile || 'nao informado') + '.', {
+        authenticated:true,
+        permissions: permissionsPayload.permissions || []
+      });
+    } catch (error) {
+      setPanel(panel, 'Nao foi possivel verificar a sessao agora. Mantenha o uso demonstrativo.', { authenticated:false });
+    }
+  }
+
+  panels.forEach(function(panel){
+    var logout = panel.querySelector('[data-auth-logout-button]');
+    if (logout) {
+      logout.addEventListener('click', async function(){
+        try { await fetch(panel.getAttribute('data-auth-logout') || '/auth/logout', { method:'POST', credentials:'include' }); }
+        catch (error) {}
+        loadAuth(panel);
+      });
+    }
+    loadAuth(panel);
+  });
+})();
+
+(function(){
   if ('serviceWorker' in navigator && location.protocol === 'https:') {
     window.addEventListener('load', function(){
       navigator.serviceWorker.register('/service-worker.js').then(function(registration){
