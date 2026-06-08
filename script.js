@@ -1350,18 +1350,44 @@ window.jus9DemoLogin = function(form){
     saveChatRooms(code, data);
     return room;
   }
-  function injectChatRooms(card, code){
+  function renderChatWindow(card, code, focus){
+    var windowEl = card.querySelector('[data-ai-chat-window]');
+    if(!windowEl) return;
+    var room = activeChatRoom(code);
+    windowEl.innerHTML = '';
+    var messages = (room.messages || []).filter(function(msg){ return msg && msg.content; });
+    if(!messages.length){
+      var empty = document.createElement('div');
+      empty.className = 'ai-message ai-message-echo ai-message-empty';
+      empty.innerHTML = '<strong>Charlie Echo:</strong> Sala limpa. Pode começar um novo fio aqui.';
+      windowEl.appendChild(empty);
+      return;
+    }
+    messages.forEach(function(msg){
+      var item = document.createElement('div');
+      item.className = 'ai-message ' + (msg.role === 'assistant' ? 'ai-message-echo' : 'ai-message-user');
+      item.innerHTML = msg.role === 'assistant'
+        ? '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(msg.content || '')
+        : '<strong>Voce:</strong> ' + escapeHtml(msg.content || '');
+      windowEl.appendChild(item);
+    });
+    windowEl.scrollTop = windowEl.scrollHeight;
+    updateRoomIntelligence(code, room, focus);
+  }
+
+  function injectChatRooms(card, code, onChange){
     if(card.querySelector('[data-mvp-room-panel]')) return;
     var panel = document.createElement('div');
     panel.className = 'chat-room-panel mvp-chat-room-panel';
     panel.setAttribute('data-mvp-room-panel', code);
     panel.innerHTML = '<div><strong>Salas da Charlie Echo</strong><p>Memoria local ampliada, visivel e controlada por voce.</p></div><div class="chat-room-actions"><button class="mini primary" type="button" data-room-new>Nova sala</button><button class="mini" type="button" data-room-rename>Renomear</button><details class="chat-room-more"><summary>Mais</summary><button class="mini" type="button" data-room-archive>Arquivar</button><button class="mini danger" type="button" data-room-delete>Excluir</button></details></div><div class="chat-room-list" data-room-list></div>';
     var target = card.querySelector('[data-ai-chat-window]'); if(target && target.parentNode) target.parentNode.insertBefore(panel, target);
-    function render(){ var data = loadChatRooms(code), list = panel.querySelector('[data-room-list]'); list.innerHTML = data.rooms.filter(function(r){ return r.status !== 'deleted'; }).map(function(r){ return '<button class="chat-room-pill' + (r.id===data.activeId?' active':'') + (r.status==='archived'?' archived':'') + '" type="button" data-id="' + r.id + '">' + (r.status==='archived' ? r.title + ' (arquivada)' : r.title) + '</button>'; }).join(''); list.querySelectorAll('[data-id]').forEach(function(btn){ btn.addEventListener('click', function(){ data.activeId = btn.getAttribute('data-id'); saveChatRooms(code, data); render(); }); }); }
-    panel.querySelector('[data-room-new]').addEventListener('click', function(){ var data = loadChatRooms(code), room = createChatRoom(code, 'Sala ' + code + ' ' + (data.rooms.length + 1)); data.rooms.unshift(room); data.activeId = room.id; saveChatRooms(code, data); render(); });
-    panel.querySelector('[data-room-rename]').addEventListener('click', function(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); if(!room) return; var title = prompt('Novo nome da sala:', room.title || 'Sala ' + code); if(!title) return; room.title = title.trim().slice(0, 80) || room.title; room.updatedAt = new Date().toISOString(); saveChatRooms(code, data); render(); });
-    panel.querySelector('[data-room-archive]').addEventListener('click', function(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); if(!room) return; room.status = room.status === 'archived' ? 'active' : 'archived'; var next = data.rooms.find(function(r){ return r.status !== 'deleted' && r.status !== 'archived'; }); if(room.status==='archived' && next) data.activeId = next.id; saveChatRooms(code, data); render(); });
-    panel.querySelector('[data-room-delete]').addEventListener('click', function(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); if(!room || !confirm('Excluir esta sala local?')) return; room.status='deleted'; var next = data.rooms.find(function(r){ return r.status !== 'deleted' && r.status !== 'archived'; }) || data.rooms.find(function(r){ return r.status !== 'deleted'; }); if(!next){ next = createChatRoom(code, 'Sala ' + code + ' 1'); data.rooms.unshift(next); } data.activeId = next.id; saveChatRooms(code, data); render(); });
+    function changed(){ render(); if(typeof onChange === 'function') onChange(); }
+    function render(){ var data = loadChatRooms(code), list = panel.querySelector('[data-room-list]'); list.innerHTML = data.rooms.filter(function(r){ return r.status !== 'deleted'; }).map(function(r){ return '<button class="chat-room-pill' + (r.id===data.activeId?' active':'') + (r.status==='archived'?' archived':'') + '" type="button" data-id="' + r.id + '"><span>' + escapeHtml(r.status==='archived' ? r.title + ' (arquivada)' : r.title) + '</span></button>'; }).join(''); list.querySelectorAll('[data-id]').forEach(function(btn){ btn.addEventListener('click', function(){ var current = loadChatRooms(code); current.activeId = btn.getAttribute('data-id'); saveChatRooms(code, current); changed(); }); }); }
+    panel.querySelector('[data-room-new]').addEventListener('click', function(){ var data = loadChatRooms(code), room = createChatRoom(code, 'Sala ' + code + ' ' + (data.rooms.length + 1)); data.rooms.unshift(room); data.activeId = room.id; saveChatRooms(code, data); changed(); });
+    panel.querySelector('[data-room-rename]').addEventListener('click', function(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); if(!room) return; var title = prompt('Novo nome da sala:', room.title || 'Sala ' + code); if(!title) return; room.title = title.trim().slice(0, 80) || room.title; room.updatedAt = new Date().toISOString(); saveChatRooms(code, data); changed(); });
+    panel.querySelector('[data-room-archive]').addEventListener('click', function(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); if(!room) return; room.status = room.status === 'archived' ? 'active' : 'archived'; var next = data.rooms.find(function(r){ return r.status !== 'deleted' && r.status !== 'archived'; }); if(room.status==='archived' && next) data.activeId = next.id; saveChatRooms(code, data); changed(); });
+    panel.querySelector('[data-room-delete]').addEventListener('click', function(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); if(!room || !confirm('Excluir esta sala local?')) return; room.status='deleted'; var next = data.rooms.find(function(r){ return r.status !== 'deleted' && r.status !== 'archived'; }) || data.rooms.find(function(r){ return r.status !== 'deleted'; }); if(!next){ next = createChatRoom(code, 'Sala ' + code + ' 1'); data.rooms.unshift(next); } data.activeId = next.id; saveChatRooms(code, data); changed(); });
     render();
   }
   function buildQuestionWithRoom(question, room, settings){
@@ -1644,7 +1670,7 @@ window.jus9DemoLogin = function(form){
     form.parentNode.insertBefore(settingsPanel, memoryPanel.nextSibling);
     function lastEchoText(){ var msgs = card.querySelectorAll('.ai-message-echo'); return msgs.length ? (msgs[msgs.length - 1].textContent || '').replace(/^Charlie Echo:\s*/i, '').trim() : ''; }
     function lastUserText(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); var msg = room && (room.messages || []).filter(function(m){ return m.role === 'user'; }).slice(-1)[0]; return msg ? msg.content : ''; }
-    function appendEcho(text){ var windowEl = card.querySelector('[data-ai-chat-window]'); if(!windowEl) return; var echoMsg = document.createElement('div'); echoMsg.className = 'ai-message ai-message-echo'; echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(text); windowEl.appendChild(echoMsg); windowEl.scrollTop = windowEl.scrollHeight; rememberChatExchange(code, '', text); }
+    function appendEcho(text, options){ var windowEl = card.querySelector('[data-ai-chat-window]'); if(!windowEl) return; var echoMsg = document.createElement('div'); echoMsg.className = 'ai-message ai-message-echo'; echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(text); windowEl.appendChild(echoMsg); windowEl.scrollTop = windowEl.scrollHeight; if(!options || options.remember !== false) rememberChatExchange(code, '', text); }
     function appendDownloadEcho(files){
       var windowEl = card.querySelector('[data-ai-chat-window]');
       if(!windowEl) return;
@@ -1727,7 +1753,8 @@ window.jus9DemoLogin = function(form){
       room.updatedAt = new Date().toISOString();
       saveChatRooms(code, data);
       renderMemoryPanel();
-      appendEcho('Memoria desta sala foi limpa neste navegador.');
+      renderChatWindow(card, code, focus);
+      appendEcho('Memoria desta sala foi limpa neste navegador.', { remember:false });
     });
     settingsPanel.querySelector('[data-settings-save]').addEventListener('click', function(){
       var settings = {
@@ -1786,8 +1813,9 @@ window.jus9DemoLogin = function(form){
     if (!form || !input || !windowEl) return;
     var code = card.getAttribute('data-ai-code') || 'MVP';
     var focus = card.getAttribute('data-ai-focus') || 'contexto demonstrativo do MVP';
-    injectChatRooms(card, code);
+    injectChatRooms(card, code, function(){ renderChatWindow(card, code, focus); });
     addChatUtilityActions(card, code, focus);
+    renderChatWindow(card, code, focus);
     form.addEventListener('submit', async function(event){
       event.preventDefault();
       var question = (input.value || '').trim();
@@ -1815,6 +1843,7 @@ window.jus9DemoLogin = function(form){
       } else {
         echoMsg.innerHTML = '<strong>Charlie Echo:</strong> Consultando API segura da Charlie Echo...';
       }
+      windowEl.querySelectorAll('.ai-message-empty').forEach(function(item){ item.remove(); });
       windowEl.appendChild(userMsg);
       windowEl.appendChild(echoMsg);
       input.value = '';

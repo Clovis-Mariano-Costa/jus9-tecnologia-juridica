@@ -1621,6 +1621,8 @@ button,input,select,textarea{max-width:100%}
 /* Charlie Echo rooms replicated across MVP chats v4.3 */
 .chat-room-panel{display:grid;grid-template-columns:minmax(180px,.9fr) minmax(220px,1fr);gap:10px 14px;margin:10px 0;padding:12px 14px;border:1px solid rgba(197,139,47,.24);border-radius:18px;background:#fffaf0;color:#0b1728}
 .chat-room-panel p{margin:3px 0 0;color:#51627a;font-size:.92rem}.chat-room-actions,.chat-room-list{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.chat-room-actions{justify-content:flex-end}.chat-room-list{grid-column:1/-1}.chat-room-pill{border:1px solid rgba(15,23,42,.14);border-radius:999px;padding:7px 11px;background:#fff;color:#0b1728;font-weight:850;cursor:pointer}.chat-room-pill.active{background:#07111f;color:#e7c36c;border-color:#07111f}.chat-room-pill.archived{opacity:.68;border-style:dashed;background:#f7f4ee}.chat-room-more{position:relative}.chat-room-more summary{list-style:none;border:1px solid rgba(15,23,42,.14);border-radius:999px;background:#fff;color:#07111f;padding:7px 11px;font-weight:850;cursor:pointer}.chat-room-more summary::-webkit-details-marker{display:none}.chat-room-more[open]{z-index:3}.chat-room-more[open] button{margin-top:6px}.chat-room-more .danger{border-color:rgba(154,43,43,.28);color:#8a1f1f}
+.chat-room-pill span{display:block;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ai-message-empty{opacity:.78;border-style:dashed!important}
 
 /* Charlie Echo quality tools v4.2 */
 .ai-chat-window .chat-room-panel{position:static;margin:0 0 12px;border-color:rgba(197,139,47,.42);box-shadow:none}.chat-utility-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0}.chat-utility-actions .mini{border:1px solid rgba(15,23,42,.14);border-radius:999px;background:#fff;color:#07111f;padding:8px 12px;font-weight:850;cursor:pointer}.chat-utility-actions .mini.primary{background:#07111f;color:#e7c36c;border-color:#07111f}.chat-utility-actions .mini:hover{background:#07111f;color:#e7c36c}.charlie-health-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:20px}.charlie-health-card{border:1px solid rgba(197,139,47,.28);border-radius:22px;background:#fffaf0;padding:18px;color:#07111f}.charlie-health-card strong{display:block;margin-bottom:8px}.charlie-status-ok{color:#176b38;font-weight:900}.charlie-status-warn{color:#9a5b00;font-weight:900}.charlie-manual-list{display:grid;gap:12px;margin-top:18px}.charlie-manual-list li{background:#fffaf0;border:1px solid rgba(197,139,47,.24);border-radius:16px;padding:12px}
@@ -1922,13 +1924,56 @@ button,input,select,textarea{max-width:100%}
 }
 .charlie-chat-only-page .ai-chat-card{
   min-height:calc(100vh - 220px);
+  border-radius:18px;
+  box-shadow:0 22px 60px rgba(7,17,31,.10);
 }
 .charlie-chat-only-page .ai-chat-window{
   min-height:54vh;
   max-height:68vh;
+  background:linear-gradient(180deg,#fff,#fbfaf7);
+  border:1px solid rgba(15,23,42,.08);
+  border-radius:18px;
+  padding:18px;
 }
 .charlie-chat-only-page .chat-room-panel{
   grid-template-columns:minmax(0,1fr) auto;
+  border-radius:18px;
+  background:#07111f;
+  color:#fff;
+  border-color:#07111f;
+  box-shadow:0 14px 34px rgba(7,17,31,.16);
+}
+.charlie-chat-only-page .chat-room-panel p{
+  color:#cdd7e5;
+}
+.charlie-chat-only-page .chat-room-pill{
+  background:rgba(255,255,255,.08);
+  color:#e9eef7;
+  border-color:rgba(255,255,255,.16);
+}
+.charlie-chat-only-page .chat-room-pill.active{
+  background:#e7c36c;
+  color:#07111f;
+  border-color:#e7c36c;
+}
+.charlie-chat-only-page .chat-room-actions .mini,
+.charlie-chat-only-page .chat-room-more summary{
+  background:#fff;
+  color:#07111f;
+}
+.charlie-chat-only-page .ai-message{
+  max-width:78%;
+  border-radius:18px;
+}
+.charlie-chat-only-page .ai-message-user{
+  margin-left:auto;
+  background:#07111f;
+  color:#fff;
+}
+.charlie-chat-only-page .ai-message-echo{
+  margin-right:auto;
+  background:#fffaf0;
+  border:1px solid rgba(197,139,47,.18);
 }
 @media(max-width:1180px){
   .charlie-mvp-shell .demo-layout{
