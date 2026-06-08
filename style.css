@@ -678,6 +678,7 @@ h3{font-size:24px}
 .auth-status-panel{border-color:rgba(197,139,47,.26);background:#fffdf8}
 .auth-status-panel h2{color:#0b1728;margin:.25rem 0}.auth-status-panel p{color:#51627a}
 .auth-permission-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.auth-permission-list span{border:1px solid rgba(197,139,47,.24);border-radius:999px;padding:6px 9px;background:#fff7e2;color:#8a5a12;font-size:12px;font-weight:900}
+.auth-identity-context{margin:8px 0 10px;color:#51627a;font-size:.9rem}
 .demo-session-notice{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;border:1px solid rgba(197,139,47,.30);border-radius:14px;padding:11px 14px;background:#fff7e2;color:#5b3b09;font-size:.9rem}
 .demo-session-notice button,.local-dossier-form button{border:1px solid rgba(197,139,47,.36);border-radius:999px;padding:9px 12px;background:#07111f;color:#e7c36c;font-weight:850;cursor:pointer}
 .local-dossier-panel{margin-top:18px;border:1px solid rgba(197,139,47,.24);border-radius:18px;padding:18px;background:#fffdf8}

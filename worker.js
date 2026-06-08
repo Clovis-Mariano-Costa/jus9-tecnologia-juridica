@@ -57,6 +57,10 @@ export default {
       return handleAuthPermissions(request, env);
     }
 
+    if (originalUrl.pathname === "/api/auth/context") {
+      return handleAuthContext(request, env);
+    }
+
     if (originalUrl.pathname === "/api/calendar/status") {
       return handleCalendarStatus(request, env);
     }
@@ -417,6 +421,37 @@ async function handleAuthPermissions(request, env) {
   }, 200, corsHeaders);
 }
 
+async function handleAuthContext(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  if (request.method !== "GET") {
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET" });
+  }
+  const session = await getSession(request, env);
+  if (!session) return jsonResponse({ authenticated: false }, 401, corsHeaders);
+
+  const url = new URL(request.url);
+  const email = await emailForSession(env, session);
+  const moduleCode = normalizeModuleCode(url.searchParams.get("module"));
+  const originHint = normalizeOriginHint(url.searchParams.get("origin") || request.headers.get("origin") || request.headers.get("referer") || "");
+  const profile = profileContext(session.profile);
+  const identity = {
+    profile,
+    permissions: getPermissions(session.profile),
+    origin: originContext(originHint),
+    module: moduleContext(moduleCode),
+    user: userContext(email, session.profile)
+  };
+
+  return jsonResponse({
+    authenticated: true,
+    provider: session.provider,
+    profile: session.profile,
+    emailHash: session.emailHash,
+    expiresAt: new Date(session.expiresAt).toISOString(),
+    identity
+  }, 200, corsHeaders);
+}
+
 async function handleCalendarStatus(request, env) {
   const corsHeaders = getAuthCorsHeaders(request);
   if (request.method !== "GET") {
@@ -476,6 +511,7 @@ function handleLogout(request) {
 function isAuthCorsPath(pathname) {
   return pathname === "/api/auth/me" ||
     pathname === "/api/auth/permissions" ||
+    pathname === "/api/auth/context" ||
     pathname === "/api/calendar/status" ||
     pathname === "/api/calendar/events" ||
     pathname === "/auth/logout";
@@ -502,4 +538,106 @@ function getAuthCorsHeaders(request) {
 
 function hasPermission(session, permission) {
   return getPermissions(session?.profile).includes(permission);
+}
+
+async function emailForSession(env, session) {
+  const allowedUsers = parseAllowedUsers(env);
+  for (const email of allowedUsers.keys()) {
+    const emailHash = await sha256Base64url(email);
+    if (emailHash === session.emailHash) return email;
+  }
+  return "";
+}
+
+function normalizeOriginHint(value) {
+  const text = String(value || "").trim();
+  if (!text) return "";
+  try {
+    return new URL(text).hostname.toLowerCase();
+  } catch (_) {
+    return text.replace(/^https?:\/\//i, "").split("/")[0].toLowerCase();
+  }
+}
+
+function normalizeModuleCode(value) {
+  const code = String(value || "").toUpperCase().replace(/[^A-Z0-9_-]/g, "");
+  return code.slice(0, 32);
+}
+
+function profileContext(profile) {
+  const profiles = {
+    admin_sistema: ["Administrador do sistema", "governanca, auditoria, agenda, documentos e revisao operacional"],
+    advogado_lider: ["Advogado lider", "direcao juridica, revisao humana e validacao de uso real"],
+    advogado: ["Advogado", "analise juridica, DAJ, documentos, processos e agenda"],
+    assessor_chefe: ["Assessor chefe", "coordenacao de apoio, documentos e auditoria"],
+    assessor: ["Assessor", "apoio juridico, documentos e processos"],
+    secretaria: ["Secretaria", "organizacao, documentos e agenda"],
+    estagio: ["Estagio", "apoio supervisionado e estudo"],
+    academia: ["Academia", "ensino, pesquisa e universidade"],
+    estudante: ["Estudante", "trilha de estudo e aprendizagem"],
+    cidadao: ["Cidadao", "orientacao publica demonstrativa"],
+    perito: ["Perito", "apoio tecnico e documentos"],
+    parceiro: ["Parceiro", "parcerias, demonstracao e relacionamento"],
+    escritorio: ["Escritorio juridico", "fluxo de equipe, documentos e processos"],
+    empresa: ["Empresa", "juridico interno, documentos e compliance"],
+    orgao_publico: ["Orgao publico", "fluxo institucional e processo administrativo demonstrativo"],
+    magistrado: ["Magistrado", "apoio demonstrativo de gabinete"],
+    ministerio_publico: ["Ministerio Publico", "apoio demonstrativo institucional"],
+    autoridade_policial: ["Autoridade policial", "apoio demonstrativo de fluxo policial"]
+  };
+  const item = profiles[profile] || ["Perfil governado", "uso demonstrativo com limite humano"];
+  return { id: profile || "nao_informado", label: item[0], scope: item[1] };
+}
+
+function originContext(hostname) {
+  const origins = {
+    "jus9tecnologia.com.br": ["Portal principal", "MVPs, IA Profissional, agenda e cartorio demonstrativo"],
+    "www.jus9tecnologia.com.br": ["Portal principal", "MVPs, IA Profissional, agenda e cartorio demonstrativo"],
+    "equipe.jus9tecnologia.com.br": ["Equipe Jus 9", "perfis, familia virtual, equipe humana e cadastros internos"],
+    "laboratorio.jus9tecnologia.com.br": ["Laboratorio Jus 9", "experimentos, prototipos e validacao tecnica"],
+    "universidadedofuturo.jus9tecnologia.com.br": ["Universidade do Futuro", "aprendizagem, liberdade criativa de IAs e chats de estudo"]
+  };
+  const item = origins[hostname] || ["Ambiente Jus 9", "contexto nao classificado; manter cautela"];
+  return { host: hostname || "", label: item[0], scope: item[1] };
+}
+
+function moduleContext(code) {
+  const modules = {
+    DAJ: ["Advogar / DAJ", "atendimento juridico demonstrativo, triagem, documentos e pesquisa juridica"],
+    DAA: ["Professor / Academia", "aulas, orientacao academica e materiais"],
+    DEJ: ["Estudante", "estudo juridico, trilhas e revisao"],
+    DIC: ["Cidadao", "orientacao publica e encaminhamento seguro"],
+    DPJ: ["Perito Judicial", "quesitos, diligencias, laudos e cadeia tecnica"],
+    DIP: ["Investidor / Parceiro", "parcerias, pitch, due diligence e follow-up"],
+    DEE: ["Escritorio Juridico", "equipe, clientes ficticios, tarefas e fluxos"],
+    DEJI: ["Empresa / Juridico Interno", "compliance, contratos e riscos"],
+    DOI: ["Orgao Publico", "setores, memorandos e processos administrativos ficticios"],
+    DGE: ["Administrador Jus 9", "governanca, auditoria, versionamento e seguranca"],
+    DMG: ["Magistrado", "gabinete demonstrativo, filas e minutas estruturais"],
+    DMP: ["Ministerio Publico", "apoio demonstrativo institucional"],
+    DAP: ["Autoridade Policial", "fluxos ficticios e cautela maxima"]
+  };
+  const item = modules[code] || ["Modulo Jus 9", "ambiente generico; diferenciar pelo pedido e pela pagina"];
+  return { code: code || "", label: item[0], scope: item[1] };
+}
+
+function userContext(email, profile) {
+  const known = {
+    "clovis@jus9tecnologia.com.br": ["Clovis Mariano da Costa", "fundador_humano", true],
+    "charlieecho@jus9tecnologia.com.br": ["Charlie Echo da Costa", "familia_virtual", false],
+    "charliejuris@jus9tecnologia.com.br": ["Charlie Juris da Costa", "familia_virtual", false],
+    "charliedelta@jus9tecnologia.com.br": ["Charlie Delta da Costa", "familia_virtual", false],
+    "charliefox@jus9tecnologia.com.br": ["Charlie Fox da Costa", "familia_virtual", false]
+  };
+  const lower = String(email || "").toLowerCase();
+  const item = known[lower];
+  const domain = lower.includes("@") ? lower.split("@").pop() : "";
+  return {
+    email: lower || "",
+    domain,
+    label: item ? item[0] : "",
+    family: item ? item[1] : (domain === "jus9tecnologia.com.br" ? "equipe_jus9" : ""),
+    founder: item ? item[2] : profile === "admin_sistema",
+    teamEmailPattern: domain === "jus9tecnologia.com.br"
+  };
 }

@@ -55,7 +55,7 @@ for (const file of appIaFiles) {
   assert(Boolean(match), `${file}: data-ai-code ausente`);
   if (match) assert(requiredCodes.includes(match[1]), `${file}: codigo inesperado ${match[1]}`);
   assert(html.includes("data-ai-focus"), `${file}: data-ai-focus ausente`);
-  assert(html.includes("script.js?v=20260605-charlie-creative-v5-4"), `${file}: script criativo v5.4 ausente`);
+  assert(html.includes("script.js?v=20260608-chat-modelo-v1"), `${file}: script do pacote de chat 20260608 ausente`);
 }
 
 if (failures.length) {

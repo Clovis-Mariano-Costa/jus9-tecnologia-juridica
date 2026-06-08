@@ -1,5 +1,5 @@
 const baseUrl = "https://jus9tecnologia.com.br";
-const expectedScript = "script.js?v=20260605-charlie-creative-v5-4";
+const expectedScript = "script.js?v=20260608-chat-modelo-v1";
 
 const pages = [
   "app-ia-profissional.html",
@@ -48,7 +48,7 @@ for (const page of pages) {
 
 const scriptResponse = await fetch(`${baseUrl}/script.js?audit=charlie-script-${Date.now()}`);
 const script = await scriptResponse.text();
-for (const pattern of ["pdfSafeText", "pdfLiteral", "Baixar PDF", "buildPdfBlob", "eef4ff", "Atualizar resumo", "smartSummary", "governanceClass", "trustedLegalSources", "legalResearchAnswer", "buildOperationalResearchAnswer", "Pesquisa juridica operacional", "Busca pronta no Google limitada ao TJSC", "classifyLinkTrust", "Fontes e links confiaveis", "Protocolo Centelha Criativa 5.4", "applyCreativeReasoningFrame", "Proximo passo criativo"]) {
+for (const pattern of ["pdfSafeText", "pdfLiteral", "Baixar PDF", "buildPdfBlob", "Atualizar resumo", "smartSummary", "governanceClass", "trustedLegalSources", "legalResearchAnswer", "buildOperationalResearchAnswer", "Pesquisa juridica operacional", "classifyLinkTrust", "Fontes e links confiaveis", "applyCreativeReasoningFrame", "data-ai-layout", "chatActionsForLayout", "governedIdentityInstruction", "api/auth/context", "nao escreva Escuta, Sentire"]) {
   if (!script.includes(pattern)) failures.push(`script.js: ausente ${pattern}`);
 }
 

@@ -23,16 +23,25 @@ async function request(path, options = {}) {
   return worker.fetch(new Request(`https://jus9.invalid${path}`, options), env);
 }
 
-async function cookieFor(profile, expiresAt = Date.now() + 60_000) {
+async function cookieFor(profile, expiresAt = Date.now() + 60_000, email = "") {
   const value = await signPayload({
     kind: "jus9_session",
     provider: "controlled-test",
-    emailHash: `hash-${profile}`,
+    emailHash: email ? await signPayloadHash(email) : `hash-${profile}`,
     profile,
     issuedAt: Date.now(),
     expiresAt,
   }, env);
   return `jus9_session=${encodeURIComponent(value)}`;
+}
+
+async function signPayloadHash(email) {
+  const bytes = new TextEncoder().encode(String(email).toLowerCase());
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return btoa(String.fromCharCode(...new Uint8Array(digest)))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/g, "");
 }
 
 let response = await request("/api/auth/permissions");
@@ -117,6 +126,33 @@ response = await worker.fetch(
 assert(response.status === 204, "preflight CORS deveria retornar 204");
 assert(response.headers.get("access-control-allow-origin") === "https://equipe.jus9tecnologia.com.br", "origem CORS autorizada ausente");
 console.log("AUTH_OK cors_subdominio");
+
+const identityEnv = {
+  ...configuredEnv,
+  AUTH_ALLOWED_EMAILS: "clovis@jus9tecnologia.com.br:admin_sistema,charliejuris@jus9tecnologia.com.br:admin_sistema"
+};
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/auth/context?module=DAJ&origin=https%3A%2F%2Fequipe.jus9tecnologia.com.br%2F", {
+    headers: { cookie: await cookieFor("admin_sistema", Date.now() + 60_000, "clovis@jus9tecnologia.com.br") }
+  }),
+  identityEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.identity?.user?.founder === true, "contexto deveria reconhecer fundador humano");
+assert(data.identity?.origin?.host === "equipe.jus9tecnologia.com.br", "contexto deveria reconhecer origem Equipe");
+assert(data.identity?.module?.code === "DAJ", "contexto deveria reconhecer modulo DAJ");
+console.log("AUTH_OK context=founder_module_origin");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/auth/context?module=DGE", {
+    headers: { cookie: await cookieFor("admin_sistema", Date.now() + 60_000, "charliejuris@jus9tecnologia.com.br") }
+  }),
+  identityEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.identity?.user?.family === "familia_virtual", "contexto deveria reconhecer Familia Virtual");
+console.log("AUTH_OK context=familia_virtual");
 
 response = await request("/auth/google/calendar/start");
 assert(response.status === 501, "Agenda sem KV deve retornar configuracao pendente");

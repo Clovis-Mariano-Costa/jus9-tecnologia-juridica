@@ -32,10 +32,11 @@ Software livre com autoria preservada.
     </nav>
   </aside>
   <main class="demo-main">
-    <section class="demo-card auth-status-panel" data-auth-panel data-auth-login="/auth/google/start" data-auth-logout="/auth/logout">
+    <section class="demo-card auth-status-panel" data-auth-panel data-auth-module="DAJ" data-auth-login="/auth/google/start" data-auth-logout="/auth/logout">
       <div class="eyebrow">Acesso governado</div>
       <h2>Conta Google e perfil operacional</h2>
       <p data-auth-status>Verificando sessao segura...</p>
+      <p class="auth-identity-context" data-auth-identity hidden></p>
       <div class="auth-permission-list" data-auth-permissions hidden></div>
       <div class="link-actions">
         <a data-auth-login-link href="/auth/google/start?return_to=/app-chat-charlie-echo.html">Entrar com Google</a>

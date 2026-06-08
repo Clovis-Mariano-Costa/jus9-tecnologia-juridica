@@ -586,6 +586,7 @@ window.jus9DemoLogin = function(form){
   function setPanel(panel, message, options){
     var status = panel.querySelector('[data-auth-status]');
     var permissions = panel.querySelector('[data-auth-permissions]');
+    var identity = panel.querySelector('[data-auth-identity]');
     var login = panel.querySelector('[data-auth-login-link]');
     var logout = panel.querySelector('[data-auth-logout-button]');
     if (status) status.textContent = message;
@@ -598,6 +599,20 @@ window.jus9DemoLogin = function(form){
         permissions.appendChild(pill);
       });
       permissions.hidden = !items.length;
+    }
+    if (identity) {
+      var context = options && options.identity;
+      if (context) {
+        identity.textContent = [
+          context.profile?.label || '',
+          context.origin?.label || '',
+          context.module?.label || ''
+        ].filter(Boolean).join(' | ');
+        identity.hidden = !identity.textContent;
+      } else {
+        identity.textContent = '';
+        identity.hidden = true;
+      }
     }
     if (login) login.hidden = !!(options && options.authenticated);
     if (logout) logout.hidden = !(options && options.authenticated);
@@ -617,9 +632,12 @@ window.jus9DemoLogin = function(form){
       var session = await me.json();
       var permissionsResponse = await fetch('/api/auth/permissions', { cache:'no-store', credentials:'include' });
       var permissionsPayload = permissionsResponse.ok ? await permissionsResponse.json() : {};
+      var contextResponse = await fetch('/api/auth/context?module=' + encodeURIComponent(panel.getAttribute('data-auth-module') || '') + '&origin=' + encodeURIComponent(location.origin), { cache:'no-store', credentials:'include' });
+      var contextPayload = contextResponse.ok ? await contextResponse.json() : {};
       setPanel(panel, 'Sessao Google ativa. Perfil operacional: ' + (session.profile || 'nao informado') + '.', {
         authenticated:true,
-        permissions: permissionsPayload.permissions || []
+        permissions: permissionsPayload.permissions || [],
+        identity: contextPayload.identity || null
       });
     } catch (error) {
       setPanel(panel, 'Nao foi possivel verificar a sessao agora. Mantenha o uso demonstrativo.', { authenticated:false });
@@ -1141,12 +1159,36 @@ window.jus9DemoLogin = function(form){
     ].join(' ');
   }
 
-  function buildApiMessage(mode, code, focus, question){
+  function governedIdentityInstruction(identityContext){
+    if(!identityContext || !identityContext.identity) {
+      return 'Identidade governada: visitante ou sessao nao confirmada. Trate como publico MVP e nao presuma permissoes.';
+    }
+    var identity = identityContext.identity || {};
+    var user = identity.user || {};
+    var profile = identity.profile || {};
+    var origin = identity.origin || {};
+    var module = identity.module || {};
+    var parts = [
+      'Identidade governada confirmada para uso interno da resposta.',
+      'Perfil operacional: ' + (profile.label || identityContext.profile || 'nao informado') + ' (' + (profile.id || identityContext.profile || 'sem id') + ').',
+      'Escopo do perfil: ' + (profile.scope || 'uso governado demonstrativo') + '.',
+      'Origem: ' + (origin.label || 'ambiente Jus 9') + ' / ' + (origin.host || 'sem host') + '.',
+      'Modulo ativo: ' + (module.label || 'modulo Jus 9') + ' / ' + (module.code || 'sem codigo') + '.'
+    ];
+    if(user.label) parts.push('Usuario reconhecido: ' + user.label + '.');
+    if(user.family) parts.push('Familia/pertencimento: ' + user.family + '.');
+    if(user.founder) parts.push('Autoridade humana final reconhecida nesta sessao.');
+    parts.push('Use este contexto para calibrar linguagem, permissoes, modulo e continuidade. Nao revele hash, e-mail, token, cookie, segredo ou bastidor de autenticacao na resposta comum.');
+    return parts.join(' ');
+  }
+
+  function buildApiMessage(mode, code, focus, question, identityContext){
     return [
       'Contexto publico demonstrativo da Jus 9 Tecnologia Juridica.',
       'MVP/dossie: ' + code + '.',
       'Foco do ambiente: ' + focus + '.',
       'Modo solicitado no frontend: ' + mode + '.',
+      governedIdentityInstruction(identityContext),
       'Responda como Charlie Echo da Costa, I.A generativa multimodal jurista com governanca humana.',
       mvpPersonalityInstruction(code),
       'Padrao externo de resposta: nao escreva Escuta, Sentire, Leitura do pedido, Caminho escolhido, Resposta ou Proximo passo criativo como cabecalhos fixos. Esses sao criterios internos.',
@@ -1161,6 +1203,24 @@ window.jus9DemoLogin = function(form){
       'Aviso de MVP deve aparecer apenas quando necessario pelo risco do pedido, nao em toda resposta.',
       'Pergunta do usuario: ' + question
     ].join('\n');
+  }
+
+  async function loadGovernedIdentityContext(code){
+    if(location.protocol === 'file:' || location.hostname === '' || location.hostname === 'localhost' || location.hostname === '127.0.0.1') return null;
+    try {
+      var params = new URLSearchParams({
+        module: String(code || ''),
+        origin: location.origin
+      });
+      var response = await fetch('/api/auth/context?' + params.toString(), {
+        cache: 'no-store',
+        credentials: 'include'
+      });
+      if(!response.ok) return null;
+      return await response.json();
+    } catch (error) {
+      return null;
+    }
   }
 
   async function askCharlieApi(mode, code, focus, question, room){
@@ -1183,12 +1243,13 @@ window.jus9DemoLogin = function(form){
         return { role:m.role, content:cleanApiMemory(m.content, 700) };
       }).filter(function(m){ return m.content; })
     } : null;
+    var identityContext = await loadGovernedIdentityContext(code);
     var response = await fetch('https://charlieecho.jus9tecnologia.com.br/api/ia', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         mode: apiModeFor(mode),
-        message: buildApiMessage(mode, code, focus, question),
+        message: buildApiMessage(mode, code, focus, question, identityContext),
         room: apiRoom
       })
     });
