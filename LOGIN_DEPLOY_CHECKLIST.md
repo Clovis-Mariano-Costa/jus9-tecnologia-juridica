@@ -6,7 +6,7 @@ CLASSIFICACAO: INTERNO / OPERACIONAL / LOGIN
 
 Garantir que a pagina online de login sirva a versao correta do MVP, com:
 
-- botao "Google preparado";
+- botao "Entrar com Google";
 - demos `demo@` e `demo1` a `demo13`;
 - senha demonstrativa `Jus9MVP#2026`;
 - rota `/login/` apontando para `/mvp.html#acesso`;
@@ -22,7 +22,7 @@ Marcador visivel na tela:
 
 1. Abrir `https://jus9tecnologia.com.br/mvp#demos-jus9`.
 2. Confirmar se aparece o marcador de versao acima.
-3. Confirmar se aparece o botao `Google preparado`.
+3. Confirmar se aparece o botao `Entrar com Google`.
 4. Abrir `Ver e-mails demo por MVP` e conferir `demo1` a `demo13`.
 5. Abrir `https://www.jus9tecnologia.com.br/login/`.
 6. Confirmar redirecionamento HTTP para `/mvp.html#acesso`.
