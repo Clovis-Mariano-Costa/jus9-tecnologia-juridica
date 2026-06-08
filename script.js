@@ -868,6 +868,40 @@ window.jus9DemoLogin = function(form){
     return lines.join('\n');
   }
 
+  function asksDoctrineProduction(question){
+    var q = String(question || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    var hasDoctrine = /\b(doutrina|doutrinario|doutrinaria|teoria|conceito juridico|analise doutrinaria|sintese doutrinaria)\b/.test(q);
+    var asksResearch = /\b(pesquise|pesquisar|pesquisa|busque|buscar|procure|procurar|fonte|fontes|link|links|jurisprudencia|precedente|acordao|autor|autores|obra|obras|citacao|pagina)\b/.test(q);
+    return hasDoctrine && !asksResearch;
+  }
+
+  function doctrineProductionAnswer(question){
+    if(!asksDoctrineProduction(question)) return '';
+    var q = String(question || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    var topic = 'o tema proposto';
+    if(q.indexOf('responsabilidade civil') !== -1) topic = 'responsabilidade civil';
+    else if(q.indexOf('prisao preventiva') !== -1 || q.indexOf('preventiva') !== -1) topic = 'prisao preventiva e suas cautelas';
+    else if(q.indexOf('sentenca') !== -1 || q.indexOf('merito') !== -1) topic = 'sentenca de merito e seus efeitos';
+    var lines = ['Sintese doutrinaria responsavel sobre ' + topic + ':', ''];
+    if(topic === 'responsabilidade civil'){
+      lines.push('A responsabilidade civil organiza a ideia de que quem causa dano juridicamente relevante deve reparar a pessoa lesada. A doutrina costuma partir de quatro eixos: conduta, dano, nexo causal e criterio de imputacao.');
+      lines.push('Na responsabilidade subjetiva, a culpa ou o dolo sao relevantes para atribuir o dever de reparar. Na responsabilidade objetiva, o foco se desloca para o risco, a atividade, a protecao da vitima ou uma regra legal que dispensa prova de culpa.');
+      lines.push('A distincao entre responsabilidade contratual e extracontratual ajuda a identificar se o dever violado nasceu de uma relacao previa entre as partes ou de um dever geral de nao causar dano.');
+      lines.push('O cuidado central e nao transformar reparacao em punicao automatica: e preciso examinar dano, causalidade, extensao da reparacao, eventuais excludentes e proporcionalidade.');
+    } else if(topic.indexOf('prisao preventiva') !== -1){
+      lines.push('A prisao preventiva e medida cautelar extrema: nao serve como antecipacao de pena, mas como instrumento excepcional para proteger o processo, a ordem publica/economica ou a aplicacao da lei penal quando requisitos concretos estiverem presentes.');
+      lines.push('Uma leitura doutrinaria prudente separa necessidade, adequacao e proporcionalidade. Se medidas cautelares diversas forem suficientes, a prisao preventiva perde justificativa.');
+      lines.push('Se revogada, nova preventiva exige fato novo, persistencia concreta do risco ou descumprimento relevante; nao deve renascer por automatismo ou mera discordancia com a liberdade.');
+    } else {
+      lines.push('A analise doutrinaria deve separar conceito, fundamento, finalidade, requisitos, limites e consequencias praticas.');
+      lines.push('O melhor caminho e construir a tese em camadas: primeiro a natureza juridica do instituto, depois seus pressupostos, em seguida seus efeitos, limites e pontos controvertidos.');
+      lines.push('Para uso real, a sintese deve ser conferida com lei aplicavel, jurisprudencia pertinente e revisao humana qualificada.');
+    }
+    lines.push('');
+    lines.push('Limite: esta e uma sintese sem citacao conferida. Eu nao estou atribuindo frase, pagina, obra ou posicao a autor especifico.');
+    return lines.join('\n');
+  }
+
   function legalResearchAnswer(question){
     var q = (question || '').toLowerCase();
     if(!asksSources(q)) return '';
@@ -939,6 +973,8 @@ window.jus9DemoLogin = function(form){
     if (identity) return identity;
     var socialResponsibility = socialResponsibilityFallback(cleanQuestion);
     if (socialResponsibility) return socialResponsibility;
+    var doctrineProduction = doctrineProductionAnswer(cleanQuestion);
+    if (doctrineProduction) return doctrineProduction;
     var legalResearch = legalResearchAnswer(cleanQuestion);
     if (legalResearch) return legalResearch;
     if (mode === 'governanca') {
@@ -984,6 +1020,11 @@ window.jus9DemoLogin = function(form){
     var messages = (room && room.messages || []);
     var users = messages.filter(function(m){ return m.role === 'user' && m.content; });
     var assistants = messages.filter(function(m){ return m.role === 'assistant' && m.content; });
+    function cleanExecutiveMemory(text, fallback){
+      var value = String(text || '').replace(/\s+/g, ' ').trim();
+      if(/Para pesquisar doutrina e jurisprudencia com seguranca|voce pediu pesquisa juridica guiada|Leitura do pedido: voce pediu pesquisa juridica guiada|Caminho escolhido: escutar/i.test(value)) return fallback || 'Resposta anterior descartada por conter protocolo antigo contaminado.';
+      return value;
+    }
     var lastUser = users.length ? users[users.length - 1].content : 'Ainda sem pergunta registrada.';
     var lastAssistant = assistants.length ? assistants[assistants.length - 1].content : 'Ainda sem resposta registrada.';
     var topic = (room && room.currentTopic) || lastUser || room && room.title || code;
@@ -992,7 +1033,7 @@ window.jus9DemoLogin = function(form){
     return [
       'Assunto principal: ' + String(topic || '').replace(/\s+/g, ' ').slice(0, 220),
       'Ultima pergunta: ' + String(lastUser || '').replace(/\s+/g, ' ').slice(0, 260),
-      'Ultima resposta: ' + String(lastAssistant || '').replace(/\s+/g, ' ').slice(0, 300),
+      'Ultima resposta: ' + cleanExecutiveMemory(lastAssistant).slice(0, 300),
       'Pendencias: ' + pending,
       'Proximo passo sugerido: transformar o ponto atual em checklist, documento, link confiavel ou tarefa do MVP ' + code + '.',
       'Governanca: ' + governance + '.'
@@ -1123,21 +1164,32 @@ window.jus9DemoLogin = function(form){
   }
 
   async function askCharlieApi(mode, code, focus, question, room){
+    function contaminatedApiMemory(text){
+      return /Para pesquisar doutrina e jurisprudencia com seguranca|voce pediu pesquisa juridica guiada|Leitura do pedido: voce pediu pesquisa juridica guiada|Caminho escolhido: escutar/i.test(String(text || ''));
+    }
+    function cleanApiMemory(text, max){
+      var value = String(text || '');
+      if(contaminatedApiMemory(value)) return '';
+      return value.slice(0, max || 900);
+    }
+    var apiRoom = room ? {
+      title: room.title || '',
+      summary: cleanApiMemory(room.summary, 1200),
+      smartSummary: cleanApiMemory(room.smartSummary, 1200),
+      governanceClass: room.governanceClass || '',
+      currentTopic: room.currentTopic || '',
+      lastUserIntent: asksDoctrineProduction(question) && /pesquisa juridica guiada/i.test(room.lastUserIntent || '') ? '' : (room.lastUserIntent || ''),
+      messages: (room.messages || []).slice(-16).map(function(m){
+        return { role:m.role, content:cleanApiMemory(m.content, 700) };
+      }).filter(function(m){ return m.content; })
+    } : null;
     var response = await fetch('https://charlieecho.jus9tecnologia.com.br/api/ia', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         mode: apiModeFor(mode),
         message: buildApiMessage(mode, code, focus, question),
-        room: room ? {
-          title: room.title || '',
-          summary: room.summary || '',
-          smartSummary: room.smartSummary || '',
-          governanceClass: room.governanceClass || '',
-          currentTopic: room.currentTopic || '',
-          lastUserIntent: room.lastUserIntent || '',
-          messages: (room.messages || []).slice(-16)
-        } : null
+        room: apiRoom
       })
     });
     var data = await response.json().catch(function(){ return null; });
@@ -1315,11 +1367,25 @@ window.jus9DemoLogin = function(form){
   function buildQuestionWithRoom(question, room, settings){
     settings = Object.assign(defaultChatSettings(), settings || {});
     if(settings.memory === false) return '[CONFIGURACOES DO USUARIO]\nMemoria da sala desativada pelo usuario. Nivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '.\n\n[PERGUNTA ATUAL]\n' + question;
-    var recent = (room && room.messages || []).slice(-36).map(function(m){ return (m.role === 'assistant' ? 'Charlie: ' : 'Usuario: ') + String(m.content || '').slice(0, 900); }).join('\n');
+    function contaminatedMemoryText(text){
+      return /Para pesquisar doutrina e jurisprudencia com seguranca|voce pediu pesquisa juridica guiada|Sentire: risco|Leitura do pedido: voce pediu pesquisa juridica guiada|Caminho escolhido: escutar/i.test(String(text || ''));
+    }
+    function cleanMemoryText(text, max){
+      var value = String(text || '');
+      if(contaminatedMemoryText(value)) return '';
+      return value.slice(0, max || 900);
+    }
+    var recent = (room && room.messages || []).slice(-36).map(function(m){
+      var content = cleanMemoryText(m.content, 900);
+      return content ? (m.role === 'assistant' ? 'Charlie: ' : 'Usuario: ') + content : '';
+    }).filter(Boolean).join('\n');
     var decisions = (room && room.decisions || []).slice(0, 10).map(function(i){ return '- ' + i.text; }).join('\n');
     var pending = (room && room.pending || []).slice(0, 10).map(function(i){ return '- ' + i.text; }).join('\n');
+    var cleanSummary = cleanMemoryText(room && room.summary, 4200);
+    var cleanSmartSummary = cleanMemoryText(room && room.smartSummary, 4200);
+    var doctrineNote = asksDoctrineProduction(question) ? '\nNota: se memorias antigas tratarem doutrina como mera pesquisa de fontes, ignore essa classificacao antiga e produza conteudo doutrinario responsavel.\n' : '';
     return (room && (room.summary || room.smartSummary || recent))
-      ? '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '. Use memoria: sim.\n\n[RESUMO EXECUTIVO DA SALA]\n' + (room.smartSummary || '') + '\n\n[MEMORIA GOVERNADA LOCAL]\n' + (room.summary || '') + '\n\n[DECISOES]\n' + (decisions || 'Sem decisoes marcadas.') + '\n\n[PENDENCIAS]\n' + (pending || 'Sem pendencias marcadas.') + '\n\n[HISTORICO RECENTE]\n' + recent + '\n\n[PERGUNTA ATUAL]\n' + question
+      ? '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '. Use memoria: sim.' + doctrineNote + '\n[RESUMO EXECUTIVO DA SALA]\n' + (cleanSmartSummary || 'Resumo anterior contaminado ou ausente.') + '\n\n[MEMORIA GOVERNADA LOCAL]\n' + (cleanSummary || 'Memoria anterior contaminada ou ausente.') + '\n\n[DECISOES]\n' + (decisions || 'Sem decisoes marcadas.') + '\n\n[PENDENCIAS]\n' + (pending || 'Sem pendencias marcadas.') + '\n\n[HISTORICO RECENTE]\n' + (recent || 'Historico anterior contaminado ou ausente.') + '\n\n[PERGUNTA ATUAL]\n' + question
       : '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '.\n\n[PERGUNTA ATUAL]\n' + question;
   }
 
@@ -1766,7 +1832,8 @@ window.jus9DemoLogin = function(form){
           updateRoomIntelligence(code, remembered, focus);
         } catch (error) {
           var fallback = textForMode(mode, code, focus, question);
-          if(settings.memory !== false && room.summary) fallback = 'Vou continuar pela memoria governada desta sala. ' + room.summary + '\n\n' + fallback;
+          var safeSummary = room.summary && !/Para pesquisar doutrina e jurisprudencia com seguranca|voce pediu pesquisa juridica guiada|Leitura do pedido: voce pediu pesquisa juridica guiada/i.test(room.summary) ? room.summary : '';
+          if(settings.memory !== false && safeSummary && !asksDoctrineProduction(question)) fallback = 'Vou continuar pela memoria governada desta sala. ' + safeSummary + '\n\n' + fallback;
           fallback = applyCreativeReasoningFrame(fallback, question, code, focus);
           echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(fallback) + '<br><br><em>API segura indisponivel agora; mantive fallback local sem dados reais.</em>';
           var rememberedFallback = rememberChatExchange(code, question, fallback);
