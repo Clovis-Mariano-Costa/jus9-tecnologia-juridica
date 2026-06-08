@@ -34,3 +34,14 @@ Nao publicar tokens, chaves, cookies, refresh tokens, IDs sensiveis ou URLs de c
 Google recomenda escopos minimos e autorizacao incremental para recursos apenas quando necessarios.
 
 Cloudflare recomenda guardar segredos fora do codigo e usar bindings/ambiente para dados sensiveis.
+
+## Homologacao humana
+
+Em 2026-06-08, o fundador humano confirmou:
+
+1. login Google passou;
+2. consentimento de Agenda passou apos inclusao da conta testadora;
+3. Google Calendar API foi ativada no projeto Google Cloud;
+4. `app-agenda.html` listou evento real da conta conectada.
+
+Pendente apenas o subteste de criacao de evento ficticio controlado.
