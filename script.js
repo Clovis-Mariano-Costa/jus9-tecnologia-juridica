@@ -1261,7 +1261,7 @@ window.jus9DemoLogin = function(form){
   function chatRoomKey(code){ return 'jus9CharlieRooms_' + String(code || 'MVP').replace(/[^A-Z0-9_-]/gi, '_') + '_v2'; }
   function legacyChatRoomKey(code){ return 'jus9CharlieRooms_' + String(code || 'MVP').replace(/[^A-Z0-9_-]/gi, '_') + '_v1'; }
   function chatSettingsKey(code){ return 'jus9CharlieSettings_' + String(code || 'MVP').replace(/[^A-Z0-9_-]/gi, '_') + '_v1'; }
-  function defaultChatSettings(){ return { memory:true, detail:'medio', tone:'direto', caution:'normal', format:'auto', maxMessages:96 }; }
+  function defaultChatSettings(){ return { memory:true, detail:'medio', tone:'direto', caution:'normal', format:'auto', maxMessages:96, autoScroll:true }; }
   function loadChatSettings(code){
     try{
       var parsed = JSON.parse(localStorage.getItem(chatSettingsKey(code)) || 'null');
@@ -1361,6 +1361,7 @@ window.jus9DemoLogin = function(form){
       empty.className = 'ai-message ai-message-echo ai-message-empty';
       empty.innerHTML = '<strong>Charlie Echo:</strong> Sala limpa. Pode começar um novo fio aqui.';
       windowEl.appendChild(empty);
+      keepChatInView(card, empty);
       return;
     }
     messages.forEach(function(msg){
@@ -1373,6 +1374,15 @@ window.jus9DemoLogin = function(form){
     });
     windowEl.scrollTop = windowEl.scrollHeight;
     updateRoomIntelligence(code, room, focus);
+    keepChatInView(card, windowEl.lastElementChild || windowEl);
+  }
+
+  function keepChatInView(card, target){
+    var settings = loadChatSettings(card.getAttribute('data-ai-code') || 'MVP');
+    if(settings.autoScroll === false) return;
+    var windowEl = card.querySelector('[data-ai-chat-window]');
+    if(windowEl) windowEl.scrollTop = windowEl.scrollHeight;
+    try { (target || windowEl || card).scrollIntoView({ behavior:'smooth', block:'nearest' }); } catch(err) {}
   }
 
   function injectChatRooms(card, code, onChange){
@@ -1656,7 +1666,7 @@ window.jus9DemoLogin = function(form){
     var bar = document.createElement('div');
     bar.className = 'chat-utility-actions';
     bar.setAttribute('data-ai-utility-actions', 'true');
-    bar.innerHTML = '<button class="mini primary" type="button" data-ai-memory>Abrir memoria</button><button class="mini" type="button" data-ai-settings>Configuracoes</button><button class="mini" type="button" data-ai-improve>Melhorar resposta</button><button class="mini" type="button" data-ai-sources>Fontes</button><button class="mini" type="button" data-ai-summary>Atualizar resumo</button><button class="mini" type="button" data-ai-package>Gerar PDF</button>';
+    bar.innerHTML = '<button class="mini primary" type="button" data-ai-memory>Abrir memoria</button><button class="mini" type="button" data-ai-settings>Painel</button><button class="mini" type="button" data-ai-improve>Melhorar resposta</button><button class="mini" type="button" data-ai-sources>Fontes</button><button class="mini" type="button" data-ai-summary>Atualizar resumo</button><button class="mini" type="button" data-ai-package>Gerar PDF</button>';
     form.parentNode.insertBefore(bar, form.nextSibling);
     var memoryPanel = document.createElement('div');
     memoryPanel.className = 'charlie-memory-panel';
@@ -1666,11 +1676,11 @@ window.jus9DemoLogin = function(form){
     var settingsPanel = document.createElement('div');
     settingsPanel.className = 'charlie-memory-panel charlie-settings-panel';
     settingsPanel.hidden = true;
-    settingsPanel.innerHTML = '<div class="charlie-memory-head"><div><strong>Configuracoes da Charlie</strong><p>Preferencias locais para esta sala e este MVP.</p></div><button class="mini" type="button" data-settings-close>Fechar</button></div><div class="charlie-settings-grid"><label><span>Usar memoria</span><select data-setting-memory><option value="true">Sim</option><option value="false">Nao</option></select></label><label><span>Detalhe</span><select data-setting-detail><option value="curto">Curto</option><option value="medio">Medio</option><option value="completo">Completo</option></select></label><label><span>Tom</span><select data-setting-tone><option value="direto">Direto</option><option value="didatico">Didatico</option><option value="tecnico">Tecnico</option><option value="social">Social</option></select></label><label><span>Cautela</span><select data-setting-caution><option value="normal">Normal</option><option value="cauteloso">Cauteloso</option><option value="estrito">Estrito</option></select></label><label><span>Formato</span><select data-setting-format><option value="auto">Automatico</option><option value="checklist">Checklist</option><option value="parecer">Parecer</option><option value="resumo">Resumo</option><option value="plano">Plano</option></select></label><label><span>Memoria maxima</span><select data-setting-max><option value="48">48 mensagens</option><option value="96">96 mensagens</option><option value="160">160 mensagens</option></select></label></div><div class="chat-utility-actions"><button class="mini primary" type="button" data-settings-save>Salvar configuracoes</button></div>';
+    settingsPanel.innerHTML = '<div class="charlie-memory-head"><div><strong>Painel de configuracoes</strong><p>Preferencias amplas desta sala: memoria, resposta, seguranca, pacote e tela.</p></div><button class="mini" type="button" data-settings-close>Fechar</button></div><div class="charlie-settings-section"><h3>Memoria</h3><div class="charlie-settings-grid"><label><span>Usar memoria</span><select data-setting-memory><option value="true">Sim</option><option value="false">Nao</option></select></label><label><span>Memoria maxima</span><select data-setting-max><option value="48">48 mensagens</option><option value="96">96 mensagens</option><option value="160">160 mensagens</option></select></label></div></div><div class="charlie-settings-section"><h3>Resposta</h3><div class="charlie-settings-grid"><label><span>Detalhe</span><select data-setting-detail><option value="curto">Curto</option><option value="medio">Medio</option><option value="completo">Completo</option></select></label><label><span>Tom</span><select data-setting-tone><option value="direto">Direto</option><option value="didatico">Didatico</option><option value="tecnico">Tecnico</option><option value="social">Social</option></select></label><label><span>Cautela</span><select data-setting-caution><option value="normal">Normal</option><option value="cauteloso">Cauteloso</option><option value="estrito">Estrito</option></select></label><label><span>Formato</span><select data-setting-format><option value="auto">Automatico</option><option value="checklist">Checklist</option><option value="parecer">Parecer</option><option value="resumo">Resumo</option><option value="plano">Plano</option></select></label></div></div><div class="charlie-settings-section"><h3>Tela</h3><div class="charlie-settings-grid"><label><span>Rolagem automatica</span><select data-setting-autoscroll><option value="true">Sim</option><option value="false">Nao</option></select></label></div></div><div class="chat-utility-actions"><button class="mini primary" type="button" data-settings-save>Salvar configuracoes</button></div>';
     form.parentNode.insertBefore(settingsPanel, memoryPanel.nextSibling);
     function lastEchoText(){ var msgs = card.querySelectorAll('.ai-message-echo'); return msgs.length ? (msgs[msgs.length - 1].textContent || '').replace(/^Charlie Echo:\s*/i, '').trim() : ''; }
     function lastUserText(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); var msg = room && (room.messages || []).filter(function(m){ return m.role === 'user'; }).slice(-1)[0]; return msg ? msg.content : ''; }
-    function appendEcho(text, options){ var windowEl = card.querySelector('[data-ai-chat-window]'); if(!windowEl) return; var echoMsg = document.createElement('div'); echoMsg.className = 'ai-message ai-message-echo'; echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(text); windowEl.appendChild(echoMsg); windowEl.scrollTop = windowEl.scrollHeight; if(!options || options.remember !== false) rememberChatExchange(code, '', text); }
+    function appendEcho(text, options){ var windowEl = card.querySelector('[data-ai-chat-window]'); if(!windowEl) return; var echoMsg = document.createElement('div'); echoMsg.className = 'ai-message ai-message-echo'; echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(text); windowEl.appendChild(echoMsg); keepChatInView(card, echoMsg); if(!options || options.remember !== false) rememberChatExchange(code, '', text); }
     function appendDownloadEcho(files){
       var windowEl = card.querySelector('[data-ai-chat-window]');
       if(!windowEl) return;
@@ -1683,7 +1693,7 @@ window.jus9DemoLogin = function(form){
       }).join(' ');
       echoMsg.innerHTML = '<strong>Charlie Echo:</strong> Preparei o pacote local e deixei os downloads prontos. <span class="download-actions">' + links + '</span>';
       windowEl.appendChild(echoMsg);
-      windowEl.scrollTop = windowEl.scrollHeight;
+      keepChatInView(card, echoMsg);
       rememberChatExchange(code, '', 'Preparei pacote local com links clicaveis de download: ' + (files || []).map(function(file){ return file.filename; }).join(', ') + '.');
     }
     function currentRoom(){
@@ -1708,6 +1718,7 @@ window.jus9DemoLogin = function(form){
       settingsPanel.querySelector('[data-setting-caution]').value = settings.caution || 'normal';
       settingsPanel.querySelector('[data-setting-format]').value = settings.format || 'auto';
       settingsPanel.querySelector('[data-setting-max]').value = String(settings.maxMessages || 96);
+      settingsPanel.querySelector('[data-setting-autoscroll]').value = String(settings.autoScroll !== false);
     }
     bar.querySelector('[data-ai-memory]').addEventListener('click', function(){
       renderMemoryPanel();
@@ -1763,7 +1774,8 @@ window.jus9DemoLogin = function(form){
         tone: settingsPanel.querySelector('[data-setting-tone]').value,
         caution: settingsPanel.querySelector('[data-setting-caution]').value,
         format: settingsPanel.querySelector('[data-setting-format]').value,
-        maxMessages: Number(settingsPanel.querySelector('[data-setting-max]').value || 96)
+        maxMessages: Number(settingsPanel.querySelector('[data-setting-max]').value || 96),
+        autoScroll: settingsPanel.querySelector('[data-setting-autoscroll]').value === 'true'
       };
       saveChatSettings(code, settings);
       appendEcho('Configuracoes salvas para esta sala. Vou respeitar memoria, tom, detalhe, cautela e formato preferido nas proximas respostas.');
@@ -1847,7 +1859,7 @@ window.jus9DemoLogin = function(form){
       windowEl.appendChild(userMsg);
       windowEl.appendChild(echoMsg);
       input.value = '';
-      windowEl.scrollTop = windowEl.scrollHeight;
+      keepChatInView(card, echoMsg);
       if (!localIdentity) {
         try {
           var answer = await askCharlieApi(mode, code, focus, contextualQuestion, room);
@@ -1857,6 +1869,7 @@ window.jus9DemoLogin = function(form){
           }
           answer = applyCreativeReasoningFrame(answer, question, code, focus);
           echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(answer);
+          keepChatInView(card, echoMsg);
           var remembered = rememberChatExchange(code, question, answer);
           updateRoomIntelligence(code, remembered, focus);
         } catch (error) {
@@ -1865,10 +1878,11 @@ window.jus9DemoLogin = function(form){
           if(settings.memory !== false && safeSummary && !asksDoctrineProduction(question)) fallback = 'Vou continuar pela memoria governada desta sala. ' + safeSummary + '\n\n' + fallback;
           fallback = applyCreativeReasoningFrame(fallback, question, code, focus);
           echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(fallback) + '<br><br><em>API segura indisponivel agora; mantive fallback local sem dados reais.</em>';
+          keepChatInView(card, echoMsg);
           var rememberedFallback = rememberChatExchange(code, question, fallback);
           updateRoomIntelligence(code, rememberedFallback, focus);
         }
-        windowEl.scrollTop = windowEl.scrollHeight;
+        keepChatInView(card, echoMsg);
       }
     });
   }
