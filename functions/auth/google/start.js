@@ -2,13 +2,14 @@ import {
   getGoogleCallbackUrl,
   htmlResponse,
   missingGoogleConfig,
+  normalizeAuthReturnTo,
   randomToken,
   serializeCookie,
   sha256Base64url,
   signPayload
 } from "../../_shared/oauth.js";
 
-export async function onRequestGet({ env }) {
+export async function onRequestGet({ request, env }) {
   const missing = missingGoogleConfig(env);
   if (missing.length) {
     return htmlResponse(`<!doctype html>
@@ -23,12 +24,14 @@ export async function onRequestGet({ env }) {
   const verifier = randomToken(48);
   const challenge = await sha256Base64url(verifier);
   const nonce = randomToken();
+  const returnTo = normalizeAuthReturnTo(new URL(request.url).searchParams.get("return_to"));
   const tx = await signPayload(
     {
       kind: "google_oauth_tx",
       state,
       verifier,
       nonce,
+      returnTo,
       issuedAt: Date.now(),
       expiresAt: Date.now() + 10 * 60 * 1000
     },

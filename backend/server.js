@@ -25,6 +25,56 @@ const publicSiteOrigin = process.env.PUBLIC_SITE_ORIGIN || "https://www.jus9tecn
 const googleCallbackUrl =
   process.env.GOOGLE_CALLBACK_URL || `${publicSiteOrigin}/auth/google/callback`;
 
+function normalizeAuthReturnTo(value) {
+  const rawValue = String(value || "").trim();
+  if (!rawValue) return "";
+  if (/[\u0000-\u001f\u007f]/.test(rawValue)) return "";
+  if (rawValue.includes("\\") || rawValue.startsWith("//")) return "";
+  if (rawValue.includes("..")) return "";
+  if (/^[a-z][a-z0-9+.-]*:/i.test(rawValue)) return "";
+
+  let parsed;
+  try {
+    parsed = new URL(rawValue, "https://jus9.invalid");
+  } catch (_) {
+    return "";
+  }
+
+  if (parsed.origin !== "https://jus9.invalid") return "";
+  const path = parsed.pathname || "/";
+  if (path.includes("..")) return "";
+
+  const allowedExactPaths = new Set([
+    "/",
+    "/index.html",
+    "/app.html",
+    "/mvp.html",
+    "/ia-profissional.html",
+    "/app-ia-profissional.html",
+    "/app-agenda.html",
+    "/app-daj.html",
+    "/app-clientes.html",
+    "/app-processos.html",
+    "/app-prazos.html",
+    "/app-cofre.html",
+    "/app-equipe.html",
+    "/app-whatsapp.html",
+    "/app-atendimento-inicial.html",
+    "/app-grupos.html",
+    "/app-gravacoes.html",
+    "/app-retorno.html"
+  ]);
+  const allowedPattern = /^\/(?:app-(?:demo|ia|documentos|perfis|workspace)-[a-z0-9-]+|demo-\d{2}-[a-z0-9-]+)\.html$/;
+  if (!allowedExactPaths.has(path) && !allowedPattern.test(path)) return "";
+
+  return `${path}${parsed.search}${parsed.hash}`;
+}
+
+function getAuthSuccessRedirect(returnTo = "") {
+  if (returnTo) return `${publicSiteOrigin}${returnTo}`;
+  return process.env.AUTH_SUCCESS_REDIRECT || `${publicSiteOrigin}/app.html`;
+}
+
 app.use(helmet());
 app.use(
   cors({
@@ -304,11 +354,13 @@ app.get("/auth/google/start", (req, res) => {
   const verifier = randomToken(48);
   const challenge = sha256Base64url(verifier);
   const nonce = randomToken();
+  const returnTo = normalizeAuthReturnTo(req.query.return_to);
   const tx = signPayload({
     kind: "google_oauth_tx",
     state,
     verifier,
     nonce,
+    returnTo,
     issuedAt: Date.now(),
     expiresAt: Date.now() + 10 * 60 * 1000
   });
@@ -399,7 +451,7 @@ app.get("/auth/google/callback", async (req, res) => {
         sameSite: "Lax"
       })
     ]);
-    return res.redirect(process.env.AUTH_SUCCESS_REDIRECT || `${publicSiteOrigin}/app.html`);
+    return res.redirect(getAuthSuccessRedirect(normalizeAuthReturnTo(tx.returnTo)));
   } catch (error) {
     console.error("auth.google.callback", { message: error.message });
     return res.status(502).json({ ok: false, error: "falha_oauth_google" });

@@ -60,11 +60,28 @@ Nunca colar esses valores em chat, GitHub, HTML, print publico ou documento de v
 1. Abrir `/auth/google/start`.
 2. Confirmar redirecionamento para Google somente depois das variaveis seguras configuradas.
 3. Entrar com conta autorizada.
-4. Confirmar retorno para `/app.html`.
-5. Chamar `/api/auth/me` e confirmar `authenticated=true`.
-6. Chamar `/api/auth/permissions` e confirmar permissao coerente com o perfil.
-7. Testar conta nao autorizada e confirmar erro `403`.
-8. Confirmar que nenhum token ou e-mail real aparece em HTML publico, console publico ou commit.
+4. Confirmar retorno para o modulo de origem quando o login usar `return_to`.
+5. Confirmar fallback para `/app.html` quando `return_to` estiver ausente ou invalido.
+6. Chamar `/api/auth/me` e confirmar `authenticated=true`.
+7. Chamar `/api/auth/permissions` e confirmar permissao coerente com o perfil.
+8. Testar conta nao autorizada e confirmar erro `403`.
+9. Confirmar que nenhum token ou e-mail real aparece em HTML publico, console publico ou commit.
+
+## Teste de retorno modular
+
+Usar destinos internos, por exemplo:
+
+```text
+/auth/google/start?return_to=/app-ia-profissional.html
+/auth/google/start?return_to=/app-demo-advogar.html
+/auth/google/start?return_to=/app-agenda.html
+```
+
+Tambem testar um destino externo ficticio e confirmar que ele nao e usado:
+
+```text
+/auth/google/start?return_to=https%3A%2F%2Fexample.invalid%2F
+```
 
 ## Ativacao gradual de API
 

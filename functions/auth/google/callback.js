@@ -1,9 +1,10 @@
 import {
   clearCookie,
+  getAuthSuccessRedirect,
   getGoogleCallbackUrl,
-  getPublicSiteOrigin,
   jsonResponse,
   missingGoogleConfig,
+  normalizeAuthReturnTo,
   parseAllowedUsers,
   parseCookies,
   serializeCookie,
@@ -80,7 +81,7 @@ export async function onRequestGet({ request, env }) {
     console.info("auth.login", { provider: "google", profile, emailHash });
 
     const headers = new Headers({
-      Location: env.AUTH_SUCCESS_REDIRECT || `${getPublicSiteOrigin(env)}/app.html`,
+      Location: getAuthSuccessRedirect(env, normalizeAuthReturnTo(tx.returnTo)),
       "Cache-Control": "no-store, max-age=0"
     });
     headers.append("Set-Cookie", clearCookie("jus9_oauth_tx"));

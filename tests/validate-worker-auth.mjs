@@ -1,5 +1,5 @@
 import worker from "../worker.js";
-import { signPayload } from "../functions/_shared/oauth.js";
+import { normalizeAuthReturnTo, signPayload, verifyPayload } from "../functions/_shared/oauth.js";
 
 const env = {
   AUTH_COOKIE_SECRET: "segredo-local-ficticio-comprido-para-homologacao",
@@ -53,6 +53,39 @@ console.log("AUTH_OK expired=401");
 response = await request("/auth/google/start");
 assert(response.status === 501, "OAuth sem configuracao deve retornar 501");
 console.log("AUTH_OK oauth-pendente=501");
+
+const configuredEnv = {
+  ...env,
+  PUBLIC_SITE_ORIGIN: "https://jus9.invalid",
+  GOOGLE_CLIENT_ID: "client-id-ficticio",
+  GOOGLE_CLIENT_SECRET: "client-secret-ficticio",
+  AUTH_ALLOWED_EMAILS: "demo.invalid@jus9.invalid:admin_sistema",
+};
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/auth/google/start?return_to=%2Fapp-ia-profissional.html%23chat-ia"),
+  configuredEnv
+);
+assert(response.status === 302, "OAuth configurado deve redirecionar para Google");
+assert(response.headers.get("location")?.startsWith("https://accounts.google.com/"), "OAuth deve ir para Google");
+const txCookie = response.headers.get("set-cookie")?.match(/jus9_oauth_tx=([^;]+)/)?.[1];
+const txPayload = await verifyPayload(decodeURIComponent(txCookie || ""), configuredEnv);
+assert(txPayload?.returnTo === "/app-ia-profissional.html#chat-ia", "return_to valido nao foi preservado");
+console.log("AUTH_OK return_to=modulo");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/auth/google/start?return_to=https%3A%2F%2Fevil.example%2Fcaptura"),
+  configuredEnv
+);
+const unsafeCookie = response.headers.get("set-cookie")?.match(/jus9_oauth_tx=([^;]+)/)?.[1];
+const unsafeTxPayload = await verifyPayload(decodeURIComponent(unsafeCookie || ""), configuredEnv);
+assert(unsafeTxPayload?.returnTo === "", "return_to externo deve ser descartado");
+console.log("AUTH_OK return_to_externo=bloqueado");
+
+assert(normalizeAuthReturnTo("/app-demo-advogar.html?origem=mvp#chat") === "/app-demo-advogar.html?origem=mvp#chat", "rota app-demo deveria ser aceita");
+assert(normalizeAuthReturnTo("//evil.example") === "", "protocolo relativo externo deveria ser bloqueado");
+assert(normalizeAuthReturnTo("/../app.html") === "", "path traversal deveria ser bloqueado");
+console.log("AUTH_OK return_to_allowlist");
 
 response = await request("/auth/logout", { method: "POST" });
 assert(response.status === 204 && response.headers.get("set-cookie")?.includes("Max-Age=0"), "logout nao limpou cookie");

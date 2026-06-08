@@ -1,11 +1,12 @@
 import {
   clearCookie,
+  getAuthSuccessRedirect,
   getGoogleCallbackUrl,
-  getPublicSiteOrigin,
   getSession,
   htmlResponse,
   jsonResponse,
   missingGoogleConfig,
+  normalizeAuthReturnTo,
   parseAllowedUsers,
   parseCookies,
   randomToken,
@@ -22,7 +23,7 @@ export default {
     const assetUrl = new URL(request.url);
 
     if (originalUrl.pathname === "/auth/google/start" || originalUrl.pathname === "/auth/google/start/") {
-      return handleGoogleStart(env);
+      return handleGoogleStart(request, env);
     }
 
     if (originalUrl.pathname === "/auth/google/callback" || originalUrl.pathname === "/auth/google/callback/") {
@@ -87,7 +88,7 @@ export default {
   }
 };
 
-async function handleGoogleStart(env) {
+async function handleGoogleStart(request, env) {
   const missing = missingGoogleConfig(env);
   if (missing.length) {
     return htmlResponse(`<!doctype html>
@@ -102,12 +103,14 @@ async function handleGoogleStart(env) {
   const verifier = randomToken(48);
   const challenge = await sha256Base64url(verifier);
   const nonce = randomToken();
+  const returnTo = normalizeAuthReturnTo(new URL(request.url).searchParams.get("return_to"));
   const tx = await signPayload(
     {
       kind: "google_oauth_tx",
       state,
       verifier,
       nonce,
+      returnTo,
       issuedAt: Date.now(),
       expiresAt: Date.now() + 10 * 60 * 1000
     },
@@ -203,7 +206,7 @@ async function handleGoogleCallback(request, env) {
     console.info("auth.login", { provider: "google", profile, emailHash });
 
     const headers = new Headers({
-      Location: env.AUTH_SUCCESS_REDIRECT || `${getPublicSiteOrigin(env)}/app.html`,
+      Location: getAuthSuccessRedirect(env, normalizeAuthReturnTo(tx.returnTo)),
       "Cache-Control": "no-store, max-age=0"
     });
     headers.append("Set-Cookie", clearCookie("jus9_oauth_tx"));

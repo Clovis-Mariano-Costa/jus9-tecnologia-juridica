@@ -29,6 +29,56 @@ export function getGoogleCallbackUrl(env) {
   return env.GOOGLE_CALLBACK_URL || `${getPublicSiteOrigin(env)}/auth/google/callback`;
 }
 
+export function getAuthSuccessRedirect(env, returnTo = "") {
+  if (returnTo) return `${getPublicSiteOrigin(env)}${returnTo}`;
+  return env.AUTH_SUCCESS_REDIRECT || `${getPublicSiteOrigin(env)}/app.html`;
+}
+
+export function normalizeAuthReturnTo(value) {
+  const rawValue = String(value || "").trim();
+  if (!rawValue) return "";
+  if (/[\u0000-\u001f\u007f]/.test(rawValue)) return "";
+  if (rawValue.includes("\\") || rawValue.startsWith("//")) return "";
+  if (rawValue.includes("..")) return "";
+  if (/^[a-z][a-z0-9+.-]*:/i.test(rawValue)) return "";
+
+  let parsed;
+  try {
+    parsed = new URL(rawValue, "https://jus9.invalid");
+  } catch (_) {
+    return "";
+  }
+
+  if (parsed.origin !== "https://jus9.invalid") return "";
+  const path = parsed.pathname || "/";
+  if (path.includes("..")) return "";
+
+  const allowedExactPaths = new Set([
+    "/",
+    "/index.html",
+    "/app.html",
+    "/mvp.html",
+    "/ia-profissional.html",
+    "/app-ia-profissional.html",
+    "/app-agenda.html",
+    "/app-daj.html",
+    "/app-clientes.html",
+    "/app-processos.html",
+    "/app-prazos.html",
+    "/app-cofre.html",
+    "/app-equipe.html",
+    "/app-whatsapp.html",
+    "/app-atendimento-inicial.html",
+    "/app-grupos.html",
+    "/app-gravacoes.html",
+    "/app-retorno.html"
+  ]);
+  const allowedPattern = /^\/(?:app-(?:demo|ia|documentos|perfis|workspace)-[a-z0-9-]+|demo-\d{2}-[a-z0-9-]+)\.html$/;
+  if (!allowedExactPaths.has(path) && !allowedPattern.test(path)) return "";
+
+  return `${path}${parsed.search}${parsed.hash}`;
+}
+
 export function missingGoogleConfig(env) {
   return [
     ["GOOGLE_CLIENT_ID", env.GOOGLE_CLIENT_ID],

@@ -545,19 +545,33 @@ window.jus9DemoLogin = function(form){
 })();
 
 (function(){
+  function buildGoogleLoginHref(target){
+    var fallback = target || (location.pathname + location.search + location.hash);
+    if (!fallback || fallback === '/') fallback = '/mvp.html#acesso';
+    return '/auth/google/start?return_to=' + encodeURIComponent(fallback);
+  }
+
   var googleLogin = document.querySelector('[data-google-login]');
-  if (!googleLogin) return;
-  googleLogin.addEventListener('click', function(event){
-    var msg = document.querySelector('[data-login-message]');
-    var isStaticPreview = location.protocol === 'file:' || location.hostname === '' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-    if (!isStaticPreview) return;
-    event.preventDefault();
-    if (msg) {
-      msg.textContent = 'Google OAuth preparado, mas sem Google Cloud ativo nesta fase. Use o acesso demo.';
-      msg.hidden = false;
-    } else {
-      alert('Google OAuth preparado, mas sem Google Cloud ativo nesta fase. Use o acesso demo.');
-    }
+  if (googleLogin) {
+    googleLogin.setAttribute('href', buildGoogleLoginHref('/mvp.html#acesso'));
+    googleLogin.addEventListener('click', function(event){
+      var msg = document.querySelector('[data-login-message]');
+      var isStaticPreview = location.protocol === 'file:' || location.hostname === '' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+      if (!isStaticPreview) return;
+      event.preventDefault();
+      if (msg) {
+        msg.textContent = 'Google OAuth preparado para o ambiente publicado. Use o acesso demo nesta previa.';
+        msg.hidden = false;
+      } else {
+        alert('Google OAuth preparado para o ambiente publicado. Use o acesso demo nesta previa.');
+      }
+    });
+  }
+
+  document.querySelectorAll('[data-auth-login-link]').forEach(function(link){
+    var panel = link.closest('[data-auth-panel]');
+    var explicitTarget = panel && panel.getAttribute('data-auth-return-to');
+    link.setAttribute('href', buildGoogleLoginHref(explicitTarget));
   });
 })();
 

@@ -42,6 +42,28 @@ AUTH_ENFORCE_API=false
 
 `AUTH_COOKIE_SECRET` deve ser longo, aleatorio e exclusivo do ambiente.
 
+## Retorno modular seguro
+
+`GET /auth/google/start` aceita o parametro opcional `return_to`, sempre relativo ao proprio site:
+
+```text
+/auth/google/start?return_to=/app-ia-profissional.html
+/auth/google/start?return_to=/app-demo-advogar.html
+/auth/google/start?return_to=/app-agenda.html
+```
+
+O backend valida o destino antes de gravar a transacao OAuth assinada. Sao recusados:
+
+- URL externa;
+- protocolo `http:`, `https:`, `javascript:` ou equivalente;
+- caminho iniciado por `//`;
+- barra invertida;
+- caracteres de controle;
+- tentativa de `..`;
+- pagina fora dos modulos autorizados.
+
+Se `return_to` estiver ausente ou invalido, o callback usa `AUTH_SUCCESS_REDIRECT` ou `/app.html`.
+
 ## Perfis aceitos
 
 - `admin_sistema`
@@ -74,12 +96,14 @@ AUTH_ENFORCE_API=false
 7. Backend exige `email_verified=true`.
 8. Backend confere e-mail na allowlist.
 9. Backend cria sessao assinada sem guardar token Google.
-10. Usuario e redirecionado para o app.
+10. Usuario e redirecionado para o modulo de origem validado ou para o fallback seguro.
 
 ## Criterios de aceite local
 
 - Sem variaveis reais, `/auth/google/start` deve responder `501` com aviso de configuracao pendente.
 - Com variaveis reais, `/auth/google/start` deve redirecionar para `accounts.google.com`.
+- Com `return_to` interno valido, a transacao OAuth deve preservar o modulo de origem.
+- Com `return_to` externo ou perigoso, a transacao OAuth deve descartar o destino.
 - `/api/auth/me` sem sessao deve retornar `401`.
 - `/api/auth/permissions` sem sessao deve retornar `401`.
 - `/auth/logout` deve limpar a sessao.
