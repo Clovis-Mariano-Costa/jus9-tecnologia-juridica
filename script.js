@@ -874,8 +874,11 @@ window.jus9DemoLogin = function(form){
     var wantsDoctrine = /\b(doutrina|artigo cientifico|artigo científico|academico|acadêmico|livro|periodico|periódico|tese|dissertacao|dissertação)\b/.test(q);
     var wantsJuris = /\b(jurisprudencia|jurisprudência|precedente|acordao|acórdão|repetitivo|repercussao|repercussão|tese|tribunal|tjsc|stf|stj|tst)\b/.test(q);
     var wantsLink = /\b(link|fonte|fontes|oficial|confiavel|confiáveis|confiaveis)\b/.test(q);
+    var researchVerb = /\b(pesquise|pesquisar|pesquisa|busque|buscar|procure|procurar|indique|liste|traga|localize|ache|encontre)\b/.test(q);
+    var productionVerb = /\b(explique|fale|conceitue|elabore|redija|desenvolva|resuma|sintetize|monte|prepare|produza|crie|escreva|analise)\b/.test(q);
     if(!wantsDoctrine && !wantsJuris && !wantsLink) return '';
-    if(/\b(pesquise|pesquisar|pesquisa|busque|buscar|procure|procurar|indique)\b/.test(q) && (wantsDoctrine || wantsJuris)){
+    if(wantsDoctrine && !wantsJuris && !wantsLink && !researchVerb && productionVerb) return '';
+    if(researchVerb && (wantsDoctrine || wantsJuris)){
       return buildOperationalResearchAnswer(question, wantsDoctrine, wantsJuris);
     }
     var selected = trustedLegalSources.filter(function(source){
@@ -892,6 +895,7 @@ window.jus9DemoLogin = function(form){
       '2. Para jurisprudencia, priorizo bases oficiais dos tribunais e confiro numero do processo, relator, orgao julgador, data e inteiro teor.',
       '3. Para doutrina, priorizo bases academicas/institucionais e confiro autor, titulacao, periodico/editora, ano e citacoes.',
       '4. Nunca trato ementa isolada, blog ou resumo comercial como prova suficiente sem confirmar na fonte primaria.',
+      '5. Quando o pedido for produzir sintese doutrinaria, posso desenvolver conceitos, correntes, argumentos e estrutura de texto; so nao devo inventar autor, pagina, obra ou citacao literal sem fonte conferida.',
       '',
       'Fontes recomendadas:'
     ];
@@ -1110,6 +1114,7 @@ window.jus9DemoLogin = function(form){
       'Aplique criatividade governada sem fingir consciencia. Mostre criterio quando for util, mas nao revele pensamento interno oculto, nao diga que possui consciencia e nao invente certeza.',
       'Se houver pedido de link externo, ofereca URL HTTPS completa de fonte oficial, institucional ou academica confiavel quando possivel. Classifique a confianca do link por dominio, autoria, data, fonte primaria e risco. Nao use lista fixa como limite: avalie links novos com criterio.',
       'Se o pedido envolver doutrina ou jurisprudencia, separe doutrina de jurisprudencia, priorize tribunais oficiais, Planalto, LexML, CAPES, SciELO e bases academicas, explique por que a fonte e confiavel e avise que inteiro teor e revisao humana sao obrigatorios para uso real.',
+      'Quando o pedido for produzir doutrina, sintese doutrinaria, texto academico, parecer introdutorio ou relatorio juridico, desenvolva o conteudo com liberdade responsavel. Nao trave apenas oferecendo links. Use conceitos, correntes, argumentos, estrutura, limites e proximo passo. Nunca invente autor, obra, pagina, julgado ou citacao literal; se faltar fonte, diga que e sintese sem citacao conferida.',
       'Se houver arquivo gerado localmente, ofereca tambem link clicavel de download. Se houver continuidade, use a memoria curta da sala.',
       'Nao solicite dados reais, processos reais, WhatsApp, documentos sigilosos, tokens, senhas ou segredos.',
       'Aviso de MVP deve aparecer apenas quando necessario pelo risco do pedido, nao em toda resposta.',
@@ -1331,6 +1336,10 @@ window.jus9DemoLogin = function(form){
     a.remove();
     if(!keepUrl) setTimeout(function(){ URL.revokeObjectURL(url); }, 500);
     return { url:url, filename:filename };
+  }
+
+  function prepareBlobDownload(filename, blob){
+    return { url:URL.createObjectURL(blob), filename:filename };
   }
 
   function pdfHex(text){
@@ -1568,16 +1577,20 @@ window.jus9DemoLogin = function(form){
     function lastEchoText(){ var msgs = card.querySelectorAll('.ai-message-echo'); return msgs.length ? (msgs[msgs.length - 1].textContent || '').replace(/^Charlie Echo:\s*/i, '').trim() : ''; }
     function lastUserText(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); var msg = room && (room.messages || []).filter(function(m){ return m.role === 'user'; }).slice(-1)[0]; return msg ? msg.content : ''; }
     function appendEcho(text){ var windowEl = card.querySelector('[data-ai-chat-window]'); if(!windowEl) return; var echoMsg = document.createElement('div'); echoMsg.className = 'ai-message ai-message-echo'; echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(text); windowEl.appendChild(echoMsg); windowEl.scrollTop = windowEl.scrollHeight; rememberChatExchange(code, '', text); }
-    function appendDownloadEcho(filename, url){
+    function appendDownloadEcho(files){
       var windowEl = card.querySelector('[data-ai-chat-window]');
       if(!windowEl) return;
       var echoMsg = document.createElement('div');
       echoMsg.className = 'ai-message ai-message-echo';
-      var safeName = escapeHtml(filename);
-      echoMsg.innerHTML = '<strong>Charlie Echo:</strong> Preparei o pacote local em PDF. <a class="download-link" href="' + url + '" download="' + safeName + '">Baixar PDF</a>';
+      var links = (files || []).map(function(file){
+        var safeName = escapeHtml(file.filename || 'download');
+        var safeLabel = escapeHtml(file.label || file.filename || 'Baixar arquivo');
+        return '<a class="download-link" href="' + file.url + '" download="' + safeName + '">' + safeLabel + '</a>';
+      }).join(' ');
+      echoMsg.innerHTML = '<strong>Charlie Echo:</strong> Preparei o pacote local e deixei os downloads prontos. <span class="download-actions">' + links + '</span>';
       windowEl.appendChild(echoMsg);
       windowEl.scrollTop = windowEl.scrollHeight;
-      rememberChatExchange(code, '', 'Preparei o pacote local em PDF e ofereci um link clicavel de download: ' + filename + '.');
+      rememberChatExchange(code, '', 'Preparei pacote local com links clicaveis de download: ' + (files || []).map(function(file){ return file.filename; }).join(', ') + '.');
     }
     function currentRoom(){
       var data = loadChatRooms(code);
@@ -1687,8 +1700,14 @@ window.jus9DemoLogin = function(form){
       lines.push('', 'Historico recente', '');
       (room.messages || []).slice(-16).forEach(function(m){ lines.push((m.role === 'assistant' ? 'Charlie Echo' : 'Usuario') + ': ' + m.content); lines.push(''); });
       var filename = slug('pacote-' + code + '-' + (room.title || 'sala')) + '.pdf';
-      var file = downloadBlob(filename, buildPdfBlob(title, lines), true);
-      appendDownloadEcho(file.filename, file.url);
+      var textFilename = slug('roteiro-' + code + '-' + (room.title || 'sala')) + '.txt';
+      var textBlob = new Blob([title + '\n\n' + lines.join('\n')], { type:'text/plain;charset=utf-8' });
+      var pdfFile = prepareBlobDownload(filename, buildPdfBlob(title, lines));
+      var textFile = prepareBlobDownload(textFilename, textBlob);
+      appendDownloadEcho([
+        { filename:pdfFile.filename, url:pdfFile.url, label:'Baixar PDF' },
+        { filename:textFile.filename, url:textFile.url, label:'Baixar roteiro em texto' }
+      ]);
     });
   }
 
