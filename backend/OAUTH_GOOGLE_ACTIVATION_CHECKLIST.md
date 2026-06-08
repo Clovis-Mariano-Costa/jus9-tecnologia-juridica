@@ -5,10 +5,21 @@ CLASSIFICACAO: INTERNO / OPERACIONAL / LOGIN
 ## Antes de ativar
 
 - Confirmar que o MVP online ja serve o commit correto.
-- Confirmar que `/mvp` mostra `Login MVP v0.3 - Google preparado`.
+- Confirmar que `/mvp` mostra o botao `Entrar com Google`.
 - Confirmar que `/login/` e `/auth/google/start/` nao retornam 404.
 - Confirmar qual ambiente HTTPS hospedara o backend.
 - Confirmar que o backend roda Node.js 18 ou superior.
+- Confirmar que, sem variaveis reais, `/auth/google/start` exibe aviso seguro de configuracao pendente.
+
+## Estado seguro esperado antes das variaveis
+
+Enquanto faltarem `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `AUTH_COOKIE_SECRET` e `AUTH_ALLOWED_EMAILS`, a tela:
+
+`https://jus9tecnologia.com.br/auth/google/start`
+
+deve informar que o Login Google esta preparado e que as variaveis de ambiente precisam ser configuradas.
+
+Isso e comportamento correto. Nao e falha do botao.
 
 ## Google Cloud Console
 
@@ -42,10 +53,12 @@ AUTH_ENFORCE_API=false
 
 `AUTH_ALLOWED_EMAILS` deve comecar pequeno. Primeiro liberar apenas contas de teste controladas.
 
+Nunca colar esses valores em chat, GitHub, HTML, print publico ou documento de versionamento.
+
 ## Teste controlado
 
 1. Abrir `/auth/google/start`.
-2. Confirmar redirecionamento para Google.
+2. Confirmar redirecionamento para Google somente depois das variaveis seguras configuradas.
 3. Entrar com conta autorizada.
 4. Confirmar retorno para `/app.html`.
 5. Chamar `/api/auth/me` e confirmar `authenticated=true`.
