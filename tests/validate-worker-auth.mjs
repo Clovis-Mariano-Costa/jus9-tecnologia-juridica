@@ -83,9 +83,30 @@ assert(unsafeTxPayload?.returnTo === "", "return_to externo deve ser descartado"
 console.log("AUTH_OK return_to_externo=bloqueado");
 
 assert(normalizeAuthReturnTo("/app-demo-advogar.html?origem=mvp#chat") === "/app-demo-advogar.html?origem=mvp#chat", "rota app-demo deveria ser aceita");
+assert(
+  normalizeAuthReturnTo("https://equipe.jus9tecnologia.com.br/") === "https://equipe.jus9tecnologia.com.br/",
+  "subdominio Equipe deveria ser aceito"
+);
+assert(
+  normalizeAuthReturnTo("https://universidadedofuturo.jus9tecnologia.com.br/skill.md") === "https://universidadedofuturo.jus9tecnologia.com.br/skill.md",
+  "skill.md da Universidade deveria ser aceito"
+);
 assert(normalizeAuthReturnTo("//evil.example") === "", "protocolo relativo externo deveria ser bloqueado");
+assert(normalizeAuthReturnTo("https://equipe.evil.example/") === "", "dominio externo deveria ser bloqueado");
+assert(normalizeAuthReturnTo("https://naoautorizado.jus9tecnologia.com.br/") === "", "subdominio nao autorizado deveria ser bloqueado");
 assert(normalizeAuthReturnTo("/../app.html") === "", "path traversal deveria ser bloqueado");
 console.log("AUTH_OK return_to_allowlist");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/auth/me", {
+    method: "OPTIONS",
+    headers: { origin: "https://equipe.jus9tecnologia.com.br" }
+  }),
+  configuredEnv
+);
+assert(response.status === 204, "preflight CORS deveria retornar 204");
+assert(response.headers.get("access-control-allow-origin") === "https://equipe.jus9tecnologia.com.br", "origem CORS autorizada ausente");
+console.log("AUTH_OK cors_subdominio");
 
 response = await request("/auth/logout", { method: "POST" });
 assert(response.status === 204 && response.headers.get("set-cookie")?.includes("Max-Age=0"), "logout nao limpou cookie");

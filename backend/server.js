@@ -31,16 +31,24 @@ function normalizeAuthReturnTo(value) {
   if (/[\u0000-\u001f\u007f]/.test(rawValue)) return "";
   if (rawValue.includes("\\") || rawValue.startsWith("//")) return "";
   if (rawValue.includes("..")) return "";
-  if (/^[a-z][a-z0-9+.-]*:/i.test(rawValue)) return "";
+  const allowedOrigins = new Set([
+    "https://jus9tecnologia.com.br",
+    "https://www.jus9tecnologia.com.br",
+    "https://equipe.jus9tecnologia.com.br",
+    "https://laboratorio.jus9tecnologia.com.br",
+    "https://universidadedofuturo.jus9tecnologia.com.br"
+  ]);
+  const isAbsolute = /^[a-z][a-z0-9+.-]*:/i.test(rawValue);
 
   let parsed;
   try {
-    parsed = new URL(rawValue, "https://jus9.invalid");
+    parsed = new URL(rawValue, isAbsolute ? undefined : "https://jus9.invalid");
   } catch (_) {
     return "";
   }
 
-  if (parsed.origin !== "https://jus9.invalid") return "";
+  if (isAbsolute && !allowedOrigins.has(parsed.origin)) return "";
+  if (!isAbsolute && parsed.origin !== "https://jus9.invalid") return "";
   const path = parsed.pathname || "/";
   if (path.includes("..")) return "";
 
@@ -62,15 +70,19 @@ function normalizeAuthReturnTo(value) {
     "/app-atendimento-inicial.html",
     "/app-grupos.html",
     "/app-gravacoes.html",
-    "/app-retorno.html"
+    "/app-retorno.html",
+    "/equipe.html",
+    "/skill.md"
   ]);
   const allowedPattern = /^\/(?:app-(?:demo|ia|documentos|perfis|workspace)-[a-z0-9-]+|demo-\d{2}-[a-z0-9-]+)\.html$/;
   if (!allowedExactPaths.has(path) && !allowedPattern.test(path)) return "";
 
-  return `${path}${parsed.search}${parsed.hash}`;
+  const target = `${path}${parsed.search}${parsed.hash}`;
+  return isAbsolute ? `${parsed.origin}${target}` : target;
 }
 
 function getAuthSuccessRedirect(returnTo = "") {
+  if (/^https:\/\/[a-z0-9.-]+\.jus9tecnologia\.com\.br(?:\/|$)/i.test(returnTo)) return returnTo;
   if (returnTo) return `${publicSiteOrigin}${returnTo}`;
   return process.env.AUTH_SUCCESS_REDIRECT || `${publicSiteOrigin}/app.html`;
 }

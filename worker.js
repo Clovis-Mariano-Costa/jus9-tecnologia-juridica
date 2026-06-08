@@ -22,6 +22,13 @@ export default {
     const originalUrl = new URL(request.url);
     const assetUrl = new URL(request.url);
 
+    if (request.method === "OPTIONS" && isAuthCorsPath(originalUrl.pathname)) {
+      return new Response(null, {
+        status: 204,
+        headers: getAuthCorsHeaders(request)
+      });
+    }
+
     if (originalUrl.pathname === "/auth/google/start" || originalUrl.pathname === "/auth/google/start/") {
       return handleGoogleStart(request, env);
     }
@@ -223,42 +230,69 @@ async function handleGoogleCallback(request, env) {
 }
 
 async function handleAuthMe(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
   if (request.method !== "GET") {
-    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { Allow: "GET" });
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET" });
   }
   const session = await getSession(request, env);
-  if (!session) return jsonResponse({ authenticated: false }, 401);
+  if (!session) return jsonResponse({ authenticated: false }, 401, corsHeaders);
   return jsonResponse({
     authenticated: true,
     provider: session.provider,
     profile: session.profile,
     emailHash: session.emailHash,
     expiresAt: new Date(session.expiresAt).toISOString()
-  });
+  }, 200, corsHeaders);
 }
 
 async function handleAuthPermissions(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
   if (request.method !== "GET") {
-    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { Allow: "GET" });
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET" });
   }
   const session = await getSession(request, env);
-  if (!session) return jsonResponse({ authenticated: false }, 401);
+  if (!session) return jsonResponse({ authenticated: false }, 401, corsHeaders);
   return jsonResponse({
     authenticated: true,
     profile: session.profile,
     permissions: getPermissions(session.profile)
-  });
+  }, 200, corsHeaders);
 }
 
 function handleLogout(request) {
+  const corsHeaders = getAuthCorsHeaders(request);
   if (request.method !== "POST") {
-    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { Allow: "POST" });
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "POST" });
   }
   return new Response(null, {
     status: 204,
     headers: {
       "Cache-Control": "no-store, max-age=0",
-      "Set-Cookie": clearCookie("jus9_session")
+      "Set-Cookie": clearCookie("jus9_session"),
+      ...corsHeaders
     }
   });
+}
+
+function isAuthCorsPath(pathname) {
+  return pathname === "/api/auth/me" || pathname === "/api/auth/permissions" || pathname === "/auth/logout";
+}
+
+function getAuthCorsHeaders(request) {
+  const origin = request.headers.get("origin") || "";
+  const allowedOrigins = new Set([
+    "https://jus9tecnologia.com.br",
+    "https://www.jus9tecnologia.com.br",
+    "https://equipe.jus9tecnologia.com.br",
+    "https://laboratorio.jus9tecnologia.com.br",
+    "https://universidadedofuturo.jus9tecnologia.com.br"
+  ]);
+  if (!allowedOrigins.has(origin)) return {};
+  return {
+    "Access-Control-Allow-Origin": origin,
+    "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Vary": "Origin"
+  };
 }
