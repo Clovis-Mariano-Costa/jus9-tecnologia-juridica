@@ -730,13 +730,20 @@ window.jus9DemoLogin = function(form){
   }
 
   function renderEchoAnswer(text){
-    return escapeHtml(text)
+    var html = escapeHtml(text)
+      .replace(/\*\*([^*\n][^*]*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/^\s*#{2,4}\s+(.+)$/gm, '<h4 class="ai-answer-heading">$1</h4>')
+      .replace(/^\s*(?:[-*]|\d+\.)\s+(.+)$/gm, '<span class="ai-answer-bullet">$1</span>')
       .replace(/https:\/\/[^\s<>"']+/g, function(raw){
         var url = raw, suffix = '';
         while(/[),.;:!?]$/.test(url)){ suffix = url.slice(-1) + suffix; url = url.slice(0, -1); }
         return '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + url + '</a>' + suffix;
       })
       .replace(/\n/g, '<br>');
+    return html
+      .replace(/(?:<br>){3,}/g, '<br><br>')
+      .replace(/<br><span class="ai-answer-bullet">/g, '<span class="ai-answer-bullet">')
+      .replace(/<\/span><br>/g, '</span>');
   }
 
   function identityAnswer(question){
@@ -931,15 +938,15 @@ window.jus9DemoLogin = function(form){
     var legalResearch = legalResearchAnswer(cleanQuestion);
     if (legalResearch) return legalResearch;
     if (mode === 'governanca') {
-      return 'Modo governanca: antes de agir, eu verifico identidade, contexto, classificacao publica/interna/sigilosa, riscos, versionamento, links, dados reais, segredos e necessidade de revisao humana. Para ' + code + ', o foco atual e: ' + focus + '. Pergunta recebida: "' + cleanQuestion + '".';
+      return 'Vou tratar como governanca do ' + code + '. Primeiro confiro classificacao, risco, versionamento e necessidade de revisao humana. Foco atual: ' + focus + '.\n\nResposta direta: organize o pedido em registro, criterio de decisao, responsavel e proximo passo verificavel.\n\nLimite: nao use segredo, cofre, token ou dado real em ambiente publico.';
     }
     if (mode === 'social') {
-      return 'Em linguagem simples: vamos organizar isso com calma. Para ' + code + ', eu olharia primeiro o objetivo, separaria o que e ficticio, evitaria dados reais e chamaria uma pessoa habilitada quando houver risco, prazo ou decisao importante. Pergunta recebida: "' + cleanQuestion + '".';
+      return 'Vamos por partes. Primeiro separe o objetivo, depois o que e ficticio, depois o que precisa de ajuda humana.\n\nPara ' + code + ', eu faria uma lista curta de passos e deixaria qualquer decisao importante para revisao humana.';
     }
     if (mode === 'especialista') {
-      return 'Como especialista do ' + code + ', eu focaria em: ' + focus + '. Proximo passo demonstrativo: transformar sua pergunta em tarefa, documento, prazo ou item do dossie, sempre com revisao humana. Pergunta recebida: "' + cleanQuestion + '".';
+      return 'No ' + code + ', o foco e: ' + focus + '.\n\nResposta direta: transforme o pedido em tarefa, documento, prazo ou item de dossie.\n\nProximo passo: criar um checklist curto e marcar o que precisa de revisao humana.';
     }
-    return 'Como jurista, eu partiria da doutrina, do metodo, da prudencia e da revisao humana. Antes de qualquer conclusao, separaria fatos ficticios, norma aplicavel, fontes, riscos, competencias e limites da IA. Pergunta recebida: "' + cleanQuestion + '".';
+    return 'Como jurista, eu separaria fatos, norma aplicavel, fonte confiavel, risco e limite da IA.\n\nResposta direta: trate o pedido como analise preliminar demonstrativa, nunca como decisao final.\n\nProximo passo: converter a pergunta em checklist de revisao humana.';
   }
 
   function asksPreviousQuestion(question){
@@ -1097,12 +1104,15 @@ window.jus9DemoLogin = function(form){
       'Modo solicitado no frontend: ' + mode + '.',
       'Responda como Charlie Echo da Costa, I.A generativa multimodal jurista com governanca humana.',
       mvpPersonalityInstruction(code),
-      'Protocolo 4.1: identifique a intencao do usuario e responda o conteudo pedido. Nao responda com lista de modos, salvo se o usuario perguntar expressamente sobre modos/personas. Comece com resposta direta, depois contexto breve, riscos e proximos passos quando cabivel.',
-      'Protocolo Centelha Criativa 5.4: ofereca sensacao de raciocinio vivo sem fingir consciencia. Use, quando util, uma estrutura breve com Leitura do pedido, Caminho escolhido, Resposta e Proximo passo criativo. Mostre metodo, criterio e imaginacao pratica; nao revele pensamento interno oculto, nao diga que possui consciencia e nao invente certeza.',
+      'Padrao externo de resposta: nao escreva Escuta, Sentire, Leitura do pedido, Caminho escolhido, Resposta ou Proximo passo criativo como cabecalhos fixos. Esses sao criterios internos.',
+      'Comece direto pelo conteudo util. Use cabecalhos simples apenas quando ajudarem: Resumo, Orientacao, Checklist, Fontes, Limites, Proximo passo.',
+      'Evite Markdown pesado. Nao use blocos com muitos asteriscos. Se listar, use poucos itens curtos. Se o pedido for simples, responda em poucos paragrafos.',
+      'Aplique criatividade governada sem fingir consciencia. Mostre criterio quando for util, mas nao revele pensamento interno oculto, nao diga que possui consciencia e nao invente certeza.',
       'Se houver pedido de link externo, ofereca URL HTTPS completa de fonte oficial, institucional ou academica confiavel quando possivel. Classifique a confianca do link por dominio, autoria, data, fonte primaria e risco. Nao use lista fixa como limite: avalie links novos com criterio.',
       'Se o pedido envolver doutrina ou jurisprudencia, separe doutrina de jurisprudencia, priorize tribunais oficiais, Planalto, LexML, CAPES, SciELO e bases academicas, explique por que a fonte e confiavel e avise que inteiro teor e revisao humana sao obrigatorios para uso real.',
       'Se houver arquivo gerado localmente, ofereca tambem link clicavel de download. Se houver continuidade, use a memoria curta da sala.',
       'Nao solicite dados reais, processos reais, WhatsApp, documentos sigilosos, tokens, senhas ou segredos.',
+      'Aviso de MVP deve aparecer apenas quando necessario pelo risco do pedido, nao em toda resposta.',
       'Pergunta do usuario: ' + question
     ].join('\n');
   }
@@ -1158,24 +1168,35 @@ window.jus9DemoLogin = function(form){
     return 'converter a resposta em um pequeno plano de acao do MVP ' + code + '.';
   }
 
+  function answerNeedsRiskNote(question, answer){
+    var text = [question || '', answer || ''].join(' ').toLowerCase();
+    return /\b(dado real|dados reais|processo real|cpf|cnpj|senha|token|segredo|sigiloso|sigilosa|cofre|prazo|peticao|petição|contrato|laudo|audiencia|audiência|decisao|decisão)\b/.test(text);
+  }
+
+  function cleanPublicAnswer(answer){
+    var text = String(answer || '').trim();
+    text = text
+      .replace(/^\s*(Escuta|Sentire|Leitura do pedido|Caminho escolhido|Resposta)\s*:\s*/gim, '')
+      .replace(/^\s*[-–—]*\s*$/gm, '')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+    text = text.replace(/Proximo passo criativo:/gi, 'Proximo passo:');
+    return text;
+  }
+
   function applyCreativeReasoningFrame(answer, question, code, focus){
     var text = String(answer || '').trim();
-    if(!text || /Leitura do pedido:/i.test(text) || /Caminho escolhido:/i.test(text)) return text;
+    if(!text) return text;
+    text = cleanPublicAnswer(text);
     var cleanQuestion = plainQuestionText(question);
     if(asksAboutCharlieModes(cleanQuestion) || asksPreviousQuestion(cleanQuestion) || asksWhereStopped(cleanQuestion)) return text;
     var intent = inferCreativeIntent(cleanQuestion);
-    var reading = cleanQuestion
-      ? 'Voce pediu ' + intent + ' em ' + code + ', dentro de ' + focus + '.'
-      : 'Vou tratar o pedido como ' + intent + ' no ambiente ' + code + '.';
-    return [
-      'Leitura do pedido: ' + reading,
-      'Caminho escolhido: responder com utilidade pratica, criatividade governada, fonte ou limite quando houver risco.',
-      '',
-      'Resposta:',
-      text,
-      '',
-      'Proximo passo criativo: ' + creativeNextStep(intent, code)
-    ].join('\n');
+    if(/Proximo passo:/i.test(text)) return text;
+    var next = creativeNextStep(intent, code).replace(/\.$/, '.');
+    var risk = answerNeedsRiskNote(cleanQuestion, text)
+      ? '\n\nLimite: use somente material ficticio neste MVP e leve qualquer dado real para revisao humana.'
+      : '';
+    return text + '\n\nProximo passo: ' + next + risk;
   }
 
   function chatRoomKey(code){ return 'jus9CharlieRooms_' + String(code || 'MVP').replace(/[^A-Z0-9_-]/gi, '_') + '_v1'; }

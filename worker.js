@@ -85,6 +85,10 @@ export default {
       assetUrl.pathname = "/ia-profissional.html";
     }
 
+    if (assetUrl.pathname === "/chat-charlie" || assetUrl.pathname === "/chat-charlie/") {
+      assetUrl.pathname = "/app-chat-charlie-echo.html";
+    }
+
     const assetRequest = new Request(assetUrl.toString(), request);
     const response = await env.ASSETS.fetch(assetRequest);
     const headers = new Headers(response.headers);

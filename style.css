@@ -1844,6 +1844,27 @@ button,input,select,textarea{max-width:100%}
   max-width:860px;
   line-height:1.55;
 }
+.charlie-mvp-shell .ai-message .ai-answer-heading{
+  margin:12px 0 6px;
+  font-size:1rem;
+  color:#0b1728;
+}
+.charlie-mvp-shell .ai-message .ai-answer-bullet{
+  display:block;
+  position:relative;
+  margin:7px 0 7px 18px;
+  color:#24344a;
+}
+.charlie-mvp-shell .ai-message .ai-answer-bullet::before{
+  content:"";
+  position:absolute;
+  left:-15px;
+  top:.72em;
+  width:6px;
+  height:6px;
+  border-radius:999px;
+  background:#c58b2f;
+}
 .charlie-mvp-shell .ai-message-user{
   justify-self:end;
   max-width:760px;
@@ -1873,6 +1894,28 @@ button,input,select,textarea{max-width:100%}
 .charlie-mvp-shell .links-semanticos-jus9-v1-5{
   max-width:none!important;
   margin:0!important;
+}
+.charlie-chat-only-page .demo-main{
+  max-width:1120px;
+}
+.charlie-chat-only-page .auth-status-panel{
+  padding:14px 16px;
+}
+.charlie-chat-only-page .auth-status-panel h2{
+  font-size:1.15rem;
+}
+.charlie-chat-only-page .auth-status-panel .fine-note{
+  display:none;
+}
+.charlie-chat-only-page .ai-chat-card{
+  min-height:calc(100vh - 220px);
+}
+.charlie-chat-only-page .ai-chat-window{
+  min-height:54vh;
+  max-height:68vh;
+}
+.charlie-chat-only-page .chat-room-panel{
+  grid-template-columns:minmax(0,1fr) auto;
 }
 @media(max-width:1180px){
   .charlie-mvp-shell .demo-layout{

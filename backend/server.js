@@ -60,6 +60,7 @@ function normalizeAuthReturnTo(value) {
     "/ia-profissional.html",
     "/app-ia-profissional.html",
     "/app-agenda.html",
+    "/app-chat-charlie-echo.html",
     "/app-daj.html",
     "/app-clientes.html",
     "/app-processos.html",

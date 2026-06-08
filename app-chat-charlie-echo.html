@@ -1,0 +1,80 @@
+<!--
+Jus 9 Tecnologia Juridica
+Repositorio: jus9-tecnologia-juridica
+Software livre com autoria preservada.
+-->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Chat Charlie Echo | Jus 9</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
+  <meta name="theme-color" content="#07111f">
+  <link rel="manifest" href="manifest.webmanifest">
+</head>
+<body class="demo-shell charlie-workbench-page charlie-mvp-shell charlie-chat-only-page">
+<div class="jus9-autoria-topo" role="note" aria-label="Autoria e licenca da producao do site">Jus 9 Tecnologia Juridica - software livre, autoria preservada.</div>
+<div class="demo-layout">
+  <aside class="demo-sidebar">
+    <img src="assets/jus9-logo.svg" alt="Jus 9">
+    <nav>
+      <a class="active" href="app-chat-charlie-echo.html">Chat Charlie</a>
+      <a href="app-ia-profissional.html">IA Profissional</a>
+      <a href="app-daj.html">DAJ</a>
+      <a href="app-agenda.html">Agenda</a>
+      <a href="app-documentos.html">Documentos</a>
+      <a href="app-workspace.html">Workspace</a>
+      <a href="mvp.html#demos-jus9">MVPs</a>
+    </nav>
+  </aside>
+  <main class="demo-main">
+    <section class="demo-card auth-status-panel" data-auth-panel data-auth-login="/auth/google/start" data-auth-logout="/auth/logout">
+      <div class="eyebrow">Acesso governado</div>
+      <h2>Conta Google e perfil operacional</h2>
+      <p data-auth-status>Verificando sessao segura...</p>
+      <div class="auth-permission-list" data-auth-permissions hidden></div>
+      <div class="link-actions">
+        <a data-auth-login-link href="/auth/google/start?return_to=/app-chat-charlie-echo.html">Entrar com Google</a>
+        <button type="button" data-auth-logout-button hidden>Sair</button>
+        <a href="mvp.html#acesso">Acesso demo</a>
+      </div>
+    </section>
+
+    <section id="chat-ia" class="demo-card ai-chat-card" data-ai-chat data-ai-title="Chat Charlie Echo" data-ai-code="DAJ" data-ai-focus="chat profissional governado, DAJ, documentos, agenda, pesquisa juridica e continuidade operacional">
+      <div class="charlie-mvp-chat-head">
+        <div>
+          <span class="eyebrow">Charlie Echo da Costa</span>
+          <h2>Chat profissional governado</h2>
+          <p>Converse com linguagem natural. A resposta externa fica limpa; governanca, cautela e revisao humana continuam por dentro.</p>
+        </div>
+        <div class="charlie-mvp-head-actions">
+          <a href="app-ia-profissional.html">Painel IA</a>
+          <a href="app-agenda.html">Agenda</a>
+          <a href="https://charlieecho.jus9tecnologia.com.br/">Lar Charlie</a>
+        </div>
+      </div>
+      <div class="ai-mode-row" role="radiogroup" aria-label="Modo de resposta">
+        <label><input type="radio" name="mode-CHAT" value="jurista" checked> Jurista</label>
+        <label><input type="radio" name="mode-CHAT" value="especialista"> Especialista</label>
+        <label><input type="radio" name="mode-CHAT" value="social"> Publico/social</label>
+      </div>
+      <div class="ai-chat-window" data-ai-chat-window>
+        <div class="ai-message ai-message-echo"><strong>Charlie Echo:</strong> Estou pronta. Traga uma pergunta, um rascunho ficticio, uma tarefa de agenda ou um ponto de governanca.</div>
+      </div>
+      <form class="ai-chat-form" data-ai-chat-form>
+        <textarea data-ai-chat-input rows="4" placeholder="Ex.: transforme este pedido ficticio em checklist de revisao humana."></textarea>
+        <button class="mvp-button" type="submit">Enviar</button>
+      </form>
+      <div class="fine-note">MVP: nao informe senha, token, cofre, processo real, WhatsApp bruto, documento sigiloso ou dado pessoal real.</div>
+    </section>
+  </main>
+</div>
+<script src="script.js?v=20260608-chat-modelo-v1"></script>
+<footer class="jus9-autoria-rodape" role="contentinfo" aria-label="Direitos autorais e origem da producao do site">Producao do site: © Jus 9 Tecnologia Juridica. Software livre com autoria, origem e direitos autorais preservados.</footer>
+<script src="assets/js/pwa-install.js"></script>
+</body>
+</html>
