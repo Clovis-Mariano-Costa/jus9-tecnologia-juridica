@@ -8,5 +8,11 @@
     "binding": "ASSETS",
     "html_handling": "none",
     "not_found_handling": "none"
-  }
+  },
+  "kv_namespaces": [
+    {
+      "binding": "JUS9_CALENDAR_TOKENS",
+      "id": "8da90de2fb9a47e8a1f9e5c322eff746"
+    }
+  ]
 }

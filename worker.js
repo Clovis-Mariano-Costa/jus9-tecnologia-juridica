@@ -1,4 +1,12 @@
 import {
+  GOOGLE_CALENDAR_EVENTS_SCOPE,
+  createCalendarEvent,
+  getCalendarStatus,
+  listCalendarEvents,
+  missingCalendarConfig,
+  putCalendarGrant
+} from "./functions/_shared/calendar.js";
+import {
   clearCookie,
   getAuthSuccessRedirect,
   getGoogleCallbackUrl,
@@ -33,6 +41,10 @@ export default {
       return handleGoogleStart(request, env);
     }
 
+    if (originalUrl.pathname === "/auth/google/calendar/start" || originalUrl.pathname === "/auth/google/calendar/start/") {
+      return handleGoogleCalendarStart(request, env);
+    }
+
     if (originalUrl.pathname === "/auth/google/callback" || originalUrl.pathname === "/auth/google/callback/") {
       return handleGoogleCallback(request, env);
     }
@@ -43,6 +55,14 @@ export default {
 
     if (originalUrl.pathname === "/api/auth/permissions") {
       return handleAuthPermissions(request, env);
+    }
+
+    if (originalUrl.pathname === "/api/calendar/status") {
+      return handleCalendarStatus(request, env);
+    }
+
+    if (originalUrl.pathname === "/api/calendar/events") {
+      return handleCalendarEvents(request, env);
     }
 
     if (originalUrl.pathname === "/auth/logout") {
@@ -145,6 +165,62 @@ async function handleGoogleStart(request, env) {
   });
 }
 
+async function handleGoogleCalendarStart(request, env) {
+  const missing = [...missingGoogleConfig(env), ...missingCalendarConfig(env)];
+  if (missing.length) {
+    return jsonResponse({ ok: false, error: "calendar_configuracao_pendente", missing }, 501);
+  }
+
+  const session = await getSession(request, env);
+  if (!session) return jsonResponse({ ok: false, error: "sessao_obrigatoria" }, 401);
+  if (!hasPermission(session, "calendar:write")) {
+    return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "calendar:write" }, 403);
+  }
+
+  const state = randomToken();
+  const verifier = randomToken(48);
+  const challenge = await sha256Base64url(verifier);
+  const nonce = randomToken();
+  const returnTo = normalizeAuthReturnTo(new URL(request.url).searchParams.get("return_to")) || "/app-agenda.html";
+  const tx = await signPayload(
+    {
+      kind: "google_calendar_oauth_tx",
+      state,
+      verifier,
+      nonce,
+      returnTo,
+      sessionGoogleSubHash: session.googleSubHash,
+      sessionEmailHash: session.emailHash,
+      sessionProfile: session.profile,
+      issuedAt: Date.now(),
+      expiresAt: Date.now() + 10 * 60 * 1000
+    },
+    env
+  );
+  const params = new URLSearchParams({
+    client_id: env.GOOGLE_CLIENT_ID,
+    redirect_uri: getGoogleCallbackUrl(env),
+    response_type: "code",
+    scope: `openid email profile ${GOOGLE_CALENDAR_EVENTS_SCOPE}`,
+    state,
+    nonce,
+    code_challenge: challenge,
+    code_challenge_method: "S256",
+    access_type: "offline",
+    include_granted_scopes: "true",
+    prompt: "consent"
+  });
+
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`,
+      "Cache-Control": "no-store, max-age=0",
+      "Set-Cookie": serializeCookie("jus9_calendar_oauth_tx", tx, { maxAge: 600 })
+    }
+  });
+}
+
 async function handleGoogleCallback(request, env) {
   const missing = missingGoogleConfig(env);
   if (missing.length) {
@@ -152,7 +228,13 @@ async function handleGoogleCallback(request, env) {
   }
 
   const url = new URL(request.url);
-  const tx = await verifyPayload(parseCookies(request).jus9_oauth_tx, env);
+  const cookies = parseCookies(request);
+  const calendarTx = await verifyPayload(cookies.jus9_calendar_oauth_tx, env);
+  if (calendarTx?.kind === "google_calendar_oauth_tx" && calendarTx.state === url.searchParams.get("state")) {
+    return handleGoogleCalendarCallback(request, env, url, calendarTx);
+  }
+
+  const tx = await verifyPayload(cookies.jus9_oauth_tx, env);
   if (!tx || tx.kind !== "google_oauth_tx" || tx.state !== url.searchParams.get("state")) {
     return jsonResponse({ ok: false, error: "oauth_state_invalido" }, 400);
   }
@@ -229,6 +311,78 @@ async function handleGoogleCallback(request, env) {
   }
 }
 
+async function handleGoogleCalendarCallback(request, env, url, tx) {
+  const missing = [...missingGoogleConfig(env), ...missingCalendarConfig(env)];
+  if (missing.length) {
+    return jsonResponse({ ok: false, error: "calendar_configuracao_pendente", missing }, 501);
+  }
+  if (url.searchParams.get("error")) {
+    return jsonResponse({ ok: false, error: "google_calendar_recusado" }, 400);
+  }
+  const code = url.searchParams.get("code");
+  if (!code) {
+    return jsonResponse({ ok: false, error: "codigo_oauth_ausente" }, 400);
+  }
+
+  try {
+    const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        code,
+        client_id: env.GOOGLE_CLIENT_ID,
+        client_secret: env.GOOGLE_CLIENT_SECRET,
+        redirect_uri: getGoogleCallbackUrl(env),
+        grant_type: "authorization_code",
+        code_verifier: tx.verifier
+      })
+    });
+    if (!tokenResponse.ok) {
+      return jsonResponse({ ok: false, error: "falha_token_google_calendar" }, 502);
+    }
+
+    const token = await tokenResponse.json();
+    const userInfoResponse = await fetch("https://openidconnect.googleapis.com/v1/userinfo", {
+      headers: { Authorization: `Bearer ${token.access_token}` }
+    });
+    if (!userInfoResponse.ok) {
+      return jsonResponse({ ok: false, error: "falha_perfil_google" }, 502);
+    }
+
+    const userInfo = await userInfoResponse.json();
+    const email = String(userInfo.email || "").toLowerCase();
+    const allowedUsers = parseAllowedUsers(env);
+    const profile = allowedUsers.get(email);
+    const googleSubHash = await sha256Base64url(String(userInfo.sub || ""));
+    const emailHash = await sha256Base64url(email);
+    if (!email || userInfo.email_verified !== true || !profile || googleSubHash !== tx.sessionGoogleSubHash || emailHash !== tx.sessionEmailHash) {
+      return jsonResponse({ ok: false, error: "agenda_conta_nao_confere" }, 403);
+    }
+
+    await putCalendarGrant(
+      env,
+      {
+        provider: "google",
+        profile: tx.sessionProfile,
+        emailHash,
+        googleSubHash
+      },
+      token,
+      userInfo
+    );
+
+    const headers = new Headers({
+      Location: getAuthSuccessRedirect(env, normalizeAuthReturnTo(tx.returnTo)),
+      "Cache-Control": "no-store, max-age=0"
+    });
+    headers.append("Set-Cookie", clearCookie("jus9_calendar_oauth_tx"));
+    return new Response(null, { status: 302, headers });
+  } catch (error) {
+    console.error("auth.google.calendar.callback", { message: error.message });
+    return jsonResponse({ ok: false, error: "falha_oauth_google_calendar" }, 502);
+  }
+}
+
 async function handleAuthMe(request, env) {
   const corsHeaders = getAuthCorsHeaders(request);
   if (request.method !== "GET") {
@@ -259,6 +413,47 @@ async function handleAuthPermissions(request, env) {
   }, 200, corsHeaders);
 }
 
+async function handleCalendarStatus(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  if (request.method !== "GET") {
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET" });
+  }
+  const session = await getSession(request, env);
+  if (!session) return jsonResponse({ authenticated: false }, 401, corsHeaders);
+  if (!hasPermission(session, "calendar:read")) {
+    return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "calendar:read" }, 403, corsHeaders);
+  }
+  return jsonResponse({
+    authenticated: true,
+    profile: session.profile,
+    calendar: await getCalendarStatus(env, session)
+  }, 200, corsHeaders);
+}
+
+async function handleCalendarEvents(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  const session = await getSession(request, env);
+  if (!session) return jsonResponse({ authenticated: false }, 401, corsHeaders);
+
+  if (request.method === "GET") {
+    if (!hasPermission(session, "calendar:read")) {
+      return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "calendar:read" }, 403, corsHeaders);
+    }
+    const result = await listCalendarEvents(env, session);
+    return jsonResponse(result.payload, result.status, corsHeaders);
+  }
+
+  if (request.method === "POST") {
+    if (!hasPermission(session, "calendar:write")) {
+      return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "calendar:write" }, 403, corsHeaders);
+    }
+    const result = await createCalendarEvent(env, session, await request.json().catch(() => null));
+    return jsonResponse(result.payload, result.status, corsHeaders);
+  }
+
+  return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET, POST" });
+}
+
 function handleLogout(request) {
   const corsHeaders = getAuthCorsHeaders(request);
   if (request.method !== "POST") {
@@ -275,7 +470,11 @@ function handleLogout(request) {
 }
 
 function isAuthCorsPath(pathname) {
-  return pathname === "/api/auth/me" || pathname === "/api/auth/permissions" || pathname === "/auth/logout";
+  return pathname === "/api/auth/me" ||
+    pathname === "/api/auth/permissions" ||
+    pathname === "/api/calendar/status" ||
+    pathname === "/api/calendar/events" ||
+    pathname === "/auth/logout";
 }
 
 function getAuthCorsHeaders(request) {
@@ -295,4 +494,8 @@ function getAuthCorsHeaders(request) {
     "Access-Control-Allow-Headers": "Content-Type",
     "Vary": "Origin"
   };
+}
+
+function hasPermission(session, permission) {
+  return getPermissions(session?.profile).includes(permission);
 }

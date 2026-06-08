@@ -5,6 +5,15 @@ const env = {
   AUTH_COOKIE_SECRET: "segredo-local-ficticio-comprido-para-homologacao",
   ASSETS: { fetch: async () => new Response("asset", { status: 200 }) },
 };
+const memoryKv = () => {
+  const store = new Map();
+  return {
+    get: async (key) => store.get(key) || null,
+    put: async (key, value) => {
+      store.set(key, value);
+    }
+  };
+};
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -107,6 +116,47 @@ response = await worker.fetch(
 assert(response.status === 204, "preflight CORS deveria retornar 204");
 assert(response.headers.get("access-control-allow-origin") === "https://equipe.jus9tecnologia.com.br", "origem CORS autorizada ausente");
 console.log("AUTH_OK cors_subdominio");
+
+response = await request("/auth/google/calendar/start");
+assert(response.status === 501, "Agenda sem KV deve retornar configuracao pendente");
+console.log("AUTH_OK calendar-kv-pendente=501");
+
+const calendarEnv = {
+  ...configuredEnv,
+  JUS9_CALENDAR_TOKENS: memoryKv()
+};
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/auth/google/calendar/start?return_to=%2Fapp-agenda.html"),
+  calendarEnv
+);
+assert(response.status === 401, "Agenda sem sessao deve exigir login");
+console.log("AUTH_OK calendar-login-obrigatorio=401");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/auth/google/calendar/start?return_to=%2Fapp-agenda.html", {
+    headers: { cookie: await cookieFor("admin_sistema") }
+  }),
+  calendarEnv
+);
+assert(response.status === 302, "Agenda com sessao deve redirecionar para Google");
+assert(response.headers.get("location")?.includes("calendar.events"), "OAuth de Agenda deve pedir escopo de eventos");
+const calendarCookie = response.headers.get("set-cookie")?.match(/jus9_calendar_oauth_tx=([^;]+)/)?.[1];
+const calendarTxPayload = await verifyPayload(decodeURIComponent(calendarCookie || ""), calendarEnv);
+assert(calendarTxPayload?.kind === "google_calendar_oauth_tx", "transacao de Agenda nao foi criada");
+assert(calendarTxPayload?.returnTo === "/app-agenda.html", "return_to da Agenda nao foi preservado");
+console.log("AUTH_OK calendar-start=302");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/calendar/status", {
+    method: "OPTIONS",
+    headers: { origin: "https://universidadedofuturo.jus9tecnologia.com.br" }
+  }),
+  calendarEnv
+);
+assert(response.status === 204, "preflight CORS da Agenda deveria retornar 204");
+assert(response.headers.get("access-control-allow-origin") === "https://universidadedofuturo.jus9tecnologia.com.br", "CORS da Agenda nao liberou subdominio autorizado");
+console.log("AUTH_OK calendar-cors=204");
 
 response = await request("/auth/logout", { method: "POST" });
 assert(response.status === 204 && response.headers.get("set-cookie")?.includes("Max-Age=0"), "logout nao limpou cookie");

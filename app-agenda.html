@@ -50,7 +50,7 @@ DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridic
         <div class="eyebrow">Agenda Jus 9</div>
         <h1 style="font-size:42px;color:#0b1728;margin-top:8px">Agenda híbrida para o evento.</h1>
         <p style="color:#51627a;margin:8px 0 0">A Jus 9 mantém agenda própria para prazos, DAJ, processo, cliente, equipe e auditoria. Google Calendar entra como lembrete e convite sem dados sensíveis.</p>
-        <div class="warning-note" style="margin-top:14px"><strong>Google Agenda visivel, ainda nao conectado:</strong> o botao abre apenas um rascunho manual. Nenhum OAuth, token ou calendario real esta conectado nesta fase.</div>
+        <div class="warning-note" style="margin-top:14px"><strong>Google Agenda em homologacao:</strong> o modo local segue ativo. A conexao real usa login Google, permissao especifica de Agenda e backend governado.</div>
       </div>
       <span class="badge secret">Demo sem dados reais</span>
     </section>
@@ -59,9 +59,21 @@ DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridic
       <h2>Modo atual da Agenda</h2>
       <div class="timeline-list">
         <div class="timeline-entry"><strong>Funciona agora</strong><p>Salvar no navegador, listar compromissos demonstrativos, baixar ICS e abrir link manual do Google Calendar.</p></div>
-        <div class="timeline-entry"><strong>Sem Google Cloud ativo</strong><p>Nenhum OAuth, token, agenda real ou dado sensivel e enviado ao Google nesta fase.</p></div>
-        <div class="timeline-entry"><strong>Proximo contrato</strong><p>O backend validara eventos em ambiente seguro antes de qualquer integracao real de calendario.</p></div>
+          <div class="timeline-entry"><strong>Google Cloud governado</strong><p>OAuth de Agenda separado do login basico, com consentimento especifico e token guardado no backend.</p></div>
+          <div class="timeline-entry"><strong>Contrato seguro</strong><p>A agenda propria continua sendo fonte de verdade. Google Calendar funciona como espelho operacional e lembrete.</p></div>
       </div>
+    </section>
+
+    <section class="daj-card" id="googleCalendarPanel">
+      <h2>Google Agenda real</h2>
+      <div class="timeline-list">
+        <div class="timeline-entry"><strong>Status</strong><p id="portalCalendarStatus">Verificando sessao e permissao de Agenda...</p></div>
+      </div>
+      <div class="link-actions">
+        <button class="mvp-button" type="button" id="portalCalendarConnectButton">Conectar Google Agenda</button>
+        <button class="mvp-button" type="button" id="portalCalendarReloadButton">Listar proximos eventos</button>
+      </div>
+      <div class="timeline-list" id="portalCalendarEvents" style="margin-top:1rem"></div>
     </section>
 
     <section class="agenda-grid">
@@ -79,9 +91,10 @@ DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridic
           <div class="link-actions full">
             <button class="mvp-button" type="submit">Salvar no navegador</button>
             <button class="mvp-button" type="button" id="portalGoogleButton">Abrir Google Agenda (modo contrato)</button>
+            <button class="mvp-button" type="button" id="portalCalendarCreateButton">Salvar na Google Agenda</button>
             <button class="mvp-button" type="button" id="portalIcsButton">Baixar ICS</button>
           </div>
-          <div class="warning-note full" id="portalAgendaFeedback">Modo demonstrativo: nada e enviado a Google Cloud, backend real ou agenda externa automaticamente.</div>
+          <div class="warning-note full" id="portalAgendaFeedback">Modo demonstrativo: salve primeiro com dados ficticios. A Google Agenda real exige conexao e revisao humana.</div>
         </form>
       </article>
       <article class="daj-card">
@@ -169,6 +182,51 @@ function portalDownloadIcs(event) {
   a.click();
   URL.revokeObjectURL(url);
 }
+async function portalCalendarJson(url, options = {}) {
+  const response = await fetch(url, {
+    credentials: "include",
+    headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+    ...options
+  });
+  let data = {};
+  try { data = await response.json(); } catch {}
+  return { response, data };
+}
+async function portalCalendarStatus() {
+  const status = document.getElementById("portalCalendarStatus");
+  const eventsBox = document.getElementById("portalCalendarEvents");
+  try {
+    const { response, data } = await portalCalendarJson("/api/calendar/status");
+    if (response.status === 401) {
+      status.textContent = "Entre com Google antes de conectar a Agenda.";
+      return false;
+    }
+    if (!response.ok) {
+      status.textContent = "Agenda real indisponivel para este perfil ou ambiente.";
+      return false;
+    }
+    if (!data.calendar?.connected) {
+      status.textContent = "Sessao ativa, mas Google Agenda ainda nao conectada.";
+      eventsBox.innerHTML = "";
+      return false;
+    }
+    status.textContent = "Google Agenda conectada com permissao governada.";
+    return true;
+  } catch (_) {
+    status.textContent = "Nao foi possivel verificar a Agenda agora.";
+    return false;
+  }
+}
+async function portalCalendarLoadEvents() {
+  const eventsBox = document.getElementById("portalCalendarEvents");
+  eventsBox.innerHTML = '<div class="timeline-entry"><strong>Carregando</strong><p>Consultando Google Agenda...</p></div>';
+  const { response, data } = await portalCalendarJson("/api/calendar/events");
+  if (!response.ok) {
+    eventsBox.innerHTML = '<div class="timeline-entry"><strong>Nao conectado</strong><p>Conecte a Google Agenda antes de listar eventos reais.</p></div>';
+    return;
+  }
+  eventsBox.innerHTML = data.events?.length ? data.events.map((event) => `<div class="timeline-entry"><strong>${event.summary}</strong><p>${event.start || "sem data"}${event.htmlLink ? ` - <a href="${event.htmlLink}" target="_blank" rel="noopener">abrir</a>` : ""}</p></div>`).join("") : '<div class="timeline-entry"><strong>Nenhum evento futuro</strong><p>A conta conectada nao retornou eventos proximos.</p></div>';
+}
 document.addEventListener("DOMContentLoaded", () => {
   const now = new Date();
   now.setDate(now.getDate() + 1);
@@ -192,6 +250,23 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("portalAgendaFeedback").textContent = "Arquivo ICS gerado localmente. Revise antes de importar em qualquer agenda externa.";
     portalDownloadIcs(portalEvent());
   });
+  document.getElementById("portalCalendarConnectButton").addEventListener("click", () => {
+    window.location.href = `/auth/google/calendar/start?return_to=${encodeURIComponent("/app-agenda.html")}`;
+  });
+  document.getElementById("portalCalendarReloadButton").addEventListener("click", portalCalendarLoadEvents);
+  document.getElementById("portalCalendarCreateButton").addEventListener("click", async () => {
+    const item = portalEvent();
+    document.getElementById("portalAgendaFeedback").textContent = "Enviando compromisso para Google Agenda governada...";
+    const { response, data } = await portalCalendarJson("/api/calendar/events", {
+      method: "POST",
+      body: JSON.stringify(item)
+    });
+    document.getElementById("portalAgendaFeedback").textContent = response.ok
+      ? `Evento salvo na Google Agenda: ${data.summary || item.title}`
+      : "Nao foi possivel salvar na Google Agenda. Conecte a conta e revise permissao.";
+    if (response.ok) portalCalendarLoadEvents();
+  });
+  portalCalendarStatus();
 });
 </script>
 <footer class="jus9-autoria-rodape" role="contentinfo" aria-label="Direitos autorais e origem da produção do site" style="font-size: 0.85rem; line-height: 1.5; text-align: center; padding: 1rem 0.75rem; margin-top: 2rem; background: rgba(15, 23, 42, 0.96); color: #f8fafc;">Produção do site: © Jus 9 Tecnologia Jurídica. Software livre com autoria, origem e direitos autorais preservados.</footer>

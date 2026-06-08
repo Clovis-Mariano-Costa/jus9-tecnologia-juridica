@@ -1,0 +1,36 @@
+# Versionamento - Agenda Google OAuth real governado
+
+Data: 2026-06-08
+
+Autor operacional: Charlie Juris da Costa / Codex
+
+## Escopo
+
+Preparacao da conexao real com Google Agenda no mini backend da Jus 9.
+
+## Alteracoes
+
+1. Criado KV `JUS9_CALENDAR_TOKENS` para armazenamento server-side de concessao Google Calendar.
+2. Adicionado fluxo `/auth/google/calendar/start` usando o mesmo callback OAuth ja homologado.
+3. Mantido login basico com escopo minimo `openid email profile`.
+4. Agenda passa a pedir escopo especifico apenas quando o usuario solicita a conexao.
+5. Criados endpoints:
+   - `GET /api/calendar/status`
+   - `GET /api/calendar/events`
+   - `POST /api/calendar/events`
+6. Tokens de Agenda sao armazenados criptografados no KV, sem publicacao em GitHub.
+7. Atualizada `app-agenda.html` com painel de conexao real, preservando modo local/ICS.
+
+## Governanca
+
+Agenda propria da Jus 9 continua sendo fonte de verdade.
+
+Google Agenda e espelho operacional, lembrete e convite, com consentimento e revisao humana.
+
+Nao publicar tokens, chaves, cookies, refresh tokens, IDs sensiveis ou URLs de callback com estado.
+
+## Fontes tecnicas
+
+Google recomenda escopos minimos e autorizacao incremental para recursos apenas quando necessarios.
+
+Cloudflare recomenda guardar segredos fora do codigo e usar bindings/ambiente para dados sensiveis.
