@@ -43,5 +43,7 @@ Em 2026-06-08, o fundador humano confirmou:
 2. consentimento de Agenda passou apos inclusao da conta testadora;
 3. Google Calendar API foi ativada no projeto Google Cloud;
 4. `app-agenda.html` listou evento real da conta conectada.
+5. criacao de evento ficticio controlado passou;
+6. evento `Teste ficticio Agenda Jus 9` apareceu na listagem da Agenda.
 
-Pendente apenas o subteste de criacao de evento ficticio controlado.
+Estado final: Pacote 4 homologado em leitura e escrita controlada.
