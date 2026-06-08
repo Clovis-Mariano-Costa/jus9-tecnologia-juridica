@@ -1199,19 +1199,104 @@ window.jus9DemoLogin = function(form){
     return text + '\n\nProximo passo: ' + next + risk;
   }
 
-  function chatRoomKey(code){ return 'jus9CharlieRooms_' + String(code || 'MVP').replace(/[^A-Z0-9_-]/gi, '_') + '_v1'; }
-  function createChatRoom(code, title){ var now = new Date().toISOString(); return { id:String(code || 'MVP') + '-' + Date.now(), title:title || 'Sala ' + code, status:'active', createdAt:now, updatedAt:now, summary:'', currentTopic:'', lastUserIntent:'', messages:[] }; }
-  function loadChatRooms(code){ try{ var parsed = JSON.parse(sessionStorage.getItem(chatRoomKey(code)) || 'null'); if(parsed && parsed.activeId && Array.isArray(parsed.rooms) && parsed.rooms.length){ parsed.rooms.forEach(function(r){ if(!r.status) r.status='active'; }); return parsed; } }catch(err){} var first = createChatRoom(code, 'Sala ' + code + ' 1'); return { activeId:first.id, rooms:[first] }; }
-  function saveChatRooms(code, data){ try{ sessionStorage.setItem(chatRoomKey(code), JSON.stringify(data)); }catch(err){} }
+  function chatRoomKey(code){ return 'jus9CharlieRooms_' + String(code || 'MVP').replace(/[^A-Z0-9_-]/gi, '_') + '_v2'; }
+  function legacyChatRoomKey(code){ return 'jus9CharlieRooms_' + String(code || 'MVP').replace(/[^A-Z0-9_-]/gi, '_') + '_v1'; }
+  function chatSettingsKey(code){ return 'jus9CharlieSettings_' + String(code || 'MVP').replace(/[^A-Z0-9_-]/gi, '_') + '_v1'; }
+  function defaultChatSettings(){ return { memory:true, detail:'medio', tone:'direto', caution:'normal', format:'auto', maxMessages:96 }; }
+  function loadChatSettings(code){
+    try{
+      var parsed = JSON.parse(localStorage.getItem(chatSettingsKey(code)) || 'null');
+      return Object.assign(defaultChatSettings(), parsed || {});
+    }catch(err){ return defaultChatSettings(); }
+  }
+  function saveChatSettings(code, settings){
+    try{ localStorage.setItem(chatSettingsKey(code), JSON.stringify(Object.assign(defaultChatSettings(), settings || {}))); }catch(err){}
+  }
+  function createChatRoom(code, title){ var now = new Date().toISOString(); return { id:String(code || 'MVP') + '-' + Date.now(), title:title || 'Sala ' + code, status:'active', createdAt:now, updatedAt:now, summary:'', currentTopic:'', lastUserIntent:'', decisions:[], pending:[], messages:[] }; }
+  function normalizeChatData(code, parsed){
+    if(parsed && parsed.activeId && Array.isArray(parsed.rooms) && parsed.rooms.length){
+      parsed.rooms.forEach(function(r){
+        if(!r.status) r.status='active';
+        if(!Array.isArray(r.messages)) r.messages = [];
+        if(!Array.isArray(r.decisions)) r.decisions = [];
+        if(!Array.isArray(r.pending)) r.pending = [];
+      });
+      return parsed;
+    }
+    var first = createChatRoom(code, 'Sala ' + code + ' 1');
+    return { activeId:first.id, rooms:[first] };
+  }
+  function loadChatRooms(code){
+    var key = chatRoomKey(code), legacy = legacyChatRoomKey(code);
+    try{
+      var parsed = JSON.parse(localStorage.getItem(key) || 'null');
+      if(parsed) return normalizeChatData(code, parsed);
+    }catch(err){}
+    try{
+      var oldLocal = JSON.parse(localStorage.getItem(legacy) || 'null');
+      if(oldLocal){ var migratedLocal = normalizeChatData(code, oldLocal); saveChatRooms(code, migratedLocal); return migratedLocal; }
+    }catch(err){}
+    try{
+      var oldSession = JSON.parse(sessionStorage.getItem(legacy) || 'null');
+      if(oldSession){ var migratedSession = normalizeChatData(code, oldSession); saveChatRooms(code, migratedSession); return migratedSession; }
+    }catch(err){}
+    return normalizeChatData(code, null);
+  }
+  function saveChatRooms(code, data){
+    try{ localStorage.setItem(chatRoomKey(code), JSON.stringify(data)); }
+    catch(err){
+      try{
+        data.rooms.forEach(function(room){ room.messages = (room.messages || []).slice(-40); });
+        localStorage.setItem(chatRoomKey(code), JSON.stringify(data));
+      }catch(err2){}
+    }
+  }
   function activeChatRoom(code){ var data = loadChatRooms(code); var room = data.rooms.find(function(r){ return r.id === data.activeId && r.status !== 'deleted'; }) || data.rooms.find(function(r){ return r.status !== 'deleted' && r.status !== 'archived'; }) || data.rooms.find(function(r){ return r.status !== 'deleted'; }); if(!room){ room = createChatRoom(code, 'Sala ' + code + ' 1'); data.rooms.unshift(room); } data.activeId = room.id; saveChatRooms(code, data); return room; }
-  function summarizeChatRoom(room, question, answer){ var recent = (room.messages || []).slice(-10).map(function(m){ return (m.role === 'assistant' ? 'Charlie: ' : 'Usuario: ') + String(m.content || '').replace(/\s+/g, ' ').slice(0, 180); }).join(' | '); room.currentTopic = (question || room.currentTopic || room.title || '').slice(0, 120); room.lastUserIntent = (question || '').slice(0, 240); room.summary = ('Assunto ativo: ' + (room.currentTopic || room.title) + '. Ultima pergunta: ' + (question || '').slice(0,220) + '. Ultima resposta: ' + (answer || '').slice(0,220) + '. Historico recente: ' + recent + '.').slice(0, 1800); room.updatedAt = new Date().toISOString(); }
-  function rememberChatExchange(code, question, answer){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }) || activeChatRoom(code); if(question) room.messages.push({ role:'user', content:question, createdAt:new Date().toISOString() }); if(answer) room.messages.push({ role:'assistant', content:answer, createdAt:new Date().toISOString() }); room.messages = room.messages.slice(-24); summarizeChatRoom(room, question, answer); saveChatRooms(code, data); return room; }
+  function inferMemoryTags(text){
+    var value = String(text || '').toLowerCase(), tags = [];
+    if(/\b(decid|combin|aprov|fechad|homolog|passou)\b/.test(value)) tags.push('decisao');
+    if(/\b(pendente|proximo|próximo|falta|precisa|testar|revisar)\b/.test(value)) tags.push('pendencia');
+    if(/\b(segredo|token|senha|cofre|sigil|dado real|processo real)\b/.test(value)) tags.push('sensivel');
+    return tags;
+  }
+  function updateRoomLists(room, question, answer){
+    var now = new Date().toISOString();
+    [[question, 'usuario'], [answer, 'charlie']].forEach(function(pair){
+      var text = String(pair[0] || '').replace(/\s+/g, ' ').trim();
+      if(!text) return;
+      var tags = inferMemoryTags(text);
+      if(tags.indexOf('decisao') >= 0) room.decisions.unshift({ text:text.slice(0, 220), by:pair[1], at:now });
+      if(tags.indexOf('pendencia') >= 0) room.pending.unshift({ text:text.slice(0, 220), by:pair[1], at:now });
+    });
+    room.decisions = (room.decisions || []).slice(0, 24);
+    room.pending = (room.pending || []).slice(0, 24);
+  }
+  function summarizeChatRoom(room, question, answer){
+    var recent = (room.messages || []).slice(-18).map(function(m){ return (m.role === 'assistant' ? 'Charlie: ' : 'Usuario: ') + String(m.content || '').replace(/\s+/g, ' ').slice(0, 220); }).join(' | ');
+    var decisions = (room.decisions || []).slice(0, 5).map(function(i){ return i.text; }).join(' | ');
+    var pending = (room.pending || []).slice(0, 5).map(function(i){ return i.text; }).join(' | ');
+    room.currentTopic = (question || room.currentTopic || room.title || '').slice(0, 160);
+    room.lastUserIntent = (question || '').slice(0, 400);
+    room.summary = ('Assunto ativo: ' + (room.currentTopic || room.title) + '. Ultima pergunta: ' + (question || '').slice(0,360) + '. Ultima resposta: ' + (answer || '').slice(0,360) + '. Decisoes: ' + (decisions || 'sem decisoes marcadas') + '. Pendencias: ' + (pending || 'sem pendencias marcadas') + '. Historico recente: ' + recent + '.').slice(0, 4200);
+    room.updatedAt = new Date().toISOString();
+  }
+  function rememberChatExchange(code, question, answer){
+    var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }) || activeChatRoom(code);
+    var settings = loadChatSettings(code);
+    if(question) room.messages.push({ role:'user', content:question, createdAt:new Date().toISOString(), tags:inferMemoryTags(question) });
+    if(answer) room.messages.push({ role:'assistant', content:answer, createdAt:new Date().toISOString(), tags:inferMemoryTags(answer) });
+    updateRoomLists(room, question, answer);
+    room.messages = room.messages.slice(-Math.max(24, Math.min(160, Number(settings.maxMessages || 96))));
+    summarizeChatRoom(room, question, answer);
+    saveChatRooms(code, data);
+    return room;
+  }
   function injectChatRooms(card, code){
     if(card.querySelector('[data-mvp-room-panel]')) return;
     var panel = document.createElement('div');
     panel.className = 'chat-room-panel mvp-chat-room-panel';
     panel.setAttribute('data-mvp-room-panel', code);
-    panel.innerHTML = '<div><strong>Salas da Charlie Echo</strong><p>Memoria curta local por sala demonstrativa.</p></div><div class="chat-room-actions"><button class="mini primary" type="button" data-room-new>Nova sala</button><button class="mini" type="button" data-room-rename>Renomear</button><details class="chat-room-more"><summary>Mais</summary><button class="mini" type="button" data-room-archive>Arquivar</button><button class="mini danger" type="button" data-room-delete>Excluir</button></details></div><div class="chat-room-list" data-room-list></div>';
+    panel.innerHTML = '<div><strong>Salas da Charlie Echo</strong><p>Memoria local ampliada, visivel e controlada por voce.</p></div><div class="chat-room-actions"><button class="mini primary" type="button" data-room-new>Nova sala</button><button class="mini" type="button" data-room-rename>Renomear</button><details class="chat-room-more"><summary>Mais</summary><button class="mini" type="button" data-room-archive>Arquivar</button><button class="mini danger" type="button" data-room-delete>Excluir</button></details></div><div class="chat-room-list" data-room-list></div>';
     var target = card.querySelector('[data-ai-chat-window]'); if(target && target.parentNode) target.parentNode.insertBefore(panel, target);
     function render(){ var data = loadChatRooms(code), list = panel.querySelector('[data-room-list]'); list.innerHTML = data.rooms.filter(function(r){ return r.status !== 'deleted'; }).map(function(r){ return '<button class="chat-room-pill' + (r.id===data.activeId?' active':'') + (r.status==='archived'?' archived':'') + '" type="button" data-id="' + r.id + '">' + (r.status==='archived' ? r.title + ' (arquivada)' : r.title) + '</button>'; }).join(''); list.querySelectorAll('[data-id]').forEach(function(btn){ btn.addEventListener('click', function(){ data.activeId = btn.getAttribute('data-id'); saveChatRooms(code, data); render(); }); }); }
     panel.querySelector('[data-room-new]').addEventListener('click', function(){ var data = loadChatRooms(code), room = createChatRoom(code, 'Sala ' + code + ' ' + (data.rooms.length + 1)); data.rooms.unshift(room); data.activeId = room.id; saveChatRooms(code, data); render(); });
@@ -1220,7 +1305,16 @@ window.jus9DemoLogin = function(form){
     panel.querySelector('[data-room-delete]').addEventListener('click', function(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); if(!room || !confirm('Excluir esta sala local?')) return; room.status='deleted'; var next = data.rooms.find(function(r){ return r.status !== 'deleted' && r.status !== 'archived'; }) || data.rooms.find(function(r){ return r.status !== 'deleted'; }); if(!next){ next = createChatRoom(code, 'Sala ' + code + ' 1'); data.rooms.unshift(next); } data.activeId = next.id; saveChatRooms(code, data); render(); });
     render();
   }
-  function buildQuestionWithRoom(question, room){ var recent = (room && room.messages || []).slice(-16).map(function(m){ return (m.role === 'assistant' ? 'Charlie: ' : 'Usuario: ') + String(m.content || '').slice(0, 700); }).join('\n'); return (room && (room.summary || room.smartSummary || recent)) ? '[RESUMO EXECUTIVO DA SALA]\n' + (room.smartSummary || '') + '\n\n[MEMORIA CURTA DA SALA]\n' + (room.summary || '') + '\n' + recent + '\n\n[PERGUNTA ATUAL]\n' + question : question; }
+  function buildQuestionWithRoom(question, room, settings){
+    settings = Object.assign(defaultChatSettings(), settings || {});
+    if(settings.memory === false) return '[CONFIGURACOES DO USUARIO]\nMemoria da sala desativada pelo usuario. Nivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '.\n\n[PERGUNTA ATUAL]\n' + question;
+    var recent = (room && room.messages || []).slice(-36).map(function(m){ return (m.role === 'assistant' ? 'Charlie: ' : 'Usuario: ') + String(m.content || '').slice(0, 900); }).join('\n');
+    var decisions = (room && room.decisions || []).slice(0, 10).map(function(i){ return '- ' + i.text; }).join('\n');
+    var pending = (room && room.pending || []).slice(0, 10).map(function(i){ return '- ' + i.text; }).join('\n');
+    return (room && (room.summary || room.smartSummary || recent))
+      ? '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '. Use memoria: sim.\n\n[RESUMO EXECUTIVO DA SALA]\n' + (room.smartSummary || '') + '\n\n[MEMORIA GOVERNADA LOCAL]\n' + (room.summary || '') + '\n\n[DECISOES]\n' + (decisions || 'Sem decisoes marcadas.') + '\n\n[PENDENCIAS]\n' + (pending || 'Sem pendencias marcadas.') + '\n\n[HISTORICO RECENTE]\n' + recent + '\n\n[PERGUNTA ATUAL]\n' + question
+      : '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '.\n\n[PERGUNTA ATUAL]\n' + question;
+  }
 
   function downloadText(filename, content){
     var blob = new Blob([content || ''], { type:'text/plain;charset=utf-8' });
@@ -1459,8 +1553,18 @@ window.jus9DemoLogin = function(form){
     var bar = document.createElement('div');
     bar.className = 'chat-utility-actions';
     bar.setAttribute('data-ai-utility-actions', 'true');
-    bar.innerHTML = '<button class="mini" type="button" data-ai-improve>Melhorar resposta</button><button class="mini" type="button" data-ai-sources>Fontes</button><button class="mini" type="button" data-ai-summary>Atualizar resumo</button><button class="mini primary" type="button" data-ai-package>Gerar PDF</button>';
+    bar.innerHTML = '<button class="mini primary" type="button" data-ai-memory>Abrir memoria</button><button class="mini" type="button" data-ai-settings>Configuracoes</button><button class="mini" type="button" data-ai-improve>Melhorar resposta</button><button class="mini" type="button" data-ai-sources>Fontes</button><button class="mini" type="button" data-ai-summary>Atualizar resumo</button><button class="mini" type="button" data-ai-package>Gerar PDF</button>';
     form.parentNode.insertBefore(bar, form.nextSibling);
+    var memoryPanel = document.createElement('div');
+    memoryPanel.className = 'charlie-memory-panel';
+    memoryPanel.hidden = true;
+    memoryPanel.innerHTML = '<div class="charlie-memory-head"><div><strong>Memoria da sala</strong><p>Resumo, decisoes, pendencias e historico ficam neste navegador.</p></div><button class="mini" type="button" data-memory-close>Fechar</button></div><div class="charlie-memory-grid"><section><h3>Resumo</h3><textarea data-memory-summary rows="7"></textarea></section><section><h3>Decisoes</h3><div data-memory-decisions></div><h3>Pendencias</h3><div data-memory-pending></div></section></div><div class="chat-utility-actions"><button class="mini primary" type="button" data-memory-save>Salvar resumo</button><button class="mini" type="button" data-memory-export>Exportar memoria</button><button class="mini danger" type="button" data-memory-clear>Limpar sala</button></div>';
+    form.parentNode.insertBefore(memoryPanel, bar.nextSibling);
+    var settingsPanel = document.createElement('div');
+    settingsPanel.className = 'charlie-memory-panel charlie-settings-panel';
+    settingsPanel.hidden = true;
+    settingsPanel.innerHTML = '<div class="charlie-memory-head"><div><strong>Configuracoes da Charlie</strong><p>Preferencias locais para esta sala e este MVP.</p></div><button class="mini" type="button" data-settings-close>Fechar</button></div><div class="charlie-settings-grid"><label><span>Usar memoria</span><select data-setting-memory><option value="true">Sim</option><option value="false">Nao</option></select></label><label><span>Detalhe</span><select data-setting-detail><option value="curto">Curto</option><option value="medio">Medio</option><option value="completo">Completo</option></select></label><label><span>Tom</span><select data-setting-tone><option value="direto">Direto</option><option value="didatico">Didatico</option><option value="tecnico">Tecnico</option><option value="social">Social</option></select></label><label><span>Cautela</span><select data-setting-caution><option value="normal">Normal</option><option value="cauteloso">Cauteloso</option><option value="estrito">Estrito</option></select></label><label><span>Formato</span><select data-setting-format><option value="auto">Automatico</option><option value="checklist">Checklist</option><option value="parecer">Parecer</option><option value="resumo">Resumo</option><option value="plano">Plano</option></select></label><label><span>Memoria maxima</span><select data-setting-max><option value="48">48 mensagens</option><option value="96">96 mensagens</option><option value="160">160 mensagens</option></select></label></div><div class="chat-utility-actions"><button class="mini primary" type="button" data-settings-save>Salvar configuracoes</button></div>';
+    form.parentNode.insertBefore(settingsPanel, memoryPanel.nextSibling);
     function lastEchoText(){ var msgs = card.querySelectorAll('.ai-message-echo'); return msgs.length ? (msgs[msgs.length - 1].textContent || '').replace(/^Charlie Echo:\s*/i, '').trim() : ''; }
     function lastUserText(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); var msg = room && (room.messages || []).filter(function(m){ return m.role === 'user'; }).slice(-1)[0]; return msg ? msg.content : ''; }
     function appendEcho(text){ var windowEl = card.querySelector('[data-ai-chat-window]'); if(!windowEl) return; var echoMsg = document.createElement('div'); echoMsg.className = 'ai-message ai-message-echo'; echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(text); windowEl.appendChild(echoMsg); windowEl.scrollTop = windowEl.scrollHeight; rememberChatExchange(code, '', text); }
@@ -1475,6 +1579,87 @@ window.jus9DemoLogin = function(form){
       windowEl.scrollTop = windowEl.scrollHeight;
       rememberChatExchange(code, '', 'Preparei o pacote local em PDF e ofereci um link clicavel de download: ' + filename + '.');
     }
+    function currentRoom(){
+      var data = loadChatRooms(code);
+      return data.rooms.find(function(r){ return r.id === data.activeId; }) || activeChatRoom(code);
+    }
+    function renderMemoryPanel(){
+      var room = updateRoomIntelligence(code, currentRoom(), focus);
+      memoryPanel.querySelector('[data-memory-summary]').value = room.smartSummary || room.summary || '';
+      function listItems(selector, items, empty){
+        var box = memoryPanel.querySelector(selector);
+        box.innerHTML = (items || []).length ? items.slice(0, 12).map(function(item){ return '<p class="memory-item">' + escapeHtml(item.text || '') + '</p>'; }).join('') : '<p class="fine-note">' + empty + '</p>';
+      }
+      listItems('[data-memory-decisions]', room.decisions, 'Sem decisoes marcadas.');
+      listItems('[data-memory-pending]', room.pending, 'Sem pendencias marcadas.');
+    }
+    function renderSettingsPanel(){
+      var settings = loadChatSettings(code);
+      settingsPanel.querySelector('[data-setting-memory]').value = String(settings.memory !== false);
+      settingsPanel.querySelector('[data-setting-detail]').value = settings.detail || 'medio';
+      settingsPanel.querySelector('[data-setting-tone]').value = settings.tone || 'direto';
+      settingsPanel.querySelector('[data-setting-caution]').value = settings.caution || 'normal';
+      settingsPanel.querySelector('[data-setting-format]').value = settings.format || 'auto';
+      settingsPanel.querySelector('[data-setting-max]').value = String(settings.maxMessages || 96);
+    }
+    bar.querySelector('[data-ai-memory]').addEventListener('click', function(){
+      renderMemoryPanel();
+      memoryPanel.hidden = !memoryPanel.hidden;
+      settingsPanel.hidden = true;
+    });
+    bar.querySelector('[data-ai-settings]').addEventListener('click', function(){
+      renderSettingsPanel();
+      settingsPanel.hidden = !settingsPanel.hidden;
+      memoryPanel.hidden = true;
+    });
+    memoryPanel.querySelector('[data-memory-close]').addEventListener('click', function(){ memoryPanel.hidden = true; });
+    settingsPanel.querySelector('[data-settings-close]').addEventListener('click', function(){ settingsPanel.hidden = true; });
+    memoryPanel.querySelector('[data-memory-save]').addEventListener('click', function(){
+      var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }) || activeChatRoom(code);
+      room.smartSummary = memoryPanel.querySelector('[data-memory-summary]').value.trim().slice(0, 5000);
+      room.updatedAt = new Date().toISOString();
+      saveChatRooms(code, data);
+      appendEcho('Memoria da sala atualizada. Vou usar este resumo nas proximas respostas.');
+    });
+    memoryPanel.querySelector('[data-memory-export]').addEventListener('click', function(){
+      var room = updateRoomIntelligence(code, currentRoom(), focus);
+      var payload = {
+        exportedAt: new Date().toISOString(),
+        code: code,
+        focus: focus,
+        room: room,
+        settings: loadChatSettings(code)
+      };
+      downloadText(slug('memoria-' + code + '-' + (room.title || 'sala')) + '.json', JSON.stringify(payload, null, 2));
+      appendEcho('Memoria exportada localmente em JSON. O arquivo foi gerado no navegador.');
+    });
+    memoryPanel.querySelector('[data-memory-clear]').addEventListener('click', function(){
+      if(!confirm('Limpar memoria desta sala local?')) return;
+      var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }) || activeChatRoom(code);
+      room.messages = [];
+      room.summary = '';
+      room.smartSummary = '';
+      room.decisions = [];
+      room.pending = [];
+      room.currentTopic = '';
+      room.lastUserIntent = '';
+      room.updatedAt = new Date().toISOString();
+      saveChatRooms(code, data);
+      renderMemoryPanel();
+      appendEcho('Memoria desta sala foi limpa neste navegador.');
+    });
+    settingsPanel.querySelector('[data-settings-save]').addEventListener('click', function(){
+      var settings = {
+        memory: settingsPanel.querySelector('[data-setting-memory]').value === 'true',
+        detail: settingsPanel.querySelector('[data-setting-detail]').value,
+        tone: settingsPanel.querySelector('[data-setting-tone]').value,
+        caution: settingsPanel.querySelector('[data-setting-caution]').value,
+        format: settingsPanel.querySelector('[data-setting-format]').value,
+        maxMessages: Number(settingsPanel.querySelector('[data-setting-max]').value || 96)
+      };
+      saveChatSettings(code, settings);
+      appendEcho('Configuracoes salvas para esta sala. Vou respeitar memoria, tom, detalhe, cautela e formato preferido nas proximas respostas.');
+    });
     bar.querySelector('[data-ai-improve]').addEventListener('click', async function(){
       var room = activeChatRoom(code), lastQuestion = lastUserText(), lastAnswer = lastEchoText();
       if(!lastQuestion && !lastAnswer) return appendEcho('Ainda nao ha resposta suficiente para melhorar nesta sala.');
@@ -1526,7 +1711,8 @@ window.jus9DemoLogin = function(form){
       var modeInput = card.querySelector('input[type="radio"]:checked');
       var mode = modeInput ? modeInput.value : 'jurista';
       var room = activeChatRoom(code);
-      var contextualQuestion = buildQuestionWithRoom(question, room);
+      var settings = loadChatSettings(code);
+      var contextualQuestion = buildQuestionWithRoom(question, room, settings);
       var userMsg = document.createElement('div');
       userMsg.className = 'ai-message ai-message-user';
       userMsg.innerHTML = '<strong>Voce:</strong> ' + question.replace(/[<>&]/g, function(ch){
@@ -1559,7 +1745,7 @@ window.jus9DemoLogin = function(form){
           updateRoomIntelligence(code, remembered, focus);
         } catch (error) {
           var fallback = textForMode(mode, code, focus, question);
-          if(room.summary) fallback = 'Vou continuar pela memoria curta desta sala. ' + room.summary + '\n\n' + fallback;
+          if(settings.memory !== false && room.summary) fallback = 'Vou continuar pela memoria governada desta sala. ' + room.summary + '\n\n' + fallback;
           fallback = applyCreativeReasoningFrame(fallback, question, code, focus);
           echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(fallback) + '<br><br><em>API segura indisponivel agora; mantive fallback local sem dados reais.</em>';
           var rememberedFallback = rememberChatExchange(code, question, fallback);
