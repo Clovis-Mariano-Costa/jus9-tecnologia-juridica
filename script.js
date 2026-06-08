@@ -1659,14 +1659,49 @@ window.jus9DemoLogin = function(form){
     return String(text || 'charlie-echo').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60) || 'charlie-echo';
   }
 
+  function chatLayout(card){
+    var value = (card.getAttribute('data-ai-layout') || '').toLowerCase();
+    if(value === 'detalhista' || value === 'medio' || value === 'pequeno') return value;
+    if(document.body && document.body.classList.contains('charlie-chat-only-page')) return 'detalhista';
+    if(card.classList.contains('charlie-chat-shell')) return 'medio';
+    if(document.body && document.body.classList.contains('charlie-mvp-shell')) return 'medio';
+    return 'pequeno';
+  }
+
+  function chatActionsForLayout(layout){
+    if(layout === 'detalhista') return [
+      ['data-ai-memory', 'Memoria'],
+      ['data-ai-settings', 'Painel'],
+      ['data-ai-improve', 'Melhorar resposta'],
+      ['data-ai-sources', 'Fontes'],
+      ['data-ai-summary', 'Atualizar resumo'],
+      ['data-ai-package', 'Gerar PDF']
+    ];
+    if(layout === 'medio') return [
+      ['data-ai-settings', 'Painel'],
+      ['data-ai-improve', 'Melhorar resposta'],
+      ['data-ai-sources', 'Fontes'],
+      ['data-ai-package', 'Gerar PDF']
+    ];
+    return [
+      ['data-ai-improve', 'Melhorar resposta'],
+      ['data-ai-sources', 'Fontes']
+    ];
+  }
+
   function addChatUtilityActions(card, code, focus){
     if(card.querySelector('[data-ai-utility-actions]')) return;
     var form = card.querySelector('[data-ai-chat-form]');
     if(!form) return;
+    var layout = chatLayout(card);
+    card.setAttribute('data-ai-layout', layout);
+    var actionsHtml = chatActionsForLayout(layout).map(function(item){
+      return '<button type="button" ' + item[0] + '>' + item[1] + '</button>';
+    }).join('');
     var bar = document.createElement('div');
     bar.className = 'chat-utility-actions';
     bar.setAttribute('data-ai-utility-actions', 'true');
-    bar.innerHTML = '<div class="chat-action-menu"><button class="mini primary" type="button" data-action-menu-toggle>Acoes</button><div class="chat-action-popover" data-action-menu-popover hidden><button type="button" data-ai-memory>Memoria</button><button type="button" data-ai-settings>Painel</button><button type="button" data-ai-improve>Melhorar resposta</button><button type="button" data-ai-sources>Fontes</button><button type="button" data-ai-summary>Atualizar resumo</button><button type="button" data-ai-package>Gerar PDF</button></div></div>';
+    bar.innerHTML = '<div class="chat-action-menu"><button class="mini primary" type="button" data-action-menu-toggle>Acoes</button><div class="chat-action-popover" data-action-menu-popover hidden>' + actionsHtml + '</div></div>';
     form.parentNode.insertBefore(bar, form.nextSibling);
     var memoryPanel = document.createElement('div');
     memoryPanel.className = 'charlie-memory-panel';
@@ -1731,13 +1766,15 @@ window.jus9DemoLogin = function(form){
       settingsPanel.querySelector('[data-setting-max]').value = String(settings.maxMessages || 96);
       settingsPanel.querySelector('[data-setting-autoscroll]').value = String(settings.autoScroll !== false);
     }
-    bar.querySelector('[data-ai-memory]').addEventListener('click', function(){
+    var memoryButton = bar.querySelector('[data-ai-memory]');
+    if(memoryButton) memoryButton.addEventListener('click', function(){
       closeActionMenu();
       renderMemoryPanel();
       memoryPanel.hidden = !memoryPanel.hidden;
       settingsPanel.hidden = true;
     });
-    bar.querySelector('[data-ai-settings]').addEventListener('click', function(){
+    var settingsButton = bar.querySelector('[data-ai-settings]');
+    if(settingsButton) settingsButton.addEventListener('click', function(){
       closeActionMenu();
       renderSettingsPanel();
       settingsPanel.hidden = !settingsPanel.hidden;
@@ -1793,7 +1830,8 @@ window.jus9DemoLogin = function(form){
       saveChatSettings(code, settings);
       appendEcho('Configuracoes salvas para esta sala. Vou respeitar memoria, tom, detalhe, cautela e formato preferido nas proximas respostas.');
     });
-    bar.querySelector('[data-ai-improve]').addEventListener('click', async function(){
+    var improveButton = bar.querySelector('[data-ai-improve]');
+    if(improveButton) improveButton.addEventListener('click', async function(){
       closeActionMenu();
       var room = activeChatRoom(code), lastQuestion = lastUserText(), lastAnswer = lastEchoText();
       if(!lastQuestion && !lastAnswer) return appendEcho('Ainda nao ha resposta suficiente para melhorar nesta sala.');
@@ -1804,17 +1842,20 @@ window.jus9DemoLogin = function(form){
         appendEcho('Versao melhorada local: resposta direta primeiro; depois exemplo pratico; em seguida riscos, limites e proximo passo. Se houver link, priorize fonte oficial HTTPS. Pergunta-base: ' + (lastQuestion || 'sem pergunta registrada') + '.');
       }
     });
-    bar.querySelector('[data-ai-summary]').addEventListener('click', function(){
+    var summaryButton = bar.querySelector('[data-ai-summary]');
+    if(summaryButton) summaryButton.addEventListener('click', function(){
       closeActionMenu();
       var room = updateRoomIntelligence(code, activeChatRoom(code), focus);
       appendEcho('Resumo executivo atualizado:\n\n' + (room.smartSummary || buildRoomExecutiveSummary(room, code, focus)));
     });
-    bar.querySelector('[data-ai-sources]').addEventListener('click', function(){
+    var sourcesButton = bar.querySelector('[data-ai-sources]');
+    if(sourcesButton) sourcesButton.addEventListener('click', function(){
       closeActionMenu();
       var room = activeChatRoom(code);
       appendEcho(trustedSourcesSummary(room));
     });
-    bar.querySelector('[data-ai-package]').addEventListener('click', function(){
+    var packageButton = bar.querySelector('[data-ai-package]');
+    if(packageButton) packageButton.addEventListener('click', function(){
       closeActionMenu();
       var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }) || activeChatRoom(code);
       room = updateRoomIntelligence(code, room, focus);
@@ -1842,7 +1883,9 @@ window.jus9DemoLogin = function(form){
     if (!form || !input || !windowEl) return;
     var code = card.getAttribute('data-ai-code') || 'MVP';
     var focus = card.getAttribute('data-ai-focus') || 'contexto demonstrativo do MVP';
-    injectChatRooms(card, code, function(){ renderChatWindow(card, code, focus); });
+    var layout = chatLayout(card);
+    card.setAttribute('data-ai-layout', layout);
+    if(layout !== 'pequeno') injectChatRooms(card, code, function(){ renderChatWindow(card, code, focus); });
     addChatUtilityActions(card, code, focus);
     renderChatWindow(card, code, focus);
     form.addEventListener('submit', async function(event){
@@ -1990,13 +2033,16 @@ window.jus9DemoLogin = function(form){
 
   function initGuidedPrompts(card){
     var code = card.getAttribute('data-ai-code') || '';
+    var layout = chatLayout(card);
+    if(layout === 'pequeno') return;
     var prompts = guidedPrompts[code];
     var input = card.querySelector('[data-ai-chat-input]');
     if (!prompts || !input || card.querySelector('[data-ai-guided-prompts]')) return;
+    prompts = prompts.slice(0, layout === 'detalhista' ? 3 : 2);
     var panel = document.createElement('div');
-    panel.className = 'ai-guided-prompts';
+    panel.className = 'ai-guided-prompts ai-guided-prompts-' + layout;
     panel.setAttribute('data-ai-guided-prompts', code);
-    panel.innerHTML = '<strong>Perguntas guiadas do ' + code + '</strong><div class="link-actions"></div>';
+    panel.innerHTML = '<strong>' + (layout === 'detalhista' ? 'Perguntas guiadas do ' : 'Sugestoes do ') + code + '</strong><div class="link-actions"></div>';
     var actions = panel.querySelector('.link-actions');
     prompts.forEach(function(prompt){
       var button = document.createElement('button');

@@ -1632,6 +1632,14 @@ button,input,select,textarea{max-width:100%}
 .chat-action-popover[hidden]{display:none}
 .chat-action-popover button{border:0;background:transparent;color:#07111f;text-align:left;border-radius:10px;padding:10px 11px;font-weight:850;cursor:pointer}
 .chat-action-popover button:hover{background:#fff7e2;color:#5b3b09}
+.ai-chat-card[data-ai-layout="medio"] .chat-room-panel{margin-bottom:10px}
+.ai-chat-card[data-ai-layout="medio"] .chat-room-list{max-height:170px}
+.ai-chat-card[data-ai-layout="medio"] .ai-guided-prompts{padding:12px;margin:12px 0;background:#fffaf0}
+.ai-chat-card[data-ai-layout="medio"] .ai-guided-prompts .link-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.ai-chat-card[data-ai-layout="medio"] .ai-guided-prompts button{border-radius:12px;padding:9px 10px;font-size:.9rem;line-height:1.25}
+.ai-chat-card[data-ai-layout="pequeno"] .chat-utility-actions{margin-top:8px;justify-content:flex-end}
+.ai-chat-card[data-ai-layout="pequeno"] .chat-action-popover{min-width:190px}
+.ai-chat-card[data-ai-layout="pequeno"] .ai-chat-window{min-height:220px}
 .charlie-memory-panel{border:1px solid rgba(197,139,47,.28);border-radius:18px;background:#fffaf0;padding:14px;margin:8px 0 0;color:#07111f}
 .charlie-memory-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:12px}
 .charlie-memory-head p{margin:3px 0 0;color:#51627a;font-size:.92rem}
