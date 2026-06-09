@@ -41,6 +41,31 @@
       <p class="lead">A versao 4.0 marca a entrada da Jus 9 em uma fase de consolidacao publica: menu superior mais limpo, Charlie Echo como tela oficial propria, governanca de personalidade ambiental, links externos confiaveis, multilinguismo e preparacao para evento.</p>
 
       <section class="version-card">
+        <h2>Pacote 8 - cadastros governados por ambiente</h2>
+        <p><strong>Data:</strong> 09/06/2026</p>
+        <ul>
+          <li>Laboratorio recebeu pagina propria de cadastros governados para estudantes, pesquisadores, desenvolvedores, revisores, I.As convidadas e Familia Virtual.</li>
+          <li>Universidade do Futuro recebeu pagina propria de cadastros governados para I.As, humanos convidados, professores, estudantes, pesquisadores e monitores.</li>
+          <li>Os formularios salvam rascunho local e, com sessao autorizada, enviam solicitacao para revisao humana no backend central.</li>
+          <li>Menus do Laboratorio e da Universidade receberam entrada semantica para Cadastros.</li>
+          <li>A aprovacao continua humana e governada: nao concede cofre, segredo ou permissao sensivel automaticamente.</li>
+        </ul>
+      </section>
+
+      <section class="version-card">
+        <h2>Pacote 7 - perfis governados aprovados</h2>
+        <p><strong>Data:</strong> 09/06/2026</p>
+        <ul>
+          <li>Criada rota <code>GET /api/governed-profiles</code> para listar perfis aprovados por revisao humana.</li>
+          <li>A rota exige sessao Google autorizada e permissao de auditoria.</li>
+          <li>Ao aprovar uma solicitacao, o backend materializa o perfil em lista interna governada.</li>
+          <li>Ao reprovar ou retornar para pendente, o perfil sai da lista aprovada.</li>
+          <li>A tela de revisao da Equipe passa a separar fila, trilha de decisoes e perfis aprovados.</li>
+          <li>Perfil aprovado orienta reconhecimento, modulo e escopo; nao libera cofre nem permissao sensivel automatica.</li>
+        </ul>
+      </section>
+
+      <section class="version-card">
         <h2>Pacote 6 - solicitacoes governadas de perfil</h2>
         <p><strong>Data:</strong> 09/06/2026</p>
         <ul>
