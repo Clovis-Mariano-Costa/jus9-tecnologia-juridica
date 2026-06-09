@@ -8,7 +8,11 @@ const env = {
 const memoryKv = () => {
   const store = new Map();
   return {
-    get: async (key) => store.get(key) || null,
+    get: async (key, type) => {
+      const value = store.get(key) || null;
+      if (type === "json" && value) return JSON.parse(value);
+      return value;
+    },
     put: async (key, value) => {
       store.set(key, value);
     }
@@ -160,8 +164,62 @@ console.log("AUTH_OK calendar-kv-pendente=501");
 
 const calendarEnv = {
   ...configuredEnv,
-  JUS9_CALENDAR_TOKENS: memoryKv()
+  JUS9_CALENDAR_TOKENS: memoryKv(),
+  JUS9_PROFILE_REQUESTS: memoryKv()
 };
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/profile-requests", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ name: "Pessoa Teste", email: "pessoa@jus9tecnologia.com.br", profile: "Assessor" })
+  }),
+  calendarEnv
+);
+assert(response.status === 401, "cadastro de perfil sem sessao deve retornar 401");
+console.log("AUTH_OK profile-request-anonymous=401");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/profile-requests", {
+    method: "POST",
+    headers: {
+      cookie: await cookieFor("assessor", Date.now() + 60_000, "assessor@jus9tecnologia.com.br"),
+      "content-type": "application/json",
+      origin: "https://equipe.jus9tecnologia.com.br"
+    },
+    body: JSON.stringify({
+      scope: "equipe",
+      name: "Pessoa Teste <script>",
+      email: "Pessoa@Jus9Tecnologia.com.br",
+      profile: "Assessor",
+      module: "Equipe",
+      notes: "Solicitacao governada"
+    })
+  }),
+  calendarEnv
+);
+data = await response.json();
+assert(response.status === 201 && data.ok === true && data.status === "pendente_revisao_humana", "cadastro de perfil autenticado deveria registrar solicitacao");
+console.log("AUTH_OK profile-request-create=201");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/profile-requests", {
+    headers: { cookie: await cookieFor("assessor", Date.now() + 60_000, "assessor@jus9tecnologia.com.br") }
+  }),
+  calendarEnv
+);
+assert(response.status === 403, "assessor nao deve listar solicitacoes de perfil");
+console.log("AUTH_OK profile-request-list-assessor=403");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/profile-requests", {
+    headers: { cookie: await cookieFor("admin_sistema", Date.now() + 60_000, "clovis@jus9tecnologia.com.br") }
+  }),
+  calendarEnv
+);
+data = await response.json();
+assert(response.status === 200 && Array.isArray(data.items) && data.items.length === 1, "admin deveria listar solicitacoes de perfil");
+console.log("AUTH_OK profile-request-list-admin=200");
 
 response = await worker.fetch(
   new Request("https://jus9.invalid/auth/google/calendar/start?return_to=%2Fapp-agenda.html"),

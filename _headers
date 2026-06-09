@@ -48,3 +48,6 @@
 
 /api/auth/context
   Cache-Control: no-store, max-age=0
+
+/api/profile-requests
+  Cache-Control: no-store, max-age=0

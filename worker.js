@@ -61,6 +61,10 @@ export default {
       return handleAuthContext(request, env);
     }
 
+    if (originalUrl.pathname === "/api/profile-requests") {
+      return handleProfileRequests(request, env);
+    }
+
     if (originalUrl.pathname === "/api/calendar/status") {
       return handleCalendarStatus(request, env);
     }
@@ -452,6 +456,33 @@ async function handleAuthContext(request, env) {
   }, 200, corsHeaders);
 }
 
+async function handleProfileRequests(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  const session = await getSession(request, env);
+  if (!session) return jsonResponse({ authenticated: false }, 401, corsHeaders);
+  if (!env.JUS9_PROFILE_REQUESTS) {
+    return jsonResponse({ ok: false, error: "profile_requests_configuracao_pendente" }, 501, corsHeaders);
+  }
+
+  if (request.method === "POST") {
+    if (!hasPermission(session, "auth:read")) {
+      return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "auth:read" }, 403, corsHeaders);
+    }
+    const result = await saveProfileRequest(env, session, request, await request.json().catch(() => null));
+    return jsonResponse(result.payload, result.status, corsHeaders);
+  }
+
+  if (request.method === "GET") {
+    if (!hasPermission(session, "audit:write")) {
+      return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "audit:write" }, 403, corsHeaders);
+    }
+    const result = await listProfileRequests(env);
+    return jsonResponse(result.payload, result.status, corsHeaders);
+  }
+
+  return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET, POST" });
+}
+
 async function handleCalendarStatus(request, env) {
   const corsHeaders = getAuthCorsHeaders(request);
   if (request.method !== "GET") {
@@ -512,6 +543,7 @@ function isAuthCorsPath(pathname) {
   return pathname === "/api/auth/me" ||
     pathname === "/api/auth/permissions" ||
     pathname === "/api/auth/context" ||
+    pathname === "/api/profile-requests" ||
     pathname === "/api/calendar/status" ||
     pathname === "/api/calendar/events" ||
     pathname === "/auth/logout";
@@ -538,6 +570,102 @@ function getAuthCorsHeaders(request) {
 
 function hasPermission(session, permission) {
   return getPermissions(session?.profile).includes(permission);
+}
+
+async function saveProfileRequest(env, session, request, payload) {
+  if (!payload || typeof payload !== "object") {
+    return { status: 400, payload: { ok: false, error: "payload_invalido" } };
+  }
+  const scope = sanitizeToken(payload.scope, 32) || "equipe";
+  const name = sanitizeText(payload.name, 120);
+  const email = sanitizeEmail(payload.email);
+  const profile = sanitizeText(payload.profile, 80);
+  const module = sanitizeText(payload.module, 80);
+  const notes = sanitizeText(payload.notes, 900);
+  const imagePolicy = sanitizeText(payload.imagePolicy, 80) || "sem_imagem";
+  if (!name || !email || !profile) {
+    return { status: 400, payload: { ok: false, error: "campos_obrigatorios", required: ["name", "email", "profile"] } };
+  }
+
+  const now = new Date().toISOString();
+  const id = `profile-request-${Date.now()}-${randomToken(8)}`;
+  const requesterEmail = await emailForSession(env, session);
+  const origin = normalizeOriginHint(request.headers.get("origin") || request.headers.get("referer") || "");
+  const record = {
+    id,
+    status: "pendente_revisao_humana",
+    classification: "INTERNO",
+    scope,
+    name,
+    email,
+    profile,
+    module,
+    notes,
+    imagePolicy,
+    requester: {
+      email: requesterEmail,
+      profile: session.profile,
+      emailHash: session.emailHash
+    },
+    origin,
+    createdAt: now,
+    updatedAt: now
+  };
+  await env.JUS9_PROFILE_REQUESTS.put(id, JSON.stringify(record));
+  await appendProfileRequestIndex(env, {
+    id,
+    status: record.status,
+    scope,
+    name,
+    email,
+    profile,
+    module,
+    origin,
+    requesterProfile: session.profile,
+    createdAt: now
+  });
+  return {
+    status: 201,
+    payload: {
+      ok: true,
+      id,
+      status: record.status,
+      classification: record.classification,
+      message: "Solicitacao de perfil registrada para revisao humana."
+    }
+  };
+}
+
+async function appendProfileRequestIndex(env, item) {
+  const key = "profile-requests:index";
+  const current = await env.JUS9_PROFILE_REQUESTS.get(key, "json").catch(() => null);
+  const items = Array.isArray(current) ? current : [];
+  items.unshift(item);
+  await env.JUS9_PROFILE_REQUESTS.put(key, JSON.stringify(items.slice(0, 200)));
+}
+
+async function listProfileRequests(env) {
+  const items = await env.JUS9_PROFILE_REQUESTS.get("profile-requests:index", "json").catch(() => null);
+  return { status: 200, payload: { ok: true, items: Array.isArray(items) ? items : [] } };
+}
+
+function sanitizeText(value, maxLength) {
+  return String(value || "")
+    .replace(/[\u0000-\u001f\u007f]/g, " ")
+    .replace(/[<>]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, maxLength);
+}
+
+function sanitizeToken(value, maxLength) {
+  return String(value || "").toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, maxLength);
+}
+
+function sanitizeEmail(value) {
+  const email = String(value || "").trim().toLowerCase().slice(0, 180);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return "";
+  return email;
 }
 
 async function emailForSession(env, session) {

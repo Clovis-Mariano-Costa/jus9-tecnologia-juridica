@@ -41,6 +41,19 @@
       <p class="lead">A versao 4.0 marca a entrada da Jus 9 em uma fase de consolidacao publica: menu superior mais limpo, Charlie Echo como tela oficial propria, governanca de personalidade ambiental, links externos confiaveis, multilinguismo e preparacao para evento.</p>
 
       <section class="version-card">
+        <h2>Pacote 6 - solicitacoes governadas de perfil</h2>
+        <p><strong>Data:</strong> 09/06/2026</p>
+        <ul>
+          <li>Criado KV <code>JUS9_PROFILE_REQUESTS</code> para primeira persistencia governada de solicitacoes de perfil.</li>
+          <li>Criada rota <code>POST /api/profile-requests</code> para registrar solicitacao autenticada.</li>
+          <li>Criada rota <code>GET /api/profile-requests</code> restrita a perfil com auditoria.</li>
+          <li>Solicitacoes entram como <code>INTERNO</code> e <code>pendente_revisao_humana</code>.</li>
+          <li>Formulario da Equipe mantem rascunho local e tenta envio governado quando ha sessao Google autorizada.</li>
+          <li>Nenhum segredo, token, cookie, chave ou imagem binaria foi publicado.</li>
+        </ul>
+      </section>
+
+      <section class="version-card">
         <h2>Pacote 5 - identidade governada no login</h2>
         <p><strong>Data:</strong> 08/06/2026</p>
         <ul>

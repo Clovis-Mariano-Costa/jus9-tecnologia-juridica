@@ -13,6 +13,10 @@
     {
       "binding": "JUS9_CALENDAR_TOKENS",
       "id": "8da90de2fb9a47e8a1f9e5c322eff746"
+    },
+    {
+      "binding": "JUS9_PROFILE_REQUESTS",
+      "id": "016bf81fce5242c7aacc42e5a1a50bf3"
     }
   ]
 }
