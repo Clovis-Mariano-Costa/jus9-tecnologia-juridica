@@ -41,6 +41,18 @@
       <p class="lead">A versao 4.0 marca a entrada da Jus 9 em uma fase de consolidacao publica: menu superior mais limpo, Charlie Echo como tela oficial propria, governanca de personalidade ambiental, links externos confiaveis, multilinguismo e preparacao para evento.</p>
 
       <section class="version-card">
+        <h2>Pacote 9 - contexto autenticado com perfil governado</h2>
+        <p><strong>Data:</strong> 09/06/2026</p>
+        <ul>
+          <li><code>GET /api/auth/context</code> passa a consultar perfil governado aprovado quando houver correspondencia com o e-mail autenticado.</li>
+          <li>O contexto pode informar escopo, perfil, modulo, status, protocolo de origem e data de aprovacao.</li>
+          <li>Charlie Echo e os ambientes podem usar esse sinal para reconhecer melhor usuario, modulo e papel institucional.</li>
+          <li>A rota continua exigindo sessao autenticada.</li>
+          <li>Perfil governado aprovado nao libera cofre, segredo ou permissao sensivel automaticamente.</li>
+        </ul>
+      </section>
+
+      <section class="version-card">
         <h2>Pacote 8 - cadastros governados por ambiente</h2>
         <p><strong>Data:</strong> 09/06/2026</p>
         <ul>
