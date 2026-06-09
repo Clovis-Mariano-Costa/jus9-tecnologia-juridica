@@ -65,6 +65,10 @@ export default {
       return handleProfileRequests(request, env);
     }
 
+    if (originalUrl.pathname === "/api/profile-requests/action") {
+      return handleProfileRequestAction(request, env);
+    }
+
     if (originalUrl.pathname === "/api/calendar/status") {
       return handleCalendarStatus(request, env);
     }
@@ -483,6 +487,23 @@ async function handleProfileRequests(request, env) {
   return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET, POST" });
 }
 
+async function handleProfileRequestAction(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  const session = await getSession(request, env);
+  if (!session) return jsonResponse({ authenticated: false }, 401, corsHeaders);
+  if (!env.JUS9_PROFILE_REQUESTS) {
+    return jsonResponse({ ok: false, error: "profile_requests_configuracao_pendente" }, 501, corsHeaders);
+  }
+  if (request.method !== "POST") {
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "POST" });
+  }
+  if (!hasPermission(session, "audit:write")) {
+    return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "audit:write" }, 403, corsHeaders);
+  }
+  const result = await updateProfileRequestStatus(env, session, request, await request.json().catch(() => null));
+  return jsonResponse(result.payload, result.status, corsHeaders);
+}
+
 async function handleCalendarStatus(request, env) {
   const corsHeaders = getAuthCorsHeaders(request);
   if (request.method !== "GET") {
@@ -544,6 +565,7 @@ function isAuthCorsPath(pathname) {
     pathname === "/api/auth/permissions" ||
     pathname === "/api/auth/context" ||
     pathname === "/api/profile-requests" ||
+    pathname === "/api/profile-requests/action" ||
     pathname === "/api/calendar/status" ||
     pathname === "/api/calendar/events" ||
     pathname === "/auth/logout";
@@ -647,6 +669,86 @@ async function appendProfileRequestIndex(env, item) {
 async function listProfileRequests(env) {
   const items = await env.JUS9_PROFILE_REQUESTS.get("profile-requests:index", "json").catch(() => null);
   return { status: 200, payload: { ok: true, items: Array.isArray(items) ? items : [] } };
+}
+
+async function updateProfileRequestStatus(env, session, request, payload) {
+  if (!payload || typeof payload !== "object") {
+    return { status: 400, payload: { ok: false, error: "payload_invalido" } };
+  }
+  const id = sanitizeText(payload.id, 120);
+  const action = sanitizeToken(payload.action, 32);
+  const notes = sanitizeText(payload.notes, 500);
+  const statusByAction = {
+    aprovar: "aprovada_revisao_humana",
+    reprovar: "reprovada_revisao_humana",
+    pendente: "pendente_revisao_humana"
+  };
+  const nextStatus = statusByAction[action];
+  if (!id || !nextStatus) {
+    return { status: 400, payload: { ok: false, error: "acao_invalida", allowed: Object.keys(statusByAction) } };
+  }
+
+  const record = await env.JUS9_PROFILE_REQUESTS.get(id, "json").catch(() => null);
+  if (!record || record.id !== id) {
+    return { status: 404, payload: { ok: false, error: "solicitacao_nao_encontrada" } };
+  }
+
+  const now = new Date().toISOString();
+  const reviewerEmail = await emailForSession(env, session);
+  const auditItem = {
+    at: now,
+    action,
+    status: nextStatus,
+    notes,
+    reviewer: {
+      email: reviewerEmail,
+      profile: session.profile,
+      emailHash: session.emailHash
+    },
+    origin: normalizeOriginHint(request.headers.get("origin") || request.headers.get("referer") || "")
+  };
+  const updated = {
+    ...record,
+    status: nextStatus,
+    reviewNotes: notes,
+    reviewedAt: now,
+    reviewedByProfile: session.profile,
+    updatedAt: now,
+    audit: Array.isArray(record.audit) ? [...record.audit, auditItem].slice(-30) : [auditItem]
+  };
+  await env.JUS9_PROFILE_REQUESTS.put(id, JSON.stringify(updated));
+  await updateProfileRequestIndexItem(env, id, {
+    status: nextStatus,
+    reviewNotes: notes,
+    reviewedAt: now,
+    reviewedByProfile: session.profile
+  });
+  await appendProfileRequestAudit(env, { id, name: record.name, email: record.email, ...auditItem });
+  return {
+    status: 200,
+    payload: {
+      ok: true,
+      id,
+      status: nextStatus,
+      message: "Solicitacao atualizada com trilha de auditoria."
+    }
+  };
+}
+
+async function updateProfileRequestIndexItem(env, id, patch) {
+  const key = "profile-requests:index";
+  const current = await env.JUS9_PROFILE_REQUESTS.get(key, "json").catch(() => null);
+  const items = Array.isArray(current) ? current : [];
+  const updated = items.map((item) => item.id === id ? { ...item, ...patch } : item);
+  await env.JUS9_PROFILE_REQUESTS.put(key, JSON.stringify(updated.slice(0, 200)));
+}
+
+async function appendProfileRequestAudit(env, item) {
+  const key = "profile-requests:audit";
+  const current = await env.JUS9_PROFILE_REQUESTS.get(key, "json").catch(() => null);
+  const items = Array.isArray(current) ? current : [];
+  items.unshift(item);
+  await env.JUS9_PROFILE_REQUESTS.put(key, JSON.stringify(items.slice(0, 300)));
 }
 
 function sanitizeText(value, maxLength) {

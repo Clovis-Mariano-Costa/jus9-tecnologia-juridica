@@ -51,3 +51,6 @@
 
 /api/profile-requests
   Cache-Control: no-store, max-age=0
+
+/api/profile-requests/action
+  Cache-Control: no-store, max-age=0

@@ -200,7 +200,38 @@ response = await worker.fetch(
 );
 data = await response.json();
 assert(response.status === 201 && data.ok === true && data.status === "pendente_revisao_humana", "cadastro de perfil autenticado deveria registrar solicitacao");
+const profileRequestId = data.id;
 console.log("AUTH_OK profile-request-create=201");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/profile-requests/action", {
+    method: "POST",
+    headers: {
+      cookie: await cookieFor("assessor", Date.now() + 60_000, "assessor@jus9tecnologia.com.br"),
+      "content-type": "application/json"
+    },
+    body: JSON.stringify({ id: profileRequestId, action: "aprovar" })
+  }),
+  calendarEnv
+);
+assert(response.status === 403, "assessor nao deve alterar status de solicitacao de perfil");
+console.log("AUTH_OK profile-request-action-assessor=403");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/profile-requests/action", {
+    method: "POST",
+    headers: {
+      cookie: await cookieFor("admin_sistema", Date.now() + 60_000, "clovis@jus9tecnologia.com.br"),
+      "content-type": "application/json",
+      origin: "https://equipe.jus9tecnologia.com.br"
+    },
+    body: JSON.stringify({ id: profileRequestId, action: "aprovar", notes: "Aprovacao ficticia em teste controlado" })
+  }),
+  calendarEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.ok === true && data.status === "aprovada_revisao_humana", "admin deveria aprovar solicitacao de perfil");
+console.log("AUTH_OK profile-request-action-admin=200");
 
 response = await worker.fetch(
   new Request("https://jus9.invalid/api/profile-requests", {
@@ -219,6 +250,7 @@ response = await worker.fetch(
 );
 data = await response.json();
 assert(response.status === 200 && Array.isArray(data.items) && data.items.length === 1, "admin deveria listar solicitacoes de perfil");
+assert(data.items[0].status === "aprovada_revisao_humana", "listagem deveria refletir status aprovado");
 console.log("AUTH_OK profile-request-list-admin=200");
 
 response = await worker.fetch(
