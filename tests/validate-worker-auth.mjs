@@ -218,6 +218,22 @@ assert(response.status === 403, "assessor nao deve alterar status de solicitacao
 console.log("AUTH_OK profile-request-action-assessor=403");
 
 response = await worker.fetch(
+  new Request("https://jus9.invalid/api/profile-requests/audit"),
+  calendarEnv
+);
+assert(response.status === 401, "auditoria de perfis sem sessao deve retornar 401");
+console.log("AUTH_OK profile-request-audit-anonymous=401");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/profile-requests/audit", {
+    headers: { cookie: await cookieFor("assessor", Date.now() + 60_000, "assessor@jus9tecnologia.com.br") }
+  }),
+  calendarEnv
+);
+assert(response.status === 403, "assessor nao deve listar auditoria de perfis");
+console.log("AUTH_OK profile-request-audit-assessor=403");
+
+response = await worker.fetch(
   new Request("https://jus9.invalid/api/profile-requests/action", {
     method: "POST",
     headers: {
@@ -232,6 +248,17 @@ response = await worker.fetch(
 data = await response.json();
 assert(response.status === 200 && data.ok === true && data.status === "aprovada_revisao_humana", "admin deveria aprovar solicitacao de perfil");
 console.log("AUTH_OK profile-request-action-admin=200");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/profile-requests/audit", {
+    headers: { cookie: await cookieFor("admin_sistema", Date.now() + 60_000, "clovis@jus9tecnologia.com.br") }
+  }),
+  calendarEnv
+);
+data = await response.json();
+assert(response.status === 200 && Array.isArray(data.items) && data.items.length === 1, "admin deveria listar auditoria de perfis");
+assert(data.items[0].status === "aprovada_revisao_humana", "auditoria deveria refletir status aprovado");
+console.log("AUTH_OK profile-request-audit-admin=200");
 
 response = await worker.fetch(
   new Request("https://jus9.invalid/api/profile-requests", {

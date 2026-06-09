@@ -69,6 +69,10 @@ export default {
       return handleProfileRequestAction(request, env);
     }
 
+    if (originalUrl.pathname === "/api/profile-requests/audit") {
+      return handleProfileRequestAudit(request, env);
+    }
+
     if (originalUrl.pathname === "/api/calendar/status") {
       return handleCalendarStatus(request, env);
     }
@@ -504,6 +508,23 @@ async function handleProfileRequestAction(request, env) {
   return jsonResponse(result.payload, result.status, corsHeaders);
 }
 
+async function handleProfileRequestAudit(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  const session = await getSession(request, env);
+  if (!session) return jsonResponse({ authenticated: false }, 401, corsHeaders);
+  if (!env.JUS9_PROFILE_REQUESTS) {
+    return jsonResponse({ ok: false, error: "profile_requests_configuracao_pendente" }, 501, corsHeaders);
+  }
+  if (request.method !== "GET") {
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET" });
+  }
+  if (!hasPermission(session, "audit:write")) {
+    return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "audit:write" }, 403, corsHeaders);
+  }
+  const items = await env.JUS9_PROFILE_REQUESTS.get("profile-requests:audit", "json").catch(() => null);
+  return jsonResponse({ ok: true, items: Array.isArray(items) ? items : [] }, 200, corsHeaders);
+}
+
 async function handleCalendarStatus(request, env) {
   const corsHeaders = getAuthCorsHeaders(request);
   if (request.method !== "GET") {
@@ -566,6 +587,7 @@ function isAuthCorsPath(pathname) {
     pathname === "/api/auth/context" ||
     pathname === "/api/profile-requests" ||
     pathname === "/api/profile-requests/action" ||
+    pathname === "/api/profile-requests/audit" ||
     pathname === "/api/calendar/status" ||
     pathname === "/api/calendar/events" ||
     pathname === "/auth/logout";
