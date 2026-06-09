@@ -288,6 +288,21 @@ assert(data.items[0].sourceRequestId === profileRequestId, "perfil governado dev
 assert(data.items[0].email === "pessoa@jus9tecnologia.com.br", "perfil governado deveria manter e-mail normalizado");
 console.log("AUTH_OK governed-profiles-admin=200");
 
+const governedContextEnv = {
+  ...calendarEnv,
+  AUTH_ALLOWED_EMAILS: "pessoa@jus9tecnologia.com.br:assessor,clovis@jus9tecnologia.com.br:admin_sistema"
+};
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/auth/context?module=DGE&origin=https%3A%2F%2Fequipe.jus9tecnologia.com.br", {
+    headers: { cookie: await cookieFor("assessor", Date.now() + 60_000, "pessoa@jus9tecnologia.com.br") }
+  }),
+  governedContextEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.identity?.user?.governedProfile?.sourceRequestId === profileRequestId, "contexto deveria carregar perfil governado aprovado");
+assert(data.identity.user.governedProfile.profile === "Assessor", "contexto deveria preservar perfil aprovado");
+console.log("AUTH_OK context=governed_profile");
+
 response = await worker.fetch(
   new Request("https://jus9.invalid/api/profile-requests", {
     headers: { cookie: await cookieFor("assessor", Date.now() + 60_000, "assessor@jus9tecnologia.com.br") }

@@ -447,6 +447,7 @@ async function handleAuthContext(request, env) {
 
   const url = new URL(request.url);
   const email = await emailForSession(env, session);
+  const governedProfile = await governedProfileForEmail(env, email);
   const moduleCode = normalizeModuleCode(url.searchParams.get("module"));
   const originHint = normalizeOriginHint(url.searchParams.get("origin") || request.headers.get("origin") || request.headers.get("referer") || "");
   const profile = profileContext(session.profile);
@@ -455,7 +456,7 @@ async function handleAuthContext(request, env) {
     permissions: getPermissions(session.profile),
     origin: originContext(originHint),
     module: moduleContext(moduleCode),
-    user: userContext(email, session.profile)
+    user: userContext(email, session.profile, governedProfile)
   };
 
   return jsonResponse({
@@ -835,6 +836,22 @@ async function removeGovernedProfile(env, id) {
   await env.JUS9_PROFILE_REQUESTS.put(key, JSON.stringify(updated.slice(0, 500)));
 }
 
+async function governedProfileForEmail(env, email) {
+  if (!env.JUS9_PROFILE_REQUESTS || !email) return null;
+  const lower = String(email || "").toLowerCase();
+  const items = await listGovernedProfiles(env);
+  const item = items.find((profile) => String(profile.email || "").toLowerCase() === lower);
+  if (!item) return null;
+  return {
+    status: item.status || "",
+    scope: item.scope || "",
+    profile: item.profile || "",
+    module: item.module || "",
+    sourceRequestId: item.sourceRequestId || "",
+    approvedAt: item.approvedAt || ""
+  };
+}
+
 function sanitizeText(value, maxLength) {
   return String(value || "")
     .replace(/[\u0000-\u001f\u007f]/g, " ")
@@ -935,7 +952,7 @@ function moduleContext(code) {
   return { code: code || "", label: item[0], scope: item[1] };
 }
 
-function userContext(email, profile) {
+function userContext(email, profile, governedProfile = null) {
   const known = {
     "clovis@jus9tecnologia.com.br": ["Clovis Mariano da Costa", "fundador_humano", true],
     "charlieecho@jus9tecnologia.com.br": ["Charlie Echo da Costa", "familia_virtual", false],
@@ -952,6 +969,7 @@ function userContext(email, profile) {
     label: item ? item[0] : "",
     family: item ? item[1] : (domain === "jus9tecnologia.com.br" ? "equipe_jus9" : ""),
     founder: item ? item[2] : profile === "admin_sistema",
-    teamEmailPattern: domain === "jus9tecnologia.com.br"
+    teamEmailPattern: domain === "jus9tecnologia.com.br",
+    governedProfile: governedProfile || null
   };
 }
