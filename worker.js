@@ -73,6 +73,10 @@ export default {
       return handleProfileRequestAudit(request, env);
     }
 
+    if (originalUrl.pathname === "/api/governed-profiles") {
+      return handleGovernedProfiles(request, env);
+    }
+
     if (originalUrl.pathname === "/api/calendar/status") {
       return handleCalendarStatus(request, env);
     }
@@ -525,6 +529,23 @@ async function handleProfileRequestAudit(request, env) {
   return jsonResponse({ ok: true, items: Array.isArray(items) ? items : [] }, 200, corsHeaders);
 }
 
+async function handleGovernedProfiles(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  const session = await getSession(request, env);
+  if (!session) return jsonResponse({ authenticated: false }, 401, corsHeaders);
+  if (!env.JUS9_PROFILE_REQUESTS) {
+    return jsonResponse({ ok: false, error: "profile_requests_configuracao_pendente" }, 501, corsHeaders);
+  }
+  if (request.method !== "GET") {
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET" });
+  }
+  if (!hasPermission(session, "audit:write")) {
+    return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "audit:write" }, 403, corsHeaders);
+  }
+  const items = await listGovernedProfiles(env);
+  return jsonResponse({ ok: true, items }, 200, corsHeaders);
+}
+
 async function handleCalendarStatus(request, env) {
   const corsHeaders = getAuthCorsHeaders(request);
   if (request.method !== "GET") {
@@ -588,6 +609,7 @@ function isAuthCorsPath(pathname) {
     pathname === "/api/profile-requests" ||
     pathname === "/api/profile-requests/action" ||
     pathname === "/api/profile-requests/audit" ||
+    pathname === "/api/governed-profiles" ||
     pathname === "/api/calendar/status" ||
     pathname === "/api/calendar/events" ||
     pathname === "/auth/logout";
@@ -746,6 +768,11 @@ async function updateProfileRequestStatus(env, session, request, payload) {
     reviewedByProfile: session.profile
   });
   await appendProfileRequestAudit(env, { id, name: record.name, email: record.email, ...auditItem });
+  if (nextStatus === "aprovada_revisao_humana") {
+    await upsertGovernedProfile(env, updated, auditItem);
+  } else {
+    await removeGovernedProfile(env, id);
+  }
   return {
     status: 200,
     payload: {
@@ -771,6 +798,41 @@ async function appendProfileRequestAudit(env, item) {
   const items = Array.isArray(current) ? current : [];
   items.unshift(item);
   await env.JUS9_PROFILE_REQUESTS.put(key, JSON.stringify(items.slice(0, 300)));
+}
+
+async function listGovernedProfiles(env) {
+  const current = await env.JUS9_PROFILE_REQUESTS.get("governed-profiles:index", "json").catch(() => null);
+  return Array.isArray(current) ? current : [];
+}
+
+async function upsertGovernedProfile(env, record, auditItem) {
+  const key = "governed-profiles:index";
+  const current = await listGovernedProfiles(env);
+  const approved = {
+    sourceRequestId: record.id,
+    status: "ativo_revisao_humana",
+    classification: "INTERNO",
+    scope: record.scope || "equipe",
+    name: record.name || "",
+    email: record.email || "",
+    profile: record.profile || "",
+    module: record.module || "",
+    origin: record.origin || "",
+    imagePolicy: record.imagePolicy || "sem_imagem",
+    approvedAt: auditItem.at,
+    approvedByProfile: auditItem.reviewer?.profile || "",
+    updatedAt: auditItem.at
+  };
+  const withoutCurrent = current.filter((item) => item.sourceRequestId !== record.id && item.email !== record.email);
+  withoutCurrent.unshift(approved);
+  await env.JUS9_PROFILE_REQUESTS.put(key, JSON.stringify(withoutCurrent.slice(0, 500)));
+}
+
+async function removeGovernedProfile(env, id) {
+  const key = "governed-profiles:index";
+  const current = await listGovernedProfiles(env);
+  const updated = current.filter((item) => item.sourceRequestId !== id);
+  await env.JUS9_PROFILE_REQUESTS.put(key, JSON.stringify(updated.slice(0, 500)));
 }
 
 function sanitizeText(value, maxLength) {

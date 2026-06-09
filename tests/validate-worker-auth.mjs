@@ -234,6 +234,22 @@ assert(response.status === 403, "assessor nao deve listar auditoria de perfis");
 console.log("AUTH_OK profile-request-audit-assessor=403");
 
 response = await worker.fetch(
+  new Request("https://jus9.invalid/api/governed-profiles"),
+  calendarEnv
+);
+assert(response.status === 401, "perfis governados sem sessao devem retornar 401");
+console.log("AUTH_OK governed-profiles-anonymous=401");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/governed-profiles", {
+    headers: { cookie: await cookieFor("assessor", Date.now() + 60_000, "assessor@jus9tecnologia.com.br") }
+  }),
+  calendarEnv
+);
+assert(response.status === 403, "assessor nao deve listar perfis governados aprovados");
+console.log("AUTH_OK governed-profiles-assessor=403");
+
+response = await worker.fetch(
   new Request("https://jus9.invalid/api/profile-requests/action", {
     method: "POST",
     headers: {
@@ -259,6 +275,18 @@ data = await response.json();
 assert(response.status === 200 && Array.isArray(data.items) && data.items.length === 1, "admin deveria listar auditoria de perfis");
 assert(data.items[0].status === "aprovada_revisao_humana", "auditoria deveria refletir status aprovado");
 console.log("AUTH_OK profile-request-audit-admin=200");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/governed-profiles", {
+    headers: { cookie: await cookieFor("admin_sistema", Date.now() + 60_000, "clovis@jus9tecnologia.com.br") }
+  }),
+  calendarEnv
+);
+data = await response.json();
+assert(response.status === 200 && Array.isArray(data.items) && data.items.length === 1, "admin deveria listar perfis governados aprovados");
+assert(data.items[0].sourceRequestId === profileRequestId, "perfil governado deveria apontar para solicitacao aprovada");
+assert(data.items[0].email === "pessoa@jus9tecnologia.com.br", "perfil governado deveria manter e-mail normalizado");
+console.log("AUTH_OK governed-profiles-admin=200");
 
 response = await worker.fetch(
   new Request("https://jus9.invalid/api/profile-requests", {

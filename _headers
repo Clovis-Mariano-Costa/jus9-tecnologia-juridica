@@ -57,3 +57,6 @@
 
 /api/profile-requests/audit
   Cache-Control: no-store, max-age=0
+
+/api/governed-profiles
+  Cache-Control: no-store, max-age=0
