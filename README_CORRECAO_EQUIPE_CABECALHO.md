@@ -1,4 +1,4 @@
-# Correção — Link Equipe no cabeçalho da Jus 9
+﻿# Correção — Link Equipe no cabeçalho da Jus 9
 
 **Repertório:** `jus9-tecnologia-juridica`  
 **Página-alvo:** `https://www.jus9tecnologia.com.br/`  
@@ -7,7 +7,7 @@
 ## Destino correto
 
 ```txt
-Equipe → https://www.jus9tecnologia.com.br/equipe/
+Equipe → https://equipe.jus9tecnologia.com.br/
 ```
 
 ## Ordem desejada no cabeçalho
@@ -19,3 +19,5 @@ Equipe | Mais Direito | Comunidade | Contato | Privacidade | Jus9 Verde | Pré-c
 ## Observação
 
 Preservar o visual já aprovado da página principal. A alteração é apenas de navegação/link.
+
+

@@ -1304,6 +1304,7 @@ window.jus9DemoLogin = function(form){
     return text;
   }
 
+  // Protocolo Centelha Criativa 5.4: criatividade governada, resposta util e limite humano.
   function applyCreativeReasoningFrame(answer, question, code, focus){
     var text = String(answer || '').trim();
     if(!text) return text;

@@ -1,8 +1,8 @@
-# MAPA DE LINKS SEMÂNTICOS — Jus 9 v1.6
+﻿# MAPA DE LINKS SEMÂNTICOS — Jus 9 v1.6
 
 Regra: sempre que uma palavra pública relevante aparecer em página pública, ela deve apontar para sua rota pública oficial, quando houver.
 
-- Equipe → https://www.jus9tecnologia.com.br/equipe/
+- Equipe → https://equipe.jus9tecnologia.com.br/
 - Investidores → https://investimentos.jus9tecnologia.com.br/
 - MVP → https://jus9tecnologia.com.br/mvp#demos-jus9
 - Pré-cadastro MVP / Acompanhe o MVP → https://www.jus9tecnologia.com.br/lider-mvp
@@ -15,3 +15,5 @@ Regra: sempre que uma palavra pública relevante aparecer em página pública, e
 - Contato → mailto:Contato@jus9tecnologia.com.br
 
 Observação: não criar link público para conteúdo de cofre, sigiloso, secreto, dados sensíveis, .env, chaves, tokens ou rotas internas sem autorização.
+
+

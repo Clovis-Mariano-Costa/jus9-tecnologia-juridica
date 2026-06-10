@@ -1,4 +1,4 @@
-# Correcao MVP - logins demonstrativos por perfil e link Equipe
+﻿# Correcao MVP - logins demonstrativos por perfil e link Equipe
 
 ## Correcoes
 
@@ -32,8 +32,9 @@
 ## Link Equipe
 
 Destino oficial:
-`https://www.jus9tecnologia.com.br/equipe/`
+`https://equipe.jus9tecnologia.com.br/`
 
 ## Observacao de seguranca
 
 Os acessos demo sao publicos e demonstrativos. Nao representam login real, sessao segura, banco de dados, controle de acesso ou permissao de producao. Dados reais so devem entrar depois de backend seguro, autenticacao real, autorizacao por perfil, logs, armazenamento privado e revisao humana.
+

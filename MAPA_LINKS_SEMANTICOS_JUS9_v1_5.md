@@ -1,4 +1,4 @@
-# MAPA DE LINKS SEMÂNTICOS — JUS 9 v1.5
+﻿# MAPA DE LINKS SEMÂNTICOS — JUS 9 v1.5
 
 Repositório: `jus9-tecnologia-juridica`
 
@@ -6,7 +6,7 @@ Regra geral: sempre que uma palavra pública relevante aparecer em página, roda
 
 ## Destinos oficiais
 
-- Equipe / Equipe Jus 9 → https://www.jus9tecnologia.com.br/equipe/
+- Equipe / Equipe Jus 9 → https://equipe.jus9tecnologia.com.br/
 - Investidores → https://investimentos.jus9tecnologia.com.br/
 - MVP → https://jus9tecnologia.com.br/mvp#demos-jus9
 - Charlie Echo → https://charlieecho.jus9tecnologia.com.br/ia-profissional
@@ -22,3 +22,5 @@ Regra geral: sempre que uma palavra pública relevante aparecer em página, roda
 ## Observação de segurança
 
 Não transformar em link público conteúdo secreto, sigiloso, cofre, `.env`, tokens, chaves, dados protegidos ou material interno sensível.
+
+
