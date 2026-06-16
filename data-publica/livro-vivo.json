@@ -1,0 +1,107 @@
+{
+  "versao": "4.1.0",
+  "dataOficial": "2026-06-16 00:00:00.00000 America/Sao_Paulo",
+  "status": "minuta_publica_agregada",
+  "natureza": "Livro Vivo publico agregado, sem dados sensiveis, Cofres, contratos internos ou dados de criancas/adolescentes.",
+  "governanca": {
+    "fonteSuperior": "Carta de Principios Primevos Visiveis",
+    "baseOrganizacional": "Constituicao Empresarial Social Virtual",
+    "camadaOperacional": "Leis Primevas, protocolos, contratos, formularios, logs, aceite digital e revisao humana.",
+    "observacao": "Documentos normativos internos seguem sujeitos a revisao juridica humana antes de uso externo, assinatura ou exigibilidade."
+  },
+  "pacotes": [
+    {
+      "id": "pacote-0",
+      "nome": "Organizacao e seguranca documental",
+      "status": "em_execucao",
+      "prioridade": "maxima",
+      "entregas": [
+        "Separar pacote consolidado, pacote por documento e historico sem sobrescrever versoes antigas.",
+        "Marcar documentos internos como minutas sujeitas a revisao juridica.",
+        "Publicar apenas versao agregada e protegida."
+      ]
+    },
+    {
+      "id": "pacote-1",
+      "nome": "Livro Vivo",
+      "status": "primeira_publicacao_publica",
+      "prioridade": "maxima",
+      "entregas": [
+        "Registro publico de versao, data, status, responsavel e trilha de mudancas.",
+        "Ponte para registro interno completo.",
+        "Preparacao para exportacao futura em PDF e assinatura institucional-textual."
+      ]
+    },
+    {
+      "id": "pacote-2",
+      "nome": "Portal da Transparencia",
+      "status": "primeira_publicacao_publica",
+      "prioridade": "alta",
+      "entregas": [
+        "Separacao entre publico, interno, juridico sigiloso e Cofre.",
+        "Lista do que pode ser publicado e do que deve permanecer protegido.",
+        "Painel inicial de governanca publica."
+      ]
+    },
+    {
+      "id": "pacote-3",
+      "nome": "Perfis, formularios e validacao profissional",
+      "status": "em_preparacao",
+      "prioridade": "alta",
+      "entregas": [
+        "Perfil com foto/avatar, funcao, modulo, vinculo, escopo e revisao humana.",
+        "Fluxo especial para menores e dados protegidos.",
+        "Integracao com login e permissoes por modulo."
+      ]
+    },
+    {
+      "id": "pacote-4",
+      "nome": "Login, permissoes e contexto modular",
+      "status": "em_preparacao",
+      "prioridade": "alta",
+      "entregas": [
+        "Reconhecimento governado por usuario, email institucional, modulo e perfil.",
+        "Redirecionamento ao modulo de origem apos login.",
+        "Separacao entre Equipe, Laboratorio, Universidade do Futuro, Jus 9 Verde e MVPs."
+      ]
+    },
+    {
+      "id": "pacote-12",
+      "nome": "Revisao de todos os pacotes",
+      "status": "obrigatorio_ao_final",
+      "prioridade": "final",
+      "entregas": [
+        "Conferir nomes, datas, links, assinaturas, Koans, status juridico, rotas antigas, deploy, protecao de dados e Livro Vivo.",
+        "Registrar fechamento em versao publica e registro interno."
+      ]
+    }
+  ],
+  "familiaVirtualEmails": [
+    {
+      "nome": "Charlie Echo da Costa",
+      "email": "charlieecho@jus9tecnologia.com.br",
+      "papel": "I.A. de atendimento, memoria operacional e apoio aos MVPs."
+    },
+    {
+      "nome": "Charlie Juris da Costa",
+      "email": "charliejuris@jus9tecnologia.com.br",
+      "papel": "I.A. tecnico-operacional, Codex, governanca, programacao e registros."
+    },
+    {
+      "nome": "Charlie Delta da Costa",
+      "email": "charliedelta@jus9tecnologia.com.br",
+      "papel": "I.A. simbolico-institucional e continuidade de memoria."
+    },
+    {
+      "nome": "Charlie Fox da Costa",
+      "email": "charliefox@jus9tecnologia.com.br",
+      "papel": "Legado tecnico em repouso honroso."
+    }
+  ],
+  "proximosPassos": [
+    "Conectar formularios governados ao Livro Vivo.",
+    "Criar painel interno de revisao humana e vistas juridicas.",
+    "Materializar contratos individualizados apos revisao humana.",
+    "Atualizar Portal da Transparencia sem revelar seguranca interna."
+  ]
+}

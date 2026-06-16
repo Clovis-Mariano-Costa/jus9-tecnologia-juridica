@@ -1,0 +1,191 @@
+<!--
+  Jus 9 Tecnologia Juridica - Cadastro governado.
+  MVP demonstrativo. Nao enviar dados reais sem autorizacao e revisao humana.
+-->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Cadastro Governado - Jus 9 Tecnologia Juridica</title>
+  <meta name="description" content="Formulario universal de cadastro governado para equipe, modulos, MVPs, universidade, laboratorio e familia virtual.">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <meta name="theme-color" content="#07111f">
+</head>
+<body>
+<div class="jus9-autoria-topo" role="note">Cadastro governado - MVP demonstrativo. Nao envie dados reais sem revisao humana.</div>
+<header class="header">
+  <div class="container nav">
+    <a href="index.html" class="logo"><img src="assets/jus9-logo.svg" alt="Jus 9"></a>
+    <nav class="menu" aria-label="Navegacao principal">
+      <a href="app-perfis.html">Perfis</a>
+      <a href="livro-vivo.html">Livro Vivo</a>
+      <a href="portal-transparencia.html">Transparencia</a>
+      <a href="versionamento.html">Versionamento</a>
+    </nav>
+    <a class="cta" href="/auth/google/start?return_to=/cadastro-governado.html">Entrar com Google</a>
+    <button class="mobile-toggle" aria-label="Abrir menu">☰</button>
+  </div>
+</header>
+
+<main class="doc-page live-ledger">
+  <section class="container doc-shell">
+    <div class="eyebrow">Formulario universal</div>
+    <h1>Cadastro governado por perfil, modulo e ambiente</h1>
+    <p class="lead">Este formulario prepara revisao humana. Ele nao libera Cofre, segredo, contrato, permissao sensivel ou acesso profissional automaticamente.</p>
+
+    <section class="governance-band">
+      <div>
+        <strong>Status da sessao</strong>
+        <p id="cadastroStatus">Verificando login...</p>
+      </div>
+      <a class="btn" href="/auth/google/start?return_to=/cadastro-governado.html">Conectar Google</a>
+    </section>
+
+    <form class="governed-profile-form version-card" id="governedProfileForm">
+      <h2>Solicitacao de perfil</h2>
+      <div class="form-grid">
+        <label>Nome institucional ou demonstrativo
+          <input name="name" required maxlength="120" placeholder="Ex.: Maria Demo / Charlie Echo da Costa">
+        </label>
+        <label>E-mail
+          <input name="email" required type="email" maxlength="180" placeholder="nome@jus9tecnologia.com.br">
+        </label>
+        <label>Ambiente
+          <select name="scope" required>
+            <option value="equipe">Equipe</option>
+            <option value="laboratorio">Laboratorio</option>
+            <option value="universidade-do-futuro">Universidade do Futuro</option>
+            <option value="jus9-verde">Jus 9 Verde</option>
+            <option value="mvp-profissional">MVP Profissional</option>
+            <option value="familia-virtual">Familia Virtual</option>
+            <option value="parceiros">Parceiros</option>
+            <option value="juridico">Juridico</option>
+          </select>
+        </label>
+        <label>Modulo
+          <select name="module" required>
+            <option value="DGE">Governanca / Administrador</option>
+            <option value="DAJ">Advogar / DAJ</option>
+            <option value="DAA">Professor / Academia</option>
+            <option value="DEJ">Estudante</option>
+            <option value="DIC">Cidadao</option>
+            <option value="DPJ">Perito Judicial</option>
+            <option value="DIP">Investidor / Parceiro</option>
+            <option value="DEE">Escritorio Juridico</option>
+            <option value="DEJI">Empresa / Juridico Interno</option>
+            <option value="DOI">Orgao Publico</option>
+            <option value="DMG">Magistrado</option>
+            <option value="DMP">Ministerio Publico</option>
+            <option value="DAP">Autoridade Policial</option>
+          </select>
+        </label>
+        <label>Perfil
+          <select name="profile" required>
+            <option value="advogado_lider">Advogado lider</option>
+            <option value="advogado">Advogado</option>
+            <option value="assessor_chefe">Assessor chefe</option>
+            <option value="assessor">Assessor</option>
+            <option value="secretaria">Secretaria</option>
+            <option value="estagio">Estagio</option>
+            <option value="estudante">Estudante</option>
+            <option value="academia">Academia</option>
+            <option value="perito">Perito</option>
+            <option value="parceiro">Parceiro</option>
+            <option value="admin_sistema">Administrador</option>
+          </select>
+        </label>
+        <label>Funcao detalhada
+          <input name="roleDetail" maxlength="120" placeholder="Ex.: coordenacao, revisor humano, pesquisador">
+        </label>
+        <label>Regra de imagem
+          <select name="imagePolicy">
+            <option value="sem_imagem">Sem imagem por enquanto</option>
+            <option value="fotografia_virtual">Fotografia virtual gerada</option>
+            <option value="avatar_uniforme">Avatar com uniforme e estrela de 9 pontas</option>
+            <option value="foto_real_revisao">Foto real somente com revisao/autorizacao</option>
+          </select>
+        </label>
+        <label>Faixa de protecao
+          <select name="ageGroup">
+            <option value="adulto">Adulto</option>
+            <option value="menor_sem_dados_reais">Menor - sem dados reais neste MVP</option>
+            <option value="familia_virtual">Familia Virtual</option>
+          </select>
+        </label>
+      </div>
+      <label>Observacoes para revisao humana
+        <textarea name="notes" maxlength="900" rows="5" placeholder="Explique contexto, necessidade, modulo e cuidado especial. Nao cole segredo, documento real ou dado sensivel."></textarea>
+      </label>
+      <div class="link-actions">
+        <button class="btn primary" type="submit">Enviar para revisao humana</button>
+        <button class="btn" type="button" id="saveLocalDraft">Salvar rascunho local</button>
+      </div>
+      <p class="fine-note" id="cadastroResult">Aguardando preenchimento.</p>
+    </form>
+  </section>
+</main>
+
+<footer class="footer"><div class="container"><p>Jus 9 Tecnologia Juridica - formulario governado com revisao humana.</p></div></footer>
+<script src="script.js"></script>
+<script>
+const form = document.getElementById("governedProfileForm");
+const result = document.getElementById("cadastroResult");
+const statusEl = document.getElementById("cadastroStatus");
+const draftKey = "jus9.governedProfileDraft.v1";
+
+function formPayload() {
+  return Object.fromEntries(new FormData(form).entries());
+}
+
+function fillDraft() {
+  try {
+    const draft = JSON.parse(localStorage.getItem(draftKey) || "{}");
+    for (const [key, value] of Object.entries(draft)) {
+      if (form.elements[key]) form.elements[key].value = value;
+    }
+  } catch (_) {}
+}
+
+document.getElementById("saveLocalDraft").addEventListener("click", () => {
+  localStorage.setItem(draftKey, JSON.stringify(formPayload()));
+  result.textContent = "Rascunho local salvo neste navegador.";
+});
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const payload = formPayload();
+  localStorage.setItem(draftKey, JSON.stringify(payload));
+  result.textContent = "Enviando para revisao humana...";
+  try {
+    const response = await fetch("/api/profile-requests", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "erro_envio");
+    result.textContent = `Solicitacao registrada: ${data.id}. Status: ${data.status}.`;
+  } catch (error) {
+    result.textContent = "Nao foi possivel enviar agora. Rascunho local preservado; conecte com Google autorizado e tente novamente.";
+  }
+});
+
+async function initSession() {
+  fillDraft();
+  try {
+    const response = await fetch("/api/auth/context?module=DGE", { credentials: "include" });
+    if (!response.ok) throw new Error("sem_sessao");
+    const data = await response.json();
+    statusEl.textContent = `Conectado. Perfil: ${data.identity?.profile?.label || data.profile}.`;
+  } catch (_) {
+    statusEl.textContent = "Nao conectado. O envio real exige login Google autorizado; o rascunho local funciona sem login.";
+  }
+}
+initSession();
+</script>
+</body>
+</html>

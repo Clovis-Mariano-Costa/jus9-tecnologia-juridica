@@ -1,0 +1,102 @@
+<!--
+  Jus 9 Tecnologia Juridica - Portal da Transparencia publico agregado.
+  Software livre com autoria preservada.
+-->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Portal da Transparencia - Jus 9 Tecnologia Juridica</title>
+  <meta name="description" content="Portal da Transparencia da Jus 9 Tecnologia Juridica com publicacao agregada e protecao de dados sensiveis.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <meta name="theme-color" content="#07111f">
+</head>
+<body>
+<div class="jus9-autoria-topo" role="note">Portal da Transparencia - publicar com protecao.</div>
+<header class="header">
+  <div class="container nav">
+    <a href="index.html" class="logo"><img src="assets/jus9-logo.svg" alt="Jus 9"></a>
+    <nav class="menu" aria-label="Navegacao principal">
+      <a href="index.html">Inicio</a>
+      <a href="livro-vivo.html">Livro Vivo</a>
+      <a href="versionamento.html">Versionamento</a>
+      <a href="mvp.html">MVPs</a>
+      <a href="politica-de-privacidade.html">Privacidade</a>
+    </nav>
+    <a class="cta" href="app.html">Abrir App</a>
+    <button class="mobile-toggle" aria-label="Abrir menu">☰</button>
+  </div>
+</header>
+
+<main class="doc-page live-ledger">
+  <section class="container doc-shell">
+    <div class="eyebrow">Transparencia governada</div>
+    <h1>Portal publico com protecao de dados</h1>
+    <p class="lead">A Jus 9 publica direcao, versoes, avisos, principios e status agregados. O que envolve pessoa, contrato, menor, estrategia juridica, Cofre ou segredo permanece protegido.</p>
+    <div class="ledger-meta" id="transparenciaMeta"></div>
+
+    <section class="version-card">
+      <h2>Classificacao de publicacao</h2>
+      <div class="classification-grid" id="classificacoes"></div>
+    </section>
+
+    <section class="version-card">
+      <h2>Paineis publicos</h2>
+      <div class="ledger-list compact" id="paineisTransparencia"></div>
+    </section>
+
+    <section class="version-card alert-card">
+      <h2>Alertas publicos de MVP</h2>
+      <ul id="alertasTransparencia"></ul>
+    </section>
+
+    <section class="governance-band">
+      <div>
+        <strong>Proximo movimento</strong>
+        <p>Conectar formularios, perfis, Livro Vivo e revisao humana antes de qualquer uso real com dados sensiveis.</p>
+      </div>
+      <a class="btn primary" href="livro-vivo.html">Ver Livro Vivo</a>
+    </section>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Jus 9 Tecnologia Juridica - transparencia com seguranca, autoria preservada e revisao humana.</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+async function initTransparencia() {
+  const response = await fetch("data-publica/portal-transparencia.json", { cache: "no-store" });
+  const data = await response.json();
+  document.getElementById("transparenciaMeta").innerHTML = `
+    <span><strong>Versao:</strong> ${data.versao}</span>
+    <span><strong>Data:</strong> ${data.dataOficial}</span>
+    <span><strong>Status:</strong> ${data.status.replaceAll("_", " ")}</span>
+  `;
+  document.getElementById("classificacoes").innerHTML = data.classificacoes.map((item) => `
+    <article class="${item.podePublicar ? "can-publish" : "protected"}">
+      <span class="status-pill">${item.podePublicar ? "publicavel" : "protegido"}</span>
+      <h3>${item.nome}</h3>
+      <ul>${item.exemplos.map((exemplo) => `<li>${exemplo}</li>`).join("")}</ul>
+    </article>
+  `).join("");
+  document.getElementById("paineisTransparencia").innerHTML = data.paineis.map((painel) => `
+    <article class="ledger-item">
+      <div>
+        <span class="status-pill">${painel.status.replaceAll("_", " ")}</span>
+        <h3>${painel.nome}</h3>
+      </div>
+      <p>${painel.descricao}</p>
+    </article>
+  `).join("");
+  document.getElementById("alertasTransparencia").innerHTML = data.alertasPublicos.map((alerta) => `<li>${alerta}</li>`).join("");
+}
+initTransparencia();
+</script>
+</body>
+</html>

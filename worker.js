@@ -109,6 +109,18 @@ export default {
       assetUrl.pathname = "/app-chat-charlie-echo.html";
     }
 
+    if (assetUrl.pathname === "/livro-vivo" || assetUrl.pathname === "/livro-vivo/") {
+      assetUrl.pathname = "/livro-vivo.html";
+    }
+
+    if (assetUrl.pathname === "/portal-transparencia" || assetUrl.pathname === "/portal-transparencia/") {
+      assetUrl.pathname = "/portal-transparencia.html";
+    }
+
+    if (assetUrl.pathname === "/cadastro-governado" || assetUrl.pathname === "/cadastro-governado/") {
+      assetUrl.pathname = "/cadastro-governado.html";
+    }
+
     const assetRequest = new Request(assetUrl.toString(), request);
     const response = await env.ASSETS.fetch(assetRequest);
     const headers = new Headers(response.headers);
@@ -650,6 +662,10 @@ async function saveProfileRequest(env, session, request, payload) {
   const module = sanitizeText(payload.module, 80);
   const notes = sanitizeText(payload.notes, 900);
   const imagePolicy = sanitizeText(payload.imagePolicy, 80) || "sem_imagem";
+  const roleDetail = sanitizeText(payload.roleDetail, 120);
+  const ageGroup = sanitizeText(payload.ageGroup, 80) || "nao_informado";
+  const professionalDocumentStatus = sanitizeText(payload.professionalDocumentStatus, 80) || "nao_informado";
+  const responsibleReview = sanitizeText(payload.responsibleReview, 120);
   if (!name || !email || !profile) {
     return { status: 400, payload: { ok: false, error: "campos_obrigatorios", required: ["name", "email", "profile"] } };
   }
@@ -667,8 +683,12 @@ async function saveProfileRequest(env, session, request, payload) {
     email,
     profile,
     module,
+    roleDetail,
     notes,
     imagePolicy,
+    ageGroup,
+    professionalDocumentStatus,
+    responsibleReview,
     requester: {
       email: requesterEmail,
       profile: session.profile,
@@ -687,6 +707,9 @@ async function saveProfileRequest(env, session, request, payload) {
     email,
     profile,
     module,
+    roleDetail,
+    ageGroup,
+    imagePolicy,
     origin,
     requesterProfile: session.profile,
     createdAt: now
@@ -818,8 +841,11 @@ async function upsertGovernedProfile(env, record, auditItem) {
     email: record.email || "",
     profile: record.profile || "",
     module: record.module || "",
+    roleDetail: record.roleDetail || "",
     origin: record.origin || "",
     imagePolicy: record.imagePolicy || "sem_imagem",
+    ageGroup: record.ageGroup || "nao_informado",
+    professionalDocumentStatus: record.professionalDocumentStatus || "nao_informado",
     approvedAt: auditItem.at,
     approvedByProfile: auditItem.reviewer?.profile || "",
     updatedAt: auditItem.at
@@ -847,6 +873,9 @@ async function governedProfileForEmail(env, email) {
     scope: item.scope || "",
     profile: item.profile || "",
     module: item.module || "",
+    roleDetail: item.roleDetail || "",
+    ageGroup: item.ageGroup || "",
+    imagePolicy: item.imagePolicy || "",
     sourceRequestId: item.sourceRequestId || "",
     approvedAt: item.approvedAt || ""
   };

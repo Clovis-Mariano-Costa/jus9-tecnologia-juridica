@@ -1,0 +1,68 @@
+{
+  "schema": "jus9.governed-profile.schema.public.v1",
+  "updatedAt": "2026-06-16 00:00:00.00000 America/Sao_Paulo",
+  "classification": "PUBLICO / ESQUEMA AGREGADO / SEM DADOS REAIS",
+  "notice": "Este esquema orienta cadastros governados. Envio real depende de login, revisao humana, base juridica, finalidade e ambiente autorizado.",
+  "scopes": [
+    "equipe",
+    "laboratorio",
+    "universidade-do-futuro",
+    "jus9-verde",
+    "mvp-profissional",
+    "familia-virtual",
+    "parceiros",
+    "juridico"
+  ],
+  "modules": [
+    { "code": "DAJ", "label": "Advogar / DAJ" },
+    { "code": "DAA", "label": "Professor / Academia" },
+    { "code": "DEJ", "label": "Estudante" },
+    { "code": "DIC", "label": "Cidadao" },
+    { "code": "DPJ", "label": "Perito Judicial" },
+    { "code": "DIP", "label": "Investidor / Parceiro" },
+    { "code": "DEE", "label": "Escritorio Juridico" },
+    { "code": "DEJI", "label": "Empresa / Juridico Interno" },
+    { "code": "DOI", "label": "Orgao Publico" },
+    { "code": "DGE", "label": "Administrador Jus 9" },
+    { "code": "DMG", "label": "Magistrado" },
+    { "code": "DMP", "label": "Ministerio Publico" },
+    { "code": "DAP", "label": "Autoridade Policial" }
+  ],
+  "roles": [
+    "fundador_humano",
+    "advogado_lider",
+    "advogado",
+    "assessor_chefe",
+    "assessor",
+    "secretaria",
+    "estagio",
+    "estudante",
+    "professor",
+    "pesquisador",
+    "desenvolvedor",
+    "revisor_humano",
+    "parceiro",
+    "familia_virtual",
+    "visitante_mvp"
+  ],
+  "photoRules": {
+    "fotografiaVirtual": "Imagem gerada inspirada na personalidade virtual.",
+    "avatar": "Imagem humana ou humanizada com uniforme padrao quando aplicavel.",
+    "estrela": "Uniformes e simbolos institucionais devem usar estrela de 9 pontas."
+  },
+  "requiredForRequest": [
+    "name",
+    "email",
+    "profile",
+    "scope",
+    "module"
+  ],
+  "sensitiveFields": [
+    "documento oficial",
+    "endereco",
+    "dados de menor",
+    "contato pessoal",
+    "documento profissional",
+    "imagem de pessoa real"
+  ]
+}

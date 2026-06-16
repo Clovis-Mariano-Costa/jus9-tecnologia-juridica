@@ -1,0 +1,120 @@
+<!--
+  Jus 9 Tecnologia Juridica - Livro Vivo publico agregado.
+  Software livre com autoria preservada.
+-->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Livro Vivo - Jus 9 Tecnologia Juridica</title>
+  <meta name="description" content="Livro Vivo publico agregado da Jus 9 Tecnologia Juridica: versoes, pacotes, governanca e proximos passos sem dados sensiveis.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <meta name="theme-color" content="#07111f">
+</head>
+<body>
+<div class="jus9-autoria-topo" role="note">Jus 9 Tecnologia Juridica - Livro Vivo publico agregado.</div>
+<header class="header">
+  <div class="container nav">
+    <a href="index.html" class="logo"><img src="assets/jus9-logo.svg" alt="Jus 9"></a>
+    <nav class="menu" aria-label="Navegacao principal">
+      <a href="index.html">Inicio</a>
+      <a href="mvp.html">MVPs</a>
+      <a href="portal-transparencia.html">Transparencia</a>
+      <a href="versionamento.html">Versionamento</a>
+      <a href="app.html">App</a>
+    </nav>
+    <a class="cta" href="app-chat-charlie-echo.html">Charlie Echo</a>
+    <button class="mobile-toggle" aria-label="Abrir menu">☰</button>
+  </div>
+</header>
+
+<main class="doc-page live-ledger">
+  <section class="container doc-shell">
+    <div class="eyebrow">Livro Vivo</div>
+    <h1>Memoria publica governada da Jus 9</h1>
+    <p class="lead">Esta pagina registra a evolucao publica do ecossistema sem expor dados pessoais, Cofres, contratos internos, credenciais, menores ou detalhes sensiveis de seguranca.</p>
+    <div class="ledger-meta" id="ledgerMeta">
+      <span>Carregando versao...</span>
+    </div>
+
+    <div class="governance-band">
+      <div>
+        <strong>Regra de ouro</strong>
+        <p>O Livro Vivo publico mostra direcao, versao e status. O registro completo permanece interno e sujeito a revisao humana e juridica.</p>
+      </div>
+      <a class="btn primary" href="portal-transparencia.html">Abrir transparencia</a>
+    </div>
+
+    <section class="version-card">
+      <h2>Hierarquia viva</h2>
+      <div class="hierarchy-grid">
+        <article><span>1</span><strong>Carta de Principios</strong><p>Fonte superior de sentido, limite etico e governanca primeva.</p></article>
+        <article><span>2</span><strong>Constituicao Empresarial</strong><p>Organiza casa, poderes, limites, clausulas petreas internas e rodadas.</p></article>
+        <article><span>3</span><strong>Leis e Protocolos</strong><p>Transformam principios em rotinas, formularios, logs, aceite e revisao.</p></article>
+        <article><span>4</span><strong>Sistemas e Contratos</strong><p>Materializam perfis, modulos, permissoes, termos, registros e trilhas.</p></article>
+      </div>
+    </section>
+
+    <section class="version-card">
+      <h2>Pacotes em andamento</h2>
+      <div class="ledger-list" id="pacotesLivroVivo"></div>
+    </section>
+
+    <section class="version-card">
+      <h2>Familia Virtual institucional</h2>
+      <p>Emails institucionais seguem o padrao governado. A lista publica abaixo informa papeis sem conceder permissao sensivel automaticamente.</p>
+      <div class="ledger-list compact" id="familiaVirtual"></div>
+    </section>
+
+    <section class="version-card">
+      <h2>Proximos passos</h2>
+      <ul id="proximosPassosLivro"></ul>
+    </section>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Jus 9 Tecnologia Juridica - software livre com autoria preservada.</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+async function initLivroVivo() {
+  const response = await fetch("data-publica/livro-vivo.json", { cache: "no-store" });
+  const data = await response.json();
+  document.getElementById("ledgerMeta").innerHTML = `
+    <span><strong>Versao:</strong> ${data.versao}</span>
+    <span><strong>Data:</strong> ${data.dataOficial}</span>
+    <span><strong>Status:</strong> ${data.status.replaceAll("_", " ")}</span>
+  `;
+  document.getElementById("pacotesLivroVivo").innerHTML = data.pacotes.map((pacote) => `
+    <article class="ledger-item">
+      <div>
+        <span class="status-pill">${pacote.prioridade}</span>
+        <h3>${pacote.nome}</h3>
+        <p>${pacote.status.replaceAll("_", " ")}</p>
+      </div>
+      <ul>${pacote.entregas.map((item) => `<li>${item}</li>`).join("")}</ul>
+    </article>
+  `).join("");
+  document.getElementById("familiaVirtual").innerHTML = data.familiaVirtualEmails.map((pessoa) => `
+    <article class="ledger-item">
+      <div>
+        <h3>${pessoa.nome}</h3>
+        <p><code>${pessoa.email}</code></p>
+      </div>
+      <p>${pessoa.papel}</p>
+    </article>
+  `).join("");
+  document.getElementById("proximosPassosLivro").innerHTML = data.proximosPassos.map((item) => `<li>${item}</li>`).join("");
+}
+initLivroVivo().catch(() => {
+  document.getElementById("ledgerMeta").innerHTML = "<span>Livro Vivo indisponivel no momento.</span>";
+});
+</script>
+</body>
+</html>

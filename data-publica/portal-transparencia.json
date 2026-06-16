@@ -1,0 +1,77 @@
+{
+  "versao": "1.0.0",
+  "dataOficial": "2026-06-16 00:00:00.00000 America/Sao_Paulo",
+  "status": "publico_agregado_inicial",
+  "principio": "Transparencia com protecao: publicar o que orienta a comunidade sem expor dados pessoais, menores, contratos internos, Cofres, segredos, credenciais ou detalhes de seguranca.",
+  "classificacoes": [
+    {
+      "nome": "Publico",
+      "podePublicar": true,
+      "exemplos": [
+        "Versionamento publico",
+        "Aviso de MVP",
+        "Principios em linguagem agregada",
+        "Explicacao publica de modulos",
+        "Relatorios sem dados sensiveis"
+      ]
+    },
+    {
+      "nome": "Interno",
+      "podePublicar": false,
+      "exemplos": [
+        "Minutas completas de governanca antes da revisao juridica",
+        "Registro interno de decisoes",
+        "Backlogs operacionais",
+        "Perfis pendentes de revisao"
+      ]
+    },
+    {
+      "nome": "Juridico sigiloso",
+      "podePublicar": false,
+      "exemplos": [
+        "Contratos individualizados",
+        "Parecer juridico",
+        "Dados de parte, processo, estrategia ou documento sigiloso"
+      ]
+    },
+    {
+      "nome": "Cofre nao automatico",
+      "podePublicar": false,
+      "exemplos": [
+        "Segredos",
+        "Tokens",
+        "Chaves",
+        "Credenciais",
+        "Dados pessoais sensiveis",
+        "Documentos que exigem decisao humana expressa"
+      ]
+    }
+  ],
+  "paineis": [
+    {
+      "nome": "Governanca publica",
+      "status": "ativo",
+      "descricao": "Publica versoes agregadas, avisos de MVP, links oficiais, governanca de alto nivel e historico nao sensivel."
+    },
+    {
+      "nome": "Livro Vivo",
+      "status": "ativo_inicial",
+      "descricao": "Registra a evolucao publica do ecossistema e aponta para registros internos protegidos."
+    },
+    {
+      "nome": "Vistas juridicas",
+      "status": "pendente_revisao_humana",
+      "descricao": "O pacote final deve seguir para revisao juridica antes de uso externo, assinatura, cobranca ou exigibilidade."
+    },
+    {
+      "nome": "Tabela anual de valores",
+      "status": "referencia_interna",
+      "descricao": "Valores monetarios do pacote possuem validade ordinaria de 2026-06-15 a 2027-06-15, sujeitos a revisao juridica, contratual, fiscal e humana."
+    }
+  ],
+  "alertasPublicos": [
+    "Ambientes demonstrativos e MVPs nao devem receber dados reais do publico.",
+    "Dados reais exigem revisao humana, base juridica, finalidade e ambiente autorizado.",
+    "O publico deve conhecer o alerta de MVP; detalhes internos de seguranca nao devem ser publicados."
+  ]
+}
