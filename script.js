@@ -803,6 +803,47 @@ window.jus9DemoLogin = function(form){
       /\b(ative|ativar|usar|use|entre no|responda em)\b.{0,24}\bmodo (jurista|especialista|social|publico|público|governanca|governança)\b/.test(q);
   }
 
+  function plainAiText(text){
+    var value = String(text || '').toLowerCase();
+    if(value.normalize) value = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return value.replace(/[^\w\s/-]/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
+  function asksDriveSaver(question){
+    var q = plainAiText(question);
+    return /\b(mini ?backend|minibackend|drive saver|jus9 drive saver|cartorio|cartorio digital|google drive|salvar no drive|salvar documento|apps script|web app|chave interna|cofre nao automatico|cofre deposito|cofre)\b/.test(q);
+  }
+
+  function driveSaverAnswer(question){
+    if(!asksDriveSaver(question)) return '';
+    var q = plainAiText(question);
+    var wantsSecret = /\b(chave interna|token|senha|client secret|segredo|credencial|url do web app)\b/.test(q);
+    var wantsCofre = /\b(cofre|cofre nao automatico|cofre deposito)\b/.test(q);
+    var lines = [
+      'Consigo orientar o JUS9_DRIVE_SAVER_MVP como miniBackend governado do Cartorio Digital Charlie Echo.',
+      '',
+      'Mapa fixo de salvamento:',
+      '- PUBLICO -> 01_DOCUMENTOS_PUBLICOS_E_EDUCATIVOS | revisao humana: nao obrigatoria.',
+      '- INTERNO -> 02_DOCUMENTOS_INTERNOS_JUS9 | revisao humana: nao obrigatoria no MVP.',
+      '- JURIDICO_SIGILOSO ou classificacao desconhecida -> 00_ENTRADA_PARA_REVISAO_HUMANA | revisao humana: obrigatoria.',
+      '- COFRE_NAO_AUTOMATICO -> bloqueado para salvamento automatico.',
+      '',
+      'Fluxo seguro:',
+      '1. Eu preparo classificacao, resumo, payload sanitizado e checklist.',
+      '2. Eu ofereco links clicaveis de download na tela para PDF, texto, Markdown ou JSON quando gerar pacote.',
+      '3. O envio real ao Google Drive deve ser executado localmente pelo humano ou por Codex autorizado, usando o script PowerShell com a chave pedida no terminal.',
+      '4. O retorno pode registrar fileId, URL, classificacao final e pasta destino, sem colar segredo no chat publico.'
+    ];
+    if(wantsSecret) {
+      lines.push('', 'Segredo e credenciais: eu nao devo pedir, revelar, repetir ou armazenar CHAVE_INTERNA, URL ativa do Web App, IDs de pastas, tokens, senhas ou client secret. Se precisar testar, chame o ambiente local autorizado.');
+    }
+    if(wantsCofre) {
+      lines.push('', 'Cofre: o COFRE_NAO_AUTOMATICO nao recebe salvamento automatico. Deposito assistido no cofre so com autorizacao expressa do Fundador e permissao de escrita controlada, sem listar, ler, editar, apagar, mover ou publicar conteudo existente.');
+    }
+    lines.push('', 'Preparei tambem um pacote local de orientacao para download nesta tela, para Charlie Echo consultar o fluxo sem expor segredo.');
+    return lines.join('\n');
+  }
+
   function socialResponsibilityFallback(question){
     var q = (question || '').toLowerCase();
     if (q.indexOf('responsabilidade social') === -1 || q.indexOf('empresa') === -1) return '';
@@ -1522,6 +1563,76 @@ window.jus9DemoLogin = function(form){
     return { url:URL.createObjectURL(blob), filename:filename };
   }
 
+  function buildDriveSaverDownloads(question, code, focus){
+    var stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\..+$/, '').replace('T', '-');
+    var mdName = 'guia-mini-backend-charlie-echo-' + stamp + '.md';
+    var jsonName = 'payload-ficticio-jus9-drive-saver-' + stamp + '.json';
+    var txtName = 'checklist-mini-backend-drive-saver-' + stamp + '.txt';
+    var title = 'Guia operacional - JUS9_DRIVE_SAVER_MVP';
+    var md = [
+      '# ' + title,
+      '',
+      'Ambiente: ' + (code || 'Charlie Echo'),
+      'Foco: ' + (focus || 'Cartorio Digital Charlie Echo'),
+      'Gerado em: ' + new Date().toLocaleString('pt-BR'),
+      '',
+      '## Regra central',
+      'Charlie Echo pode orientar, classificar, preparar checklist e gerar arquivos locais para download.',
+      'O envio real ao Google Drive deve ser executado por humano ou Codex autorizado no computador configurado.',
+      '',
+      '## Classificacao',
+      '- PUBLICO -> 01_DOCUMENTOS_PUBLICOS_E_EDUCATIVOS | revisao humana: nao obrigatoria.',
+      '- INTERNO -> 02_DOCUMENTOS_INTERNOS_JUS9 | revisao humana: nao obrigatoria no MVP.',
+      '- JURIDICO_SIGILOSO -> 00_ENTRADA_PARA_REVISAO_HUMANA | revisao humana: obrigatoria.',
+      '- DESCONHECIDA -> 00_ENTRADA_PARA_REVISAO_HUMANA | revisao humana: obrigatoria.',
+      '- COFRE_NAO_AUTOMATICO -> bloqueado para automatico.',
+      '',
+      '## Nunca expor',
+      'CHAVE_INTERNA, URL ativa do Web App, IDs de pastas, tokens, senhas, client secret ou documentos reais no chat publico.',
+      '',
+      '## Fluxo de trabalho',
+      '1. Preparar conteudo ficticio ou sanitizado.',
+      '2. Escolher classificacao.',
+      '3. Gerar pacote local para download quando houver relatorio, roteiro, payload ou checklist.',
+      '4. Executar envio local com revisao humana quando necessario.',
+      '5. Registrar apenas retorno seguro: fileId, URL, classificacao final, pasta destino e revisao humana.',
+      '',
+      '## Pedido que originou o pacote',
+      String(question || 'Pedido nao informado.')
+    ].join('\n');
+    var payload = {
+      service:'JUS9_DRIVE_SAVER_MVP',
+      ambiente:'demonstrativo',
+      origem:'Charlie Echo - pacote local de orientacao',
+      mvp:code || 'MVP',
+      foco:focus || 'Cartorio Digital Charlie Echo',
+      titulo:'Documento ficticio preparado pela Charlie Echo',
+      classificacao:'PUBLICO',
+      conteudo:'Substituir por conteudo ficticio ou sanitizado antes de qualquer envio real.',
+      revisaoHumanaObrigatoria:false,
+      cofreAutomatico:false,
+      proibidoExpor:['CHAVE_INTERNA','URL ativa do Web App','IDs de pastas','tokens','senhas','client secret','dados reais'],
+      pergunta:String(question || '')
+    };
+    var checklist = [
+      'CHECKLIST - JUS9_DRIVE_SAVER_MVP',
+      '',
+      '[ ] Conteudo e ficticio ou esta sanitizado.',
+      '[ ] Classificacao definida: PUBLICO, INTERNO, JURIDICO_SIGILOSO ou DESCONHECIDA.',
+      '[ ] Se sigiloso/desconhecido, enviar para entrada de revisao humana.',
+      '[ ] Nao colar CHAVE_INTERNA, token, senha, URL ativa do Web App ou ID de pasta no chat.',
+      '[ ] COFRE_NAO_AUTOMATICO nao recebe salvamento automatico.',
+      '[ ] Execucao real feita no computador autorizado.',
+      '[ ] Retorno registrado sem segredo: fileId, URL, classificacao final e pasta destino.',
+      '[ ] Link de download oferecido ao usuario quando a Charlie gerar pacote local.'
+    ].join('\n');
+    return [
+      Object.assign(prepareBlobDownload(mdName, new Blob([md], { type:'text/markdown;charset=utf-8' })), { label:'Baixar guia MiniBackend' }),
+      Object.assign(prepareBlobDownload(jsonName, new Blob([JSON.stringify(payload, null, 2)], { type:'application/json;charset=utf-8' })), { label:'Baixar payload ficticio' }),
+      Object.assign(prepareBlobDownload(txtName, new Blob([checklist], { type:'text/plain;charset=utf-8' })), { label:'Baixar checklist' })
+    ];
+  }
+
   function pdfHex(text){
     var value = String(text || '');
     var hex = 'FEFF';
@@ -1750,6 +1861,7 @@ window.jus9DemoLogin = function(form){
       ['data-ai-settings', 'Painel'],
       ['data-ai-improve', 'Melhorar resposta'],
       ['data-ai-sources', 'Fontes'],
+      ['data-ai-drive-saver', 'MiniBackend'],
       ['data-ai-summary', 'Atualizar resumo'],
       ['data-ai-package', 'Gerar PDF']
     ];
@@ -1757,6 +1869,7 @@ window.jus9DemoLogin = function(form){
       ['data-ai-settings', 'Painel'],
       ['data-ai-improve', 'Melhorar resposta'],
       ['data-ai-sources', 'Fontes'],
+      ['data-ai-drive-saver', 'MiniBackend'],
       ['data-ai-package', 'Gerar PDF']
     ];
     return [
@@ -1950,6 +2063,13 @@ window.jus9DemoLogin = function(form){
         { filename:textFile.filename, url:textFile.url, label:'Baixar roteiro em texto' }
       ]);
     });
+    var driveSaverButton = bar.querySelector('[data-ai-drive-saver]');
+    if(driveSaverButton) driveSaverButton.addEventListener('click', function(){
+      closeActionMenu();
+      var prompt = 'Ensine Charlie Echo a usar o miniBackend JUS9_DRIVE_SAVER_MVP e gerar pacote de download.';
+      appendEcho(driveSaverAnswer(prompt));
+      appendDownloadEcho(buildDriveSaverDownloads(prompt, code, focus));
+    });
   }
 
   function bindAiChat(card){
@@ -1964,6 +2084,21 @@ window.jus9DemoLogin = function(form){
     if(layout !== 'pequeno') injectChatRooms(card, code, function(){ renderChatWindow(card, code, focus); });
     addChatUtilityActions(card, code, focus);
     renderChatWindow(card, code, focus);
+    function appendDownloadEchoForForm(files){
+      var targetWindow = card.querySelector('[data-ai-chat-window]');
+      if(!targetWindow) return;
+      var downloadMsg = document.createElement('div');
+      downloadMsg.className = 'ai-message ai-message-echo';
+      var links = (files || []).map(function(file){
+        var safeName = escapeHtml(file.filename || 'download');
+        var safeLabel = escapeHtml(file.label || file.filename || 'Baixar arquivo');
+        return '<a class="download-link" href="' + file.url + '" download="' + safeName + '">' + safeLabel + '</a>';
+      }).join(' ');
+      downloadMsg.innerHTML = '<strong>Charlie Echo:</strong> Preparei o pacote local e deixei os downloads prontos. <span class="download-actions">' + links + '</span>';
+      targetWindow.appendChild(downloadMsg);
+      keepChatInView(card, downloadMsg);
+      rememberChatExchange(code, '', 'Preparei pacote local com links clicaveis de download: ' + (files || []).map(function(file){ return file.filename; }).join(', ') + '.');
+    }
     form.addEventListener('submit', async function(event){
       event.preventDefault();
       var question = (input.value || '').trim();
@@ -1983,7 +2118,7 @@ window.jus9DemoLogin = function(form){
       });
       var echoMsg = document.createElement('div');
       echoMsg.className = 'ai-message ai-message-echo';
-      var localIdentity = previousQuestionAnswer(question, room) || whereStoppedAnswer(question, room, code, focus) || identityAnswer(question) || legalResearchAnswer(question);
+      var localIdentity = previousQuestionAnswer(question, room) || whereStoppedAnswer(question, room, code, focus) || identityAnswer(question) || driveSaverAnswer(question) || legalResearchAnswer(question);
       if (localIdentity) {
         echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(localIdentity);
         var rememberedLocal = rememberChatExchange(code, question, localIdentity);
@@ -1996,6 +2131,9 @@ window.jus9DemoLogin = function(form){
       windowEl.appendChild(echoMsg);
       input.value = '';
       keepChatInView(card, echoMsg);
+      if(localIdentity && asksDriveSaver(question)) {
+        appendDownloadEchoForForm(buildDriveSaverDownloads(question, code, focus));
+      }
       if (!localIdentity) {
         try {
           var answer = await askCharlieApi(mode, code, focus, contextualQuestion, room);
@@ -2112,9 +2250,18 @@ window.jus9DemoLogin = function(form){
     ]
   };
 
+  function guidedChatLayout(card){
+    var value = card.getAttribute('data-chat-layout');
+    if(value === 'detalhista' || value === 'medio' || value === 'pequeno') return value;
+    if(document.body && document.body.classList.contains('charlie-chat-only-page')) return 'detalhista';
+    if(card.classList.contains('charlie-chat-shell')) return 'medio';
+    if(document.body && document.body.classList.contains('charlie-mvp-shell')) return 'medio';
+    return 'pequeno';
+  }
+
   function initGuidedPrompts(card){
     var code = card.getAttribute('data-ai-code') || '';
-    var layout = chatLayout(card);
+    var layout = guidedChatLayout(card);
     if(layout === 'pequeno') return;
     var prompts = guidedPrompts[code];
     var input = card.querySelector('[data-ai-chat-input]');
