@@ -43,12 +43,7 @@
       else menu.appendChild(link);
     }
 
-    ensureMenuLink('Investimentos', 'https://investimentos.jus9tecnologia.com.br/', 'data-jus9-investimentos-menu');
-    ensureMenuLink('Livros e Doutrina', 'https://livros.jus9tecnologia.com.br/', 'data-jus9-livros-menu');
-    ensureMenuLink('Universidade do Futuro', 'https://universidadedofuturo.jus9tecnologia.com.br/', 'data-jus9-universidade-menu');
-    ensureMenuLink('Capacidades Charlie', '/capacidades-charlie-echo.html', 'data-jus9-charlie-capabilities-menu');
-    ensureMenuLink('Saúde Charlie', '/saude-charlie-echo.html', 'data-jus9-charlie-health-menu');
-    ensureMenuLink('Manual Charlie', '/manual-charlie-echo.html', 'data-jus9-charlie-manual-menu');
+    ensureMenuLink('Saiba mais', '/saiba-mais.html', 'data-jus9-saiba-mais-menu');
     ensureMenuLink('Instalar App', '/instalar-app', 'data-jus9-instalar-menu');
   }
 
