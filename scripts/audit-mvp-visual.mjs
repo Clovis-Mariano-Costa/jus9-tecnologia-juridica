@@ -16,7 +16,7 @@ const requiredDemoChecks = [
 ];
 
 const mvpChecks = [
-  ['mvp.html', 'porta dos demos', /Demo 1|Demo 13|Escolha seu Demo/i],
+  ['mvp.html', 'porta dos demos', /Demo 1|Demo 14|Escolha seu Demo/i],
   ['mvp.html', 'aviso sem dados reais', /Sem dados reais|nao inserir dados reais|n.o inserir dados reais/i],
   ['mvp.html', 'atalho para IA profissional', /app-ia-profissional\.html|IA Profissional/i],
   ['mvp.html', 'atalho para agenda', /app-agenda\.html|Agenda Jus 9/i],
@@ -24,8 +24,8 @@ const mvpChecks = [
 
 const failures = [];
 
-if (files.length !== 13) {
-  failures.push(`Esperados 13 app-demo-*.html; encontrados ${files.length}.`);
+if (files.length !== 14) {
+  failures.push(`Esperados 14 app-demo-*.html; encontrados ${files.length}.`);
 }
 
 for (const file of files) {

@@ -4,7 +4,7 @@
   Não armazena dados sensíveis. Não altera login, backend ou rotas protegidas.
 */
 
-const JUS9_CACHE = 'jus9-pwa-v4-2026-06-04-charlie-rooms-v4-4-1';
+const JUS9_CACHE = 'jus9-pwa-v5-2026-06-21-demo14-founder-sync';
 const JUS9_ASSETS = [
   '/',
   '/index.html',
@@ -12,6 +12,9 @@ const JUS9_ASSETS = [
   '/mvp-o-que-ja-funciona.html',
   '/demo-01-advogado-defensor.html',
   '/app-demo-advogar.html',
+  '/demo-14-autor-editor.html',
+  '/app-demo-autor-editor.html',
+  '/app-ia-profissional.html',
   '/app-agenda.html',
   '/app-clientes.html',
   '/app-daj.html',
@@ -25,6 +28,8 @@ const JUS9_ASSETS = [
   '/assets/js/whatsapp-local-demo.js',
   '/assets/favicon.svg',
   '/assets/jus9-logo.svg',
+  '/assets/clovis-founder-portrait.png',
+  '/assets/clovis-founder-context.png',
   '/assets/css/visual-jus9-fase-final.css'
 ];
 

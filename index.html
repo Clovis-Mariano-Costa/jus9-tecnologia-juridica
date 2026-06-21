@@ -15,7 +15,7 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://jus9tecnologia.com.br">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20260621-visual-fundador">
   <link rel="manifest" href="manifest.webmanifest">
 </head>
 <body>
@@ -278,8 +278,14 @@
   <section id="fundador" class="section">
     <div class="container founder">
       <div class="founder-photos">
-        <div class="photo-main"><img src="assets/clovis-founder-portrait.png" alt="Clovis Mariano da Costa, fundador da Jus 9"></div>
-        <div class="photo-side"><img src="assets/clovis-founder-context.png" alt="Clovis Mariano da Costa em ambiente acolhedor"></div>
+        <div class="photo-main">
+          <img src="assets/clovis-founder-portrait.png" alt="Clovis Mariano da Costa, fundador da Jus 9" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+          <div class="photo-fallback"><strong>Clovis Mariano da Costa</strong><span>Fotografia institucional em atualizacao.</span></div>
+        </div>
+        <div class="photo-side">
+          <img src="assets/clovis-founder-context.png" alt="Clovis Mariano da Costa em ambiente acolhedor" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+          <div class="photo-fallback"><strong>Fundador da Jus 9</strong><span>Imagem complementar em atualizacao.</span></div>
+        </div>
       </div>
       <div>
         <div class="eyebrow">Fundador</div>

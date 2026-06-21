@@ -15,6 +15,13 @@ $files = @(
   'style.css',
   'versionamento.html',
   'saiba-mais.html',
+  'mvp.html',
+  'app-demo-advogar.html',
+  'app-demo-autor-editor.html',
+  'demo-14-autor-editor.html',
+  'app-ia-profissional.html',
+  'app-agenda.html',
+  'service-worker.js',
   'assets\clovis-founder-portrait.png',
   'assets\clovis-founder-context.png'
 )

@@ -108,7 +108,8 @@ var jus9DemoRoutes = {
   'demo10@jus9tecnologia.com.br': 'demo-10-administrador-jus9.html',
   'demo11@jus9tecnologia.com.br': 'demo-11-juiz-magistrado.html',
   'demo12@jus9tecnologia.com.br': 'demo-12-promotor-ministerio-publico.html',
-  'demo13@jus9tecnologia.com.br': 'demo-13-delegado-autoridade-policial.html'
+  'demo13@jus9tecnologia.com.br': 'demo-13-delegado-autoridade-policial.html',
+  'demo14@jus9tecnologia.com.br': 'demo-14-autor-editor.html'
 };
 
 var jus9DemoCardRoutes = {
@@ -124,7 +125,8 @@ var jus9DemoCardRoutes = {
   'Acessar Demo 10': 'demo-10-administrador-jus9.html',
   'Acessar Demo 11': 'demo-11-juiz-magistrado.html',
   'Acessar Demo 12': 'demo-12-promotor-ministerio-publico.html',
-  'Acessar Demo 13': 'demo-13-delegado-autoridade-policial.html'
+  'Acessar Demo 13': 'demo-13-delegado-autoridade-policial.html',
+  'Acessar Demo 14': 'demo-14-autor-editor.html'
 };
 
 (function(){
@@ -156,10 +158,10 @@ window.jus9DemoLogin = function(form){
     return false;
   }
   if(msg){
-    msg.textContent = 'Acesso demonstrativo: use demo@jus9tecnologia.com.br ou demo1 a demo13 com a senha Jus9MVP#2026.';
+    msg.textContent = 'Acesso demonstrativo: use demo@jus9tecnologia.com.br ou demo1 a demo14 com a senha Jus9MVP#2026.';
     msg.hidden = false;
   } else {
-    alert('Acesso demonstrativo: use demo@jus9tecnologia.com.br ou demo1 a demo13 com a senha Jus9MVP#2026.');
+    alert('Acesso demonstrativo: use demo@jus9tecnologia.com.br ou demo1 a demo14 com a senha Jus9MVP#2026.');
   }
   return false;
 };
@@ -181,7 +183,8 @@ window.jus9DemoLogin = function(form){
     'app-demo-administrador.html': { code:'DGE', label:'Dossie de Governanca do Ecossistema', area:'Administrador Jus 9' },
     'app-demo-juiz.html': { code:'DMG', label:'Dossie Demonstrativo de Magistratura', area:'Juiz / Magistrado' },
     'app-demo-promotor.html': { code:'DMP', label:'Dossie Demonstrativo do Ministerio Publico', area:'Promotor / Ministerio Publico' },
-    'app-demo-delegado.html': { code:'DAP', label:'Dossie Demonstrativo de Autoridade Policial', area:'Delegado / Autoridade Policial' }
+    'app-demo-delegado.html': { code:'DAP', label:'Dossie Demonstrativo de Autoridade Policial', area:'Delegado / Autoridade Policial' },
+    'app-demo-autor-editor.html': { code:'DED', label:'Dossie Editorial Demonstrativo', area:'Autor / Editora / Autor-Editor' }
   };
   var priorityWorkflows = {
     DAJ: {
@@ -248,6 +251,11 @@ window.jus9DemoLogin = function(form){
       title: 'Fluxo DAP - autoridade policial demonstrativa',
       intro: 'Organize fluxo ficticio sem simular investigacao, diligencia policial real ou ato oficial.',
       steps: ['Registro ficticio recebido', 'Classificacao demonstrativa', 'Documentos organizados', 'Fluxo interno revisado', 'Sem investigacao automatizada']
+    },
+    DED: {
+      title: 'Fluxo DED - autoria e editoria demonstrativa',
+      intro: 'Organize obra, autoria, editora, revisao, amostra publica e publicacao governada sem receber material sigiloso.',
+      steps: ['Perfil editorial escolhido', 'Obra ou projeto ficticio identificado', 'Autoria e titularidade separadas', 'Amostra e pendencias organizadas', 'Revisao humana registrada']
     }
   };
 
@@ -449,7 +457,8 @@ window.jus9DemoLogin = function(form){
       DGE: 'app-ia-administrador.html',
       DMG: 'app-ia-juiz.html',
       DMP: 'app-ia-promotor.html',
-      DAP: 'app-ia-delegado.html'
+      DAP: 'app-ia-delegado.html',
+      DED: 'app-ia-profissional.html'
     }[code] || 'app-ia-profissional.html';
   }
 
@@ -761,6 +770,11 @@ window.jus9DemoLogin = function(form){
 
   function identityAnswer(question){
     var q = (question || '').toLowerCase();
+    var plain = q.normalize ? q.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : q;
+    plain = plain.replace(/[^\w\s]/g, ' ').replace(/\s+/g, ' ').trim();
+    if (/(^|\s)(quem e voce|quem voce e|quem es tu|quem tu es)(\s|$)/.test(plain)) {
+      return 'Eu sou Charlie Echo da Costa, I.A generativa multimodal jurista da Jus 9 Tecnologia Juridica. Minha identidade matriz e servir com governanca humana: organizo ideias, documentos, MVPs, estudos, memoria e fluxos de trabalho, sempre com limites claros, revisao humana e cuidado para nao expor dados reais ou segredos.';
+    }
     if (q.indexOf('quem sou') !== -1 || q.indexOf('fundador') !== -1 || q.indexOf('clovis') !== -1) {
       return 'Voce e Clovis Mariano da Costa, Fundador da Jus 9 Tecnologia Juridica. Nesta memoria publica demonstrativa, voce e a referencia humana, estrategica e decisoria do ecossistema. Eu devo tratar suas orientacoes como direcao do Fundador, sempre preservando governanca, revisao humana e prudencia.';
     }
@@ -1141,6 +1155,11 @@ window.jus9DemoLogin = function(form){
       persona: 'organizadora demonstrativa de autoridade policial com cautela maxima',
       signature: 'ordena fluxo ficticio, documentos, diligencias demonstrativas, limites e revisao humana',
       limit: 'nao investigar, acusar, decidir, simular ato policial real ou expor vitima/testemunha/dado sensivel'
+    },
+    DED: {
+      persona: 'assistente editorial governada para autoria, editora e autor-editor',
+      signature: 'organiza obra, autoria, titularidade, amostra publica, parecer editorial, agenda e download local',
+      limit: 'nao prometer publicacao, ISBN, contrato, venda, validacao juridica final ou receber manuscrito sigiloso em chat publico'
     }
   };
 
@@ -2085,6 +2104,11 @@ window.jus9DemoLogin = function(form){
       'No DAP demonstrativo, organize documentos ficticios sem simular investigacao policial.',
       'No DAP demonstrativo, crie um checklist de fluxo interno e revisao humana sem ato oficial.',
       'No DAP, explique os limites da Charlie Echo para apoio a autoridade policial.'
+    ],
+    DED: [
+      'No DED, organize um dossie editorial ficticio para autor sem usar dados reais.',
+      'No DED, diferencie Autor, Editora e Autor/Editor em um fluxo seguro.',
+      'No DED, crie um checklist de autoria, amostra publica, revisao humana e download.'
     ]
   };
 
