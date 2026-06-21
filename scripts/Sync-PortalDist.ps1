@@ -15,6 +15,7 @@ $files = @(
   'style.css',
   'versionamento.html',
   'saiba-mais.html',
+  'nossa-historia.html',
   'mvp.html',
   'app-demo-advogar.html',
   'app-demo-autor-editor.html',
