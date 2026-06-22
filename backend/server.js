@@ -88,6 +88,47 @@ function getAuthSuccessRedirect(returnTo = "") {
   return process.env.AUTH_SUCCESS_REDIRECT || `${publicSiteOrigin}/app.html`;
 }
 
+function booleanEnv(value) {
+  return /^(1|true|yes|on|public)$/i.test(String(value || "").trim());
+}
+
+function isPublicGoogleEnabled() {
+  return booleanEnv(process.env.AUTH_PUBLIC_GOOGLE_ENABLED);
+}
+
+function getPublicGoogleProfile() {
+  const profile = String(process.env.AUTH_PUBLIC_GOOGLE_PROFILE || "cidadao").trim();
+  return publicGoogleProfiles.has(profile) ? profile : "cidadao";
+}
+
+function getAuthNucleusFromReturnTo(value) {
+  const normalized = normalizeAuthReturnTo(value);
+  if (!normalized) return "principal";
+
+  let parsed;
+  try {
+    parsed = new URL(normalized, "https://www.jus9tecnologia.com.br");
+  } catch (_) {
+    return "principal";
+  }
+
+  const host = parsed.hostname.toLowerCase();
+  const path = parsed.pathname || "/";
+  if (host === "equipe.jus9tecnologia.com.br" || path === "/app-equipe.html" || path === "/equipe.html") {
+    return "equipe";
+  }
+  if (host === "laboratorio.jus9tecnologia.com.br") return "laboratorio";
+  if (host === "universidadedofuturo.jus9tecnologia.com.br" || path === "/skill.md") return "universidade";
+  if (path === "/app-agenda.html") return "agenda";
+  if (path === "/mvp.html" || /^\/app-demo-[a-z0-9-]+\.html$/.test(path) || /^\/demo-\d{2}-[a-z0-9-]+\.html$/.test(path)) {
+    return "mvp";
+  }
+  if (path === "/ia-profissional.html" || path === "/app-ia-profissional.html" || path === "/app-chat-charlie-echo.html") {
+    return "ia_profissional";
+  }
+  return "principal";
+}
+
 app.use(helmet());
 app.use(
   cors({
@@ -183,6 +224,8 @@ const authProfiles = [
   "ministerio_publico",
   "autoridade_policial"
 ];
+
+const publicGoogleProfiles = new Set(["cidadao"]);
 
 const profilePermissions = {
   admin_sistema: ["auth:read", "dajs:read", "dajs:write", "documents:read", "processes:read", "audit:write"],
@@ -296,13 +339,33 @@ function parseAllowedUsers() {
   );
 }
 
+function resolveGoogleAuthProfile(email) {
+  const normalizedEmail = String(email || "").trim().toLowerCase();
+  if (!normalizedEmail) return null;
+  const allowedProfile = parseAllowedUsers().get(normalizedEmail);
+  if (allowedProfile) {
+    return {
+      profile: allowedProfile,
+      accessMode: "allowlist"
+    };
+  }
+  if (!isPublicGoogleEnabled()) return null;
+  return {
+    profile: getPublicGoogleProfile(),
+    accessMode: "public_google"
+  };
+}
+
 function missingGoogleConfig() {
-  return [
+  const required = [
     ["GOOGLE_CLIENT_ID", process.env.GOOGLE_CLIENT_ID],
     ["GOOGLE_CLIENT_SECRET", process.env.GOOGLE_CLIENT_SECRET],
-    ["AUTH_COOKIE_SECRET", getAuthSecret()],
-    ["AUTH_ALLOWED_EMAILS", process.env.AUTH_ALLOWED_EMAILS]
-  ]
+    ["AUTH_COOKIE_SECRET", getAuthSecret()]
+  ];
+  if (!isPublicGoogleEnabled()) {
+    required.push(["AUTH_ALLOWED_EMAILS", process.env.AUTH_ALLOWED_EMAILS]);
+  }
+  return required
     .filter(([, value]) => !value || value === "troque-esta-chave")
     .map(([name]) => name);
 }
@@ -438,22 +501,31 @@ app.get("/auth/google/callback", async (req, res) => {
     }
     const userInfo = await userInfoResponse.json();
     const email = String(userInfo.email || "").toLowerCase();
-    const allowedUsers = parseAllowedUsers();
-    const profile = allowedUsers.get(email);
-    if (!email || userInfo.email_verified !== true || !profile) {
+    const resolvedProfile = resolveGoogleAuthProfile(email);
+    if (!email || userInfo.email_verified !== true || !resolvedProfile) {
       return res.status(403).json({ ok: false, error: "email_nao_autorizado" });
     }
 
+    const authNucleus = getAuthNucleusFromReturnTo(tx.returnTo);
+    const emailHash = sha256Base64url(email);
     const session = signPayload({
       kind: "jus9_session",
       provider: "google",
-      emailHash: sha256Base64url(email),
+      emailHash,
       googleSubHash: sha256Base64url(String(userInfo.sub || "")),
-      profile,
+      profile: resolvedProfile.profile,
+      accessMode: resolvedProfile.accessMode,
+      authNucleus,
       issuedAt: Date.now(),
       expiresAt: Date.now() + 8 * 60 * 60 * 1000
     });
-    console.info("auth.login", { provider: "google", profile, emailHash: sha256Base64url(email) });
+    console.info("auth.login", {
+      provider: "google",
+      profile: resolvedProfile.profile,
+      accessMode: resolvedProfile.accessMode,
+      authNucleus,
+      emailHash
+    });
     res.setHeader("Set-Cookie", [
       clearCookie("jus9_oauth_tx"),
       serializeCookie("jus9_session", session, {
@@ -478,6 +550,8 @@ app.get("/api/auth/me", (req, res) => {
     authenticated: true,
     provider: session.provider,
     profile: session.profile,
+    accessMode: session.accessMode || "legacy",
+    authNucleus: session.authNucleus || "principal",
     emailHash: session.emailHash,
     expiresAt: new Date(session.expiresAt).toISOString()
   });
@@ -486,6 +560,8 @@ app.get("/api/auth/me", (req, res) => {
 app.get("/api/auth/permissions", requireAuth, (req, res) => {
   res.json({
     profile: req.auth.profile,
+    accessMode: req.auth.accessMode || "legacy",
+    authNucleus: req.auth.authNucleus || "principal",
     permissions: profilePermissions[req.auth.profile] || []
   });
 });

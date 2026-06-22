@@ -6,6 +6,8 @@ Classificacao: PUBLICO TECNICO / SEM SEGREDOS
 
 Usar escopo minimo. Escopo novo, sensivel ou restrito so entra com confirmacao humana expressa.
 
+Login amplo nao significa permissao ampla. Toda Conta Google verificada fora da allowlist entra como `cidadao`, com permissao minima `auth:read`.
+
 ## Escopos atuais
 
 | Escopo | Uso | Fluxo | Classificacao esperada | Estado |
@@ -14,6 +16,27 @@ Usar escopo minimo. Escopo novo, sensivel ou restrito so entra com confirmacao h
 | `email` | E-mail verificado para allowlist/perfil | Login basico | Basico | Manter |
 | `profile` | Perfil publico minimo | Login basico | Basico | Manter |
 | `https://www.googleapis.com/auth/calendar.events` | Listar/criar eventos de Agenda quando usuario conecta Agenda | Incremental separado | Sensivel | Submeter apenas se Agenda entrar em producao |
+
+## Perfis e acesso
+
+| Origem do acesso | Perfil resultante | Permissoes | Estado |
+|---|---|---|---|
+| Conta em `AUTH_ALLOWED_EMAILS` | Perfil definido na allowlist | Conforme matriz interna de permissoes | Governado |
+| Conta Google verificada fora da allowlist | `cidadao` por padrao | `auth:read` | Acesso publico minimo |
+| `AUTH_PUBLIC_GOOGLE_PROFILE` com perfil privilegiado | Fallback para `cidadao` | `auth:read` | Protecao contra erro de configuracao |
+| Perfil `cidadao` tentando conectar Agenda | Bloqueado | Sem `calendar:write` | Negado |
+
+## Nucleos de login
+
+| Nucleo | Exemplo de retorno autorizado | Uso |
+|---|---|---|
+| `equipe` | `https://equipe.jus9tecnologia.com.br/` ou `/app-equipe.html` | Area interna/equipe |
+| `mvp` | `/mvp.html` ou `/app-demo-*.html` | Demonstracoes e MVP/MPP |
+| `agenda` | `/app-agenda.html` | Agenda |
+| `laboratorio` | `https://laboratorio.jus9tecnologia.com.br/` | Laboratorio |
+| `universidade` | `https://universidadedofuturo.jus9tecnologia.com.br/` | Universidade do Futuro |
+| `ia_profissional` | `/app-ia-profissional.html` ou `/app-chat-charlie-echo.html` | IA profissional e Charlie Echo |
+| `principal` | Demais rotas autorizadas | Site/aplicacao principal |
 
 ## Escopos proibidos nesta fase
 
@@ -51,4 +74,3 @@ A Agenda Google e recurso opcional e incremental. A pessoa usuaria so concede pe
 - Fotos Google.
 - Dados de pagamento.
 - Documentos juridicos sensiveis via Google API.
-

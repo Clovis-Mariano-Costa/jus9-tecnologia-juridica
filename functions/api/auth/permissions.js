@@ -7,6 +7,8 @@ export async function onRequestGet({ request, env }) {
   return jsonResponse({
     authenticated: true,
     profile: session.profile,
+    accessMode: session.accessMode || "legacy",
+    authNucleus: session.authNucleus || "principal",
     permissions: getPermissions(session.profile)
   });
 }

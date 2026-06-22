@@ -8,16 +8,19 @@ import {
 } from "./functions/_shared/calendar.js";
 import {
   clearCookie,
+  getAuthNucleusFromReturnTo,
   getAuthSuccessRedirect,
   getGoogleCallbackUrl,
   getSession,
   htmlResponse,
+  isKnownAuthProfile,
   jsonResponse,
   missingGoogleConfig,
   normalizeAuthReturnTo,
   parseAllowedUsers,
   parseCookies,
   randomToken,
+  resolveGoogleAuthProfile,
   serializeCookie,
   sha256Base64url,
   signPayload,
@@ -228,6 +231,8 @@ async function handleGoogleCalendarStart(request, env) {
       sessionGoogleSubHash: session.googleSubHash,
       sessionEmailHash: session.emailHash,
       sessionProfile: session.profile,
+      sessionAccessMode: session.accessMode || "legacy",
+      sessionAuthNucleus: session.authNucleus || "principal",
       issuedAt: Date.now(),
       expiresAt: Date.now() + 10 * 60 * 1000
     },
@@ -309,26 +314,34 @@ async function handleGoogleCallback(request, env) {
 
     const userInfo = await userInfoResponse.json();
     const email = String(userInfo.email || "").toLowerCase();
-    const allowedUsers = parseAllowedUsers(env);
-    const profile = allowedUsers.get(email);
-    if (!email || userInfo.email_verified !== true || !profile) {
+    const resolvedProfile = resolveGoogleAuthProfile(email, env);
+    if (!email || userInfo.email_verified !== true || !resolvedProfile) {
       return jsonResponse({ ok: false, error: "email_nao_autorizado" }, 403);
     }
 
     const emailHash = await sha256Base64url(email);
+    const authNucleus = getAuthNucleusFromReturnTo(tx.returnTo);
     const session = await signPayload(
       {
         kind: "jus9_session",
         provider: "google",
         emailHash,
         googleSubHash: await sha256Base64url(String(userInfo.sub || "")),
-        profile,
+        profile: resolvedProfile.profile,
+        accessMode: resolvedProfile.accessMode,
+        authNucleus,
         issuedAt: Date.now(),
         expiresAt: Date.now() + 8 * 60 * 60 * 1000
       },
       env
     );
-    console.info("auth.login", { provider: "google", profile, emailHash });
+    console.info("auth.login", {
+      provider: "google",
+      profile: resolvedProfile.profile,
+      accessMode: resolvedProfile.accessMode,
+      authNucleus,
+      emailHash
+    });
 
     const headers = new Headers({
       Location: getAuthSuccessRedirect(env, normalizeAuthReturnTo(tx.returnTo)),
@@ -387,11 +400,16 @@ async function handleGoogleCalendarCallback(request, env, url, tx) {
 
     const userInfo = await userInfoResponse.json();
     const email = String(userInfo.email || "").toLowerCase();
-    const allowedUsers = parseAllowedUsers(env);
-    const profile = allowedUsers.get(email);
     const googleSubHash = await sha256Base64url(String(userInfo.sub || ""));
     const emailHash = await sha256Base64url(email);
-    if (!email || userInfo.email_verified !== true || !profile || googleSubHash !== tx.sessionGoogleSubHash || emailHash !== tx.sessionEmailHash) {
+    const sessionProfile = String(tx.sessionProfile || "");
+    if (
+      !email ||
+      userInfo.email_verified !== true ||
+      !isKnownAuthProfile(sessionProfile) ||
+      googleSubHash !== tx.sessionGoogleSubHash ||
+      emailHash !== tx.sessionEmailHash
+    ) {
       return jsonResponse({ ok: false, error: "agenda_conta_nao_confere" }, 403);
     }
 
@@ -399,7 +417,9 @@ async function handleGoogleCalendarCallback(request, env, url, tx) {
       env,
       {
         provider: "google",
-        profile: tx.sessionProfile,
+        profile: sessionProfile,
+        accessMode: tx.sessionAccessMode || "legacy",
+        authNucleus: tx.sessionAuthNucleus || "agenda",
         emailHash,
         googleSubHash
       },
@@ -430,6 +450,8 @@ async function handleAuthMe(request, env) {
     authenticated: true,
     provider: session.provider,
     profile: session.profile,
+    accessMode: session.accessMode || "legacy",
+    authNucleus: session.authNucleus || "principal",
     emailHash: session.emailHash,
     expiresAt: new Date(session.expiresAt).toISOString()
   }, 200, corsHeaders);
@@ -445,6 +467,8 @@ async function handleAuthPermissions(request, env) {
   return jsonResponse({
     authenticated: true,
     profile: session.profile,
+    accessMode: session.accessMode || "legacy",
+    authNucleus: session.authNucleus || "principal",
     permissions: getPermissions(session.profile)
   }, 200, corsHeaders);
 }
@@ -475,6 +499,8 @@ async function handleAuthContext(request, env) {
     authenticated: true,
     provider: session.provider,
     profile: session.profile,
+    accessMode: session.accessMode || "legacy",
+    authNucleus: session.authNucleus || "principal",
     emailHash: session.emailHash,
     expiresAt: new Date(session.expiresAt).toISOString(),
     identity

@@ -1,5 +1,12 @@
 import worker from "../worker.js";
-import { normalizeAuthReturnTo, signPayload, verifyPayload } from "../functions/_shared/oauth.js";
+import {
+  getAuthNucleusFromReturnTo,
+  missingGoogleConfig,
+  normalizeAuthReturnTo,
+  resolveGoogleAuthProfile,
+  signPayload,
+  verifyPayload
+} from "../functions/_shared/oauth.js";
 
 const env = {
   AUTH_COOKIE_SECRET: "segredo-local-ficticio-comprido-para-homologacao",
@@ -27,12 +34,15 @@ async function request(path, options = {}) {
   return worker.fetch(new Request(`https://jus9.invalid${path}`, options), env);
 }
 
-async function cookieFor(profile, expiresAt = Date.now() + 60_000, email = "") {
+async function cookieFor(profile, expiresAt = Date.now() + 60_000, email = "", accessMode = "legacy", authNucleus = "principal") {
   const value = await signPayload({
     kind: "jus9_session",
     provider: "controlled-test",
     emailHash: email ? await signPayloadHash(email) : `hash-${profile}`,
+    googleSubHash: email ? await signPayloadHash(`sub:${email}`) : `google-sub-${profile}`,
     profile,
+    accessMode,
+    authNucleus,
     issuedAt: Date.now(),
     expiresAt,
   }, env);
@@ -63,6 +73,15 @@ assert(response.status === 200 && data.permissions.includes("documents:read"), "
 assert(!data.permissions.includes("dajs:write"), "empresa nao deve possuir dajs:write");
 console.log("AUTH_OK empresa=documents:read");
 
+response = await request("/api/auth/permissions", {
+  headers: { cookie: await cookieFor("cidadao", Date.now() + 60_000, "publico@example.invalid", "public_google", "mvp") }
+});
+data = await response.json();
+assert(response.status === 200 && data.permissions.includes("auth:read"), "cidadao deveria ter auth:read");
+assert(!data.permissions.includes("calendar:write"), "cidadao nao deve possuir calendar:write");
+assert(data.accessMode === "public_google" && data.authNucleus === "mvp", "sessao publica deveria preservar modo e nucleo");
+console.log("AUTH_OK public-google-cidadao=governado");
+
 response = await request("/api/auth/permissions", { headers: { cookie: await cookieFor("admin_sistema") } });
 data = await response.json();
 assert(response.status === 200 && data.permissions.includes("audit:write"), "admin sem audit:write");
@@ -84,6 +103,29 @@ const configuredEnv = {
   AUTH_ALLOWED_EMAILS: "demo.invalid@jus9.invalid:admin_sistema",
 };
 
+const publicGoogleEnv = {
+  ...env,
+  PUBLIC_SITE_ORIGIN: "https://jus9.invalid",
+  GOOGLE_CLIENT_ID: "client-id-ficticio",
+  GOOGLE_CLIENT_SECRET: "client-secret-ficticio",
+  AUTH_PUBLIC_GOOGLE_ENABLED: "true",
+  AUTH_PUBLIC_GOOGLE_PROFILE: "cidadao"
+};
+assert(missingGoogleConfig(publicGoogleEnv).length === 0, "OAuth publico nao deve exigir AUTH_ALLOWED_EMAILS");
+const publicProfile = resolveGoogleAuthProfile("externo@example.invalid", publicGoogleEnv);
+assert(publicProfile?.profile === "cidadao" && publicProfile?.accessMode === "public_google", "conta publica deveria virar cidadao");
+const unsafePublicProfile = resolveGoogleAuthProfile("externo@example.invalid", {
+  ...publicGoogleEnv,
+  AUTH_PUBLIC_GOOGLE_PROFILE: "admin_sistema"
+});
+assert(unsafePublicProfile?.profile === "cidadao", "perfil publico privilegiado deveria cair para cidadao");
+const allowlistProfile = resolveGoogleAuthProfile("demo.invalid@jus9.invalid", {
+  ...publicGoogleEnv,
+  AUTH_ALLOWED_EMAILS: "demo.invalid@jus9.invalid:admin_sistema"
+});
+assert(allowlistProfile?.profile === "admin_sistema" && allowlistProfile?.accessMode === "allowlist", "allowlist deve prevalecer sobre acesso publico");
+console.log("AUTH_OK public-google-config=cidadao");
+
 response = await worker.fetch(
   new Request("https://jus9.invalid/auth/google/start?return_to=%2Fapp-ia-profissional.html%23chat-ia"),
   configuredEnv
@@ -104,6 +146,16 @@ const unsafeTxPayload = await verifyPayload(decodeURIComponent(unsafeCookie || "
 assert(unsafeTxPayload?.returnTo === "", "return_to externo deve ser descartado");
 console.log("AUTH_OK return_to_externo=bloqueado");
 
+response = await worker.fetch(
+  new Request("https://jus9.invalid/auth/google/start?return_to=https%3A%2F%2Fequipe.jus9tecnologia.com.br%2F"),
+  publicGoogleEnv
+);
+assert(response.status === 302, "OAuth publico configurado deve redirecionar para Google");
+const publicTxCookie = response.headers.get("set-cookie")?.match(/jus9_oauth_tx=([^;]+)/)?.[1];
+const publicTxPayload = await verifyPayload(decodeURIComponent(publicTxCookie || ""), publicGoogleEnv);
+assert(publicTxPayload?.returnTo === "https://equipe.jus9tecnologia.com.br/", "return_to absoluto autorizado deveria ser preservado");
+console.log("AUTH_OK public-google-start=302");
+
 assert(normalizeAuthReturnTo("/app-demo-advogar.html?origem=mvp#chat") === "/app-demo-advogar.html?origem=mvp#chat", "rota app-demo deveria ser aceita");
 assert(
   normalizeAuthReturnTo("https://equipe.jus9tecnologia.com.br/") === "https://equipe.jus9tecnologia.com.br/",
@@ -118,6 +170,10 @@ assert(normalizeAuthReturnTo("//evil.example") === "", "protocolo relativo exter
 assert(normalizeAuthReturnTo("https://equipe.evil.example/") === "", "dominio externo deveria ser bloqueado");
 assert(normalizeAuthReturnTo("https://naoautorizado.jus9tecnologia.com.br/") === "", "subdominio nao autorizado deveria ser bloqueado");
 assert(normalizeAuthReturnTo("/../app.html") === "", "path traversal deveria ser bloqueado");
+assert(getAuthNucleusFromReturnTo("https://equipe.jus9tecnologia.com.br/") === "equipe", "nucleo Equipe deveria ser reconhecido");
+assert(getAuthNucleusFromReturnTo("/mvp.html") === "mvp", "nucleo MVP deveria ser reconhecido");
+assert(getAuthNucleusFromReturnTo("/app-agenda.html") === "agenda", "nucleo Agenda deveria ser reconhecido");
+assert(getAuthNucleusFromReturnTo("/app-chat-charlie-echo.html") === "ia_profissional", "nucleo IA deveria ser reconhecido");
 console.log("AUTH_OK return_to_allowlist");
 
 response = await worker.fetch(
@@ -343,6 +399,15 @@ const calendarTxPayload = await verifyPayload(decodeURIComponent(calendarCookie 
 assert(calendarTxPayload?.kind === "google_calendar_oauth_tx", "transacao de Agenda nao foi criada");
 assert(calendarTxPayload?.returnTo === "/app-agenda.html", "return_to da Agenda nao foi preservado");
 console.log("AUTH_OK calendar-start=302");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/auth/google/calendar/start?return_to=%2Fapp-agenda.html", {
+    headers: { cookie: await cookieFor("cidadao", Date.now() + 60_000, "publico@example.invalid", "public_google", "agenda") }
+  }),
+  calendarEnv
+);
+assert(response.status === 403, "cidadao publico nao deve iniciar consentimento Calendar");
+console.log("AUTH_OK calendar-public-cidadao=403");
 
 response = await worker.fetch(
   new Request("https://jus9.invalid/api/calendar/status", {

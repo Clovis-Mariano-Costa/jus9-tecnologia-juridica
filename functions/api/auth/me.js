@@ -7,6 +7,8 @@ export async function onRequestGet({ request, env }) {
     authenticated: true,
     provider: session.provider,
     profile: session.profile,
+    accessMode: session.accessMode || "legacy",
+    authNucleus: session.authNucleus || "principal",
     emailHash: session.emailHash,
     expiresAt: new Date(session.expiresAt).toISOString()
   });

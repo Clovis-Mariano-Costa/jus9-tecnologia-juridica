@@ -4,12 +4,13 @@ Classificacao: PUBLICO TECNICO / SEM SEGREDOS
 
 ## 1. Projeto Google Cloud
 
-- [ ] Confirmar se sera criado projeto separado de producao.
+- [x] Definir projeto separado de producao como caminho seguro.
 - [ ] Confirmar owner/editor do projeto.
 - [ ] Confirmar e-mail de suporte.
 - [ ] Confirmar contatos de desenvolvedor.
 - [ ] Confirmar dominios autorizados.
 - [ ] Confirmar projeto sem credenciais de teste/developer local.
+- [ ] Confirmar que o projeto de teste atual nao sera usado para producao.
 
 ## 2. Dominios
 
@@ -35,8 +36,9 @@ Classificacao: PUBLICO TECNICO / SEM SEGREDOS
 - [ ] Login basico: `openid`.
 - [ ] Login basico: `email`.
 - [ ] Login basico: `profile`.
-- [ ] Agenda somente se liberada pelo Fundador: `https://www.googleapis.com/auth/calendar.events`.
-- [ ] Confirmar que Calendar continua incremental, separado do login basico.
+- [x] Agenda liberada pelo Fundador para o pacote 1: `https://www.googleapis.com/auth/calendar.events`.
+- [x] Confirmar que Calendar continua incremental, separado do login basico.
+- [x] Confirmar que perfil publico `cidadao` nao tem `calendar:write`.
 
 ## 5. Cloudflare/Worker
 
@@ -47,7 +49,9 @@ Classificacao: PUBLICO TECNICO / SEM SEGREDOS
 - [ ] Configurar `GOOGLE_CALLBACK_URL`.
 - [ ] Configurar `PUBLIC_SITE_ORIGIN`.
 - [ ] Configurar `CORS_ORIGINS`.
-- [ ] Configurar `AUTH_ALLOWED_EMAILS` sem publicar valores.
+- [ ] Configurar `AUTH_PUBLIC_GOOGLE_ENABLED=true` se acesso amplo for ativado.
+- [ ] Configurar `AUTH_PUBLIC_GOOGLE_PROFILE=cidadao`.
+- [ ] Configurar `AUTH_ALLOWED_EMAILS` apenas para contas privilegiadas, sem publicar valores.
 - [ ] Confirmar binding `JUS9_CALENDAR_TOKENS` se Agenda entrar em producao.
 
 ## 6. Testes antes da submissao
@@ -57,8 +61,10 @@ Classificacao: PUBLICO TECNICO / SEM SEGREDOS
 - [ ] `node --check functions/_shared/calendar.js`.
 - [ ] `node tests/validate-worker-auth.mjs`.
 - [ ] Testar conta autorizada.
-- [ ] Testar conta nao autorizada.
+- [ ] Testar conta Google verificada fora da allowlist como `cidadao`.
+- [ ] Testar que `cidadao` nao acessa Agenda.
 - [ ] Testar retorno modular.
+- [ ] Testar `accessMode` e `authNucleus`.
 - [ ] Testar `return_to` externo bloqueado.
 - [ ] Testar logout.
 - [ ] Testar Agenda somente se autorizada.
@@ -79,4 +85,3 @@ Classificacao: PUBLICO TECNICO / SEM SEGREDOS
 - [ ] Nao ativar Drive/Gmail neste pacote.
 - [ ] Nao usar escopo sensivel novo sem confirmacao do Fundador.
 - [ ] Nao enviar para producao se callback/redirect nao bater exatamente.
-

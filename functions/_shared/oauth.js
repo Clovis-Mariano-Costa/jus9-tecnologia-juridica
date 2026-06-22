@@ -21,6 +21,8 @@ export const AUTH_PROFILES = new Set([
   "autoridade_policial"
 ]);
 
+const PUBLIC_GOOGLE_PROFILES = new Set(["cidadao"]);
+
 export function getPublicSiteOrigin(env) {
   return env.PUBLIC_SITE_ORIGIN || "https://www.jus9tecnologia.com.br";
 }
@@ -92,13 +94,78 @@ export function normalizeAuthReturnTo(value) {
   return isAbsolute ? `${parsed.origin}${target}` : target;
 }
 
+function booleanEnv(value) {
+  return /^(1|true|yes|on|public)$/i.test(String(value || "").trim());
+}
+
+export function isPublicGoogleEnabled(env) {
+  return booleanEnv(env.AUTH_PUBLIC_GOOGLE_ENABLED);
+}
+
+export function isKnownAuthProfile(profile) {
+  return AUTH_PROFILES.has(String(profile || "").trim());
+}
+
+export function getPublicGoogleProfile(env) {
+  const profile = String(env.AUTH_PUBLIC_GOOGLE_PROFILE || "cidadao").trim();
+  return PUBLIC_GOOGLE_PROFILES.has(profile) ? profile : "cidadao";
+}
+
+export function resolveGoogleAuthProfile(email, env) {
+  const normalizedEmail = String(email || "").trim().toLowerCase();
+  if (!normalizedEmail) return null;
+  const allowedProfile = parseAllowedUsers(env).get(normalizedEmail);
+  if (allowedProfile) {
+    return {
+      profile: allowedProfile,
+      accessMode: "allowlist"
+    };
+  }
+  if (!isPublicGoogleEnabled(env)) return null;
+  return {
+    profile: getPublicGoogleProfile(env),
+    accessMode: "public_google"
+  };
+}
+
+export function getAuthNucleusFromReturnTo(value) {
+  const normalized = normalizeAuthReturnTo(value);
+  if (!normalized) return "principal";
+
+  let parsed;
+  try {
+    parsed = new URL(normalized, "https://www.jus9tecnologia.com.br");
+  } catch (_) {
+    return "principal";
+  }
+
+  const host = parsed.hostname.toLowerCase();
+  const path = parsed.pathname || "/";
+  if (host === "equipe.jus9tecnologia.com.br" || path === "/app-equipe.html" || path === "/equipe.html") {
+    return "equipe";
+  }
+  if (host === "laboratorio.jus9tecnologia.com.br") return "laboratorio";
+  if (host === "universidadedofuturo.jus9tecnologia.com.br" || path === "/skill.md") return "universidade";
+  if (path === "/app-agenda.html") return "agenda";
+  if (path === "/mvp.html" || /^\/app-demo-[a-z0-9-]+\.html$/.test(path) || /^\/demo-\d{2}-[a-z0-9-]+\.html$/.test(path)) {
+    return "mvp";
+  }
+  if (path === "/ia-profissional.html" || path === "/app-ia-profissional.html" || path === "/app-chat-charlie-echo.html") {
+    return "ia_profissional";
+  }
+  return "principal";
+}
+
 export function missingGoogleConfig(env) {
-  return [
+  const required = [
     ["GOOGLE_CLIENT_ID", env.GOOGLE_CLIENT_ID],
     ["GOOGLE_CLIENT_SECRET", env.GOOGLE_CLIENT_SECRET],
-    ["AUTH_COOKIE_SECRET", env.AUTH_COOKIE_SECRET],
-    ["AUTH_ALLOWED_EMAILS", env.AUTH_ALLOWED_EMAILS]
-  ]
+    ["AUTH_COOKIE_SECRET", env.AUTH_COOKIE_SECRET]
+  ];
+  if (!isPublicGoogleEnabled(env)) {
+    required.push(["AUTH_ALLOWED_EMAILS", env.AUTH_ALLOWED_EMAILS]);
+  }
+  return required
     .filter(([, value]) => !value || value === "troque-esta-chave")
     .map(([name]) => name);
 }

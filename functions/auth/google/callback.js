@@ -1,12 +1,13 @@
 import {
   clearCookie,
+  getAuthNucleusFromReturnTo,
   getAuthSuccessRedirect,
   getGoogleCallbackUrl,
   jsonResponse,
   missingGoogleConfig,
   normalizeAuthReturnTo,
-  parseAllowedUsers,
   parseCookies,
+  resolveGoogleAuthProfile,
   serializeCookie,
   sha256Base64url,
   signPayload,
@@ -59,26 +60,34 @@ export async function onRequestGet({ request, env }) {
 
     const userInfo = await userInfoResponse.json();
     const email = String(userInfo.email || "").toLowerCase();
-    const allowedUsers = parseAllowedUsers(env);
-    const profile = allowedUsers.get(email);
-    if (!email || userInfo.email_verified !== true || !profile) {
+    const resolvedProfile = resolveGoogleAuthProfile(email, env);
+    if (!email || userInfo.email_verified !== true || !resolvedProfile) {
       return jsonResponse({ ok: false, error: "email_nao_autorizado" }, 403);
     }
 
     const emailHash = await sha256Base64url(email);
+    const authNucleus = getAuthNucleusFromReturnTo(tx.returnTo);
     const session = await signPayload(
       {
         kind: "jus9_session",
         provider: "google",
         emailHash,
         googleSubHash: await sha256Base64url(String(userInfo.sub || "")),
-        profile,
+        profile: resolvedProfile.profile,
+        accessMode: resolvedProfile.accessMode,
+        authNucleus,
         issuedAt: Date.now(),
         expiresAt: Date.now() + 8 * 60 * 60 * 1000
       },
       env
     );
-    console.info("auth.login", { provider: "google", profile, emailHash });
+    console.info("auth.login", {
+      provider: "google",
+      profile: resolvedProfile.profile,
+      accessMode: resolvedProfile.accessMode,
+      authNucleus,
+      emailHash
+    });
 
     const headers = new Headers({
       Location: getAuthSuccessRedirect(env, normalizeAuthReturnTo(tx.returnTo)),
