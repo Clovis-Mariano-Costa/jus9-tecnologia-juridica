@@ -420,6 +420,22 @@ assert(response.status === 204, "preflight CORS da Agenda deveria retornar 204")
 assert(response.headers.get("access-control-allow-origin") === "https://universidadedofuturo.jus9tecnologia.com.br", "CORS da Agenda nao liberou subdominio autorizado");
 console.log("AUTH_OK calendar-cors=204");
 
+response = await request("/auth/logout");
+const logoutHtml = await response.text();
+assert(response.status === 200 && logoutHtml.includes("Sair da Jus 9"), "GET logout deveria mostrar tela segura");
+console.log("AUTH_OK logout-page=200");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/auth/logout?redirect=1", {
+    method: "POST",
+    redirect: "manual"
+  }),
+  env
+);
+assert(response.status === 303 && response.headers.get("location") === "/auth/logout?done=1", "logout por formulario deveria redirecionar para confirmacao");
+assert(response.headers.get("set-cookie")?.includes("Max-Age=0"), "logout por formulario deveria limpar cookie");
+console.log("AUTH_OK logout-form=303");
+
 response = await request("/auth/logout", { method: "POST" });
 assert(response.status === 204 && response.headers.get("set-cookie")?.includes("Max-Age=0"), "logout nao limpou cookie");
 console.log("AUTH_OK logout=204");

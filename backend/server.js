@@ -568,7 +568,35 @@ app.get("/api/auth/permissions", requireAuth, (req, res) => {
 
 app.post("/auth/logout", (req, res) => {
   res.setHeader("Set-Cookie", clearCookie("jus9_session"));
+  if (req.query.redirect === "1") return res.redirect(303, "/auth/logout?done=1");
   res.status(204).end();
+});
+
+app.get("/auth/logout", (req, res) => {
+  const done = req.query.done === "1";
+  res.status(200).type("html").send(`<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${done ? "Sessao encerrada" : "Sair da Jus 9"}</title>
+  <style>
+    body{font-family:Arial,sans-serif;margin:0;background:#f7f8fb;color:#172033}
+    main{max-width:560px;margin:12vh auto;padding:32px;background:#fff;border:1px solid #d9deea;border-radius:8px}
+    h1{font-size:28px;margin:0 0 12px}
+    p{line-height:1.5;color:#45536a}
+    button,a{display:inline-block;margin-top:12px;padding:10px 14px;border-radius:6px;border:1px solid #1f5eff;background:#1f5eff;color:#fff;text-decoration:none;font-weight:700;cursor:pointer}
+    a.secondary{background:#fff;color:#1f5eff}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>${done ? "Sessao encerrada" : "Sair da Jus 9"}</h1>
+    <p>${done ? "Sua sessao local foi encerrada neste navegador." : "Clique no botao abaixo para encerrar sua sessao Google local na Jus 9."}</p>
+    ${done ? '<a href="/api/auth/me" class="secondary">Verificar sessao</a> <a href="/mvp.html">Voltar ao MVP</a>' : '<form method="post" action="/auth/logout?redirect=1"><button type="submit">Sair com seguranca</button></form>'}
+  </main>
+</body>
+</html>`);
 });
 
 app.get("/api/profiles", (_, res) =>

@@ -628,8 +628,23 @@ async function handleCalendarEvents(request, env) {
 
 function handleLogout(request) {
   const corsHeaders = getAuthCorsHeaders(request);
+  const url = new URL(request.url);
+  if (request.method === "GET") {
+    return logoutPage(url.searchParams.get("done") === "1");
+  }
   if (request.method !== "POST") {
-    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "POST" });
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET, POST" });
+  }
+  if (url.searchParams.get("redirect") === "1") {
+    return new Response(null, {
+      status: 303,
+      headers: {
+        Location: "/auth/logout?done=1",
+        "Cache-Control": "no-store, max-age=0",
+        "Set-Cookie": clearCookie("jus9_session"),
+        ...corsHeaders
+      }
+    });
   }
   return new Response(null, {
     status: 204,
@@ -639,6 +654,32 @@ function handleLogout(request) {
       ...corsHeaders
     }
   });
+}
+
+function logoutPage(done = false) {
+  return htmlResponse(`<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${done ? "Sessao encerrada" : "Sair da Jus 9"}</title>
+  <style>
+    body{font-family:Arial,sans-serif;margin:0;background:#f7f8fb;color:#172033}
+    main{max-width:560px;margin:12vh auto;padding:32px;background:#fff;border:1px solid #d9deea;border-radius:8px}
+    h1{font-size:28px;margin:0 0 12px}
+    p{line-height:1.5;color:#45536a}
+    button,a{display:inline-block;margin-top:12px;padding:10px 14px;border-radius:6px;border:1px solid #1f5eff;background:#1f5eff;color:#fff;text-decoration:none;font-weight:700;cursor:pointer}
+    a.secondary{background:#fff;color:#1f5eff}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>${done ? "Sessao encerrada" : "Sair da Jus 9"}</h1>
+    <p>${done ? "Sua sessao local foi encerrada neste navegador." : "Clique no botao abaixo para encerrar sua sessao Google local na Jus 9."}</p>
+    ${done ? '<a href="/api/auth/me" class="secondary">Verificar sessao</a> <a href="/mvp.html">Voltar ao MVP</a>' : '<form method="post" action="/auth/logout?redirect=1"><button type="submit">Sair com seguranca</button></form>'}
+  </main>
+</body>
+</html>`);
 }
 
 function isAuthCorsPath(pathname) {
