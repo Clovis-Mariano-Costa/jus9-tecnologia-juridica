@@ -9,6 +9,10 @@
     "html_handling": "none",
     "not_found_handling": "none"
   },
+  "vars": {
+    "AUTH_PUBLIC_GOOGLE_ENABLED": "true",
+    "AUTH_PUBLIC_GOOGLE_PROFILE": "cidadao"
+  },
   "kv_namespaces": [
     {
       "binding": "JUS9_CALENDAR_TOKENS",
