@@ -9,6 +9,7 @@ Classificacao: PUBLICO TECNICO / SEM SEGREDOS
 - [x] Linkar pagina de Agenda a partir da pagina de login Google.
 - [x] Explicar que Calendar e consentimento separado do login basico.
 - [x] Explicar revogacao pela Conta Google.
+- [x] Preparar texto de uso limitado dos dados Google.
 
 ## 2. Codigo
 
@@ -29,6 +30,8 @@ Classificacao: PUBLICO TECNICO / SEM SEGREDOS
 - [ ] Declarar o escopo `https://www.googleapis.com/auth/calendar.events` apenas quando houver submissao.
 - [ ] Preencher justificativa de uso do escopo.
 - [ ] Enviar video demonstrando o fluxo.
+- [x] Preparar textos copiaveis para o Google Cloud.
+- [x] Preparar guia de cliques para o Fundador.
 
 ## 4. Cloudflare
 
@@ -56,4 +59,3 @@ Classificacao: PUBLICO TECNICO / SEM SEGREDOS
 - [ ] Nao ativar se o video de verificacao nao estiver pronto.
 - [ ] Nao ativar se houver segredo em GitHub.
 - [ ] Nao ativar Drive/Gmail junto com Calendar 1B.
-

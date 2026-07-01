@@ -40,6 +40,14 @@ Uso previsto: permitir que pessoa autorizada e governada conecte a propria Googl
 - `MATRIZ_ESCOPOS_GOOGLE_CALENDAR_PRODUCAO_1B_2026-07-01.md`
 - `ROTEIRO_VIDEO_VERIFICACAO_GOOGLE_CALENDAR_1B_2026-07-01.md`
 - `RUNBOOK_ATIVACAO_OPERACIONAL_GOOGLE_CALENDAR_1B_2026-07-01.md`
+- `TEXTOS_PARA_GOOGLE_CLOUD_CALENDAR_1B_2026-07-01.md`
+- `GUIA_PASSO_A_PASSO_GOOGLE_CLOUD_CALENDAR_1B_2026-07-01.md`
+
+## Fontes oficiais consultadas
+
+- Google Calendar API scopes: `https://developers.google.com/workspace/calendar/api/auth`
+- Google OAuth sensitive scope verification: `https://developers.google.com/identity/protocols/oauth2/production-readiness/sensitive-scope-verification`
+- Google API Services User Data Policy: `https://developers.google.com/terms/api-services-user-data-policy`
 
 ## Criterio de saida
 
@@ -51,4 +59,3 @@ O pacote 1B so deve ir para ativacao quando:
 4. o escopo Calendar estiver justificado na tela OAuth;
 5. o video de verificacao estiver pronto;
 6. o Fundador confirmar a ativacao de `GOOGLE_CALENDAR_OAUTH_ENABLED=true`.
-
