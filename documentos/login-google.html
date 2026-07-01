@@ -1,0 +1,59 @@
+<!--
+  Jus 9 Tecnologia Juridica - software livre, autoria preservada.
+  Producao do site: (c) Jus 9 Tecnologia Juridica. Direitos autorais da producao reservados.
+  DNA de referencia: charlieecho-jus9-tecnologia-juridica
+-->
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Login Google — Jus 9</title><meta name="description" content="Como a Jus 9 Tecnologia Juridica usa o login Google no MVP publico: perfil cidadao, permissao minima, logout, revogacao e governanca."><link rel="icon" href="../assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/css/visual-jus9-fase-final.css"></head><body>
+<div class="jus9-autoria-topo" role="note" aria-label="Autoria e licenca da producao do site" style="font-size: 0.82rem; line-height: 1.4; text-align: center; padding: 0.45rem 0.75rem; background: rgba(15, 23, 42, 0.94); color: #f8fafc; letter-spacing: 0.01em;">Jus 9 Tecnologia Juridica - software livre, autoria preservada.</div>
+<header class="header"><div class="container nav"><a href="../index.html#inicio" class="logo"><img src="../assets/jus9-logo.svg" alt="Jus 9 Tecnologia Juridica"></a><nav class="menu"><a href="../index.html#ecossistema">Ecossistema</a><a href="../mvp.html">MVP</a><a href="privacidade.html">Privacidade</a><a href="seguranca.html">Seguranca</a><a href="../index.html#contato">Contato</a></nav><a class="cta" href="../mvp.html#acesso">Entrar no MVP</a><button class="mobile-toggle">☰</button></div></header>
+<main class="container legal-page"><div class="eyebrow">Autenticacao governada</div><h1>Como o login Google e usado na Jus 9</h1>
+<p><strong>Ultima atualizacao:</strong> 2026-07-01.</p>
+<p>O login Google no MVP publico da Jus 9 existe para identificar uma sessao de demonstracao de forma simples e segura. Ele nao transforma a pessoa em cliente, nao cria contrato, nao libera dados juridicos reais e nao concede acesso automatico a Agenda, Drive, Gmail ou documentos.</p>
+
+<h2>1. Estado atual do login publico</h2>
+<p>No MVP publico, uma conta Google externa entra com o perfil governado <strong>cidadao</strong>. Esse perfil tem permissao minima: <code>auth:read</code>, usada apenas para verificar que existe uma sessao autenticada e mostrar o estado do login.</p>
+<p>Contas internas previamente autorizadas podem ter outros perfis, como <code>admin_sistema</code> ou <code>advogado</code>, conforme governanca interna. Mesmo nesses casos, perfil nao rompe sigilo profissional nem acesso ao Cofre Juridico.</p>
+
+<h2>2. Que dados Google sao usados</h2>
+<p>A Jus 9 pode usar dados basicos de autenticacao informados pelo Google, como identificacao da conta, e-mail verificado e informacoes publicas minimas do perfil necessarias para criar e proteger a sessao.</p>
+<p>A Jus 9 nao recebe sua senha Google. A senha permanece com o Google.</p>
+
+<h2>3. O que nao esta ativo nesta fase</h2>
+<ul>
+  <li>Nao ha acesso publico a Google Calendar.</li>
+  <li>Nao ha acesso publico a Google Drive.</li>
+  <li>Nao ha acesso publico a Gmail.</li>
+  <li>Nao ha leitura de e-mails, arquivos, agenda pessoal, documentos juridicos reais ou dados de terceiros.</li>
+  <li>Nao ha venda de dados Google nem uso para publicidade comportamental.</li>
+</ul>
+
+<h2>4. Calendar, Drive e Gmail no futuro</h2>
+<p>Qualquer integracao futura com Calendar, Drive ou Gmail devera ser separada do login basico. Isso significa nova explicacao, novo consentimento, revisao de politica de privacidade, testes e aprovacao humana antes de pedir escopos mais fortes.</p>
+<p>A diretriz da Jus 9 e pedir o menor escopo possivel. Para Drive, por exemplo, a preferencia futura e acesso por arquivo escolhido, nao acesso amplo ao Drive inteiro. Para Gmail, a preferencia e evitar leitura de caixa postal.</p>
+
+<h2>5. Como sair</h2>
+<p>No MVP, use o botao <strong>Sair com seguranca</strong> quando ele aparecer no painel de login. Tambem e possivel acessar diretamente <a href="../auth/logout">/auth/logout</a> e confirmar a saida local.</p>
+<p>O logout encerra a sessao local da Jus 9 no navegador. Ele nao apaga sua Conta Google nem encerra sua sessao em outros servicos Google.</p>
+
+<h2>6. Como revisar ou revogar pelo Google</h2>
+<p>A pessoa usuaria tambem pode revisar conexoes na propria Conta Google, em <a href="https://myaccount.google.com/connections" target="_blank" rel="noopener">myaccount.google.com/connections</a>. Nesse painel, o Google permite revisar apps e sites conectados a sua conta.</p>
+
+<h2>7. Limites do MVP</h2>
+<p>O MVP publico e demonstrativo. Nao insira dados reais, documentos de clientes, segredos, senhas, tokens, processos reais, WhatsApp bruto, dados de criancas, dados de saude, dados financeiros ou conteudo protegido por segredo de justica.</p>
+
+<h2>8. Contato</h2>
+<p>Duvidas, pedidos de informacao ou solicitacoes sobre privacidade podem ser enviados para <strong>Contato@jus9tecnologia.com.br</strong>.</p>
+<p><a class="btn" href="../mvp.html#acesso">Voltar ao acesso MVP</a> <a class="btn" href="privacidade.html">Ver Politica de Privacidade</a></p>
+
+<section class="links-semanticos-jus9-v1-5" aria-label="Links institucionais Jus 9" style="margin:2rem auto;max-width:1100px;padding:1rem;border:1px solid rgba(212,180,99,.35);border-radius:18px;background:rgba(15,23,42,.04);font-size:.95rem;line-height:1.6">
+  <strong>Links Jus 9:</strong>
+  <a href="https://equipe.jus9tecnologia.com.br/">Equipe</a> -
+  <a href="https://investimentos.jus9tecnologia.com.br/">Investimentos</a> -
+  <a href="https://jus9tecnologia.com.br/mvp#demos-jus9">MVP</a> -
+  <a href="https://charlieecho.jus9tecnologia.com.br/ia-profissional">Charlie Echo</a> -
+  <a href="https://jus9verde.jus9tecnologia.com.br/charlie-echo-social">Charlie Echo Social</a> -
+  <a href="mailto:Contato@jus9tecnologia.com.br">Contato</a>
+</section>
+</main><script src="../script.js"></script>
+<footer class="jus9-autoria-rodape" role="contentinfo" aria-label="Direitos autorais e origem da producao do site" style="font-size: 0.85rem; line-height: 1.5; text-align: center; padding: 1rem 0.75rem; margin-top: 2rem; background: rgba(15, 23, 42, 0.96); color: #f8fafc;">Producao do site: (c) Jus 9 Tecnologia Juridica. Software livre com autoria, origem e direitos autorais preservados.</footer>
+</body></html>

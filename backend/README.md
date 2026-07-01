@@ -77,9 +77,9 @@ Secreto/Cofre pertence ao advogado titular do DAJ, processo ou documento. Advoga
 
 ## Dossies adaptados
 
-`/api/dossiers` prepara a replicacao do nucleo organizacional para os 13 MVPs.
+`/api/dossiers` prepara a replicacao do nucleo organizacional para os 14 MVPs.
 
-`/api/profiles` retorna o catalogo publico canonico dos 13 ambientes demonstrativos, seus subperfis, codigos de dossie e aliases legados. A fonte e `data-publica/mvp-perfis.json`.
+`/api/profiles` retorna o catalogo publico canonico dos 14 ambientes demonstrativos, seus subperfis, codigos de dossie e aliases legados. A fonte e `data-publica/mvp-perfis.json`.
 O endpoint ainda usa memoria do processo Node e nao substitui banco remoto. A
 migracao PostgreSQL correspondente esta em
 `database/migrations/003_adapted_dossiers.sql`.

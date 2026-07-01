@@ -62,7 +62,7 @@ Sem variaveis reais:
 - `/auth/google/start` deve responder `501`.
 - `/api/auth/me` deve responder `401`.
 - `/login/` deve responder `302` para `/mvp.html#acesso`.
-- `/mvp` deve exibir `Login MVP v0.3 - Google preparado`, botao Google e perfis `demo1` ate `demo13`.
+- `/mvp` deve exibir o estado atual do login Google, botao Google e perfis `demo1` ate `demo14`.
 
 Com variaveis reais:
 

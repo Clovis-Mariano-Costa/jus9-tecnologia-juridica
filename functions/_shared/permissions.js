@@ -16,7 +16,8 @@ export const PROFILE_PERMISSIONS = Object.freeze({
   orgao_publico: ["auth:read", "processes:read"],
   magistrado: ["auth:read", "processes:read"],
   ministerio_publico: ["auth:read", "processes:read"],
-  autoridade_policial: ["auth:read", "documents:read", "processes:read"]
+  autoridade_policial: ["auth:read", "documents:read", "processes:read"],
+  autor_editor: ["auth:read"]
 });
 
 export function getPermissions(profile) {

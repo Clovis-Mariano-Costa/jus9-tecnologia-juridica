@@ -37,10 +37,11 @@ Esta matriz e inicial. Antes de dados reais, deve passar por revisao humana, jur
 | `magistrado` | `demo11@jus9tecnologia.com.br` | `app-demo-juiz.html` | `auth:read`, `processes:read` |
 | `ministerio_publico` | `demo12@jus9tecnologia.com.br` | `app-demo-promotor.html` | `auth:read`, `processes:read` |
 | `autoridade_policial` | `demo13@jus9tecnologia.com.br` | `app-demo-delegado.html` | `auth:read`, `documents:read`, `processes:read` |
+| `autor_editor` | `demo14@jus9tecnologia.com.br` | `app-demo-autor-editor.html` | `auth:read` |
 
 ## Catalogo publico canonico
 
-O contrato publico dos 13 ambientes demonstrativos fica em `data-publica/mvp-perfis.json`.
+O contrato publico dos 14 ambientes demonstrativos fica em `data-publica/mvp-perfis.json`.
 
 Ele registra codigo de dossie, aliases legados, tela inicial, tela de perfis e subperfis demonstrativos. O endpoint `GET /api/profiles` deriva sua resposta desse arquivo.
 

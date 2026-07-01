@@ -1010,7 +1010,8 @@ function profileContext(profile) {
     orgao_publico: ["Orgao publico", "fluxo institucional e processo administrativo demonstrativo"],
     magistrado: ["Magistrado", "apoio demonstrativo de gabinete"],
     ministerio_publico: ["Ministerio Publico", "apoio demonstrativo institucional"],
-    autoridade_policial: ["Autoridade policial", "apoio demonstrativo de fluxo policial"]
+    autoridade_policial: ["Autoridade policial", "apoio demonstrativo de fluxo policial"],
+    autor_editor: ["Autor / editor", "obra, autoria, revisao e publicacao demonstrativa"]
   };
   const item = profiles[profile] || ["Perfil governado", "uso demonstrativo com limite humano"];
   return { id: profile || "nao_informado", label: item[0], scope: item[1] };

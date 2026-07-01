@@ -18,7 +18,8 @@ export const AUTH_PROFILES = new Set([
   "orgao_publico",
   "magistrado",
   "ministerio_publico",
-  "autoridade_policial"
+  "autoridade_policial",
+  "autor_editor"
 ]);
 
 const PUBLIC_GOOGLE_PROFILES = new Set(["cidadao"]);

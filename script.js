@@ -622,6 +622,31 @@ window.jus9DemoLogin = function(form){
     if (logout) logout.hidden = !(options && options.authenticated);
   }
 
+  function authProfileLabel(profile){
+    var labels = {
+      admin_sistema: 'administrador do sistema',
+      advogado_lider: 'advogado lider',
+      advogado: 'advogado',
+      assessor_chefe: 'assessor chefe',
+      assessor: 'assessor',
+      secretaria: 'secretaria',
+      estagio: 'estagio',
+      academia: 'academia',
+      estudante: 'estudante',
+      cidadao: 'cidadao',
+      perito: 'perito',
+      parceiro: 'parceiro',
+      escritorio: 'escritorio juridico',
+      empresa: 'empresa',
+      orgao_publico: 'orgao publico',
+      magistrado: 'magistrado',
+      ministerio_publico: 'ministerio publico',
+      autoridade_policial: 'autoridade policial',
+      autor_editor: 'autor/editor'
+    };
+    return labels[profile] || profile || 'perfil governado';
+  }
+
   async function loadAuth(panel){
     if (isStaticPreview()) {
       setPanel(panel, 'Previa local: login Google preparado para o ambiente publicado. Use acesso demo nesta tela.', { authenticated:false });
@@ -634,11 +659,20 @@ window.jus9DemoLogin = function(form){
         return;
       }
       var session = await me.json();
+      if (!session.authenticated) {
+        setPanel(panel, 'Sem sessao Google ativa. Entre com Google ou use o acesso demo.', { authenticated:false });
+        return;
+      }
       var permissionsResponse = await fetch('/api/auth/permissions', { cache:'no-store', credentials:'include' });
       var permissionsPayload = permissionsResponse.ok ? await permissionsResponse.json() : {};
       var contextResponse = await fetch('/api/auth/context?module=' + encodeURIComponent(panel.getAttribute('data-auth-module') || '') + '&origin=' + encodeURIComponent(location.origin), { cache:'no-store', credentials:'include' });
       var contextPayload = contextResponse.ok ? await contextResponse.json() : {};
-      setPanel(panel, 'Sessao Google ativa. Perfil operacional: ' + (session.profile || 'nao informado') + '.', {
+      var profile = session.profile || 'nao_informado';
+      var activeMessage = profile === 'cidadao'
+        ? 'Entrou como cidadao. Login publico demonstrativo com permissao minima.'
+        : 'Entrou como ' + authProfileLabel(profile) + '. Perfil operacional: ' + profile + '.';
+      if (session.accessMode === 'public_google') activeMessage += ' Acesso publico governado.';
+      setPanel(panel, activeMessage, {
         authenticated:true,
         permissions: permissionsPayload.permissions || [],
         identity: contextPayload.identity || null

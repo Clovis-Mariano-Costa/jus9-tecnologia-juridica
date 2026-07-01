@@ -222,7 +222,8 @@ const authProfiles = [
   "orgao_publico",
   "magistrado",
   "ministerio_publico",
-  "autoridade_policial"
+  "autoridade_policial",
+  "autor_editor"
 ];
 
 const publicGoogleProfiles = new Set(["cidadao"]);
@@ -245,7 +246,8 @@ const profilePermissions = {
   orgao_publico: ["auth:read", "processes:read"],
   magistrado: ["auth:read", "processes:read"],
   ministerio_publico: ["auth:read", "processes:read"],
-  autoridade_policial: ["auth:read", "documents:read", "processes:read"]
+  autoridade_policial: ["auth:read", "documents:read", "processes:read"],
+  autor_editor: ["auth:read"]
 };
 
 const enforceApiAuth = process.env.AUTH_ENFORCE_API === "true";

@@ -9,9 +9,9 @@ function assert(condition, message) {
 }
 
 assert(catalog.schema === "jus9.mvp.profiles.public.v1", "schema publico inesperado");
-assert(Array.isArray(catalog.profiles) && catalog.profiles.length === 13, "catalogo deve conter 13 MVPs");
+assert(Array.isArray(catalog.profiles) && catalog.profiles.length === 14, "catalogo deve conter 14 MVPs");
 
-const expectedCodes = ["DAJ", "DAA", "DEJ", "DIC", "DPJ", "DIP", "DEE", "DEJI", "DOI", "DGE", "DMG", "DMP", "DAP"];
+const expectedCodes = ["DAJ", "DAA", "DEJ", "DIC", "DPJ", "DIP", "DEE", "DEJI", "DOI", "DGE", "DMG", "DMP", "DAP", "DED"];
 const actualCodes = catalog.profiles.map((profile) => profile.dossier_code);
 assert(expectedCodes.every((code) => actualCodes.includes(code)), "catalogo nao contem todos os dossies canonicos");
 
@@ -56,8 +56,8 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v4-2026-06-04-charlie-rooms-v4-4-1"), "cache PWA principal desatualizado");
-assert(canonicalServiceWorker.includes(".catch(() => Response.error())"), "fallback de arquivos estaticos do worker principal incorreto");
+assert(canonicalServiceWorker.includes("jus9-pwa-v5-2026-06-21-demo14-founder-sync"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("caches.match('/offline.html')"), "fallback de arquivos estaticos do worker principal incorreto");
 
 for (const code of expectedCodes) {
   assert(sharedScript.includes(`${code}: [`), `${code}: perguntas guiadas ausentes`);
@@ -91,7 +91,8 @@ for (const [code, page] of Object.entries(priorityAiPages)) {
 
 for (const page of catalog.profiles.map((profile) => profile.entry_page)) {
   const html = await fs.readFile(new URL(`../${page}`, import.meta.url), "utf8");
-  assert(html.includes('script.js?v=20260531-team-v1'), `painel sem versao de script da equipe: ${page}`);
+  const expectedScript = page === "app-demo-autor-editor.html" ? "script.js?v=20260621-demo14" : "script.js?v=20260531-team-v1";
+  assert(html.includes(expectedScript), `painel sem versao esperada de script: ${page}`);
 }
 
 const workspacePages = [
@@ -120,10 +121,10 @@ for (const page of workspacePages) {
   assert(html.includes('script.js?v=20260531-workspace-social-v1'), `workspace sem versao social: ${page}`);
 }
 
-console.log("STATIC_OK chat-compartilhado-13-mvps");
-console.log("STATIC_OK fluxos-aprofundados-13-mvps");
-console.log("STATIC_OK equipe-local-13-mvps");
-console.log("STATIC_OK cache-bust-equipe-13-mvps");
+console.log("STATIC_OK chat-compartilhado-14-mvps");
+console.log("STATIC_OK fluxos-aprofundados-14-mvps");
+console.log("STATIC_OK equipe-local-14-mvps");
+console.log("STATIC_OK cache-bust-equipe-14-mvps");
 console.log("STATIC_OK redes-sociais-workspace-13-mvps");
 console.log("STATIC_OK card-instalacao-jus9-verde");
 console.log("STATIC_OK service-worker-principal-canonico");

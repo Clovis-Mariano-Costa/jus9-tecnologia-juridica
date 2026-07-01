@@ -1,6 +1,6 @@
 {
   "schema": "jus9.mvp.profiles.public.v1",
-  "updated_at": "2026-05-31",
+  "updated_at": "2026-07-01",
   "classification": "PUBLICO / MVP DEMONSTRATIVO / SEM DADOS REAIS",
   "notes": [
     "Os perfis organizam ambientes demonstrativos e nao concedem permissao real.",
@@ -165,6 +165,18 @@
       "entry_page": "app-demo-delegado.html",
       "profiles_page": "app-perfis-delegado.html",
       "subprofiles": ["Delegado ficticio", "Escrivao", "Investigador", "Agente", "Vitima ficticia", "Testemunha ficticia", "Perito ou orgao parceiro ficticio"]
+    },
+    {
+      "demo": 14,
+      "slug": "autor-editor",
+      "label": "Autor / Editora / Autor-Editor",
+      "auth_profile": "autor_editor",
+      "dossier_code": "DED",
+      "dossier_label": "Dossie Editorial Demonstrativo",
+      "demo_email": "demo14@jus9tecnologia.com.br",
+      "entry_page": "app-demo-autor-editor.html",
+      "profiles_page": "app-demo-autor-editor.html",
+      "subprofiles": ["Autor", "Autor-editor", "Editora", "Editor", "Revisor", "Curador", "Designer editorial", "Publicador"]
     }
   ]
 }

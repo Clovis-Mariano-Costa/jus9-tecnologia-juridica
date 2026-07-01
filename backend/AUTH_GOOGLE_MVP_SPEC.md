@@ -84,6 +84,7 @@ Se `return_to` estiver ausente ou invalido, o callback usa `AUTH_SUCCESS_REDIREC
 - `magistrado`
 - `ministerio_publico`
 - `autoridade_policial`
+- `autor_editor`
 
 ## Comportamento esperado
 
