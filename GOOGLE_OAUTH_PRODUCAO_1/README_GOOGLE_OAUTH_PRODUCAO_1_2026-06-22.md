@@ -15,8 +15,8 @@ Preparar a passagem do OAuth Google da Jus 9 de teste controlado para producao g
 - Login basico solicita apenas `openid email profile`.
 - Sessao grava hashes, perfil, modo de acesso e nucleo de login, nao token Google.
 - Retorno modular por `return_to` existe com allowlist de rotas e origens.
-- Google Agenda existe como fluxo incremental separado no Worker.
-- Escopo de Agenda atual: `https://www.googleapis.com/auth/calendar.events`.
+- Google Agenda existe como fluxo incremental separado no Worker, mas fica travado por `GOOGLE_CALENDAR_OAUTH_ENABLED=false` ate ativacao especifica.
+- Escopo de Agenda candidato: `https://www.googleapis.com/auth/calendar.events`.
 - Tokens de Calendar ficam em KV `JUS9_CALENDAR_TOKENS`, criptografados com chave derivada do segredo de sessao.
 - Politica de privacidade publica recebeu secao sobre Google/OAuth.
 
@@ -28,7 +28,7 @@ Preparar a passagem do OAuth Google da Jus 9 de teste controlado para producao g
 - Contas privilegiadas continuam governadas por `AUTH_ALLOWED_EMAILS`.
 - A sessao registra `accessMode` com valores como `allowlist` ou `public_google`.
 - A sessao registra `authNucleus` para separar Equipe, MVP, Agenda, Laboratorio, Universidade, IA profissional e Principal.
-- Agenda permanece no pacote 1, mas somente para perfis com `calendar:write`.
+- Agenda foi separada no pacote `GOOGLE_CALENDAR_PRODUCAO_1B`, somente para perfis com `calendar:write` e com flag operacional explicita.
 - Drive e Gmail ficam em pacotes separados e sem escopos ativos neste pacote.
 
 ## Projeto de producao
@@ -51,6 +51,7 @@ A escolha operacional segura e criar um projeto Google Cloud separado para produ
 - Nao houve publicacao de allowlist real.
 - Nao houve publicacao de valores reais de `AUTH_ALLOWED_EMAILS`.
 - Nao houve mudanca em KV ou Cloudflare.
+- Nao houve ativacao de `GOOGLE_CALENDAR_OAUTH_ENABLED=true`.
 
 ## Criterio de saida
 

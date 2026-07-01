@@ -50,11 +50,11 @@ DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridic
         <div class="eyebrow">Agenda Jus 9</div>
         <h1 style="font-size:42px;color:#0b1728;margin-top:8px">Agenda híbrida para o evento.</h1>
         <p style="color:#51627a;margin:8px 0 0">A Jus 9 mantém agenda própria para prazos, DAJ, processo, cliente, equipe e auditoria. Google Calendar entra como lembrete e convite sem dados sensíveis.</p>
-        <div class="warning-note" style="margin-top:14px"><strong>Google Agenda em homologacao:</strong> o modo local segue ativo. A conexao real usa login Google, permissao especifica de Agenda e backend governado.</div>
+        <div class="warning-note" style="margin-top:14px"><strong>Google Agenda em homologacao:</strong> o modo local segue ativo. A conexao real usa login Google, permissao especifica de Agenda e backend governado. <a href="documentos/google-calendar.html">Ver governanca da Agenda</a>.</div>
       </div>
       <span class="badge secret">Demo sem dados reais</span>
     </section>
-    <section class="event-quick-nav" aria-label="Navegação rápida do evento"><div><strong>Modo evento Rio.</strong> <span>Agenda real conectada com permissão específica e demonstração sem dados sensíveis.</span></div><div class="event-links"><a class="primary" href="#googleCalendarPanel">Google Agenda</a><a href="app-chat-charlie-echo.html#chat-ia">Chat Charlie</a><a href="mvp.html#demos-jus9">MVPs</a><a href="/auth/google/start?return_to=%2Fapp-agenda.html">Entrar com Google</a></div></section>
+    <section class="event-quick-nav" aria-label="Navegação rápida do evento"><div><strong>Modo evento Rio.</strong> <span>Agenda real conectada com permissão específica e demonstração sem dados sensíveis.</span></div><div class="event-links"><a class="primary" href="#googleCalendarPanel">Google Agenda</a><a href="documentos/google-calendar.html">Governança</a><a href="app-chat-charlie-echo.html#chat-ia">Chat Charlie</a><a href="mvp.html#demos-jus9">MVPs</a><a href="/auth/google/start?return_to=%2Fapp-agenda.html">Entrar com Google</a></div></section>
 
     <section class="daj-card">
       <h2>Modo atual da Agenda</h2>
@@ -210,6 +210,13 @@ async function portalCalendarStatus() {
       status.textContent = "Agenda real indisponivel para este perfil ou ambiente.";
       portalCalendarConnected = false;
       connectButton.textContent = "Conectar Google Agenda";
+      return false;
+    }
+    if (data.calendar?.enabled === false) {
+      status.textContent = "Google Agenda preparada, mas ainda nao ativada para esta fase.";
+      portalCalendarConnected = false;
+      connectButton.textContent = "Agenda em preparacao";
+      eventsBox.innerHTML = '<div class="timeline-entry"><strong>Calendar Producao 1B</strong><p>A conexao real sera aberta somente apos verificacao sensivel e confirmacao operacional.</p></div>';
       return false;
     }
     if (!data.calendar?.connected) {

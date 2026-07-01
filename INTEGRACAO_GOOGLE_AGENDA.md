@@ -28,3 +28,15 @@ Para sincronizacao real com a agenda de um usuario, cliente, advogado ou equipe:
 ## Regra de seguranca
 
 Nao sincronizar dados reais de processos, clientes, prazos ou documentos com Google Agenda sem revisao humana, base juridica, consentimento e cofre tecnico adequado.
+
+## Estado atualizado - 2026-07-01
+
+A integracao real de Calendar foi organizada no pacote `GOOGLE_CALENDAR_PRODUCAO_1B`.
+
+- Escopo candidato: `https://www.googleapis.com/auth/calendar.events`.
+- Fluxo sensivel: `/auth/google/calendar/start`.
+- Trava operacional: `GOOGLE_CALENDAR_OAUTH_ENABLED=false` por padrao.
+- Perfil publico `cidadao`: bloqueado para Calendar.
+- Pagina publica: `documentos/google-calendar.html`.
+
+So virar `GOOGLE_CALENDAR_OAUTH_ENABLED=true` apos verificacao sensivel, video, politica publica publicada e confirmacao final do Fundador.

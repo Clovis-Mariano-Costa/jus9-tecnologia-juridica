@@ -29,7 +29,7 @@ Interpretacao de seguranca: como a politica oficial do Google exige separacao en
 - [x] Submeter Calendar ja no pacote Producao 1.
 - [x] Manter Calendar como consentimento incremental separado do login basico.
 
-Execucao: o escopo `https://www.googleapis.com/auth/calendar.events` continua somente no fluxo `/auth/google/calendar/start`. Apenas perfis com permissao `calendar:write` podem iniciar esse consentimento. O perfil publico `cidadao` fica bloqueado.
+Execucao atualizada em 2026-07-01: o escopo `https://www.googleapis.com/auth/calendar.events` continua somente no fluxo `/auth/google/calendar/start`, mas o fluxo sensivel fica travado por `GOOGLE_CALENDAR_OAUTH_ENABLED=false` ate aprovacao do pacote Calendar Producao 1B. Apenas perfis com permissao `calendar:write` podem iniciar esse consentimento quando a flag for ligada. O perfil publico `cidadao` fica bloqueado.
 
 ## 4. Rotacao de segredo
 

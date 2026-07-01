@@ -11,7 +11,8 @@
   },
   "vars": {
     "AUTH_PUBLIC_GOOGLE_ENABLED": "true",
-    "AUTH_PUBLIC_GOOGLE_PROFILE": "cidadao"
+    "AUTH_PUBLIC_GOOGLE_PROFILE": "cidadao",
+    "GOOGLE_CALENDAR_OAUTH_ENABLED": "false"
   },
   "kv_namespaces": [
     {

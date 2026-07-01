@@ -36,7 +36,7 @@ Classificacao: PUBLICO TECNICO / SEM SEGREDOS
 - [ ] Login basico: `openid`.
 - [ ] Login basico: `email`.
 - [ ] Login basico: `profile`.
-- [x] Agenda liberada pelo Fundador para o pacote 1: `https://www.googleapis.com/auth/calendar.events`.
+- [x] Agenda preparada como pacote separado 1B: `https://www.googleapis.com/auth/calendar.events`.
 - [x] Confirmar que Calendar continua incremental, separado do login basico.
 - [x] Confirmar que perfil publico `cidadao` nao tem `calendar:write`.
 
@@ -53,6 +53,7 @@ Classificacao: PUBLICO TECNICO / SEM SEGREDOS
 - [ ] Configurar `AUTH_PUBLIC_GOOGLE_PROFILE=cidadao`.
 - [ ] Configurar `AUTH_ALLOWED_EMAILS` apenas para contas privilegiadas, sem publicar valores.
 - [ ] Confirmar binding `JUS9_CALENDAR_TOKENS` se Agenda entrar em producao.
+- [x] Manter `GOOGLE_CALENDAR_OAUTH_ENABLED=false` ate o pacote Calendar 1B ser aprovado.
 
 ## 6. Testes antes da submissao
 
@@ -67,7 +68,7 @@ Classificacao: PUBLICO TECNICO / SEM SEGREDOS
 - [ ] Testar `accessMode` e `authNucleus`.
 - [ ] Testar `return_to` externo bloqueado.
 - [ ] Testar logout.
-- [ ] Testar Agenda somente se autorizada.
+- [ ] Testar Agenda somente se `GOOGLE_CALENDAR_OAUTH_ENABLED=true` e a verificacao sensivel estiver pronta.
 
 ## 7. Evidencias para Google
 

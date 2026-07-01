@@ -6,6 +6,10 @@ const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 const TOKEN_TTL_SECONDS = 60 * 60 * 24 * 180;
 
+export function isCalendarOAuthEnabled(env) {
+  return /^(1|true|yes|on|enabled)$/i.test(String(env.GOOGLE_CALENDAR_OAUTH_ENABLED || "").trim());
+}
+
 export function missingCalendarConfig(env) {
   return env.JUS9_CALENDAR_TOKENS ? [] : ["JUS9_CALENDAR_TOKENS"];
 }

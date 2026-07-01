@@ -2,6 +2,7 @@ import {
   GOOGLE_CALENDAR_EVENTS_SCOPE,
   createCalendarEvent,
   getCalendarStatus,
+  isCalendarOAuthEnabled,
   listCalendarEvents,
   missingCalendarConfig,
   putCalendarGrant
@@ -205,6 +206,10 @@ async function handleGoogleStart(request, env) {
 }
 
 async function handleGoogleCalendarStart(request, env) {
+  if (!isCalendarOAuthEnabled(env)) {
+    return jsonResponse({ ok: false, error: "calendar_oauth_nao_ativado" }, 403);
+  }
+
   const missing = [...missingGoogleConfig(env), ...missingCalendarConfig(env)];
   if (missing.length) {
     return jsonResponse({ ok: false, error: "calendar_configuracao_pendente", missing }, 501);
@@ -592,13 +597,27 @@ async function handleCalendarStatus(request, env) {
   }
   const session = await getSession(request, env);
   if (!session) return jsonResponse({ authenticated: false }, 401, corsHeaders);
+  if (!isCalendarOAuthEnabled(env)) {
+    return jsonResponse({
+      authenticated: true,
+      profile: session.profile,
+      calendar: {
+        enabled: false,
+        connected: false,
+        reason: "calendar_oauth_nao_ativado"
+      }
+    }, 200, corsHeaders);
+  }
   if (!hasPermission(session, "calendar:read")) {
     return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "calendar:read" }, 403, corsHeaders);
   }
   return jsonResponse({
     authenticated: true,
     profile: session.profile,
-    calendar: await getCalendarStatus(env, session)
+    calendar: {
+      enabled: true,
+      ...(await getCalendarStatus(env, session))
+    }
   }, 200, corsHeaders);
 }
 
@@ -606,6 +625,9 @@ async function handleCalendarEvents(request, env) {
   const corsHeaders = getAuthCorsHeaders(request);
   const session = await getSession(request, env);
   if (!session) return jsonResponse({ authenticated: false }, 401, corsHeaders);
+  if (!isCalendarOAuthEnabled(env)) {
+    return jsonResponse({ ok: false, error: "calendar_oauth_nao_ativado" }, 403, corsHeaders);
+  }
 
   if (request.method === "GET") {
     if (!hasPermission(session, "calendar:read")) {

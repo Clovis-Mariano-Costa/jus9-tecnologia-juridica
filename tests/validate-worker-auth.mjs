@@ -215,13 +215,35 @@ assert(response.status === 200 && data.identity?.user?.family === "familia_virtu
 console.log("AUTH_OK context=familia_virtual");
 
 response = await request("/auth/google/calendar/start");
-assert(response.status === 501, "Agenda sem KV deve retornar configuracao pendente");
+assert(response.status === 403, "Agenda desligada deve bloquear consentimento sensivel");
+console.log("AUTH_OK calendar-disabled=403");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/auth/google/calendar/start"),
+  { ...configuredEnv, GOOGLE_CALENDAR_OAUTH_ENABLED: "true" }
+);
+assert(response.status === 501, "Agenda ligada sem KV deve retornar configuracao pendente");
 console.log("AUTH_OK calendar-kv-pendente=501");
 
 const calendarEnv = {
   ...configuredEnv,
   JUS9_CALENDAR_TOKENS: memoryKv(),
   JUS9_PROFILE_REQUESTS: memoryKv()
+};
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/calendar/status", {
+    headers: { cookie: await cookieFor("admin_sistema") }
+  }),
+  calendarEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.calendar?.enabled === false, "Agenda desligada deve informar status preparado");
+console.log("AUTH_OK calendar-status-disabled=200");
+
+const calendarEnabledEnv = {
+  ...calendarEnv,
+  GOOGLE_CALENDAR_OAUTH_ENABLED: "true"
 };
 
 response = await worker.fetch(
@@ -381,7 +403,7 @@ console.log("AUTH_OK profile-request-list-admin=200");
 
 response = await worker.fetch(
   new Request("https://jus9.invalid/auth/google/calendar/start?return_to=%2Fapp-agenda.html"),
-  calendarEnv
+  calendarEnabledEnv
 );
 assert(response.status === 401, "Agenda sem sessao deve exigir login");
 console.log("AUTH_OK calendar-login-obrigatorio=401");
@@ -390,7 +412,7 @@ response = await worker.fetch(
   new Request("https://jus9.invalid/auth/google/calendar/start?return_to=%2Fapp-agenda.html", {
     headers: { cookie: await cookieFor("admin_sistema") }
   }),
-  calendarEnv
+  calendarEnabledEnv
 );
 assert(response.status === 302, "Agenda com sessao deve redirecionar para Google");
 assert(response.headers.get("location")?.includes("calendar.events"), "OAuth de Agenda deve pedir escopo de eventos");
@@ -404,7 +426,7 @@ response = await worker.fetch(
   new Request("https://jus9.invalid/auth/google/calendar/start?return_to=%2Fapp-agenda.html", {
     headers: { cookie: await cookieFor("cidadao", Date.now() + 60_000, "publico@example.invalid", "public_google", "agenda") }
   }),
-  calendarEnv
+  calendarEnabledEnv
 );
 assert(response.status === 403, "cidadao publico nao deve iniciar consentimento Calendar");
 console.log("AUTH_OK calendar-public-cidadao=403");
@@ -414,7 +436,7 @@ response = await worker.fetch(
     method: "OPTIONS",
     headers: { origin: "https://universidadedofuturo.jus9tecnologia.com.br" }
   }),
-  calendarEnv
+  calendarEnabledEnv
 );
 assert(response.status === 204, "preflight CORS da Agenda deveria retornar 204");
 assert(response.headers.get("access-control-allow-origin") === "https://universidadedofuturo.jus9tecnologia.com.br", "CORS da Agenda nao liberou subdominio autorizado");

@@ -15,7 +15,7 @@ Login amplo nao significa permissao ampla. Toda Conta Google verificada fora da 
 | `openid` | Identidade OIDC minima | Login basico | Basico | Manter |
 | `email` | E-mail verificado para allowlist/perfil | Login basico | Basico | Manter |
 | `profile` | Perfil publico minimo | Login basico | Basico | Manter |
-| `https://www.googleapis.com/auth/calendar.events` | Listar/criar eventos de Agenda quando usuario conecta Agenda | Incremental separado | Sensivel | Submeter apenas se Agenda entrar em producao |
+| `https://www.googleapis.com/auth/calendar.events` | Listar/criar eventos de Agenda quando usuario conecta Agenda | Incremental separado / pacote 1B | Sensivel | Preparado, mas travado por `GOOGLE_CALENDAR_OAUTH_ENABLED=false` |
 
 ## Perfis e acesso
 
@@ -64,6 +64,7 @@ A Agenda Google e recurso opcional e incremental. A pessoa usuaria so concede pe
 - Hash de identificador Google.
 - Perfil operacional autorizado.
 - Token de Calendar, apenas se Agenda for conectada.
+- Novas autorizacoes Calendar so podem iniciar com `GOOGLE_CALENDAR_OAUTH_ENABLED=true`.
 - Metadados minimos de eventos quando o usuario usa Agenda.
 
 ## Dados nao tratados nesta fase

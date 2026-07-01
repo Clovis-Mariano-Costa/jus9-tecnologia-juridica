@@ -17,6 +17,9 @@ DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridic
 - `arquitetura-tecnica.html`
 - `ia-profissional.html`
 - `app-ia-profissional.html`
+- `login-google.html`
+- `google-calendar.html`
+- `privacidade.html`
 
 ## Documentos internos principais
 
@@ -32,6 +35,8 @@ DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridic
 
 - `/backend`
 - `/database`
+- `/GOOGLE_OAUTH_PRODUCAO_1`
+- `/GOOGLE_CALENDAR_PRODUCAO_1B`
 
 ## O que avaliar como fundador
 
