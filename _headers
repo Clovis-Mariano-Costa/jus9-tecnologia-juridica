@@ -3,6 +3,11 @@
 
 /script.js
   Content-Type: application/javascript; charset=utf-8
+  Cache-Control: no-store, max-age=0
+
+/service-worker.js
+  Content-Type: application/javascript; charset=utf-8
+  Cache-Control: no-store, max-age=0
 
 /*.css
   Content-Type: text/css; charset=utf-8

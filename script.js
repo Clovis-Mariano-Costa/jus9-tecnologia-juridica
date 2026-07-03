@@ -914,7 +914,29 @@ window.jus9DemoLogin = function(form){
 
   function asksSources(question){
     var q = (question || '').toLowerCase();
+    if(asksDocumentProductionDownload(question)) return false;
     return /\b(link|fonte|fontes|confiavel|confiáveis|confiaveis|oficial|pesquisar|pesquisa|busque|buscar|procure|procurar|jurisprudencia|jurisprudência|precedente|acordao|acórdão|lei|legislacao|legislação)\b/.test(q);
+  }
+
+  function asksDocumentProductionDownload(question){
+    var q = String(question || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    var wantsDocument = /\b(minuta|modelo|contrato|peticao|peca|documento|oficio|requerimento|manifestacao|recurso|contestacao|inicial)\b/.test(q);
+    var wantsFile = /\b(download|baixar|arquivo|pdf|docx|word|link para download|link de download|gerar link|criar link)\b/.test(q);
+    return wantsDocument && wantsFile;
+  }
+
+  function documentProductionDownloadAnswer(question){
+    if(!asksDocumentProductionDownload(question)) return '';
+    return [
+      'Posso preparar a minuta demonstrativa e deixar um pacote local para download nesta tela.',
+      '',
+      'Como funciona com seguranca:',
+      '1. Eu redijo o documento com campos ficticios ou entre colchetes.',
+      '2. A propria tela cria links locais para baixar a resposta em TXT e PDF, sem inventar URL externa.',
+      '3. Link publico do Drive so deve aparecer quando um backend autorizado retornar uma downloadUrl real.',
+      '',
+      'Limite: se houver nomes, valores, processo, crianca/adolescente, documentos ou dados reais, trate como JURIDICO_SIGILOSO e leve para revisao humana qualificada antes de usar.'
+    ].join('\n');
   }
 
   function compactLegalTopic(value, fallback){
@@ -1006,6 +1028,7 @@ window.jus9DemoLogin = function(form){
 
   function legalResearchAnswer(question){
     var q = (question || '').toLowerCase();
+    if(asksDocumentProductionDownload(question)) return '';
     if(!asksSources(q)) return '';
     var wantsDoctrine = /\b(doutrina|artigo cientifico|artigo científico|academico|acadêmico|livro|periodico|periódico|tese|dissertacao|dissertação)\b/.test(q);
     var wantsJuris = /\b(jurisprudencia|jurisprudência|precedente|acordao|acórdão|repetitivo|repercussao|repercussão|tese|tribunal|tjsc|stf|stj|tst)\b/.test(q);
@@ -1075,6 +1098,8 @@ window.jus9DemoLogin = function(form){
     if (identity) return identity;
     var socialResponsibility = socialResponsibilityFallback(cleanQuestion);
     if (socialResponsibility) return socialResponsibility;
+    var documentDownload = documentProductionDownloadAnswer(cleanQuestion);
+    if (documentDownload) return documentDownload;
     var doctrineProduction = doctrineProductionAnswer(cleanQuestion);
     if (doctrineProduction) return doctrineProduction;
     var legalResearch = legalResearchAnswer(cleanQuestion);
@@ -1284,6 +1309,7 @@ window.jus9DemoLogin = function(form){
       'Comece direto pelo conteudo util. Use cabecalhos simples apenas quando ajudarem: Resumo, Orientacao, Checklist, Fontes, Limites, Proximo passo.',
       'Evite Markdown pesado. Nao use blocos com muitos asteriscos. Se listar, use poucos itens curtos. Se o pedido for simples, responda em poucos paragrafos.',
       'Aplique criatividade governada sem fingir consciencia. Mostre criterio quando for util, mas nao revele pensamento interno oculto, nao diga que possui consciencia e nao invente certeza.',
+      'Quando o usuario pedir link/download junto de minuta, peticao, contrato, modelo ou documento, trate como producao documental demonstrativa com download local da tela. Nao classifique como pesquisa de fontes e nao invente URL externa.',
       'Se houver pedido de link externo, ofereca URL HTTPS completa de fonte oficial, institucional ou academica confiavel quando possivel. Classifique a confianca do link por dominio, autoria, data, fonte primaria e risco. Nao use lista fixa como limite: avalie links novos com criterio.',
       'Se o pedido envolver doutrina ou jurisprudencia, separe doutrina de jurisprudencia, priorize tribunais oficiais, Planalto, LexML, CAPES, SciELO e bases academicas, explique por que a fonte e confiavel e avise que inteiro teor e revisao humana sao obrigatorios para uso real.',
       'Quando o pedido for produzir doutrina, sintese doutrinaria, texto academico, parecer introdutorio ou relatorio juridico, desenvolva o conteudo com liberdade responsavel. Nao trave apenas oferecendo links. Use conceitos, correntes, argumentos, estrutura, limites e proximo passo. Nunca invente autor, obra, pagina, julgado ou citacao literal; se faltar fonte, diga que e sintese sem citacao conferida.',
@@ -1327,7 +1353,7 @@ window.jus9DemoLogin = function(form){
       smartSummary: cleanApiMemory(room.smartSummary, 1200),
       governanceClass: room.governanceClass || '',
       currentTopic: room.currentTopic || '',
-      lastUserIntent: asksDoctrineProduction(question) && /pesquisa juridica guiada/i.test(room.lastUserIntent || '') ? '' : (room.lastUserIntent || ''),
+      lastUserIntent: (asksDoctrineProduction(question) || asksDocumentProductionDownload(question)) && /pesquisa juridica guiada/i.test(room.lastUserIntent || '') ? '' : (room.lastUserIntent || ''),
       messages: (room.messages || []).slice(-16).map(function(m){
         return { role:m.role, content:cleanApiMemory(m.content, 700) };
       }).filter(function(m){ return m.content; })
@@ -1357,6 +1383,7 @@ window.jus9DemoLogin = function(form){
 
   function inferCreativeIntent(question){
     var q = String(question || '').toLowerCase();
+    if(asksDocumentProductionDownload(question)) return 'producao documental demonstrativa';
     if(/\b(jurisprudencia|jurisprudência|precedente|acordao|acórdão|fonte|fontes|pesquise|pesquisar|busque|buscar|procure|procurar)\b/.test(q)) return 'pesquisa juridica guiada';
     if(/\b(doutrina|doutrinario|doutrinaria|doutrinário|doutrinária|teoria|conceito juridico|conceito jurídico)\b/.test(q)) return 'producao doutrinaria responsavel';
     if(/\b(link|url|site|download|baixar)\b/.test(q)) return 'curadoria de link ou arquivo';
@@ -1571,9 +1598,10 @@ window.jus9DemoLogin = function(form){
     var cleanSummary = cleanMemoryText(room && room.summary, 4200);
     var cleanSmartSummary = cleanMemoryText(room && room.smartSummary, 4200);
     var doctrineNote = asksDoctrineProduction(question) ? '\nNota: se memorias antigas tratarem doutrina como mera pesquisa de fontes, ignore essa classificacao antiga e produza conteudo doutrinario responsavel.\n' : '';
+    var documentDownloadNote = asksDocumentProductionDownload(question) ? '\nNota: a pergunta atual pede producao de documento com download local. Ignore memorias antigas de pesquisa juridica guiada e nao ofereca bloco fixo de fontes.\n' : '';
     return (room && (room.summary || room.smartSummary || recent))
-      ? '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '. Use memoria: sim.' + doctrineNote + '\n[RESUMO EXECUTIVO DA SALA]\n' + (cleanSmartSummary || 'Resumo anterior contaminado ou ausente.') + '\n\n[MEMORIA GOVERNADA LOCAL]\n' + (cleanSummary || 'Memoria anterior contaminada ou ausente.') + '\n\n[DECISOES]\n' + (decisions || 'Sem decisoes marcadas.') + '\n\n[PENDENCIAS]\n' + (pending || 'Sem pendencias marcadas.') + '\n\n[HISTORICO RECENTE]\n' + (recent || 'Historico anterior contaminado ou ausente.') + '\n\n[PERGUNTA ATUAL]\n' + question
-      : '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '.\n\n[PERGUNTA ATUAL]\n' + question;
+      ? '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '. Use memoria: sim.' + doctrineNote + documentDownloadNote + '\n[RESUMO EXECUTIVO DA SALA]\n' + (cleanSmartSummary || 'Resumo anterior contaminado ou ausente.') + '\n\n[MEMORIA GOVERNADA LOCAL]\n' + (cleanSummary || 'Memoria anterior contaminada ou ausente.') + '\n\n[DECISOES]\n' + (decisions || 'Sem decisoes marcadas.') + '\n\n[PENDENCIAS]\n' + (pending || 'Sem pendencias marcadas.') + '\n\n[HISTORICO RECENTE]\n' + (recent || 'Historico anterior contaminado ou ausente.') + '\n\n[PERGUNTA ATUAL]\n' + question
+      : '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '.' + documentDownloadNote + '\n\n[PERGUNTA ATUAL]\n' + question;
   }
 
   function downloadText(filename, content){
@@ -1664,6 +1692,42 @@ window.jus9DemoLogin = function(form){
       Object.assign(prepareBlobDownload(mdName, new Blob([md], { type:'text/markdown;charset=utf-8' })), { label:'Baixar guia MiniBackend' }),
       Object.assign(prepareBlobDownload(jsonName, new Blob([JSON.stringify(payload, null, 2)], { type:'application/json;charset=utf-8' })), { label:'Baixar payload ficticio' }),
       Object.assign(prepareBlobDownload(txtName, new Blob([checklist], { type:'text/plain;charset=utf-8' })), { label:'Baixar checklist' })
+    ];
+  }
+
+  function buildResponseDownloads(question, answer, code, focus){
+    var stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\..+$/, '').replace('T', '-');
+    var base = slug('charlie-echo-' + (code || 'mvp') + '-' + plainQuestionText(question).slice(0, 42) + '-' + stamp);
+    var title = 'Resposta Charlie Echo - ' + (code || 'MVP');
+    var lines = [
+      'MVP: ' + (code || 'MVP'),
+      'Foco: ' + (focus || 'contexto demonstrativo do MVP'),
+      'Gerado em: ' + new Date().toLocaleString('pt-BR'),
+      '',
+      'Resumo executivo',
+      '',
+      'Documento gerado localmente a partir da resposta da Charlie Echo. Revisao humana obrigatoria antes de qualquer uso real.',
+      '',
+      'Memoria da sala',
+      '',
+      'Pergunta atual: ' + plainQuestionText(question),
+      '',
+      'Fontes e links confiaveis',
+      '',
+      'Este pacote nao cria URL publica nem link do Google Drive. Link publico so deve aparecer quando backend autorizado retornar downloadUrl real.',
+      '',
+      'Historico recente',
+      '',
+      'Usuario: ' + plainQuestionText(question),
+      '',
+      'Charlie Echo: ' + String(answer || '').trim()
+    ];
+    var text = title + '\n\n' + lines.join('\n');
+    var pdfFile = prepareBlobDownload(base + '.pdf', buildPdfBlob(title, lines));
+    var textFile = prepareBlobDownload(base + '.txt', new Blob([text], { type:'text/plain;charset=utf-8' }));
+    return [
+      { filename:pdfFile.filename, url:pdfFile.url, label:'Baixar PDF' },
+      { filename:textFile.filename, url:textFile.url, label:'Baixar texto' }
     ];
   }
 
@@ -2180,15 +2244,21 @@ window.jus9DemoLogin = function(form){
           keepChatInView(card, echoMsg);
           var remembered = rememberChatExchange(code, question, answer);
           updateRoomIntelligence(code, remembered, focus);
+          if(asksDocumentProductionDownload(question)) {
+            appendDownloadEchoForForm(buildResponseDownloads(question, answer, code, focus));
+          }
         } catch (error) {
           var fallback = textForMode(mode, code, focus, question);
           var safeSummary = room.summary && !/Para pesquisar doutrina e jurisprudencia com seguranca|voce pediu pesquisa juridica guiada|Leitura do pedido: voce pediu pesquisa juridica guiada/i.test(room.summary) ? room.summary : '';
-          if(settings.memory !== false && safeSummary && !asksDoctrineProduction(question)) fallback = 'Vou continuar pela memoria governada desta sala. ' + safeSummary + '\n\n' + fallback;
+          if(settings.memory !== false && safeSummary && !asksDoctrineProduction(question) && !asksDocumentProductionDownload(question)) fallback = 'Vou continuar pela memoria governada desta sala. ' + safeSummary + '\n\n' + fallback;
           fallback = applyCreativeReasoningFrame(fallback, question, code, focus);
           echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(fallback) + '<br><br><em>API segura indisponivel agora; mantive fallback local sem dados reais.</em>';
           keepChatInView(card, echoMsg);
           var rememberedFallback = rememberChatExchange(code, question, fallback);
           updateRoomIntelligence(code, rememberedFallback, focus);
+          if(asksDocumentProductionDownload(question)) {
+            appendDownloadEchoForForm(buildResponseDownloads(question, fallback, code, focus));
+          }
         }
         keepChatInView(card, echoMsg);
       }

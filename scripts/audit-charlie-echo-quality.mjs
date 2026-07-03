@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
-const expectedScriptVersion = "script.js?v=20260605-charlie-creative-v5-4";
+const expectedScriptVersion = "script.js?v=20260608-chat-modelo-v1";
 
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), "utf8");
@@ -22,7 +22,7 @@ const checks = [
   {
     name: "chat MVP possui ferramentas de qualidade",
     file: "script.js",
-    patterns: ["Melhorar resposta", "Fontes", "Atualizar resumo", "Resumo executivo", "Gerar PDF", "Baixar PDF", "link clicavel de download", "Renomear", "application/pdf", ".pdf", "buildPdfBlob", "download-link", "Helvetica-Bold", "Informacoes do pacote", "Historico recente", "Fontes e links confiaveis", "Pagina ", "pdfSafeText", "pdfLiteral", "eef4ff"],
+    patterns: ["Melhorar resposta", "Fontes", "Atualizar resumo", "Resumo executivo", "Gerar PDF", "Baixar PDF", "link clicavel de download", "Renomear", "application/pdf", ".pdf", "buildPdfBlob", "download-link", "Helvetica-Bold", "Informacoes do pacote", "Historico recente", "Fontes e links confiaveis", "Pagina ", "pdfSafeText", "pdfLiteral", "eef4ff", "asksDocumentProductionDownload", "buildResponseDownloads"],
   },
   {
     name: "Charlie pesquisa doutrina e jurisprudencia com fontes",
@@ -57,17 +57,17 @@ const checks = [
   {
     name: "service worker nao prende MVP antigo",
     file: "service-worker.js",
-    patterns: ["jus9-pwa-v4-2026-06-04-charlie-rooms-v4-4-1", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
+    patterns: ["jus9-pwa-v6-2026-07-03-charlie-document-download", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
   },
   {
     name: "casa propria da Charlie Echo publicada",
     file: "charlie-echo.html",
-    patterns: ["Casa propria da IA", "data-ai-chat", "app-ia-profissional.html#chat-ia", "script.js?v=20260605-charlie-creative-v5-4"],
+    patterns: ["Casa propria da IA", "data-ai-chat", "app-ia-profissional.html#chat-ia", "script.js?v=20260608-chat-modelo-v1"],
   },
   {
     name: "pagina publica da Charlie usa script versionado",
     file: "ia-profissional.html",
-    patterns: ["data-ai-chat", "script.js?v=20260605-charlie-creative-v5-4"],
+    patterns: ["data-ai-chat", "script.js?v=20260608-chat-modelo-v1"],
   },
 ];
 

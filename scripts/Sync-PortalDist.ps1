@@ -13,6 +13,7 @@ $files = @(
   'index.html',
   'script.js',
   'style.css',
+  '_headers',
   'versionamento.html',
   'saiba-mais.html',
   'nossa-historia.html',
