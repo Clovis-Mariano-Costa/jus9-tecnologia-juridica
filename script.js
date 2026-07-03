@@ -921,7 +921,7 @@ window.jus9DemoLogin = function(form){
   function asksDocumentProductionDownload(question){
     var q = String(question || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     var wantsDocument = /\b(minuta|modelo|contrato|peticao|peca|documento|oficio|requerimento|manifestacao|recurso|contestacao|inicial)\b/.test(q);
-    var wantsFile = /\b(download|baixar|arquivo|pdf|docx|word|link para download|link de download|gerar link|criar link)\b/.test(q);
+    var wantsFile = /\b(download|donwload|dowload|downlod|baixar|arquivo|pdf|docx|word|link para download|link para donwload|link de download|link de donwload|gerar link|criar link)\b/.test(q);
     return wantsDocument && wantsFile;
   }
 
