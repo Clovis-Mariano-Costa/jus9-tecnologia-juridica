@@ -48,7 +48,7 @@ for (const page of pages) {
 
 const scriptResponse = await fetch(`${baseUrl}/script.js?audit=charlie-script-${Date.now()}`);
 const script = await scriptResponse.text();
-for (const pattern of ["pdfSafeText", "pdfLiteral", "Baixar PDF", "buildPdfBlob", "Atualizar resumo", "smartSummary", "governanceClass", "trustedLegalSources", "legalResearchAnswer", "buildOperationalResearchAnswer", "Pesquisa juridica operacional", "classifyLinkTrust", "Fontes e links confiaveis", "applyCreativeReasoningFrame", "data-ai-layout", "chatActionsForLayout", "governedIdentityInstruction", "api/auth/context", "nao escreva Escuta, Sentire", "asksDocumentProductionDownload", "buildResponseDownloads"]) {
+for (const pattern of ["pdfSafeText", "pdfLiteral", "Baixar PDF", "buildPdfBlob", "Atualizar resumo", "smartSummary", "governanceClass", "trustedLegalSources", "legalResearchAnswer", "buildOperationalResearchAnswer", "Pesquisa juridica operacional", "classifyLinkTrust", "Fontes e links confiaveis", "applyCreativeReasoningFrame", "data-ai-layout", "chatActionsForLayout", "governedIdentityInstruction", "api/auth/context", "nao escreva Escuta, Sentire", "asksDocumentProductionDownload", "buildResponseDownloads", "donwload"]) {
   if (!script.includes(pattern)) failures.push(`script.js: ausente ${pattern}`);
 }
 
