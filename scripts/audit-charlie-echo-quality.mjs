@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
-const expectedScriptVersion = "script.js?v=20260703-orquestra-normativa-v1";
+const expectedScriptVersion = "script.js?v=20260704-pecas-upload-v1";
 
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), "utf8");
@@ -22,7 +22,17 @@ const checks = [
   {
     name: "chat MVP possui ferramentas de qualidade",
     file: "script.js",
-    patterns: ["Melhorar resposta", "Fontes", "Atualizar resumo", "Resumo executivo", "Gerar PDF", "Baixar PDF", "link clicavel de download", "Renomear", "application/pdf", ".pdf", "buildPdfBlob", "download-link", "Helvetica-Bold", "Informacoes do pacote", "Historico recente", "Fontes e links confiaveis", "Pagina ", "pdfSafeText", "pdfLiteral", "eef4ff", "asksDocumentProductionDownload", "buildResponseDownloads", "donwload"],
+    patterns: ["Melhorar resposta", "Fontes", "Atualizar resumo", "Resumo executivo", "Gerar PDF", "Baixar PDF", "link clicavel de download", "Renomear", "application/pdf", ".pdf", "buildPdfBlob", "download-link", "Helvetica-Bold", "Informacoes do pacote", "Historico recente", "Fontes e links confiaveis", "Pagina ", "pdfSafeText", "pdfLiteral", "eef4ff", "asksDocumentProductionDownload", "buildResponseDownloads", "donwload", "asksCompleteLegalDraft", "shouldOfferDocumentDownloads", "completeLegalDraftAnswer"],
+  },
+  {
+    name: "chat MVP aceita upload local governado",
+    file: "script.js",
+    patterns: ["injectChatUpload", "data-ai-upload", "readAiUploadedFiles", "buildAttachmentContext", "[ANEXOS DO USUARIO - UPLOAD LOCAL GOVERNADO]", "PDF/DOCX entram como arquivo aceito", "attachmentUserHtml"],
+  },
+  {
+    name: "estilo do upload local governado",
+    file: "style.css",
+    patterns: ["ai-upload-panel", "ai-upload-button", "ai-upload-list", "ai-upload-user-list"],
   },
   {
     name: "Charlie pesquisa doutrina e jurisprudencia com fontes",
@@ -32,7 +42,7 @@ const checks = [
   {
     name: "acoes corretivas do Drive Saver bypassam fallback juridico",
     file: "script.js",
-    patterns: ["asksDriveSaverCorrectiveAction", "shouldBypassLocalFallback", "driveSaverCorrectiveFallback", "Protocolo de acao corretiva Drive Saver", "if(asksDriveSaverCorrectiveAction(question)) return '';", "var localIdentity = shouldBypassLocalFallback(question)", "Recebi isso como acao corretiva de Drive/Docs", "downloadUrl real"],
+    patterns: ["asksDriveSaverCorrectiveAction", "shouldBypassLocalFallback", "driveSaverCorrectiveFallback", "Protocolo de acao corretiva Drive Saver", "if(asksDriveSaverCorrectiveAction(question)) return '';", "var localIdentity = shouldBypassLocalFallback(questionForContext)", "Recebi isso como acao corretiva de Drive/Docs", "downloadUrl real"],
   },
   {
     name: "lider MVP lista ambientes prontos",
@@ -67,12 +77,12 @@ const checks = [
   {
     name: "casa propria da Charlie Echo publicada",
     file: "charlie-echo.html",
-    patterns: ["Casa propria da IA", "data-ai-chat", "app-ia-profissional.html#chat-ia", "script.js?v=20260703-orquestra-normativa-v1"],
+    patterns: ["Casa propria da IA", "data-ai-chat", "app-ia-profissional.html#chat-ia", "script.js?v=20260704-pecas-upload-v1"],
   },
   {
     name: "pagina publica da Charlie usa script versionado",
     file: "ia-profissional.html",
-    patterns: ["data-ai-chat", "script.js?v=20260703-orquestra-normativa-v1"],
+    patterns: ["data-ai-chat", "script.js?v=20260704-pecas-upload-v1"],
   },
 ];
 

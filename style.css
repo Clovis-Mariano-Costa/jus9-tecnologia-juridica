@@ -1349,6 +1349,67 @@ button,input,select,textarea{max-width:100%}
   background:#fff;
   resize:vertical;
 }
+.ai-upload-panel{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto auto;
+  gap:10px;
+  align-items:center;
+  margin-top:12px;
+  border:1px solid rgba(15,23,42,.1);
+  border-radius:16px;
+  padding:12px;
+  background:#fffdf8;
+}
+.ai-upload-panel strong{
+  color:#0b1728;
+}
+.ai-upload-panel p{
+  margin:3px 0 0;
+  color:#51627a;
+  font-size:.9rem;
+}
+.ai-upload-button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:40px;
+  border:1px solid rgba(197,139,47,.35);
+  border-radius:12px;
+  padding:9px 12px;
+  background:#fff7e2;
+  color:#5b3b09;
+  font-weight:900;
+  cursor:pointer;
+}
+.ai-upload-button input{
+  position:absolute;
+  width:1px;
+  height:1px;
+  opacity:0;
+  pointer-events:none;
+}
+.ai-upload-list,
+.ai-upload-user-list{
+  grid-column:1 / -1;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.ai-upload-list span,
+.ai-upload-user-list span{
+  display:inline-flex;
+  align-items:center;
+  border:1px solid rgba(15,23,42,.12);
+  border-radius:999px;
+  padding:6px 9px;
+  background:#fff;
+  color:#51627a;
+  font-size:.88rem;
+  font-weight:800;
+}
+.ai-upload-user-list{
+  margin-top:8px;
+}
 .ai-guided-prompts{margin:14px 0;padding:14px;border:1px solid rgba(197,139,47,.24);border-radius:16px;background:#fffdf8;color:#102033}
 .ai-guided-prompts .link-actions{margin-bottom:0}
 .ai-guided-prompts button{text-align:left}
@@ -1522,6 +1583,8 @@ button,input,select,textarea{max-width:100%}
   .charlie-main{padding:12px}
   .charlie-topbar,.charlie-chat-head{display:grid}
   .charlie-mode-grid,.protocol-table div{grid-template-columns:1fr}
+  .ai-upload-panel{grid-template-columns:1fr}
+  .ai-upload-button,.ai-upload-panel .mini{width:100%;justify-content:center}
 }
 
 .team-warning{

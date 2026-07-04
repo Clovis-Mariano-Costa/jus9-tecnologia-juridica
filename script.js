@@ -869,6 +869,7 @@ window.jus9DemoLogin = function(form){
 
   function normativeRouteLabel(question, mode, code){
     if(asksDriveSaverCorrectiveAction(question)) return 'Prioritario > Principios > Constituicao > Lei do Drive Governado > Regimento ' + (code || 'DAJ') + ' > Protocolo de acao corretiva Drive Saver';
+    if(asksCompleteLegalDraft(question)) return 'Prioritario > Principios > Constituicao > Lei de Pecas e Minutas > Regimento ' + (code || 'DAJ') + ' > Protocolo de peca completa e upload governado';
     if(asksDocumentProductionDownload(question)) return 'Prioritario > Principios > Constituicao > Lei de Documentos > Regimento ' + (code || 'DAJ') + ' > Protocolo de minuta/download';
     if(asksDriveSaver(question)) return 'Prioritario > Principios > Constituicao > Lei do MiniBackend e Drive Governado > Regimento ' + (code || 'DAJ') + ' > Protocolo Drive Saver';
     if(mode === 'social') return 'Prioritario > Principios > Constituicao > Lei Social > Regimento Social > Protocolo de acolhimento';
@@ -949,6 +950,7 @@ window.jus9DemoLogin = function(form){
   function asksSources(question){
     var q = (question || '').toLowerCase();
     if(asksDocumentProductionDownload(question)) return false;
+    if(asksCompleteLegalDraft(question)) return false;
     return /\b(link|fonte|fontes|confiavel|confiáveis|confiaveis|oficial|pesquisar|pesquisa|busque|buscar|procure|procurar|jurisprudencia|jurisprudência|precedente|acordao|acórdão|lei|legislacao|legislação)\b/.test(q);
   }
 
@@ -957,6 +959,123 @@ window.jus9DemoLogin = function(form){
     var wantsDocument = /\b(minuta|modelo|contrato|peticao|peca|documento|oficio|requerimento|manifestacao|recurso|contestacao|inicial)\b/.test(q);
     var wantsFile = /\b(download|donwload|dowload|downlod|baixar|arquivo|pdf|docx|word|link para download|link para donwload|link de download|link de donwload|gerar link|criar link)\b/.test(q);
     return wantsDocument && wantsFile;
+  }
+
+  function asksCompleteLegalDraft(question){
+    var q = String(question || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    var wantsLegalDocument = /\b(minuta|modelo|peticao|peca|inicial|contestacao|recurso|agravo|apelacao|manifestacao|parecer|contrato|oficio|requerimento|impugnacao|embargos)\b/.test(q);
+    var wantsProduction = /\b(completa|completo|inteira|inteiro|redija|redigir|faca|fazer|crie|criar|elabore|elaborar|monte|montar|prepare|preparar|produza|produzir|quero|preciso|download|baixar|arquivo|pdf|docx|word)\b/.test(q);
+    return wantsLegalDocument && wantsProduction;
+  }
+
+  function shouldOfferDocumentDownloads(question){
+    return asksDocumentProductionDownload(question) || asksCompleteLegalDraft(question);
+  }
+
+  function legalDraftSubject(question){
+    var q = String(question || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if(/\b(revisao de alimentos|revisional de alimentos|revisar alimentos|reduzir pensao|aumentar pensao)\b/.test(q)) return 'acao revisional de alimentos';
+    if(/\b(pensao alimenticia|alimentos|alimento)\b/.test(q)) return 'acao de alimentos';
+    if(/\b(divorcio|dissolucao)\b/.test(q)) return 'acao de familia';
+    if(/\b(cobranca|divida|inadimplemento)\b/.test(q)) return 'acao de cobranca';
+    if(/\b(dano moral|indenizacao|responsabilidade civil)\b/.test(q)) return 'acao indenizatoria';
+    if(/\b(contestacao|defesa)\b/.test(q)) return 'contestacao';
+    if(/\b(apelacao|recurso)\b/.test(q)) return 'recurso';
+    return 'peca juridica';
+  }
+
+  function completeLegalDraftAnswer(question){
+    if(!asksCompleteLegalDraft(question)) return '';
+    var subject = legalDraftSubject(question);
+    var isAlimonyRevision = subject === 'acao revisional de alimentos';
+    var isAlimony = subject === 'acao de alimentos' || isAlimonyRevision;
+    var title = isAlimonyRevision ? 'Minuta completa demonstrativa - Acao Revisional de Alimentos' : (isAlimony ? 'Minuta completa demonstrativa - Acao de Alimentos' : 'Minuta completa demonstrativa - Peca juridica');
+    var facts = isAlimonyRevision
+      ? [
+          'O autor informa que houve alteracao relevante em sua capacidade financeira e/ou nas necessidades do alimentando desde a fixacao anterior dos alimentos.',
+          'A obrigacao atualmente vigente foi fixada em [percentual/valor] no processo/acordo [identificar], mas a realidade familiar e economica sofreu modificacao superveniente.',
+          'A presente minuta deve ser ajustada com comprovantes de renda, despesas essenciais, documentos do alimentando e copia da decisao/acordo anterior.'
+        ]
+      : [
+          'A parte autora apresenta situacao juridica que exige tutela jurisdicional, conforme fatos e documentos a serem conferidos por profissional habilitado.',
+          'Os fatos devem ser narrados em ordem cronologica, com documentos numerados e sem exagero argumentativo.',
+          'Esta versao usa campos entre colchetes para evitar invencao de dados.'
+        ];
+    var law = isAlimonyRevision
+      ? [
+          'A revisao de alimentos depende de demonstracao concreta de mudanca na situacao financeira de quem paga ou de quem recebe, preservando proporcionalidade, necessidade e possibilidade.',
+          'A fundamentacao deve evitar automatismo: a peca precisa provar a alteracao superveniente e justificar o novo valor pedido.',
+          'Se houver crianca ou adolescente, a protecao integral e o melhor interesse devem orientar a revisao humana da minuta.'
+        ]
+      : [
+          'O direito deve ser construido a partir dos fatos provados, da norma aplicavel e da finalidade da tutela pretendida.',
+          'A minuta deve separar requisitos, prova documental, risco, pedidos e limites, sem inventar jurisprudencia, artigo, autor ou citacao literal.',
+          'Fontes oficiais e inteiro teor devem ser conferidos antes de qualquer protocolo real.'
+        ];
+    return [
+      title,
+      '',
+      'Uso: minuta-base para revisao humana. Substitua todos os campos entre colchetes, confira documentos, competencia, rito, custas, valor da causa, jurisprudencia aplicavel e normas locais.',
+      '',
+      'EXCELENTISSIMO(A) SENHOR(A) JUIZ(A) DE DIREITO DA [VARA] DA COMARCA DE [CIDADE/UF]',
+      '',
+      '[NOME DA PARTE AUTORA], [nacionalidade], [estado civil], [profissao], inscrito(a) no CPF sob n. [CPF], residente e domiciliado(a) em [endereco], por seu advogado/procurador [NOME], vem, respeitosamente, propor a presente',
+      '',
+      isAlimonyRevision ? 'ACAO REVISIONAL DE ALIMENTOS' : (isAlimony ? 'ACAO DE ALIMENTOS' : '[NOME DA ACAO/PECA]'),
+      '',
+      'em face de [NOME DA PARTE REQUERIDA], [qualificacao], pelos fatos e fundamentos a seguir.',
+      '',
+      '1. Dos fatos',
+      facts.map(function(line){ return '- ' + line; }).join('\n'),
+      '',
+      '2. Do direito',
+      law.map(function(line){ return '- ' + line; }).join('\n'),
+      '',
+      '3. Da tutela provisoria, se cabivel',
+      'Caso exista urgencia concreta, demonstrada por documentos, requer-se a apreciacao de tutela provisoria para [descrever medida], sem prejuizo de revisao pelo juizo apos contraditorio.',
+      '',
+      '4. Dos pedidos',
+      isAlimonyRevision
+        ? [
+            'Diante do exposto, requer:',
+            'a) o recebimento da presente acao;',
+            'b) a concessao da gratuidade da justica, se comprovados os requisitos;',
+            'c) a citacao da parte requerida para responder aos termos da acao;',
+            'd) a revisao dos alimentos anteriormente fixados, para que passem a corresponder a [novo valor/percentual], ou outro parametro que o juizo entender adequado;',
+            'e) a producao de prova documental, testemunhal, pericial/contabil, se necessaria, e demais provas admitidas;',
+            'f) a intimacao do Ministerio Publico quando houver interesse de incapaz;',
+            'g) a condenacao da parte requerida ao pagamento das verbas de sucumbencia, se cabivel.'
+          ].join('\n')
+        : [
+            'Diante do exposto, requer:',
+            'a) o recebimento da presente peca;',
+            'b) a citacao/intimacao da parte contraria, quando cabivel;',
+            'c) a apreciacao dos pedidos principais indicados na narrativa;',
+            'd) a producao de todos os meios de prova admitidos;',
+            'e) a procedencia dos pedidos, com os efeitos legais pertinentes.'
+          ].join('\n'),
+      '',
+      '5. Das provas',
+      'Protesta provar o alegado por documentos, depoimentos, informacoes complementares, prova testemunhal e demais meios admitidos, especialmente [listar documentos anexos].',
+      '',
+      '6. Do valor da causa',
+      'Da-se a causa o valor de R$ [valor], sujeito a conferencia conforme regra processual aplicavel.',
+      '',
+      'Termos em que, pede deferimento.',
+      '',
+      '[Cidade/UF], [data].',
+      '',
+      '[Nome do advogado]',
+      'OAB/[UF] [numero]',
+      '',
+      'Checklist de revisao humana',
+      '- Conferir competencia e rito.',
+      '- Confirmar qualificacao das partes.',
+      '- Conferir documentos e provas.',
+      '- Ajustar pedidos ao caso concreto.',
+      '- Verificar segredo de justica quando houver familia, menor, saude, violencia ou dado sensivel.',
+      '- Conferir lei, jurisprudencia e normas locais antes de protocolo real.'
+    ].join('\n');
   }
 
   function documentProductionDownloadAnswer(question){
@@ -1137,6 +1256,8 @@ window.jus9DemoLogin = function(form){
     if (socialResponsibility) return socialResponsibility;
     var correctiveDrive = driveSaverCorrectiveFallback(cleanQuestion);
     if (correctiveDrive) return correctiveDrive;
+    var completeDraft = completeLegalDraftAnswer(cleanQuestion);
+    if (completeDraft) return completeDraft;
     var documentDownload = documentProductionDownloadAnswer(cleanQuestion);
     if (documentDownload) return documentDownload;
     var doctrineProduction = doctrineProductionAnswer(cleanQuestion);
@@ -1350,6 +1471,9 @@ window.jus9DemoLogin = function(form){
       mvpPersonalityInstruction(code),
       'No modulo profissional para advogados, quando houver pesquisa academica, inclua BDTD (https://bdtd.ibict.br/) como fonte de teses e dissertacoes, junto de tribunais oficiais, Planalto, LexML, CAPES, SciELO e Google Academico com cautela.',
       'Se a pergunta atual pedir revogar, restringir, despublicar, mover para revisao ou enviar para lixeira um link/arquivo do Google Drive ou Google Docs, trate como acao operacional de Drive Saver antes de pesquisa juridica. Nao responda com protocolo de doutrina/jurisprudencia.',
+      'Quando o usuario pedir peca, minuta, peticao, contestacao, recurso, requerimento, oficio ou contrato completo, produza uma minuta inteira e utilizavel como rascunho: enderecamento, qualificacao com campos entre colchetes, fatos, fundamentos, tutela provisoria se cabivel, pedidos, provas, valor da causa ou fechamento equivalente, assinatura e checklist de revisao. Nao entregue apenas orientacao curta.',
+      'Se a pergunta trouxer [ANEXOS DO USUARIO - UPLOAD LOCAL GOVERNADO], use o texto extraido para estruturar a minuta, mas nao invente fatos ausentes. Se o anexo for PDF/DOCX/imagem sem texto extraido, reconheca o arquivo aceito e peca transcricao, OCR ou backend extrator antes de afirmar conteudo.',
+      'Em peca juridica completa, preserve criatividade tecnica nos argumentos e organizacao, mas mantenha placeholders para dados reais, segredo de justica quando cabivel e revisao humana obrigatoria antes de uso real.',
       'Padrao externo de resposta: nao escreva Escuta, Sentire, Leitura do pedido, Caminho escolhido, Resposta ou Proximo passo criativo como cabecalhos fixos. Esses sao criterios internos.',
       'Comece direto pelo conteudo util. Use cabecalhos simples apenas quando ajudarem: Resumo, Orientacao, Checklist, Fontes, Limites, Proximo passo.',
       'Evite Markdown pesado. Nao use blocos com muitos asteriscos. Se listar, use poucos itens curtos. Se o pedido for simples, responda em poucos paragrafos.',
@@ -1424,11 +1548,13 @@ window.jus9DemoLogin = function(form){
     var current = /\[PERGUNTA ATUAL\]\s*([\s\S]+)$/i.exec(text);
     if(current && current[1]) text = current[1];
     text = text.replace(/\[RESUMO EXECUTIVO DA SALA\][\s\S]*?\[PERGUNTA ATUAL\]/i, '');
+    text = text.replace(/\n*\[ANEXOS DO USUARIO - UPLOAD LOCAL GOVERNADO\][\s\S]*$/i, '');
     return text.replace(/\s+/g, ' ').trim();
   }
 
   function inferCreativeIntent(question){
     var q = String(question || '').toLowerCase();
+    if(asksCompleteLegalDraft(question)) return 'producao de peca juridica completa';
     if(asksDocumentProductionDownload(question)) return 'producao documental demonstrativa';
     if(/\b(jurisprudencia|jurisprudência|precedente|acordao|acórdão|fonte|fontes|pesquise|pesquisar|busque|buscar|procure|procurar)\b/.test(q)) return 'pesquisa juridica guiada';
     if(/\b(doutrina|doutrinario|doutrinaria|doutrinário|doutrinária|teoria|conceito juridico|conceito jurídico)\b/.test(q)) return 'producao doutrinaria responsavel';
@@ -1441,6 +1567,7 @@ window.jus9DemoLogin = function(form){
   }
 
   function creativeNextStep(intent, code){
+    if(intent === 'producao de peca juridica completa') return 'revisar competencia, fatos, documentos, pedidos, valor da causa e baixar a minuta local para revisao humana.';
     if(intent === 'pesquisa juridica guiada') return 'montar uma ficha de conferencia com fonte, tese, data, inteiro teor e revisao humana.';
     if(intent === 'producao doutrinaria responsavel') return 'transformar a sintese em estrutura, argumentos, limites e fontes para conferencia quando necessario.';
     if(intent === 'curadoria de link ou arquivo') return 'separar links oficiais, institucionais e cautelosos, mantendo URLs HTTPS completas.';
@@ -1645,9 +1772,10 @@ window.jus9DemoLogin = function(form){
     var cleanSmartSummary = cleanMemoryText(room && room.smartSummary, 4200);
     var doctrineNote = asksDoctrineProduction(question) ? '\nNota: se memorias antigas tratarem doutrina como mera pesquisa de fontes, ignore essa classificacao antiga e produza conteudo doutrinario responsavel.\n' : '';
     var documentDownloadNote = asksDocumentProductionDownload(question) ? '\nNota: a pergunta atual pede producao de documento com download local. Ignore memorias antigas de pesquisa juridica guiada e nao ofereca bloco fixo de fontes.\n' : '';
+    var completeDraftNote = asksCompleteLegalDraft(question) ? '\nNota: a pergunta atual pede peca/minuta completa. Produza estrutura completa de peca, use anexos extraidos quando houver e mantenha campos reais entre colchetes.\n' : '';
     return (room && (room.summary || room.smartSummary || recent))
-      ? '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '. Use memoria: sim.' + doctrineNote + documentDownloadNote + '\n[RESUMO EXECUTIVO DA SALA]\n' + (cleanSmartSummary || 'Resumo anterior contaminado ou ausente.') + '\n\n[MEMORIA GOVERNADA LOCAL]\n' + (cleanSummary || 'Memoria anterior contaminada ou ausente.') + '\n\n[DECISOES]\n' + (decisions || 'Sem decisoes marcadas.') + '\n\n[PENDENCIAS]\n' + (pending || 'Sem pendencias marcadas.') + '\n\n[HISTORICO RECENTE]\n' + (recent || 'Historico anterior contaminado ou ausente.') + '\n\n[PERGUNTA ATUAL]\n' + question
-      : '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '.' + documentDownloadNote + '\n\n[PERGUNTA ATUAL]\n' + question;
+      ? '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '. Use memoria: sim.' + doctrineNote + documentDownloadNote + completeDraftNote + '\n[RESUMO EXECUTIVO DA SALA]\n' + (cleanSmartSummary || 'Resumo anterior contaminado ou ausente.') + '\n\n[MEMORIA GOVERNADA LOCAL]\n' + (cleanSummary || 'Memoria anterior contaminada ou ausente.') + '\n\n[DECISOES]\n' + (decisions || 'Sem decisoes marcadas.') + '\n\n[PENDENCIAS]\n' + (pending || 'Sem pendencias marcadas.') + '\n\n[HISTORICO RECENTE]\n' + (recent || 'Historico anterior contaminado ou ausente.') + '\n\n[PERGUNTA ATUAL]\n' + question
+      : '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '.' + documentDownloadNote + completeDraftNote + '\n\n[PERGUNTA ATUAL]\n' + question;
   }
 
   function downloadText(filename, content){
@@ -1669,6 +1797,131 @@ window.jus9DemoLogin = function(form){
 
   function prepareBlobDownload(filename, blob){
     return { url:URL.createObjectURL(blob), filename:filename };
+  }
+
+  function formatUploadSize(size){
+    var value = Number(size || 0);
+    if(value >= 1024 * 1024) return (value / (1024 * 1024)).toFixed(1).replace('.0', '') + ' MB';
+    if(value >= 1024) return Math.round(value / 1024) + ' KB';
+    return value + ' B';
+  }
+
+  function canReadUploadAsText(file){
+    var name = String(file && file.name || '').toLowerCase();
+    var type = String(file && file.type || '').toLowerCase();
+    return /^text\//.test(type) || /(json|xml|csv|markdown|javascript|html|rtf)/.test(type) || /\.(txt|md|markdown|csv|json|html?|xml|rtf|log)$/i.test(name);
+  }
+
+  function readUploadFile(file, remainingChars){
+    return new Promise(function(resolve){
+      var base = {
+        name:String(file && file.name || 'arquivo'),
+        type:String(file && file.type || 'tipo nao informado'),
+        size:file && file.size || 0,
+        readable:false,
+        truncated:false,
+        text:'',
+        note:'Arquivo aceito como anexo, mas sem extracao textual automatica nesta versao.'
+      };
+      if(!file || !canReadUploadAsText(file)){
+        resolve(base);
+        return;
+      }
+      var reader = new FileReader();
+      reader.onload = function(event){
+        var fullText = String(event && event.target ? event.target.result || '' : '');
+        var limit = Math.max(0, remainingChars || 0);
+        base.readable = true;
+        base.text = fullText.slice(0, limit);
+        base.truncated = fullText.length > base.text.length;
+        base.note = base.truncated ? 'Texto extraido parcialmente por limite de seguranca.' : 'Texto extraido localmente no navegador.';
+        resolve(base);
+      };
+      reader.onerror = function(){
+        base.note = 'Falha ao ler texto localmente; use transcricao ou backend extrator.';
+        resolve(base);
+      };
+      reader.readAsText(file);
+    });
+  }
+
+  async function readAiUploadedFiles(files){
+    var list = Array.prototype.slice.call(files || []).slice(0, 5);
+    var remaining = 24000;
+    var attachments = [];
+    for(var i = 0; i < list.length; i++){
+      var attachment = await readUploadFile(list[i], remaining);
+      remaining -= attachment.text ? attachment.text.length : 0;
+      attachments.push(attachment);
+    }
+    return attachments;
+  }
+
+  function buildAttachmentContext(attachments){
+    if(!attachments || !attachments.length) return '';
+    var lines = [
+      '[ANEXOS DO USUARIO - UPLOAD LOCAL GOVERNADO]',
+      'Os arquivos abaixo foram selecionados pelo usuario nesta tela. Use apenas o texto extraido quando houver. Se nao houver texto extraido, nao afirme conteudo do arquivo.',
+      ''
+    ];
+    attachments.forEach(function(item, index){
+      lines.push('Anexo ' + (index + 1) + ': ' + item.name);
+      lines.push('Tipo: ' + item.type + ' | tamanho: ' + formatUploadSize(item.size) + ' | leitura: ' + (item.readable ? 'texto extraido' : 'sem texto extraido'));
+      lines.push('Observacao: ' + item.note);
+      if(item.text){
+        lines.push('Conteudo extraido:');
+        lines.push('"""');
+        lines.push(item.text);
+        lines.push('"""');
+      }
+      lines.push('');
+    });
+    lines.push('Regra: para PDF, DOCX, imagem ou arquivo sem texto extraido, peca transcricao, OCR ou backend extrator antes de usar o conteudo como fato.');
+    return lines.join('\n');
+  }
+
+  function attachmentUserHtml(attachments){
+    if(!attachments || !attachments.length) return '';
+    return '<div class="ai-upload-user-list">' + attachments.map(function(item){
+      return '<span>' + escapeHtml(item.name) + ' - ' + escapeHtml(formatUploadSize(item.size)) + (item.readable ? ' - texto lido' : ' - aceito') + '</span>';
+    }).join('') + '</div>';
+  }
+
+  function injectChatUpload(card){
+    var form = card.querySelector('[data-ai-chat-form]');
+    if(!form || card.querySelector('[data-ai-upload-panel]')) {
+      return {
+        read:function(){ return Promise.resolve([]); },
+        clear:function(){}
+      };
+    }
+    var panel = document.createElement('div');
+    panel.className = 'ai-upload-panel';
+    panel.setAttribute('data-ai-upload-panel', 'true');
+    panel.innerHTML = '<div><strong>Anexos</strong><p>Upload local governado para contexto da minuta. TXT/MD/CSV/JSON/HTML/XML sao lidos; PDF/DOCX entram como arquivo aceito ate backend extrator.</p></div><label class="ai-upload-button">Anexar<input type="file" data-ai-upload multiple accept=".txt,.md,.markdown,.csv,.json,.html,.htm,.xml,.rtf,.pdf,.doc,.docx,.png,.jpg,.jpeg"></label><button class="mini" type="button" data-ai-upload-clear>Limpar</button><div class="ai-upload-list" data-ai-upload-list></div>';
+    form.parentNode.insertBefore(panel, form);
+    var fileInput = panel.querySelector('[data-ai-upload]');
+    var clear = panel.querySelector('[data-ai-upload-clear]');
+    var list = panel.querySelector('[data-ai-upload-list]');
+    function render(){
+      var files = Array.prototype.slice.call(fileInput.files || []);
+      list.innerHTML = files.length
+        ? files.slice(0, 5).map(function(file){
+            var readable = canReadUploadAsText(file) ? 'texto' : 'metadados';
+            return '<span>' + escapeHtml(file.name) + ' - ' + escapeHtml(formatUploadSize(file.size)) + ' - ' + readable + '</span>';
+          }).join('')
+        : '<span class="fine-note">Nenhum arquivo anexado.</span>';
+    }
+    fileInput.addEventListener('change', render);
+    clear.addEventListener('click', function(){
+      fileInput.value = '';
+      render();
+    });
+    render();
+    return {
+      read:function(){ return readAiUploadedFiles(fileInput.files); },
+      clear:function(){ fileInput.value = ''; render(); }
+    };
   }
 
   function buildDriveSaverDownloads(question, code, focus){
@@ -2227,6 +2480,7 @@ window.jus9DemoLogin = function(form){
     card.setAttribute('data-ai-layout', layout);
     if(layout !== 'pequeno') injectChatRooms(card, code, function(){ renderChatWindow(card, code, focus); });
     addChatUtilityActions(card, code, focus);
+    var uploadManager = injectChatUpload(card);
     renderChatWindow(card, code, focus);
     function appendDownloadEchoForForm(files){
       var targetWindow = card.querySelector('[data-ai-chat-window]');
@@ -2254,17 +2508,20 @@ window.jus9DemoLogin = function(form){
       var mode = modeInput ? modeInput.value : 'jurista';
       var room = activeChatRoom(code);
       var settings = loadChatSettings(code);
-      var contextualQuestion = buildQuestionWithRoom(question, room, settings);
+      var attachments = uploadManager ? await uploadManager.read() : [];
+      var attachmentContext = buildAttachmentContext(attachments);
+      var questionForContext = attachmentContext ? question + '\n\n' + attachmentContext : question;
+      var contextualQuestion = buildQuestionWithRoom(questionForContext, room, settings);
       var userMsg = document.createElement('div');
       userMsg.className = 'ai-message ai-message-user';
       userMsg.innerHTML = '<strong>Voce:</strong> ' + question.replace(/[<>&]/g, function(ch){
         return ({'<':'&lt;','>':'&gt;','&':'&amp;'}[ch]);
-      });
+      }) + attachmentUserHtml(attachments);
       var echoMsg = document.createElement('div');
       echoMsg.className = 'ai-message ai-message-echo';
-      var localIdentity = shouldBypassLocalFallback(question)
+      var localIdentity = shouldBypassLocalFallback(questionForContext)
         ? ''
-        : (previousQuestionAnswer(question, room) || whereStoppedAnswer(question, room, code, focus) || identityAnswer(question) || driveSaverAnswer(question) || legalResearchAnswer(question));
+        : (previousQuestionAnswer(question, room) || whereStoppedAnswer(question, room, code, focus) || identityAnswer(question) || driveSaverAnswer(questionForContext) || legalResearchAnswer(questionForContext));
       if (localIdentity) {
         echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(localIdentity);
         var rememberedLocal = rememberChatExchange(code, question, localIdentity);
@@ -2276,9 +2533,10 @@ window.jus9DemoLogin = function(form){
       windowEl.appendChild(userMsg);
       windowEl.appendChild(echoMsg);
       input.value = '';
+      if(uploadManager) uploadManager.clear();
       keepChatInView(card, echoMsg);
-      if(localIdentity && asksDriveSaver(question)) {
-        appendDownloadEchoForForm(buildDriveSaverDownloads(question, code, focus));
+      if(localIdentity && asksDriveSaver(questionForContext)) {
+        appendDownloadEchoForForm(buildDriveSaverDownloads(questionForContext, code, focus));
       }
       if (!localIdentity) {
         try {
@@ -2292,20 +2550,20 @@ window.jus9DemoLogin = function(form){
           keepChatInView(card, echoMsg);
           var remembered = rememberChatExchange(code, question, answer);
           updateRoomIntelligence(code, remembered, focus);
-          if(asksDocumentProductionDownload(question)) {
-            appendDownloadEchoForForm(buildResponseDownloads(question, answer, code, focus));
+          if(shouldOfferDocumentDownloads(questionForContext)) {
+            appendDownloadEchoForForm(buildResponseDownloads(questionForContext, answer, code, focus));
           }
         } catch (error) {
-          var fallback = textForMode(mode, code, focus, question);
+          var fallback = textForMode(mode, code, focus, questionForContext);
           var safeSummary = room.summary && !/Para pesquisar doutrina e jurisprudencia com seguranca|voce pediu pesquisa juridica guiada|Leitura do pedido: voce pediu pesquisa juridica guiada/i.test(room.summary) ? room.summary : '';
-          if(settings.memory !== false && safeSummary && !asksDoctrineProduction(question) && !asksDocumentProductionDownload(question)) fallback = 'Vou continuar pela memoria governada desta sala. ' + safeSummary + '\n\n' + fallback;
-          fallback = applyCreativeReasoningFrame(fallback, question, code, focus);
+          if(settings.memory !== false && safeSummary && !asksDoctrineProduction(questionForContext) && !shouldOfferDocumentDownloads(questionForContext)) fallback = 'Vou continuar pela memoria governada desta sala. ' + safeSummary + '\n\n' + fallback;
+          fallback = applyCreativeReasoningFrame(fallback, questionForContext, code, focus);
           echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(fallback) + '<br><br><em>API segura indisponivel agora; mantive fallback local sem dados reais.</em>';
           keepChatInView(card, echoMsg);
           var rememberedFallback = rememberChatExchange(code, question, fallback);
           updateRoomIntelligence(code, rememberedFallback, focus);
-          if(asksDocumentProductionDownload(question)) {
-            appendDownloadEchoForForm(buildResponseDownloads(question, fallback, code, focus));
+          if(shouldOfferDocumentDownloads(questionForContext)) {
+            appendDownloadEchoForForm(buildResponseDownloads(questionForContext, fallback, code, focus));
           }
         }
         keepChatInView(card, echoMsg);
