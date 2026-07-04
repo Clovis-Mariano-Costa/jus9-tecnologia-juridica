@@ -32,7 +32,7 @@ const checks = [
   {
     name: "acoes corretivas do Drive Saver bypassam fallback juridico",
     file: "script.js",
-    patterns: ["asksDriveSaverCorrectiveAction", "shouldBypassLocalFallback", "Protocolo de acao corretiva Drive Saver", "if(asksDriveSaverCorrectiveAction(question)) return '';", "var localIdentity = shouldBypassLocalFallback(question)", "downloadUrl real"],
+    patterns: ["asksDriveSaverCorrectiveAction", "shouldBypassLocalFallback", "driveSaverCorrectiveFallback", "Protocolo de acao corretiva Drive Saver", "if(asksDriveSaverCorrectiveAction(question)) return '';", "var localIdentity = shouldBypassLocalFallback(question)", "Recebi isso como acao corretiva de Drive/Docs", "downloadUrl real"],
   },
   {
     name: "lider MVP lista ambientes prontos",

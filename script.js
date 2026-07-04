@@ -854,6 +854,19 @@ window.jus9DemoLogin = function(form){
     return asksDriveSaverCorrectiveAction(question);
   }
 
+  function driveSaverCorrectiveFallback(question){
+    if(!asksDriveSaverCorrectiveAction(question)) return '';
+    return [
+      'Recebi isso como acao corretiva de Drive/Docs, nao como pesquisa de doutrina ou jurisprudencia.',
+      '',
+      'Nao consegui confirmar a execucao pelo backend autorizado agora. Entao nao vou afirmar que revoguei, apaguei, movi ou restringi o arquivo.',
+      '',
+      'Para executar com seguranca, envie um link real do Google Drive/Docs ou um fileId valido e informe a acao desejada: revogar link publico, restringir compartilhamento, mover para revisao ou enviar para lixeira governada.',
+      '',
+      'Quando o backend autorizado retornar resultado, eu devo mostrar o status real, fileId reconhecido e auditoria, sem inventar URL.'
+    ].join('\n');
+  }
+
   function normativeRouteLabel(question, mode, code){
     if(asksDriveSaverCorrectiveAction(question)) return 'Prioritario > Principios > Constituicao > Lei do Drive Governado > Regimento ' + (code || 'DAJ') + ' > Protocolo de acao corretiva Drive Saver';
     if(asksDocumentProductionDownload(question)) return 'Prioritario > Principios > Constituicao > Lei de Documentos > Regimento ' + (code || 'DAJ') + ' > Protocolo de minuta/download';
@@ -1122,6 +1135,8 @@ window.jus9DemoLogin = function(form){
     if (identity) return identity;
     var socialResponsibility = socialResponsibilityFallback(cleanQuestion);
     if (socialResponsibility) return socialResponsibility;
+    var correctiveDrive = driveSaverCorrectiveFallback(cleanQuestion);
+    if (correctiveDrive) return correctiveDrive;
     var documentDownload = documentProductionDownloadAnswer(cleanQuestion);
     if (documentDownload) return documentDownload;
     var doctrineProduction = doctrineProductionAnswer(cleanQuestion);
