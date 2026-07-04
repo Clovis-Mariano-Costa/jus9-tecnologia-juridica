@@ -2375,6 +2375,9 @@ window.jus9DemoLogin = function(form){
         var msg = msgs[i];
         if(msg.querySelector && msg.querySelector('.download-actions')) continue;
         var stored = msg.getAttribute('data-ai-answer-text');
+        var visible = (msg.textContent || '').replace(/^Charlie Echo:\s*/i, '').trim();
+        var savedDownloadNotice = /Preparei (?:o )?pacote local|links clicaveis de download|baixar PDF baixar texto/i;
+        if(savedDownloadNotice.test(stored || '') || savedDownloadNotice.test(visible)) continue;
         var text = (stored && stored.trim()) ? stored : (msg.textContent || '').replace(/^Charlie Echo:\s*/i, '');
         text = String(text || '').trim();
         if(text) return text;
