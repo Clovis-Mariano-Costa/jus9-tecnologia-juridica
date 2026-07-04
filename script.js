@@ -2589,9 +2589,9 @@ window.jus9DemoLogin = function(form){
 (function(){
   var guidedPrompts = {
     DAJ: [
-      'Organize uma triagem inicial para atendimento juridico ficticio sem solicitar dados reais.',
-      'Como classificar um documento sigiloso no DAJ sem expor o cofre?',
-      'Crie um checklist demonstrativo de prazos e revisao humana para um DAJ.'
+      'Faca uma peticao completa de revisao de alimentos com placeholders e checklist de revisao humana.',
+      'Quero link para donwload de uma minuta de pensao alimenticia, sem salvar no Drive.',
+      'Vou anexar um texto ficticio; redija uma peticao inicial completa usando somente o conteudo extraido do anexo.'
     ],
     DEJI: [
       'Crie um roteiro de revisao de contrato empresarial ficticio.',

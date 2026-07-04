@@ -38,6 +38,9 @@ for (const page of pages) {
   if ((page.startsWith("app-ia-") || page === "charlie-echo.html" || page === "ia-profissional") && !html.includes(expectedScript)) {
     failures.push(`${page}: script diferente de ${expectedScript}`);
   }
+  if (page === "app-ia-profissional.html" && !html.includes('data-ai-layout="detalhista"')) {
+    failures.push(`${page}: DAJ precisa exibir os 3 prompts guiados do pacote Advogados v1`);
+  }
   if (page === "manual-charlie-echo.html" && (!html.includes("Baixar PDF") || !html.includes("Atualizar resumo") || !html.includes("Doutrina e jurisprudencia") || !html.includes("Fontes") || !html.includes("Criatividade governada") || !html.includes("Leitura do pedido"))) {
     failures.push(`${page}: governanca de download desatualizada`);
   }
@@ -48,7 +51,7 @@ for (const page of pages) {
 
 const scriptResponse = await fetch(`${baseUrl}/script.js?audit=charlie-script-${Date.now()}`);
 const script = await scriptResponse.text();
-for (const pattern of ["pdfSafeText", "pdfLiteral", "Baixar PDF", "buildPdfBlob", "Atualizar resumo", "smartSummary", "governanceClass", "trustedLegalSources", "legalResearchAnswer", "buildOperationalResearchAnswer", "Pesquisa juridica operacional", "classifyLinkTrust", "Fontes e links confiaveis", "applyCreativeReasoningFrame", "data-ai-layout", "chatActionsForLayout", "governedIdentityInstruction", "api/auth/context", "nao escreva Escuta, Sentire", "asksDocumentProductionDownload", "buildResponseDownloads", "donwload"]) {
+for (const pattern of ["pdfSafeText", "pdfLiteral", "Baixar PDF", "buildPdfBlob", "Atualizar resumo", "smartSummary", "governanceClass", "trustedLegalSources", "legalResearchAnswer", "buildOperationalResearchAnswer", "Pesquisa juridica operacional", "classifyLinkTrust", "Fontes e links confiaveis", "applyCreativeReasoningFrame", "data-ai-layout", "chatActionsForLayout", "governedIdentityInstruction", "api/auth/context", "nao escreva Escuta, Sentire", "asksDocumentProductionDownload", "buildResponseDownloads", "donwload", "asksCompleteLegalDraft", "completeLegalDraftAnswer", "shouldOfferDocumentDownloads", "injectChatUpload", "[ANEXOS DO USUARIO - UPLOAD LOCAL GOVERNADO]", "Faca uma peticao completa de revisao de alimentos", "sem salvar no Drive", "usando somente o conteudo extraido do anexo"]) {
   if (!script.includes(pattern)) failures.push(`script.js: ausente ${pattern}`);
 }
 
