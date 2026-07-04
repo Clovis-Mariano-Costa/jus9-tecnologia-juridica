@@ -802,6 +802,57 @@ window.jus9DemoLogin = function(form){
       .replace(/<\/span><br>/g, '</span>');
   }
 
+  function isSafeDriveUrl(url){
+    var value = String(url || '').trim();
+    if(!/^https:\/\/(?:docs|drive)\.google\.com\/[^\s"'<>]+$/i.test(value)) return false;
+    try {
+      var parsed = new URL(value);
+      return parsed.protocol === 'https:' && /^(docs|drive)\.google\.com$/i.test(parsed.hostname);
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function driveSaverCardLink(url, label, extraClass){
+    if(!isSafeDriveUrl(url)) return '';
+    var safeUrl = escapeHtml(String(url || '').trim());
+    return '<a class="drive-saver-result-link ' + (extraClass || '') + '" href="' + safeUrl + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(label) + '</a>';
+  }
+
+  function renderDriveSaverCard(payload){
+    var data = payload || {};
+    var drive = data.driveSaver || null;
+    if(!drive) return '';
+    var artifact = data.artifact || {};
+    var decision = artifact.driveDecision || {};
+    var ok = !!drive.ok;
+    var hasDownload = isSafeDriveUrl(drive.downloadUrl);
+    var hasView = isSafeDriveUrl(drive.viewUrl);
+    var hasAudit = isSafeDriveUrl(drive.auditUrl);
+    var hasUsefulStatus = ok || hasDownload || hasView || hasAudit || drive.reason || decision.action;
+    if(!hasUsefulStatus) return '';
+    var classification = drive.classificacaoFinal || drive.classification || decision.classificacao || decision.classification || artifact.classificacao || artifact.classification || 'NAO_INFORMADA';
+    var destination = drive.folderName || drive.folderKey || decision.folderName || decision.folderKey || decision.action || '';
+    var status = hasDownload ? 'Download real criado' : (ok ? 'Salvo no Drive' : 'Drive Saver pendente');
+    var links = [
+      driveSaverCardLink(drive.downloadUrl, 'Baixar PDF', 'primary'),
+      driveSaverCardLink(drive.viewUrl, 'Abrir no Drive', ''),
+      driveSaverCardLink(drive.auditUrl, 'Auditoria', '')
+    ].filter(Boolean).join('');
+    var meta = [
+      'Classificacao: ' + classification,
+      destination ? 'Destino: ' + destination : '',
+      drive.humanReviewRequired || decision.humanReviewRequired ? 'Revisao humana: obrigatoria' : ''
+    ].filter(Boolean).map(escapeHtml).join(' &middot; ');
+    var note = !ok && drive.reason ? '<p class="drive-saver-result-note">Status tecnico: ' + escapeHtml(drive.reason) + '</p>' : '';
+    return '<section class="drive-saver-result-card ' + (ok ? 'is-ok' : 'is-pending') + '">' +
+      '<div class="drive-saver-result-head"><div><strong>Salvo no Drive</strong><p>Cartorio Digital Charlie Echo</p></div><span class="drive-saver-result-status">' + escapeHtml(status) + '</span></div>' +
+      (links ? '<div class="drive-saver-result-links">' + links + '</div>' : '') +
+      (meta ? '<p class="drive-saver-result-meta">' + meta + '</p>' : '') +
+      note +
+      '</section>';
+  }
+
   function identityAnswer(question){
     var q = (question || '').toLowerCase();
     var plain = q.normalize ? q.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : q;
@@ -1507,7 +1558,7 @@ window.jus9DemoLogin = function(form){
     }
   }
 
-  async function askCharlieApi(mode, code, focus, question, room){
+  async function askCharlieApiPayload(mode, code, focus, question, room){
     function contaminatedApiMemory(text){
       return /Para pesquisar doutrina e jurisprudencia com seguranca|voce pediu pesquisa juridica guiada|Leitura do pedido: voce pediu pesquisa juridica guiada|Caminho escolhido: escutar/i.test(String(text || ''));
     }
@@ -1538,9 +1589,14 @@ window.jus9DemoLogin = function(form){
       })
     });
     var data = await response.json().catch(function(){ return null; });
-    if (response.ok && data && typeof data.answer === 'string' && data.answer.trim()) return data.answer.trim();
-    if (data && typeof data.answer === 'string' && data.answer.trim()) return data.answer.trim();
+    if (response.ok && data && typeof data.answer === 'string' && data.answer.trim()) return Object.assign({}, data, { answer:data.answer.trim() });
+    if (data && typeof data.answer === 'string' && data.answer.trim()) return Object.assign({}, data, { answer:data.answer.trim() });
     throw new Error((data && (data.error || data.message)) || 'API sem resposta textual reconhecida.');
+  }
+
+  async function askCharlieApi(mode, code, focus, question, room){
+    var payload = await askCharlieApiPayload(mode, code, focus, question, room);
+    return payload.answer;
   }
 
   function plainQuestionText(question){
@@ -1718,6 +1774,7 @@ window.jus9DemoLogin = function(form){
     messages.forEach(function(msg){
       var item = document.createElement('div');
       item.className = 'ai-message ' + (msg.role === 'assistant' ? 'ai-message-echo' : 'ai-message-user');
+      if(msg.role === 'assistant') item.setAttribute('data-ai-answer-text', String(msg.content || ''));
       item.innerHTML = msg.role === 'assistant'
         ? '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(msg.content || '')
         : '<strong>Voce:</strong> ' + escapeHtml(msg.content || '');
@@ -2312,9 +2369,9 @@ window.jus9DemoLogin = function(form){
       actionMenu.addEventListener('click', function(event){ event.stopPropagation(); });
       document.addEventListener('click', closeActionMenu);
     }
-    function lastEchoText(){ var msgs = card.querySelectorAll('.ai-message-echo'); return msgs.length ? (msgs[msgs.length - 1].textContent || '').replace(/^Charlie Echo:\s*/i, '').trim() : ''; }
+    function lastEchoText(){ var msgs = card.querySelectorAll('.ai-message-echo'); if(!msgs.length) return ''; var last = msgs[msgs.length - 1]; return (last.getAttribute('data-ai-answer-text') || last.textContent || '').replace(/^Charlie Echo:\s*/i, '').trim(); }
     function lastUserText(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); var msg = room && (room.messages || []).filter(function(m){ return m.role === 'user'; }).slice(-1)[0]; return msg ? msg.content : ''; }
-    function appendEcho(text, options){ var windowEl = card.querySelector('[data-ai-chat-window]'); if(!windowEl) return; var echoMsg = document.createElement('div'); echoMsg.className = 'ai-message ai-message-echo'; echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(text); windowEl.appendChild(echoMsg); keepChatInView(card, echoMsg); if(!options || options.remember !== false) rememberChatExchange(code, '', text); }
+    function appendEcho(text, options){ var windowEl = card.querySelector('[data-ai-chat-window]'); if(!windowEl) return; var echoMsg = document.createElement('div'); echoMsg.className = 'ai-message ai-message-echo'; echoMsg.setAttribute('data-ai-answer-text', String(text || '')); echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(text) + renderDriveSaverCard(options && options.driveSaverPayload); windowEl.appendChild(echoMsg); keepChatInView(card, echoMsg); if(!options || options.remember !== false) rememberChatExchange(code, '', text); }
     function appendDownloadEcho(files){
       var windowEl = card.querySelector('[data-ai-chat-window]');
       if(!windowEl) return;
@@ -2476,8 +2533,8 @@ window.jus9DemoLogin = function(form){
       if(!lastAnswer) return appendEcho('Ainda nao ha minuta ou resposta para salvar no Drive. Gere a minuta primeiro e depois acione Salvar no Drive.');
       appendEcho('Vou pedir ao backend autorizado para classificar e salvar a ultima resposta no Cartorio Digital Charlie Echo, retornando downloadUrl real quando a classificacao permitir.', { remember:false });
       try{
-        var saved = await askCharlieApi('jurista', code, focus, 'Salve esta minuta/documento no Cartorio Digital Charlie Echo e gere link de download se a classificacao governada permitir. Use a resposta anterior como conteudo-base, sem inventar dados reais.\n\nPergunta anterior: ' + (lastQuestion || 'sem pergunta registrada') + '\n\nResposta anterior:\n' + lastAnswer, room);
-        appendEcho(saved);
+        var savedPayload = await askCharlieApiPayload('jurista', code, focus, 'Salve esta minuta/documento no Cartorio Digital Charlie Echo e gere link de download se a classificacao governada permitir. Use a resposta anterior como conteudo-base, sem inventar dados reais.\n\nPergunta anterior: ' + (lastQuestion || 'sem pergunta registrada') + '\n\nResposta anterior:\n' + lastAnswer, room);
+        appendEcho(savedPayload.answer, { driveSaverPayload:savedPayload });
       }catch(err){
         appendEcho('Nao consegui acionar o salvamento governado agora. O download local da pagina continua disponivel; tente novamente quando a API segura estiver acessivel.');
       }
@@ -2538,6 +2595,7 @@ window.jus9DemoLogin = function(form){
         ? ''
         : (previousQuestionAnswer(question, room) || whereStoppedAnswer(question, room, code, focus) || identityAnswer(question) || driveSaverAnswer(questionForContext) || legalResearchAnswer(questionForContext));
       if (localIdentity) {
+        echoMsg.setAttribute('data-ai-answer-text', localIdentity);
         echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(localIdentity);
         var rememberedLocal = rememberChatExchange(code, question, localIdentity);
         updateRoomIntelligence(code, rememberedLocal, focus);
@@ -2555,13 +2613,15 @@ window.jus9DemoLogin = function(form){
       }
       if (!localIdentity) {
         try {
-          var answer = await askCharlieApi(mode, code, focus, contextualQuestion, room);
+          var apiPayload = await askCharlieApiPayload(mode, code, focus, contextualQuestion, room);
+          var answer = apiPayload.answer;
           if(asksPreviousQuestion(question)){
             var recall = previousQuestionAnswer(question, room);
             if(recall) answer = recall;
           }
           answer = applyCreativeReasoningFrame(answer, question, code, focus);
-          echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(answer);
+          echoMsg.setAttribute('data-ai-answer-text', answer);
+          echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(answer) + renderDriveSaverCard(apiPayload);
           keepChatInView(card, echoMsg);
           var remembered = rememberChatExchange(code, question, answer);
           updateRoomIntelligence(code, remembered, focus);
@@ -2573,6 +2633,7 @@ window.jus9DemoLogin = function(form){
           var safeSummary = room.summary && !/Para pesquisar doutrina e jurisprudencia com seguranca|voce pediu pesquisa juridica guiada|Leitura do pedido: voce pediu pesquisa juridica guiada/i.test(room.summary) ? room.summary : '';
           if(settings.memory !== false && safeSummary && !asksDoctrineProduction(questionForContext) && !shouldOfferDocumentDownloads(questionForContext)) fallback = 'Vou continuar pela memoria governada desta sala. ' + safeSummary + '\n\n' + fallback;
           fallback = applyCreativeReasoningFrame(fallback, questionForContext, code, focus);
+          echoMsg.setAttribute('data-ai-answer-text', fallback);
           echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(fallback) + '<br><br><em>API segura indisponivel agora; mantive fallback local sem dados reais.</em>';
           keepChatInView(card, echoMsg);
           var rememberedFallback = rememberChatExchange(code, question, fallback);

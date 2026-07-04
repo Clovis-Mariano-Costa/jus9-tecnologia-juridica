@@ -51,8 +51,14 @@ for (const page of pages) {
 
 const scriptResponse = await fetch(`${baseUrl}/script.js?audit=charlie-script-${Date.now()}`);
 const script = await scriptResponse.text();
-for (const pattern of ["pdfSafeText", "pdfLiteral", "Baixar PDF", "buildPdfBlob", "Atualizar resumo", "smartSummary", "governanceClass", "trustedLegalSources", "legalResearchAnswer", "buildOperationalResearchAnswer", "Pesquisa juridica operacional", "classifyLinkTrust", "Fontes e links confiaveis", "applyCreativeReasoningFrame", "data-ai-layout", "data-ai-save-drive", "downloadUrl real", "data-ai-layout') || card.getAttribute('data-chat-layout", "chatActionsForLayout", "governedIdentityInstruction", "api/auth/context", "nao escreva Escuta, Sentire", "asksDocumentProductionDownload", "buildResponseDownloads", "donwload", "asksCompleteLegalDraft", "completeLegalDraftAnswer", "shouldOfferDocumentDownloads", "injectChatUpload", "[ANEXOS DO USUARIO - UPLOAD LOCAL GOVERNADO]", "Faca uma peticao completa de revisao de alimentos", "sem salvar no Drive", "usando somente o conteudo extraido do anexo"]) {
+for (const pattern of ["pdfSafeText", "pdfLiteral", "Baixar PDF", "Abrir no Drive", "buildPdfBlob", "Atualizar resumo", "smartSummary", "governanceClass", "trustedLegalSources", "legalResearchAnswer", "buildOperationalResearchAnswer", "Pesquisa juridica operacional", "classifyLinkTrust", "Fontes e links confiaveis", "applyCreativeReasoningFrame", "data-ai-layout", "data-ai-save-drive", "downloadUrl real", "askCharlieApiPayload", "renderDriveSaverCard", "drive-saver-result-card", "data-ai-layout') || card.getAttribute('data-chat-layout", "chatActionsForLayout", "governedIdentityInstruction", "api/auth/context", "nao escreva Escuta, Sentire", "asksDocumentProductionDownload", "buildResponseDownloads", "donwload", "asksCompleteLegalDraft", "completeLegalDraftAnswer", "shouldOfferDocumentDownloads", "injectChatUpload", "[ANEXOS DO USUARIO - UPLOAD LOCAL GOVERNADO]", "Faca uma peticao completa de revisao de alimentos", "sem salvar no Drive", "usando somente o conteudo extraido do anexo"]) {
   if (!script.includes(pattern)) failures.push(`script.js: ausente ${pattern}`);
+}
+
+const styleResponse = await fetch(`${baseUrl}/style.css?audit=charlie-style-${Date.now()}`);
+const style = await styleResponse.text();
+for (const pattern of ["drive-saver-result-card", "drive-saver-result-link", "drive-saver-result-status"]) {
+  if (!style.includes(pattern)) failures.push(`style.css: ausente ${pattern}`);
 }
 
 if (failures.length) {
