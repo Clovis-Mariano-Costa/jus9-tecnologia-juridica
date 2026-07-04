@@ -28,7 +28,7 @@ $files = @(
   'assets\clovis-founder-context.png'
 )
 
-$files += Get-ChildItem -LiteralPath $Root -Filter 'app-ia-*.html' -File | ForEach-Object { $_.Name }
+$files += Get-ChildItem -LiteralPath $Root -Filter '*.html' -File | ForEach-Object { $_.Name }
 $files = $files | Select-Object -Unique
 
 foreach ($file in $files) {
