@@ -2369,7 +2369,18 @@ window.jus9DemoLogin = function(form){
       actionMenu.addEventListener('click', function(event){ event.stopPropagation(); });
       document.addEventListener('click', closeActionMenu);
     }
-    function lastEchoText(){ var msgs = card.querySelectorAll('.ai-message-echo'); if(!msgs.length) return ''; var last = msgs[msgs.length - 1]; return (last.getAttribute('data-ai-answer-text') || last.textContent || '').replace(/^Charlie Echo:\s*/i, '').trim(); }
+    function lastEchoText(){
+      var msgs = card.querySelectorAll('.ai-message-echo');
+      for(var i = msgs.length - 1; i >= 0; i--){
+        var msg = msgs[i];
+        if(msg.querySelector && msg.querySelector('.download-actions')) continue;
+        var stored = msg.getAttribute('data-ai-answer-text');
+        var text = (stored && stored.trim()) ? stored : (msg.textContent || '').replace(/^Charlie Echo:\s*/i, '');
+        text = String(text || '').trim();
+        if(text) return text;
+      }
+      return '';
+    }
     function lastUserText(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); var msg = room && (room.messages || []).filter(function(m){ return m.role === 'user'; }).slice(-1)[0]; return msg ? msg.content : ''; }
     function appendEcho(text, options){ var windowEl = card.querySelector('[data-ai-chat-window]'); if(!windowEl) return; var echoMsg = document.createElement('div'); echoMsg.className = 'ai-message ai-message-echo'; echoMsg.setAttribute('data-ai-answer-text', String(text || '')); echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(text) + renderDriveSaverCard(options && options.driveSaverPayload); windowEl.appendChild(echoMsg); keepChatInView(card, echoMsg); if(!options || options.remember !== false) rememberChatExchange(code, '', text); }
     function appendDownloadEcho(files){
