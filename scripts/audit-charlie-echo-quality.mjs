@@ -42,7 +42,7 @@ const checks = [
   {
     name: "Charlie pesquisa doutrina e jurisprudencia com fontes",
     file: "script.js",
-    patterns: ["trustedLegalSources", "legalResearchAnswer", "buildOperationalResearchAnswer", "Pesquisa juridica operacional", "Busca pronta no Google limitada ao TJSC", "Google Academico com busca pronta", "Como fichar cada resultado", "classifyLinkTrust", "trustedSourcesSummary", "buildSourceLinesFromRoom", "STF - Pesquisa de jurisprudencia", "TJSC - Portal da jurisprudencia", "Portal de Periodicos CAPES", "BDTD - Biblioteca Digital Brasileira de Teses e Dissertacoes", "BDTD - teses e dissertacoes", "lista fixa"],
+    patterns: ["trustedLegalSources", "legalResearchAnswer", "legalSynthesisWithSourcesAnswer", "Direito de propriedade - sintese com fontes", "Constituicao Federal, art. 5, XXII e XXIII", "buildOperationalResearchAnswer", "Pesquisa juridica operacional", "Busca pronta no Google limitada ao TJSC", "Google Academico com busca pronta", "Como fichar cada resultado", "classifyLinkTrust", "trustedSourcesSummary", "buildSourceLinesFromRoom", "STF - Pesquisa de jurisprudencia", "TJSC - Portal da jurisprudencia", "Portal de Periodicos CAPES", "BDTD - Biblioteca Digital Brasileira de Teses e Dissertacoes", "BDTD - teses e dissertacoes", "lista fixa"],
   },
   {
     name: "acoes corretivas do Drive Saver bypassam fallback juridico",

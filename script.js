@@ -1232,11 +1232,59 @@ window.jus9DemoLogin = function(form){
     return lines.join('\n');
   }
 
+  function legalSynthesisWithSourcesAnswer(question){
+    var q = String(question || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    var productionVerb = /\b(explique|explica|fale|conceitue|elabore|redija|desenvolva|resuma|sintetize|monte|prepare|produza|crie|escreva|analise|comente)\b/.test(q);
+    var wantsSources = /\b(citando fontes|com fontes|fontes|cite fontes|indique fontes|base legal|fundamento legal|fundamentos legais)\b/.test(q);
+    if(!productionVerb || !wantsSources) return '';
+
+    if(/\b(direito de propriedade|propriedade privada|propriedade)\b/.test(q)){
+      return [
+        'Direito de propriedade - sintese com fontes',
+        '',
+        'O direito de propriedade e uma garantia constitucional e tambem um direito real regulado pelo Direito Civil. Ele protege a possibilidade de usar, gozar, dispor e reivindicar um bem, mas nao funciona como poder absoluto: no sistema brasileiro, a propriedade deve conviver com a funcao social, a boa-fe, a vizinhanca, o interesse publico, a protecao ambiental e outros limites legais.',
+        '',
+        'Pontos centrais:',
+        '- Garantia constitucional: a Constituicao assegura o direito de propriedade e, logo em seguida, exige que a propriedade atenda a sua funcao social.',
+        '- Dimensao civil: o Codigo Civil estrutura os poderes do proprietario, especialmente usar, gozar, dispor e reaver a coisa de quem injustamente a possua ou detenha.',
+        '- Funcao social: a propriedade deixa de ser vista apenas como interesse individual e passa a ser interpretada tambem conforme sua utilidade social, economica, urbana, rural, ambiental e comunitaria.',
+        '- Limites: desapropriacao, regras urbanisticas, direito de vizinhanca, protecao ambiental, posse, usucapiao, abuso de direito e restricoes administrativas podem modular o exercicio da propriedade.',
+        '',
+        'Fontes para conferencia:',
+        '- Constituicao Federal, art. 5, XXII e XXIII, e art. 170, II e III: https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm',
+        '- Codigo Civil, especialmente art. 1.228 e regras de direitos reais: https://www.planalto.gov.br/ccivil_03/leis/2002/l10406compilada.htm',
+        '- STF - pesquisa de jurisprudencia constitucional sobre propriedade e funcao social: https://jurisprudencia.stf.jus.br/',
+        '- STJ - pesquisa de jurisprudencia civil sobre propriedade, posse, vizinhanca e usucapiao: https://processo.stj.jus.br/SCON/',
+        '- LexML - pesquisa legislativa e bibliografica sobre propriedade: https://www.lexml.gov.br/',
+        '- BDTD - teses e dissertacoes para aprofundamento academico: https://bdtd.ibict.br/',
+        '',
+        'Cuidado: para citar doutrina com autor, obra, pagina ou trecho literal, e preciso conferir a fonte original. Aqui eu trouxe uma sintese juridica introdutoria com fontes oficiais/institucionais para verificacao.'
+      ].join('\n');
+    }
+
+    return [
+      'Sintese juridica com fontes',
+      '',
+      'Posso desenvolver o tema em conteudo substantivo e indicar fontes de conferencia, sem travar em protocolo. A resposta deve separar conceito, fundamento legal, limites, exemplos praticos e riscos de uso.',
+      '',
+      'Fontes iniciais confiaveis:',
+      '- Planalto - legislacao federal e Constituicao: https://www4.planalto.gov.br/legislacao',
+      '- LexML Brasil - legislacao, jurisprudencia e bibliografia juridica: https://www.lexml.gov.br/',
+      '- STF - jurisprudencia constitucional: https://jurisprudencia.stf.jus.br/',
+      '- STJ - jurisprudencia infraconstitucional: https://processo.stj.jus.br/SCON/',
+      '- BDTD - teses e dissertacoes: https://bdtd.ibict.br/',
+      '',
+      'Limite: nao invento autor, obra, pagina, julgado ou citacao literal sem fonte conferida.'
+    ].join('\n');
+  }
+
   function legalResearchAnswer(question){
     var q = (question || '').toLowerCase();
     if(asksDriveSaverCorrectiveAction(question)) return '';
     if(asksDocumentProductionDownload(question)) return '';
     if(!asksSources(q)) return '';
+    var synthesis = legalSynthesisWithSourcesAnswer(question);
+    if(synthesis) return synthesis;
     var wantsDoctrine = /\b(doutrina|artigo cientifico|artigo científico|academico|acadêmico|livro|periodico|periódico|tese|dissertacao|dissertação)\b/.test(q);
     var wantsJuris = /\b(jurisprudencia|jurisprudência|precedente|acordao|acórdão|repetitivo|repercussao|repercussão|tese|tribunal|tjsc|stf|stj|tst)\b/.test(q);
     var wantsLink = /\b(link|fonte|fontes|oficial|confiavel|confiáveis|confiaveis)\b/.test(q);
