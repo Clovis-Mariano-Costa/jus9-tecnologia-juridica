@@ -1,5 +1,5 @@
 const baseUrl = "https://jus9tecnologia.com.br";
-const expectedScript = "script.js?v=20260704-pecas-upload-v1";
+const expectedScript = "script.js?v=20260704-fontes-v2";
 
 const pages = [
   "app-ia-profissional.html",

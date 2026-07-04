@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
-const expectedScriptVersion = "script.js?v=20260704-pecas-upload-v1";
+const expectedScriptVersion = "script.js?v=20260704-fontes-v2";
 
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), "utf8");
@@ -77,17 +77,17 @@ const checks = [
   {
     name: "service worker nao prende MVP antigo",
     file: "service-worker.js",
-    patterns: ["jus9-pwa-v6-2026-07-03-charlie-document-download", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
+    patterns: ["jus9-pwa-v7-2026-07-04-charlie-fontes", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
   },
   {
     name: "casa propria da Charlie Echo publicada",
     file: "charlie-echo.html",
-    patterns: ["Casa propria da IA", "data-ai-chat", "app-ia-profissional.html#chat-ia", "script.js?v=20260704-pecas-upload-v1"],
+    patterns: ["Casa propria da IA", "data-ai-chat", "app-ia-profissional.html#chat-ia", "script.js?v=20260704-fontes-v2"],
   },
   {
     name: "pagina publica da Charlie usa script versionado",
     file: "ia-profissional.html",
-    patterns: ["data-ai-chat", "script.js?v=20260704-pecas-upload-v1"],
+    patterns: ["data-ai-chat", "script.js?v=20260704-fontes-v2"],
   },
 ];
 
