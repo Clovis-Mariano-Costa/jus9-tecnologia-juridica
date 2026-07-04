@@ -2258,7 +2258,8 @@ window.jus9DemoLogin = function(form){
       ['data-ai-settings', 'Painel'],
       ['data-ai-improve', 'Melhorar resposta'],
       ['data-ai-sources', 'Fontes'],
-      ['data-ai-drive-saver', 'MiniBackend'],
+      ['data-ai-save-drive', 'Salvar no Drive'],
+      ['data-ai-drive-saver', 'Drive Saver'],
       ['data-ai-summary', 'Atualizar resumo'],
       ['data-ai-package', 'Gerar PDF']
     ];
@@ -2266,7 +2267,8 @@ window.jus9DemoLogin = function(form){
       ['data-ai-settings', 'Painel'],
       ['data-ai-improve', 'Melhorar resposta'],
       ['data-ai-sources', 'Fontes'],
-      ['data-ai-drive-saver', 'MiniBackend'],
+      ['data-ai-save-drive', 'Salvar no Drive'],
+      ['data-ai-drive-saver', 'Drive Saver'],
       ['data-ai-package', 'Gerar PDF']
     ];
     return [
@@ -2466,6 +2468,19 @@ window.jus9DemoLogin = function(form){
       var prompt = 'Ensine Charlie Echo a usar o miniBackend JUS9_DRIVE_SAVER_MVP e gerar pacote de download.';
       appendEcho(driveSaverAnswer(prompt));
       appendDownloadEcho(buildDriveSaverDownloads(prompt, code, focus));
+    });
+    var saveDriveButton = bar.querySelector('[data-ai-save-drive]');
+    if(saveDriveButton) saveDriveButton.addEventListener('click', async function(){
+      closeActionMenu();
+      var room = activeChatRoom(code), lastQuestion = lastUserText(), lastAnswer = lastEchoText();
+      if(!lastAnswer) return appendEcho('Ainda nao ha minuta ou resposta para salvar no Drive. Gere a minuta primeiro e depois acione Salvar no Drive.');
+      appendEcho('Vou pedir ao backend autorizado para classificar e salvar a ultima resposta no Cartorio Digital Charlie Echo, retornando downloadUrl real quando a classificacao permitir.', { remember:false });
+      try{
+        var saved = await askCharlieApi('jurista', code, focus, 'Salve esta minuta/documento no Cartorio Digital Charlie Echo e gere link de download se a classificacao governada permitir. Use a resposta anterior como conteudo-base, sem inventar dados reais.\n\nPergunta anterior: ' + (lastQuestion || 'sem pergunta registrada') + '\n\nResposta anterior:\n' + lastAnswer, room);
+        appendEcho(saved);
+      }catch(err){
+        appendEcho('Nao consegui acionar o salvamento governado agora. O download local da pagina continua disponivel; tente novamente quando a API segura estiver acessivel.');
+      }
     });
   }
 
