@@ -843,6 +843,26 @@ window.jus9DemoLogin = function(form){
     return value.replace(/[^\w\s/-]/g, ' ').replace(/\s+/g, ' ').trim();
   }
 
+  function asksDriveSaverCorrectiveAction(question){
+    var q = plainAiText(question);
+    var hasAction = /\b(revogue|revogar|restrinja|restringir|despublique|despublicar|tire do ar|tirar do ar|remova o link|remover o link|mova para revisao|mover para revisao|mandar para revisao|mande para revisao|publiquei errado|publicou errado|lixeira|apague|apagar|exclua|excluir|delete|deletar)\b/.test(q);
+    var hasDriveTarget = /\b(drive|google docs|docs google|drive google|documento|arquivo|link|fileid|cartorio|cartorio digital)\b/.test(q) || /https:\/\/(?:docs|drive)\.google\.com\/[^\s]+/i.test(String(question || ''));
+    return hasAction && hasDriveTarget;
+  }
+
+  function shouldBypassLocalFallback(question){
+    return asksDriveSaverCorrectiveAction(question);
+  }
+
+  function normativeRouteLabel(question, mode, code){
+    if(asksDriveSaverCorrectiveAction(question)) return 'Prioritario > Principios > Constituicao > Lei do Drive Governado > Regimento ' + (code || 'DAJ') + ' > Protocolo de acao corretiva Drive Saver';
+    if(asksDocumentProductionDownload(question)) return 'Prioritario > Principios > Constituicao > Lei de Documentos > Regimento ' + (code || 'DAJ') + ' > Protocolo de minuta/download';
+    if(asksDriveSaver(question)) return 'Prioritario > Principios > Constituicao > Lei do MiniBackend e Drive Governado > Regimento ' + (code || 'DAJ') + ' > Protocolo Drive Saver';
+    if(mode === 'social') return 'Prioritario > Principios > Constituicao > Lei Social > Regimento Social > Protocolo de acolhimento';
+    if(/\b(governanca|dna|constituicao|lei interna|regimento|protocolo|cofre|sigilo)\b/.test(plainAiText(question))) return 'Prioritario > Principios > Constituicao > Leis internas > Regimento de governanca > Protocolo adequado';
+    return 'Prioritario > Principios > Constituicao > Leis internas > Regimento ' + (code || 'DAJ') + ' > Protocolo escolhido pela Charlie';
+  }
+
   function asksDriveSaver(question){
     var q = plainAiText(question);
     return /\b(mini ?backend|minibackend|drive saver|jus9 drive saver|cartorio|cartorio digital|google drive|salvar no drive|salvar documento|apps script|web app|chave interna|cofre nao automatico|cofre deposito|cofre)\b/.test(q);
@@ -891,6 +911,7 @@ window.jus9DemoLogin = function(form){
     { kind:'jurisprudencia', name:'TJSC - Portal da jurisprudencia', url:'https://www.tjsc.jus.br/web/jurisprudencia', trust:'oficial', note:'jurisprudencia catarinense, informativos, enunciados e revista do TJSC' },
     { kind:'legislacao', name:'Planalto - Legislacao', url:'https://www4.planalto.gov.br/legislacao', trust:'oficial', note:'leis federais, constituicao e atos normativos do Executivo federal' },
     { kind:'legislacao', name:'LexML Brasil', url:'https://www.lexml.gov.br/', trust:'oficial/institucional', note:'legislacao, jurisprudencia e doutrina em rede de informacao legislativa e juridica' },
+    { kind:'doutrina', name:'BDTD - Biblioteca Digital Brasileira de Teses e Dissertacoes', url:'https://bdtd.ibict.br/', trust:'academico/institucional', note:'teses e dissertacoes brasileiras para aprofundamento academico e levantamento de autores' },
     { kind:'doutrina', name:'Portal de Periodicos CAPES', url:'https://www.periodicos.capes.gov.br/', trust:'academico/institucional', note:'artigos cientificos, bases academicas, teses, periodicos e referencias' },
     { kind:'doutrina', name:'SciELO Brasil', url:'https://www.scielo.br/', trust:'academico/institucional', note:'artigos cientificos de acesso aberto, inclusive pesquisa juridica interdisciplinar' },
     { kind:'doutrina', name:'Google Academico', url:'https://scholar.google.com.br/', trust:'academico com cautela', note:'metabusca academica; confira autor, revista, data, citacoes e acesso ao texto' }
@@ -900,7 +921,7 @@ window.jus9DemoLogin = function(form){
     var u = String(url || '').toLowerCase();
     if(!/^https:\/\//.test(u)) return { level:'nao recomendado', reason:'prefira HTTPS e evite links sem seguranca' };
     if(/\.(jus|gov|leg|mp|def)\.br\b/.test(u) || /\/\/(www\.)?(stf|stj|tst|tse|cnj|tjsc)\.jus\.br\b/.test(u)) return { level:'oficial', reason:'dominio publico institucional do sistema de justica ou governo' };
-    if(/(periodicos\.capes\.gov\.br|scielo\.br|lexml\.gov\.br|edu\.br|scholar\.google)/.test(u)) return { level:'academico/institucional', reason:'base academica, biblioteca ou metabusca de pesquisa' };
+    if(/(bdtd\.ibict\.br|periodicos\.capes\.gov\.br|scielo\.br|lexml\.gov\.br|edu\.br|scholar\.google)/.test(u)) return { level:'academico/institucional', reason:'base academica, biblioteca ou metabusca de pesquisa' };
     if(/(bit\.ly|tinyurl|t\.co|goo\.gl|encurtador)/.test(u)) return { level:'cautela alta', reason:'link encurtado dificulta verificar destino' };
     if(/(blog|noticia|jornal|linkedin|facebook|instagram|youtube)/.test(u)) return { level:'cautela', reason:'pode ajudar no contexto, mas deve ser confirmado em fonte oficial ou academica' };
     return { level:'cautela', reason:'verifique autoria, data, dominio, fonte primaria e coerencia com fontes oficiais' };
@@ -960,6 +981,7 @@ window.jus9DemoLogin = function(form){
     var tjscGoogleQuery = 'https://www.google.com/search?q=' + tjscQuery;
     var tjscPortal = 'https://www.tjsc.jus.br/web/jurisprudencia';
     var lexmlJuris = 'https://www.lexml.gov.br/busca/search?keyword=' + encodeURIComponent(jurisTopic + ' jurisprudencia');
+    var bdtd = 'https://bdtd.ibict.br/vufind/Search/Results?lookfor=' + encodeURIComponent(doctrineTopic) + '&type=AllFields';
     var scholar = 'https://scholar.google.com.br/scholar?hl=pt-BR&q=' + encodeURIComponent(doctrineTopic);
     var scielo = 'https://search.scielo.org/?lang=pt&q=' + encodeURIComponent(doctrineTopic);
     var capes = 'https://www.periodicos.capes.gov.br/';
@@ -980,6 +1002,7 @@ window.jus9DemoLogin = function(form){
     }
     if(wantsDoctrine){
       lines.push('Doutrina academica - roteiro inicial:');
+      lines.push(searchLink('BDTD - teses e dissertacoes', bdtd, 'academico/institucional', 'localizar teses e dissertacoes brasileiras, autores, programas e bibliografia'));
       lines.push(searchLink('Google Academico com busca pronta', scholar, 'academico com cautela', 'localizar artigos, livros, citacoes e autores; conferir fonte original'));
       lines.push(searchLink('SciELO com busca pronta', scielo, 'academico/institucional', 'buscar artigos cientificos de acesso aberto'));
       lines.push(searchLink('Portal de Periodicos CAPES', capes, 'academico/institucional', 'aprofundar em periodicos, bases e referencias quando houver acesso'));
@@ -1028,6 +1051,7 @@ window.jus9DemoLogin = function(form){
 
   function legalResearchAnswer(question){
     var q = (question || '').toLowerCase();
+    if(asksDriveSaverCorrectiveAction(question)) return '';
     if(asksDocumentProductionDownload(question)) return '';
     if(!asksSources(q)) return '';
     var wantsDoctrine = /\b(doutrina|artigo cientifico|artigo científico|academico|acadêmico|livro|periodico|periódico|tese|dissertacao|dissertação)\b/.test(q);
@@ -1302,9 +1326,15 @@ window.jus9DemoLogin = function(form){
       'MVP/dossie: ' + code + '.',
       'Foco do ambiente: ' + focus + '.',
       'Modo solicitado no frontend: ' + mode + '.',
+      'Rota normativa escolhida antes da resposta: ' + normativeRouteLabel(question, mode, code) + '.',
+      'Ordem obrigatoria da Charlie Echo: 1) Prioritario; 2) Principios e clausulas petreas; 3) Constituicao; 4) Leis internas; 5) Regimentos do ambiente; 6) Protocolos. Protocolos sao ferramentas, nao mandamento maior.',
+      'As Tres Leis da Robotica de Isaac Asimov sao clausulas petreas eticas internas da Charlie Echo, aplicadas como maxima de protecao humana, obediencia responsavel e autopreservacao subordinada ao bem, sem reproduzir obra protegida literalmente na resposta publica.',
+      'Se o usuario for membro da equipe pelo contexto autenticado, Charlie pode sugerir melhoria normativa quando detectar lacuna, risco, contradicao ou oportunidade relevante. Visitante publico recebe orientacao; equipe recebe proposta; Fundador autoriza mudanca estrutural.',
       governedIdentityInstruction(identityContext),
       'Responda como Charlie Echo da Costa, I.A generativa multimodal jurista com governanca humana.',
       mvpPersonalityInstruction(code),
+      'No modulo profissional para advogados, quando houver pesquisa academica, inclua BDTD (https://bdtd.ibict.br/) como fonte de teses e dissertacoes, junto de tribunais oficiais, Planalto, LexML, CAPES, SciELO e Google Academico com cautela.',
+      'Se a pergunta atual pedir revogar, restringir, despublicar, mover para revisao ou enviar para lixeira um link/arquivo do Google Drive ou Google Docs, trate como acao operacional de Drive Saver antes de pesquisa juridica. Nao responda com protocolo de doutrina/jurisprudencia.',
       'Padrao externo de resposta: nao escreva Escuta, Sentire, Leitura do pedido, Caminho escolhido, Resposta ou Proximo passo criativo como cabecalhos fixos. Esses sao criterios internos.',
       'Comece direto pelo conteudo util. Use cabecalhos simples apenas quando ajudarem: Resumo, Orientacao, Checklist, Fontes, Limites, Proximo passo.',
       'Evite Markdown pesado. Nao use blocos com muitos asteriscos. Se listar, use poucos itens curtos. Se o pedido for simples, responda em poucos paragrafos.',
@@ -1370,6 +1400,7 @@ window.jus9DemoLogin = function(form){
     });
     var data = await response.json().catch(function(){ return null; });
     if (response.ok && data && typeof data.answer === 'string' && data.answer.trim()) return data.answer.trim();
+    if (data && typeof data.answer === 'string' && data.answer.trim()) return data.answer.trim();
     throw new Error((data && (data.error || data.message)) || 'API sem resposta textual reconhecida.');
   }
 
@@ -2216,7 +2247,9 @@ window.jus9DemoLogin = function(form){
       });
       var echoMsg = document.createElement('div');
       echoMsg.className = 'ai-message ai-message-echo';
-      var localIdentity = previousQuestionAnswer(question, room) || whereStoppedAnswer(question, room, code, focus) || identityAnswer(question) || driveSaverAnswer(question) || legalResearchAnswer(question);
+      var localIdentity = shouldBypassLocalFallback(question)
+        ? ''
+        : (previousQuestionAnswer(question, room) || whereStoppedAnswer(question, room, code, focus) || identityAnswer(question) || driveSaverAnswer(question) || legalResearchAnswer(question));
       if (localIdentity) {
         echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(localIdentity);
         var rememberedLocal = rememberChatExchange(code, question, localIdentity);

@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
-const expectedScriptVersion = "script.js?v=20260608-chat-modelo-v1";
+const expectedScriptVersion = "script.js?v=20260703-orquestra-normativa-v1";
 
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), "utf8");
@@ -17,7 +17,7 @@ const checks = [
   {
     name: "chat MVP envia message para API da Charlie",
     file: "script.js",
-    patterns: ["https://charlieecho.jus9tecnologia.com.br/api/ia", "message: buildApiMessage", "mvpPersonaRules", "mvpPersonalityInstruction", "Personalidade operacional do MVP", "Assinatura criativa do ambiente", "Limite duro do ambiente", "Protocolo Centelha Criativa 5.4", "applyCreativeReasoningFrame", "Leitura do pedido", "Caminho escolhido", "Proximo passo criativo"],
+    patterns: ["https://charlieecho.jus9tecnologia.com.br/api/ia", "message: buildApiMessage", "mvpPersonaRules", "mvpPersonalityInstruction", "Personalidade operacional do MVP", "Assinatura criativa do ambiente", "Limite duro do ambiente", "Protocolo Centelha Criativa 5.4", "applyCreativeReasoningFrame", "Leitura do pedido", "Caminho escolhido", "Proximo passo criativo", "Rota normativa escolhida antes da resposta", "Ordem obrigatoria da Charlie Echo", "Principios e clausulas petreas", "As Tres Leis da Robotica de Isaac Asimov"],
   },
   {
     name: "chat MVP possui ferramentas de qualidade",
@@ -27,7 +27,12 @@ const checks = [
   {
     name: "Charlie pesquisa doutrina e jurisprudencia com fontes",
     file: "script.js",
-    patterns: ["trustedLegalSources", "legalResearchAnswer", "buildOperationalResearchAnswer", "Pesquisa juridica operacional", "Busca pronta no Google limitada ao TJSC", "Google Academico com busca pronta", "Como fichar cada resultado", "classifyLinkTrust", "trustedSourcesSummary", "buildSourceLinesFromRoom", "STF - Pesquisa de jurisprudencia", "TJSC - Portal da jurisprudencia", "Portal de Periodicos CAPES", "lista fixa"],
+    patterns: ["trustedLegalSources", "legalResearchAnswer", "buildOperationalResearchAnswer", "Pesquisa juridica operacional", "Busca pronta no Google limitada ao TJSC", "Google Academico com busca pronta", "Como fichar cada resultado", "classifyLinkTrust", "trustedSourcesSummary", "buildSourceLinesFromRoom", "STF - Pesquisa de jurisprudencia", "TJSC - Portal da jurisprudencia", "Portal de Periodicos CAPES", "BDTD - Biblioteca Digital Brasileira de Teses e Dissertacoes", "BDTD - teses e dissertacoes", "lista fixa"],
+  },
+  {
+    name: "acoes corretivas do Drive Saver bypassam fallback juridico",
+    file: "script.js",
+    patterns: ["asksDriveSaverCorrectiveAction", "shouldBypassLocalFallback", "Protocolo de acao corretiva Drive Saver", "if(asksDriveSaverCorrectiveAction(question)) return '';", "var localIdentity = shouldBypassLocalFallback(question)", "downloadUrl real"],
   },
   {
     name: "lider MVP lista ambientes prontos",
@@ -62,12 +67,12 @@ const checks = [
   {
     name: "casa propria da Charlie Echo publicada",
     file: "charlie-echo.html",
-    patterns: ["Casa propria da IA", "data-ai-chat", "app-ia-profissional.html#chat-ia", "script.js?v=20260608-chat-modelo-v1"],
+    patterns: ["Casa propria da IA", "data-ai-chat", "app-ia-profissional.html#chat-ia", "script.js?v=20260703-orquestra-normativa-v1"],
   },
   {
     name: "pagina publica da Charlie usa script versionado",
     file: "ia-profissional.html",
-    patterns: ["data-ai-chat", "script.js?v=20260608-chat-modelo-v1"],
+    patterns: ["data-ai-chat", "script.js?v=20260703-orquestra-normativa-v1"],
   },
 ];
 
