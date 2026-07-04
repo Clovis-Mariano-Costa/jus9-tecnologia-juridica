@@ -2661,7 +2661,7 @@ window.jus9DemoLogin = function(form){
   };
 
   function guidedChatLayout(card){
-    var value = card.getAttribute('data-chat-layout');
+    var value = card.getAttribute('data-ai-layout') || card.getAttribute('data-chat-layout');
     if(value === 'detalhista' || value === 'medio' || value === 'pequeno') return value;
     if(document.body && document.body.classList.contains('charlie-chat-only-page')) return 'detalhista';
     if(card.classList.contains('charlie-chat-shell')) return 'medio';
