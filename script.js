@@ -779,6 +779,83 @@ window.jus9DemoLogin = function(form){
 })();
 
 (function(){
+  var storageKey = 'jus9DajInitialAttendanceDraftV1';
+
+  function fieldLabel(field){
+    var label = field.querySelector('label');
+    return label ? String(label.textContent || '').replace(/\s+/g, ' ').trim() : 'Campo';
+  }
+
+  function fieldValue(field){
+    var control = field.querySelector('textarea, select, input');
+    if(!control) return '';
+    if(control.type === 'file'){
+      var files = Array.prototype.slice.call(control.files || []);
+      return files.length ? files.map(function(file){ return file.name; }).join(', ') : 'nenhum arquivo selecionado';
+    }
+    return String(control.value || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function collectDajIntake(form){
+    var fields = Array.prototype.slice.call(form.querySelectorAll('.form-field')).map(function(field){
+      return { label:fieldLabel(field), value:fieldValue(field) };
+    });
+    return {
+      id:'DAJ-2026-0004',
+      source:'Atendimento inicial demonstrativo',
+      createdAt:new Date().toISOString(),
+      fields:fields
+    };
+  }
+
+  function buildDajAnalysisPrompt(draft){
+    var filled = (draft.fields || []).filter(function(item){
+      return item.value && !/^nenhum arquivo selecionado$/i.test(item.value);
+    });
+    var lines = [
+      'Leia o DAJ recem-criado a partir do atendimento inicial demonstrativo e faca uma analise da Charlie Echo.',
+      '',
+      'Tarefas:',
+      '1. Organizar fatos relevantes, documentos mencionados, urgencia, sigilo e area juridica provavel.',
+      '2. Indicar riscos, prazos aparentes, documentos faltantes e perguntas de retorno ao cliente.',
+      '3. Sugerir proximos atos do DAJ: triagem, minuta, pesquisa de fontes, checklist, Drive Saver ou revisao humana.',
+      '4. Se os dados parecerem reais, tratar como JURIDICO_SIGILOSO e pedir sanitizacao/revisao humana.',
+      '',
+      'DAJ previsto: ' + draft.id + '.',
+      'Origem: ' + draft.source + '.'
+    ];
+    if(filled.length){
+      lines.push('', 'Campos preenchidos/selecionados:');
+      filled.forEach(function(item){
+        lines.push('- ' + item.label + ': ' + item.value);
+      });
+    } else {
+      lines.push('', 'Nenhum campo foi preenchido. Use o DAJ demonstrativo e entregue um roteiro de coleta inicial.');
+    }
+    return lines.join('\n');
+  }
+
+  function initDajIntakeAnalysisButton(){
+    var form = document.querySelector('[data-daj-intake-form]');
+    var button = document.querySelector('[data-send-daj-analysis]');
+    if(!form || !button) return;
+    button.addEventListener('click', function(){
+      var draft = collectDajIntake(form);
+      var prompt = buildDajAnalysisPrompt(draft);
+      var draftKey = 'daj-' + Date.now();
+      try {
+        localStorage.setItem(storageKey, JSON.stringify({ id:draftKey, draft:draft, prompt:prompt }));
+      } catch(err) {}
+      var basePrompt = 'Leia o DAJ recem-criado a partir do atendimento inicial demonstrativo e faca uma analise da Charlie Echo.';
+      var url = 'app-ia-profissional.html?prompt=' + encodeURIComponent(basePrompt) + '&dajDraft=' + encodeURIComponent(draftKey) + '#chat-ia';
+      window.location.href = url;
+    });
+  }
+
+  initDajIntakeAnalysisButton();
+})();
+
+(function(){
   function escapeHtml(text){
     return String(text || '').replace(/[<>&"]/g, function(ch){
       return ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[ch]);
@@ -2861,16 +2938,29 @@ window.jus9DemoLogin = function(form){
     });
   });
 
+  function appendDajDraftFromUrl(params, prompt){
+    var draftId = params.get('dajDraft');
+    if(!draftId) return prompt;
+    try {
+      var saved = JSON.parse(localStorage.getItem('jus9DajInitialAttendanceDraftV1') || 'null');
+      if(saved && saved.id === draftId && saved.prompt) {
+        return prompt + '\n\n[ATENDIMENTO INICIAL DO DAJ - RASCUNHO LOCAL]\n' + saved.prompt;
+      }
+    } catch(err) {}
+    return prompt + '\n\n[ATENDIMENTO INICIAL DO DAJ]\nRascunho local nao encontrado neste navegador. Use o DAJ demonstrativo e entregue roteiro de coleta inicial.';
+  }
+
   function initCharliePromptFromUrl(){
     var params = new URLSearchParams(location.search || '');
     var prompt = params.get('prompt') || params.get('charlie_prompt');
     if(!prompt) return;
+    prompt = appendDajDraftFromUrl(params, prompt);
     var card = document.querySelector('[data-ai-chat]');
     if(!card) return;
     var input = card.querySelector('[data-ai-chat-input]');
     var form = card.querySelector('[data-ai-chat-form]');
     if(!input || !form) return;
-    input.value = String(prompt || '').slice(0, 2400);
+    input.value = String(prompt || '').slice(0, 6000);
     if(location.hash === '#chat-ia') {
       try { card.scrollIntoView({ behavior:'smooth', block:'start' }); } catch(err) {}
     }

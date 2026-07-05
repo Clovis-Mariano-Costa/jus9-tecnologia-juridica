@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
-const expectedScriptVersion = "script.js?v=20260704-daj-v1";
+const expectedScriptVersion = "script.js?v=20260705-daj-analise-v1";
 
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), "utf8");
@@ -32,7 +32,12 @@ const checks = [
   {
     name: "DAJ integrado como modelo-mae da Charlie Echo",
     file: "script.js",
-    patterns: ["injectMvpIntegrationPanel", "data-daj-integration-panel", "Contrato DAJ ativo", "DAJ-2026-0001", "initCharliePromptFromUrl", "Resuma o DAJ-2026-0001"],
+    patterns: ["injectMvpIntegrationPanel", "data-daj-integration-panel", "Contrato DAJ ativo", "DAJ-2026-0001", "initCharliePromptFromUrl", "Resuma o DAJ-2026-0001", "jus9DajInitialAttendanceDraftV1", "appendDajDraftFromUrl"],
+  },
+  {
+    name: "atendimento inicial envia DAJ para analise da Charlie",
+    file: "app-atendimento-inicial.html",
+    patterns: ["data-daj-intake-form", "data-send-daj-analysis", "Enviar DAJ para análise da Charlie Echo"],
   },
   {
     name: "estilo do upload local governado",
@@ -82,17 +87,17 @@ const checks = [
   {
     name: "service worker nao prende MVP antigo",
     file: "service-worker.js",
-    patterns: ["jus9-pwa-v8-2026-07-04-charlie-daj", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
+    patterns: ["jus9-pwa-v9-2026-07-05-daj-analise", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
   },
   {
     name: "casa propria da Charlie Echo publicada",
     file: "charlie-echo.html",
-    patterns: ["Casa propria da IA", "data-ai-chat", "app-ia-profissional.html#chat-ia", "script.js?v=20260704-daj-v1"],
+    patterns: ["Casa propria da IA", "data-ai-chat", "app-ia-profissional.html#chat-ia", "script.js?v=20260705-daj-analise-v1"],
   },
   {
     name: "pagina publica da Charlie usa script versionado",
     file: "ia-profissional.html",
-    patterns: ["data-ai-chat", "script.js?v=20260704-daj-v1"],
+    patterns: ["data-ai-chat", "script.js?v=20260705-daj-analise-v1"],
   },
 ];
 
