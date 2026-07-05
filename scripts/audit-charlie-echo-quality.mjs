@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
-const expectedScriptVersion = "script.js?v=20260704-fontes-v2";
+const expectedScriptVersion = "script.js?v=20260704-daj-v1";
 
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), "utf8");
@@ -17,12 +17,12 @@ const checks = [
   {
     name: "chat MVP envia message para API da Charlie",
     file: "script.js",
-    patterns: ["https://charlieecho.jus9tecnologia.com.br/api/ia", "message: buildApiMessage", "mvpPersonaRules", "mvpPersonalityInstruction", "Personalidade operacional do MVP", "Assinatura criativa do ambiente", "Limite duro do ambiente", "Protocolo Centelha Criativa 5.4", "applyCreativeReasoningFrame", "Leitura do pedido", "Caminho escolhido", "Proximo passo criativo", "Rota normativa escolhida antes da resposta", "Ordem obrigatoria da Charlie Echo", "Principios e clausulas petreas", "As Tres Leis da Robotica de Isaac Asimov"],
+    patterns: ["https://charlieecho.jus9tecnologia.com.br/api/ia", "message: buildApiMessage", "mvpPersonaRules", "mvpPersonalityInstruction", "Personalidade operacional do MVP", "Assinatura criativa do ambiente", "Limite duro do ambiente", "mvpIntegrationContracts", "mvpIntegrationInstruction", "Contrato operacional especializado", "Dossie ativo", "Padrao replicavel", "Protocolo Centelha Criativa 5.4", "applyCreativeReasoningFrame", "Leitura do pedido", "Caminho escolhido", "Proximo passo criativo", "Rota normativa escolhida antes da resposta", "Ordem obrigatoria da Charlie Echo", "Principios e clausulas petreas", "As Tres Leis da Robotica de Isaac Asimov"],
   },
   {
     name: "chat MVP possui ferramentas de qualidade",
     file: "script.js",
-    patterns: ["Melhorar resposta", "Fontes", "Atualizar resumo", "Resumo executivo", "Gerar PDF", "Baixar PDF", "Abrir no Drive", "link clicavel de download", "Renomear", "application/pdf", ".pdf", "buildPdfBlob", "download-link", "Helvetica-Bold", "Informacoes do pacote", "Historico recente", "Fontes e links confiaveis", "Pagina ", "pdfSafeText", "pdfLiteral", "eef4ff", "asksDocumentProductionDownload", "buildResponseDownloads", "donwload", "asksCompleteLegalDraft", "shouldOfferDocumentDownloads", "completeLegalDraftAnswer", "askCharlieApiPayload", "renderDriveSaverCard", "drive-saver-result-card", "data-ai-save-drive", "downloadUrl real", "data-ai-layout') || card.getAttribute('data-chat-layout", "Faca uma peticao completa de revisao de alimentos", "sem salvar no Drive", "usando somente o conteudo extraido do anexo"],
+    patterns: ["Melhorar resposta", "Fontes", "Atualizar resumo", "Resumo executivo", "Gerar PDF", "Baixar PDF", "Abrir no Drive", "link clicavel de download", "Renomear", "application/pdf", ".pdf", "buildPdfBlob", "download-link", "Helvetica-Bold", "Informacoes do pacote", "Historico recente", "Fontes e links confiaveis", "Pagina ", "pdfSafeText", "pdfLiteral", "eef4ff", "asksDocumentProductionDownload", "buildResponseDownloads", "donwload", "asksCompleteLegalDraft", "shouldOfferDocumentDownloads", "completeLegalDraftAnswer", "askCharlieApiPayload", "renderDriveSaverCard", "drive-saver-result-card", "data-ai-save-drive", "downloadUrl real", "data-ai-layout') || card.getAttribute('data-chat-layout", "Faca uma peticao completa de revisao de alimentos", "download local", "usando somente o conteudo extraido do anexo"],
   },
   {
     name: "chat MVP aceita upload local governado",
@@ -30,9 +30,14 @@ const checks = [
     patterns: ["injectChatUpload", "data-ai-upload", "readAiUploadedFiles", "buildAttachmentContext", "[ANEXOS DO USUARIO - UPLOAD LOCAL GOVERNADO]", "PDF/DOCX entram como arquivo aceito", "attachmentUserHtml"],
   },
   {
+    name: "DAJ integrado como modelo-mae da Charlie Echo",
+    file: "script.js",
+    patterns: ["injectMvpIntegrationPanel", "data-daj-integration-panel", "Contrato DAJ ativo", "DAJ-2026-0001", "initCharliePromptFromUrl", "Resuma o DAJ-2026-0001"],
+  },
+  {
     name: "estilo do upload local governado",
     file: "style.css",
-    patterns: ["ai-upload-panel", "ai-upload-button", "ai-upload-list", "ai-upload-user-list"],
+    patterns: ["ai-upload-panel", "ai-upload-button", "ai-upload-list", "ai-upload-user-list", "daj-integration-panel", "daj-integration-routes", "daj-integration-prompts"],
   },
   {
     name: "estilo do cartao Drive Saver",
@@ -77,17 +82,17 @@ const checks = [
   {
     name: "service worker nao prende MVP antigo",
     file: "service-worker.js",
-    patterns: ["jus9-pwa-v7-2026-07-04-charlie-fontes", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
+    patterns: ["jus9-pwa-v8-2026-07-04-charlie-daj", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
   },
   {
     name: "casa propria da Charlie Echo publicada",
     file: "charlie-echo.html",
-    patterns: ["Casa propria da IA", "data-ai-chat", "app-ia-profissional.html#chat-ia", "script.js?v=20260704-fontes-v2"],
+    patterns: ["Casa propria da IA", "data-ai-chat", "app-ia-profissional.html#chat-ia", "script.js?v=20260704-daj-v1"],
   },
   {
     name: "pagina publica da Charlie usa script versionado",
     file: "ia-profissional.html",
-    patterns: ["data-ai-chat", "script.js?v=20260704-fontes-v2"],
+    patterns: ["data-ai-chat", "script.js?v=20260704-daj-v1"],
   },
 ];
 

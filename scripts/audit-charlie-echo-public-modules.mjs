@@ -1,5 +1,5 @@
 const baseUrl = "https://jus9tecnologia.com.br";
-const expectedScript = "script.js?v=20260704-fontes-v2";
+const expectedScript = "script.js?v=20260704-daj-v1";
 
 const pages = [
   "app-ia-profissional.html",
@@ -51,13 +51,13 @@ for (const page of pages) {
 
 const scriptResponse = await fetch(`${baseUrl}/script.js?audit=charlie-script-${Date.now()}`);
 const script = await scriptResponse.text();
-for (const pattern of ["pdfSafeText", "pdfLiteral", "Baixar PDF", "Abrir no Drive", "buildPdfBlob", "Atualizar resumo", "smartSummary", "governanceClass", "trustedLegalSources", "legalResearchAnswer", "legalSynthesisWithSourcesAnswer", "Direito de propriedade - sintese com fontes", "Constituicao Federal, art. 5, XXII e XXIII", "buildOperationalResearchAnswer", "Pesquisa juridica operacional", "classifyLinkTrust", "Fontes e links confiaveis", "applyCreativeReasoningFrame", "data-ai-layout", "data-ai-save-drive", "downloadUrl real", "askCharlieApiPayload", "renderDriveSaverCard", "drive-saver-result-card", "data-ai-layout') || card.getAttribute('data-chat-layout", "chatActionsForLayout", "governedIdentityInstruction", "api/auth/context", "nao escreva Escuta, Sentire", "asksDocumentProductionDownload", "buildResponseDownloads", "donwload", "asksCompleteLegalDraft", "completeLegalDraftAnswer", "shouldOfferDocumentDownloads", "injectChatUpload", "[ANEXOS DO USUARIO - UPLOAD LOCAL GOVERNADO]", "Faca uma peticao completa de revisao de alimentos", "sem salvar no Drive", "usando somente o conteudo extraido do anexo"]) {
+for (const pattern of ["pdfSafeText", "pdfLiteral", "Baixar PDF", "Abrir no Drive", "buildPdfBlob", "Atualizar resumo", "smartSummary", "governanceClass", "trustedLegalSources", "legalResearchAnswer", "legalSynthesisWithSourcesAnswer", "Direito de propriedade - sintese com fontes", "Constituicao Federal, art. 5, XXII e XXIII", "buildOperationalResearchAnswer", "Pesquisa juridica operacional", "classifyLinkTrust", "Fontes e links confiaveis", "applyCreativeReasoningFrame", "data-ai-layout", "data-ai-save-drive", "downloadUrl real", "askCharlieApiPayload", "renderDriveSaverCard", "drive-saver-result-card", "data-ai-layout') || card.getAttribute('data-chat-layout", "chatActionsForLayout", "governedIdentityInstruction", "api/auth/context", "mvpIntegrationContracts", "mvpIntegrationInstruction", "data-daj-integration-panel", "Contrato DAJ ativo", "nao escreva Escuta, Sentire", "asksDocumentProductionDownload", "buildResponseDownloads", "donwload", "asksCompleteLegalDraft", "completeLegalDraftAnswer", "shouldOfferDocumentDownloads", "injectChatUpload", "[ANEXOS DO USUARIO - UPLOAD LOCAL GOVERNADO]", "Faca uma peticao completa de revisao de alimentos", "download local", "usando somente o conteudo extraido do anexo"]) {
   if (!script.includes(pattern)) failures.push(`script.js: ausente ${pattern}`);
 }
 
 const styleResponse = await fetch(`${baseUrl}/style.css?audit=charlie-style-${Date.now()}`);
 const style = await styleResponse.text();
-for (const pattern of ["drive-saver-result-card", "drive-saver-result-link", "drive-saver-result-status"]) {
+for (const pattern of ["drive-saver-result-card", "drive-saver-result-link", "drive-saver-result-status", "daj-integration-panel", "daj-integration-prompts"]) {
   if (!style.includes(pattern)) failures.push(`style.css: ausente ${pattern}`);
 }
 

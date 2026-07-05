@@ -1492,6 +1492,60 @@ button,input,select,textarea{max-width:100%}
 .ai-guided-prompts{margin:14px 0;padding:14px;border:1px solid rgba(197,139,47,.24);border-radius:16px;background:#fffdf8;color:#102033}
 .ai-guided-prompts .link-actions{margin-bottom:0}
 .ai-guided-prompts button{text-align:left}
+.daj-integration-panel{
+  display:grid;
+  gap:12px;
+  margin:14px 0;
+  padding:14px;
+  border:1px solid rgba(15,23,42,.10);
+  border-radius:16px;
+  background:linear-gradient(180deg,#f7fbff,#fffdf8);
+  color:#102033;
+}
+.daj-integration-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+}
+.daj-integration-head strong{display:block;color:#07111f}
+.daj-integration-head p{margin:3px 0 0;color:#51627a}
+.daj-integration-head span{
+  flex:0 0 auto;
+  border:1px solid rgba(23,107,56,.22);
+  border-radius:999px;
+  padding:5px 9px;
+  background:#ecfdf3;
+  color:#176b38;
+  font-size:.78rem;
+  font-weight:900;
+}
+.daj-integration-routes,
+.daj-integration-prompts{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.daj-integration-routes a,
+.daj-integration-prompts button{
+  border:1px solid rgba(197,139,47,.30);
+  border-radius:12px;
+  background:#fff;
+  color:#8a5a12;
+  padding:8px 10px;
+  font-weight:850;
+  text-decoration:none;
+}
+.daj-integration-prompts button{
+  cursor:pointer;
+  text-align:left;
+  line-height:1.25;
+}
+.daj-integration-routes a:hover,
+.daj-integration-prompts button:hover{
+  background:#07111f;
+  color:#e7c36c;
+}
 
 /* Charlie Echo - cockpit profissional */
 .charlie-workbench-page{

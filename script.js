@@ -1359,6 +1359,8 @@ window.jus9DemoLogin = function(form){
     if (completeDraft) return completeDraft;
     var documentDownload = documentProductionDownloadAnswer(cleanQuestion);
     if (documentDownload) return documentDownload;
+    var integration = mvpIntegrationAnswer(code, focus, cleanQuestion);
+    if (integration) return integration;
     var doctrineProduction = doctrineProductionAnswer(cleanQuestion);
     if (doctrineProduction) return doctrineProduction;
     var legalResearch = legalResearchAnswer(cleanQuestion);
@@ -1532,6 +1534,98 @@ window.jus9DemoLogin = function(form){
     ].join(' ');
   }
 
+  var mvpIntegrationContracts = {
+    DAJ: {
+      title: 'Contrato operacional Charlie Echo + DAJ',
+      activeDossier: 'DAJ-2026-0001',
+      purpose: 'orquestrar o Dossie Administrativo Juridico como centro do caso: cliente, atendimento, documentos, prazos, processos, minuta, fontes, Drive Saver e revisao humana',
+      routes: [
+        ['DAJ ativo', 'app-daj.html'],
+        ['Clientes e atendimentos', 'app-clientes.html'],
+        ['Documentos', 'app-documentos.html'],
+        ['Processos', 'app-processos.html'],
+        ['Prazos', 'app-prazos.html'],
+        ['Agenda', 'app-agenda.html'],
+        ['Workspace', 'app-workspace.html'],
+        ['IA Profissional', 'app-ia-profissional.html#chat-ia']
+      ],
+      workflow: [
+        'identificar objetivo do usuario e area juridica provavel',
+        'separar fatos, documentos, pendencias, prazos e riscos do DAJ',
+        'quando houver peca/minuta, produzir rascunho completo com placeholders e checklist',
+        'quando houver anexo, usar somente texto extraido ou pedir OCR/transcricao/backend extrator',
+        'quando houver fonte, responder com conteudo util e fontes oficiais/academicas para conferencia',
+        'quando houver documento pronto, oferecer download local e acionar Drive Saver se o usuario pedir ou a classificacao permitir',
+        'registrar proximo passo humano: revisar, complementar, salvar, baixar, vincular ou encaminhar'
+      ],
+      drivePolicy: [
+        'PUBLICO e INTERNO podem ser preparados para salvamento governado',
+        'JURIDICO_SIGILOSO vai para revisao humana/guarda restrita',
+        'link publico so aparece quando backend autorizado retornar downloadUrl real',
+        'revogar, restringir, mover ou apagar arquivo do Drive e acao operacional auditavel, nunca resposta de pesquisa juridica'
+      ],
+      sourcePolicy: [
+        'Planalto, STF, STJ, TJSC, TST e LexML para lei e jurisprudencia',
+        'BDTD, CAPES, SciELO e Google Academico com cautela para teses, artigos e doutrina',
+        'nunca inventar autor, obra, pagina, julgado ou citacao literal'
+      ],
+      replication: 'Para outro MVP, manter a mesma forma: dossie ativo, rotas, workflow, politica de arquivo/Drive, fontes do ambiente, limites duros e prompts guiados.'
+    }
+  };
+
+  function mvpIntegrationContract(code){
+    return mvpIntegrationContracts[code] || null;
+  }
+
+  function compactContractList(items){
+    return (items || []).map(function(item){
+      return Array.isArray(item) ? item[0] + ' -> ' + item[1] : String(item || '');
+    }).join('; ');
+  }
+
+  function mvpIntegrationInstruction(code, focus){
+    var contract = mvpIntegrationContract(code);
+    if(!contract) {
+      return 'Contrato operacional do MVP ' + (code || 'MVP') + ': aplicar o padrao matriz do DAJ em versao generica ate existir contrato especializado. Foco: ' + (focus || 'ambiente demonstrativo') + '.';
+    }
+    return [
+      'Contrato operacional especializado: ' + contract.title + '.',
+      'Dossie ativo: ' + contract.activeDossier + '.',
+      'Finalidade: ' + contract.purpose + '.',
+      'Rotas do ambiente: ' + compactContractList(contract.routes) + '.',
+      'Workflow obrigatorio antes da resposta final: ' + compactContractList(contract.workflow) + '.',
+      'Politica de Drive Saver: ' + compactContractList(contract.drivePolicy) + '.',
+      'Politica de fontes: ' + compactContractList(contract.sourcePolicy) + '.',
+      'Padrao replicavel: ' + contract.replication
+    ].join(' ');
+  }
+
+  function mvpIntegrationAnswer(code, focus, question){
+    if(code !== 'DAJ') return '';
+    if(asksCompleteLegalDraft(question) || asksDocumentProductionDownload(question) || asksSources(question)) return '';
+    var q = plainAiText(question);
+    var wantsDaj = /\b(daj|dossie|dossie administrativo|caso|atendimento|cliente|documento|documentos|processo|processos|prazo|prazos|agenda|triagem|resuma|resumir|organize|organizar|proximos passos|proximo passo|fluxo|checklist|integracao|integrar)\b/.test(q);
+    if(!wantsDaj) return '';
+    var contract = mvpIntegrationContract('DAJ');
+    return [
+      'Mapa operacional do DAJ ativo',
+      '',
+      'DAJ: ' + contract.activeDossier + '.',
+      'Foco: ' + (focus || contract.purpose) + '.',
+      '',
+      'Como vou trabalhar:',
+      '1. Primeiro trato o pedido como dossie do caso: fatos, documentos, prazos, processo, responsavel e risco.',
+      '2. Se o pedido pedir peca/minuta, eu redijo a minuta completa com campos entre colchetes e checklist de revisao humana.',
+      '3. Se houver anexo, uso somente texto extraido; PDF/DOCX/imagem sem texto exigem OCR, transcricao ou backend extrator.',
+      '4. Se houver documento pronto, ofereco download local e posso acionar o Drive Saver governado quando fizer sentido.',
+      '5. Se o usuario for equipe autenticada, posso sugerir melhoria de regra, fluxo, regimento ou protocolo.',
+      '',
+      'Rotas do DAJ: ' + compactContractList(contract.routes) + '.',
+      '',
+      'Proximo passo: escolha uma acao concreta: resumir o DAJ, criar minuta, analisar anexo, montar checklist de prazo/documentos ou salvar resposta no Drive.'
+    ].join('\n');
+  }
+
   function governedIdentityInstruction(identityContext){
     if(!identityContext || !identityContext.identity) {
       return 'Identidade governada: visitante ou sessao nao confirmada. Trate como publico MVP e nao presuma permissoes.';
@@ -1568,6 +1662,7 @@ window.jus9DemoLogin = function(form){
       governedIdentityInstruction(identityContext),
       'Responda como Charlie Echo da Costa, I.A generativa multimodal jurista com governanca humana.',
       mvpPersonalityInstruction(code),
+      mvpIntegrationInstruction(code, focus),
       'No modulo profissional para advogados, quando houver pesquisa academica, inclua BDTD (https://bdtd.ibict.br/) como fonte de teses e dissertacoes, junto de tribunais oficiais, Planalto, LexML, CAPES, SciELO e Google Academico com cautela.',
       'Se a pergunta atual pedir revogar, restringir, despublicar, mover para revisao ou enviar para lixeira um link/arquivo do Google Drive ou Google Docs, trate como acao operacional de Drive Saver antes de pesquisa juridica. Nao responda com protocolo de doutrina/jurisprudencia.',
       'Quando o usuario pedir peca, minuta, peticao, contestacao, recurso, requerimento, oficio ou contrato completo, produza uma minuta inteira e utilizavel como rascunho: enderecamento, qualificacao com campos entre colchetes, fatos, fundamentos, tutela provisoria se cabivel, pedidos, provas, valor da causa ou fechamento equivalente, assinatura e checklist de revisao. Nao entregue apenas orientacao curta.',
@@ -1856,9 +1951,10 @@ window.jus9DemoLogin = function(form){
     panel.querySelector('[data-room-delete]').addEventListener('click', function(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); if(!room || !confirm('Excluir esta sala local?')) return; room.status='deleted'; var next = data.rooms.find(function(r){ return r.status !== 'deleted' && r.status !== 'archived'; }) || data.rooms.find(function(r){ return r.status !== 'deleted'; }); if(!next){ next = createChatRoom(code, 'Sala ' + code + ' 1'); data.rooms.unshift(next); } data.activeId = next.id; saveChatRooms(code, data); changed(); });
     render();
   }
-  function buildQuestionWithRoom(question, room, settings){
+  function buildQuestionWithRoom(question, room, settings, code, focus){
     settings = Object.assign(defaultChatSettings(), settings || {});
-    if(settings.memory === false) return '[CONFIGURACOES DO USUARIO]\nMemoria da sala desativada pelo usuario. Nivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '.\n\n[PERGUNTA ATUAL]\n' + question;
+    var integrationContext = code ? '\n\n[CONTRATO OPERACIONAL DO MVP]\n' + mvpIntegrationInstruction(code, focus) : '';
+    if(settings.memory === false) return '[CONFIGURACOES DO USUARIO]\nMemoria da sala desativada pelo usuario. Nivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '.' + integrationContext + '\n\n[PERGUNTA ATUAL]\n' + question;
     function contaminatedMemoryText(text){
       return /Para pesquisar doutrina e jurisprudencia com seguranca|voce pediu pesquisa juridica guiada|Sentire: risco|Leitura do pedido: voce pediu pesquisa juridica guiada|Caminho escolhido: escutar/i.test(String(text || ''));
     }
@@ -1879,8 +1975,8 @@ window.jus9DemoLogin = function(form){
     var documentDownloadNote = asksDocumentProductionDownload(question) ? '\nNota: a pergunta atual pede producao de documento com download local. Ignore memorias antigas de pesquisa juridica guiada e nao ofereca bloco fixo de fontes.\n' : '';
     var completeDraftNote = asksCompleteLegalDraft(question) ? '\nNota: a pergunta atual pede peca/minuta completa. Produza estrutura completa de peca, use anexos extraidos quando houver e mantenha campos reais entre colchetes.\n' : '';
     return (room && (room.summary || room.smartSummary || recent))
-      ? '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '. Use memoria: sim.' + doctrineNote + documentDownloadNote + completeDraftNote + '\n[RESUMO EXECUTIVO DA SALA]\n' + (cleanSmartSummary || 'Resumo anterior contaminado ou ausente.') + '\n\n[MEMORIA GOVERNADA LOCAL]\n' + (cleanSummary || 'Memoria anterior contaminada ou ausente.') + '\n\n[DECISOES]\n' + (decisions || 'Sem decisoes marcadas.') + '\n\n[PENDENCIAS]\n' + (pending || 'Sem pendencias marcadas.') + '\n\n[HISTORICO RECENTE]\n' + (recent || 'Historico anterior contaminado ou ausente.') + '\n\n[PERGUNTA ATUAL]\n' + question
-      : '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '.' + documentDownloadNote + completeDraftNote + '\n\n[PERGUNTA ATUAL]\n' + question;
+      ? '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '. Use memoria: sim.' + doctrineNote + documentDownloadNote + completeDraftNote + integrationContext + '\n[RESUMO EXECUTIVO DA SALA]\n' + (cleanSmartSummary || 'Resumo anterior contaminado ou ausente.') + '\n\n[MEMORIA GOVERNADA LOCAL]\n' + (cleanSummary || 'Memoria anterior contaminada ou ausente.') + '\n\n[DECISOES]\n' + (decisions || 'Sem decisoes marcadas.') + '\n\n[PENDENCIAS]\n' + (pending || 'Sem pendencias marcadas.') + '\n\n[HISTORICO RECENTE]\n' + (recent || 'Historico anterior contaminado ou ausente.') + '\n\n[PERGUNTA ATUAL]\n' + question
+      : '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '.' + documentDownloadNote + completeDraftNote + integrationContext + '\n\n[PERGUNTA ATUAL]\n' + question;
   }
 
   function downloadText(filename, content){
@@ -2027,6 +2123,47 @@ window.jus9DemoLogin = function(form){
       read:function(){ return readAiUploadedFiles(fileInput.files); },
       clear:function(){ fileInput.value = ''; render(); }
     };
+  }
+
+  function injectMvpIntegrationPanel(card, code, focus){
+    if(code !== 'DAJ' || card.querySelector('[data-daj-integration-panel]')) return;
+    var windowEl = card.querySelector('[data-ai-chat-window]');
+    var input = card.querySelector('[data-ai-chat-input]');
+    if(!windowEl || !windowEl.parentNode || !input) return;
+    var contract = mvpIntegrationContract('DAJ');
+    var panel = document.createElement('div');
+    panel.className = 'daj-integration-panel';
+    panel.setAttribute('data-daj-integration-panel', 'true');
+    panel.innerHTML =
+      '<div class="daj-integration-head"><div><strong>Contrato DAJ ativo</strong><p></p></div><span>modelo-mae</span></div>' +
+      '<div class="daj-integration-routes" aria-label="Rotas do DAJ"></div>' +
+      '<div class="daj-integration-prompts" aria-label="Acoes rapidas DAJ"></div>';
+    panel.querySelector('p').textContent = contract.activeDossier + ' - ' + (focus || 'dossie juridico demonstrativo');
+    var routes = panel.querySelector('.daj-integration-routes');
+    contract.routes.slice(0, 7).forEach(function(route){
+      var link = document.createElement('a');
+      link.href = route[1];
+      link.textContent = route[0];
+      routes.appendChild(link);
+    });
+    var prompts = [
+      'Resuma o DAJ-2026-0001 e indique proximos passos com documentos, prazos, riscos e revisao humana.',
+      'Crie uma minuta completa demonstrativa a partir do DAJ ativo, com placeholders e checklist de revisao humana.',
+      'Vou anexar um texto ficticio; extraia fatos, documentos, pedidos possiveis e pendencias do DAJ.',
+      'Prepare o salvamento governado da ultima resposta no Cartorio Digital Charlie Echo, com classificacao e Drive Saver.'
+    ];
+    var promptBox = panel.querySelector('.daj-integration-prompts');
+    prompts.forEach(function(prompt){
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = prompt;
+      button.addEventListener('click', function(){
+        input.value = prompt;
+        input.focus();
+      });
+      promptBox.appendChild(button);
+    });
+    windowEl.parentNode.insertBefore(panel, windowEl);
   }
 
   function buildDriveSaverDownloads(question, code, focus){
@@ -2615,6 +2752,7 @@ window.jus9DemoLogin = function(form){
     if(layout !== 'pequeno') injectChatRooms(card, code, function(){ renderChatWindow(card, code, focus); });
     addChatUtilityActions(card, code, focus);
     var uploadManager = injectChatUpload(card);
+    injectMvpIntegrationPanel(card, code, focus);
     renderChatWindow(card, code, focus);
     function appendDownloadEchoForForm(files){
       var targetWindow = card.querySelector('[data-ai-chat-window]');
@@ -2645,7 +2783,7 @@ window.jus9DemoLogin = function(form){
       var attachments = uploadManager ? await uploadManager.read() : [];
       var attachmentContext = buildAttachmentContext(attachments);
       var questionForContext = attachmentContext ? question + '\n\n' + attachmentContext : question;
-      var contextualQuestion = buildQuestionWithRoom(questionForContext, room, settings);
+      var contextualQuestion = buildQuestionWithRoom(questionForContext, room, settings, code, focus);
       var userMsg = document.createElement('div');
       userMsg.className = 'ai-message ai-message-user';
       userMsg.innerHTML = '<strong>Voce:</strong> ' + question.replace(/[<>&]/g, function(ch){
@@ -2722,13 +2860,33 @@ window.jus9DemoLogin = function(form){
       form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
     });
   });
+
+  function initCharliePromptFromUrl(){
+    var params = new URLSearchParams(location.search || '');
+    var prompt = params.get('prompt') || params.get('charlie_prompt');
+    if(!prompt) return;
+    var card = document.querySelector('[data-ai-chat]');
+    if(!card) return;
+    var input = card.querySelector('[data-ai-chat-input]');
+    var form = card.querySelector('[data-ai-chat-form]');
+    if(!input || !form) return;
+    input.value = String(prompt || '').slice(0, 2400);
+    if(location.hash === '#chat-ia') {
+      try { card.scrollIntoView({ behavior:'smooth', block:'start' }); } catch(err) {}
+    }
+    if(params.get('autorun') === '1') {
+      form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    }
+  }
+
+  initCharliePromptFromUrl();
 })();
 
 (function(){
   var guidedPrompts = {
     DAJ: [
-      'Faca uma peticao completa de revisao de alimentos com placeholders e checklist de revisao humana.',
-      'Quero link para donwload de uma minuta de pensao alimenticia, sem salvar no Drive.',
+      'Resuma o DAJ-2026-0001 e indique proximos passos com documentos, prazos, riscos e revisao humana.',
+      'Faca uma peticao completa de revisao de alimentos com placeholders, checklist de revisao humana e download local.',
       'Vou anexar um texto ficticio; redija uma peticao inicial completa usando somente o conteudo extraido do anexo.'
     ],
     DEJI: [
