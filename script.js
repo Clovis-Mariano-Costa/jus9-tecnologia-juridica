@@ -2243,6 +2243,60 @@ window.jus9DemoLogin = function(form){
     windowEl.parentNode.insertBefore(panel, windowEl);
   }
 
+  function ensureCharlieControlHub(card){
+    if(!card || !card.querySelector) return;
+    var windowEl = card.querySelector('[data-ai-chat-window]');
+    var form = card.querySelector('[data-ai-chat-form]');
+    if(!windowEl || !windowEl.parentNode || !form) return;
+    card.classList.add('charlie-compact-chat');
+
+    var submitButton = form.querySelector('button[type="submit"]');
+    if(submitButton){
+      submitButton.textContent = 'Falar com Charlie';
+      submitButton.setAttribute('aria-label', 'Falar com Charlie Echo');
+      submitButton.classList.add('charlie-speak-button');
+    }
+
+    var hub = card.querySelector('[data-charlie-control-hub]');
+    if(!hub){
+      hub = document.createElement('details');
+      hub.className = 'charlie-control-hub';
+      hub.setAttribute('data-charlie-control-hub', 'true');
+      hub.innerHTML = '<summary><span>Configurações</span></summary><div class="charlie-control-hub-body" data-charlie-control-hub-body></div>';
+      windowEl.parentNode.insertBefore(hub, windowEl);
+    } else if(hub.parentNode !== windowEl.parentNode) {
+      windowEl.parentNode.insertBefore(hub, windowEl);
+    }
+
+    var body = hub.querySelector('[data-charlie-control-hub-body]');
+    if(!body) return;
+    var selectors = [
+      '.charlie-context-panel',
+      '.charlie-mvp-head-actions',
+      '[data-mvp-room-panel]',
+      '.ai-mode-row',
+      '[data-ai-upload-panel]',
+      '[data-daj-integration-panel]',
+      '[data-ai-guided-prompts]',
+      '[data-ai-utility-actions]',
+      '.charlie-memory-panel'
+    ];
+    selectors.forEach(function(selector){
+      Array.prototype.slice.call(card.querySelectorAll(selector)).forEach(function(element){
+        if(!element || element === hub || hub.contains(element)) return;
+        element.classList.add('charlie-control-section');
+        body.appendChild(element);
+      });
+    });
+    var actionToggle = hub.querySelector('[data-action-menu-toggle]');
+    if(actionToggle) {
+      actionToggle.textContent = 'Ferramentas';
+      actionToggle.setAttribute('aria-label', 'Abrir ferramentas da conversa');
+    }
+  }
+
+  window.jus9EnsureCharlieControlHub = ensureCharlieControlHub;
+
   function buildDriveSaverDownloads(question, code, focus){
     var stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\..+$/, '').replace('T', '-');
     var mdName = 'guia-mini-backend-charlie-echo-' + stamp + '.md';
@@ -2831,6 +2885,8 @@ window.jus9DemoLogin = function(form){
     var uploadManager = injectChatUpload(card);
     injectMvpIntegrationPanel(card, code, focus);
     renderChatWindow(card, code, focus);
+    ensureCharlieControlHub(card);
+    setTimeout(function(){ ensureCharlieControlHub(card); }, 0);
     function appendDownloadEchoForForm(files){
       var targetWindow = card.querySelector('[data-ai-chat-window]');
       if(!targetWindow) return;
@@ -3079,6 +3135,7 @@ window.jus9DemoLogin = function(form){
       actions.appendChild(button);
     });
     card.insertBefore(panel, card.querySelector('[data-ai-chat-window]'));
+    if(window.jus9EnsureCharlieControlHub) window.jus9EnsureCharlieControlHub(card);
   }
 
   document.addEventListener('DOMContentLoaded', function(){

@@ -4,7 +4,7 @@
   Não armazena dados sensíveis. Não altera login, backend ou rotas protegidas.
 */
 
-const JUS9_CACHE = 'jus9-pwa-v9-2026-07-05-daj-analise';
+const JUS9_CACHE = 'jus9-pwa-v10-2026-07-05-chat-hub';
 const JUS9_ASSETS = [
   '/',
   '/index.html',

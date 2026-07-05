@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
-const expectedScriptVersion = "script.js?v=20260705-daj-analise-v1";
+const expectedScriptVersion = "script.js?v=20260705-chat-hub-v1";
 
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), "utf8");
@@ -35,6 +35,11 @@ const checks = [
     patterns: ["injectMvpIntegrationPanel", "data-daj-integration-panel", "Contrato DAJ ativo", "DAJ-2026-0001", "initCharliePromptFromUrl", "Resuma o DAJ-2026-0001", "jus9DajInitialAttendanceDraftV1", "appendDajDraftFromUrl"],
   },
   {
+    name: "hub de configuracoes padroniza botoes da Charlie",
+    file: "script.js",
+    patterns: ["ensureCharlieControlHub", "data-charlie-control-hub", "charlie-control-hub-body", "charlie-mvp-head-actions", "Falar com Charlie", "charlie-speak-button", "Ferramentas", "jus9EnsureCharlieControlHub"],
+  },
+  {
     name: "atendimento inicial envia DAJ para analise da Charlie",
     file: "app-atendimento-inicial.html",
     patterns: ["data-daj-intake-form", "data-send-daj-analysis", "Enviar DAJ para análise da Charlie Echo"],
@@ -42,7 +47,7 @@ const checks = [
   {
     name: "estilo do upload local governado",
     file: "style.css",
-    patterns: ["ai-upload-panel", "ai-upload-button", "ai-upload-list", "ai-upload-user-list", "daj-integration-panel", "daj-integration-routes", "daj-integration-prompts"],
+    patterns: ["ai-upload-panel", "ai-upload-button", "ai-upload-list", "ai-upload-user-list", "daj-integration-panel", "daj-integration-routes", "daj-integration-prompts", "charlie-control-hub", "charlie-control-section", "charlie-speak-button", "event-quick-nav .event-links"],
   },
   {
     name: "estilo do cartao Drive Saver",
@@ -87,17 +92,17 @@ const checks = [
   {
     name: "service worker nao prende MVP antigo",
     file: "service-worker.js",
-    patterns: ["jus9-pwa-v9-2026-07-05-daj-analise", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
+    patterns: ["jus9-pwa-v10-2026-07-05-chat-hub", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
   },
   {
     name: "casa propria da Charlie Echo publicada",
     file: "charlie-echo.html",
-    patterns: ["Casa propria da IA", "data-ai-chat", "app-ia-profissional.html#chat-ia", "script.js?v=20260705-daj-analise-v1"],
+    patterns: ["Casa propria da IA", "data-ai-chat", "app-ia-profissional.html#chat-ia", "script.js?v=20260705-chat-hub-v1"],
   },
   {
     name: "pagina publica da Charlie usa script versionado",
     file: "ia-profissional.html",
-    patterns: ["data-ai-chat", "script.js?v=20260705-daj-analise-v1"],
+    patterns: ["data-ai-chat", "script.js?v=20260705-chat-hub-v1"],
   },
 ];
 

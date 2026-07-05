@@ -1546,6 +1546,102 @@ button,input,select,textarea{max-width:100%}
   background:#07111f;
   color:#e7c36c;
 }
+.charlie-control-hub{
+  margin:0;
+  border:1px solid rgba(15,23,42,.10);
+  border-radius:16px;
+  background:#fffdf8;
+  color:#102033;
+}
+.charlie-control-hub summary{
+  list-style:none;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:12px 14px;
+  cursor:pointer;
+  color:#07111f;
+  font-weight:950;
+}
+.charlie-control-hub summary::-webkit-details-marker{display:none}
+.charlie-control-hub summary:after{
+  content:"+";
+  display:grid;
+  place-items:center;
+  width:26px;
+  height:26px;
+  border-radius:999px;
+  background:#07111f;
+  color:#e7c36c;
+  font-weight:950;
+}
+.charlie-control-hub[open] summary:after{content:"-"}
+.charlie-control-hub-body{
+  display:grid;
+  gap:12px;
+  padding:0 12px 12px;
+}
+.charlie-control-section{
+  margin:0!important;
+  box-shadow:none!important;
+}
+.charlie-control-hub .ai-mode-row,
+.charlie-control-hub .chat-room-panel,
+.charlie-control-hub .ai-upload-panel,
+.charlie-control-hub .ai-guided-prompts,
+.charlie-control-hub .daj-integration-panel,
+.charlie-control-hub .charlie-context-panel,
+.charlie-control-hub .charlie-mvp-head-actions,
+.charlie-control-hub .chat-utility-actions[data-ai-utility-actions]{
+  border-color:rgba(15,23,42,.08);
+  background:#fff;
+  border-radius:14px;
+  padding:12px;
+}
+.charlie-control-hub .chat-room-panel{
+  display:grid;
+  gap:10px;
+  color:#102033;
+}
+.charlie-control-hub .chat-room-actions,
+.charlie-control-hub .chat-room-list,
+.charlie-control-hub .charlie-mvp-head-actions,
+.charlie-control-hub .daj-integration-routes,
+.charlie-control-hub .daj-integration-prompts,
+.charlie-control-hub .ai-guided-prompts .link-actions{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:8px;
+}
+.charlie-control-hub .chat-action-menu{width:100%}
+.charlie-control-hub .chat-action-menu .mini{
+  width:100%;
+  justify-content:center;
+}
+.charlie-control-hub .chat-action-popover{
+  left:0;
+  right:auto;
+  width:100%;
+}
+.charlie-compact-chat .charlie-speak-button{
+  min-width:150px;
+  white-space:nowrap;
+}
+.charlie-chat-shell.charlie-compact-chat{
+  grid-template-columns:1fr;
+}
+.charlie-chat-shell.charlie-compact-chat .charlie-chat-panel{
+  display:grid;
+  gap:12px;
+}
+.charlie-chat-shell.charlie-compact-chat .charlie-chat-head{
+  margin-bottom:0;
+}
+.charlie-workbench-page .demo-topbar .daj-actions-fixed,
+.charlie-workbench-page .event-quick-nav .event-links{
+  display:none;
+}
 
 /* Charlie Echo - cockpit profissional */
 .charlie-workbench-page{
@@ -2390,6 +2486,44 @@ button,input,select,textarea{max-width:100%}
   font-size:.88rem;
   line-height:1.25;
 }
+.charlie-chat-only-page .charlie-control-hub{
+  grid-column:1;
+  grid-row:3/7;
+  align-self:start;
+}
+.charlie-chat-only-page .charlie-control-hub .chat-room-panel,
+.charlie-chat-only-page .charlie-control-hub .ai-mode-row,
+.charlie-chat-only-page .charlie-control-hub .ai-upload-panel,
+.charlie-chat-only-page .charlie-control-hub .ai-guided-prompts,
+.charlie-chat-only-page .charlie-control-hub .daj-integration-panel,
+.charlie-chat-only-page .charlie-control-hub .chat-utility-actions{
+  grid-column:auto;
+  grid-row:auto;
+}
+.charlie-chat-only-page .charlie-control-hub .chat-room-panel{
+  align-self:auto;
+  display:grid;
+  background:#fff;
+  color:#102033;
+  border-color:rgba(15,23,42,.08);
+  box-shadow:none;
+}
+.charlie-chat-only-page .charlie-control-hub .chat-room-panel p{
+  color:#51627a;
+}
+.charlie-chat-only-page .charlie-control-hub .chat-room-list{
+  max-height:210px;
+}
+.charlie-chat-only-page .charlie-control-hub .chat-room-pill{
+  background:#fff;
+  color:#07111f;
+  border-color:rgba(15,23,42,.14);
+}
+.charlie-chat-only-page .charlie-control-hub .chat-room-pill.active{
+  background:#07111f;
+  color:#e7c36c;
+  border-color:#07111f;
+}
 .charlie-settings-section{
   border:1px solid rgba(15,23,42,.08);
   border-radius:14px;
@@ -2420,6 +2554,7 @@ button,input,select,textarea{max-width:100%}
     grid-template-columns:1fr;
   }
   .charlie-chat-only-page .chat-room-panel,
+  .charlie-chat-only-page .charlie-control-hub,
   .charlie-chat-only-page .ai-chat-window,
   .charlie-chat-only-page .ai-chat-form,
   .charlie-chat-only-page .ai-chat-card > .chat-utility-actions,
