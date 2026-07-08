@@ -29,6 +29,9 @@ $files = @(
 )
 
 $files += Get-ChildItem -LiteralPath $Root -Filter '*.html' -File | ForEach-Object { $_.Name }
+$files += Get-ChildItem -LiteralPath (Join-Path $Root 'documentos') -Filter '*.html' -File | ForEach-Object {
+  Join-Path 'documentos' $_.Name
+}
 $files = $files | Select-Object -Unique
 
 foreach ($file in $files) {
