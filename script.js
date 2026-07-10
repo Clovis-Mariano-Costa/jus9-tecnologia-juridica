@@ -820,6 +820,9 @@ window.jus9DemoLogin = function(form){
       '2. Indicar riscos, prazos aparentes, documentos faltantes e perguntas de retorno ao cliente.',
       '3. Sugerir proximos atos do DAJ: triagem, minuta, pesquisa de fontes, checklist, Drive Saver ou revisao humana.',
       '4. Se os dados parecerem reais, tratar como JURIDICO_SIGILOSO e pedir sanitizacao/revisao humana.',
+      '5. Gerar um relatorio de analise DAJ com formato salvavel no Cartorio Digital Charlie Echo.',
+      '6. Se o backend autorizado permitir, salvar automaticamente o relatorio no Drive Saver sem link publico quando a classificacao for INTERNO ou JURIDICO_SIGILOSO.',
+      '7. Usar este DAJ como modelo-mae replicavel: dossie ativo, fatos, documentos, riscos, fontes, proximo ato humano e politica de Drive.',
       '',
       'DAJ previsto: ' + draft.id + '.',
       'Origem: ' + draft.source + '.'
@@ -846,8 +849,8 @@ window.jus9DemoLogin = function(form){
       try {
         localStorage.setItem(storageKey, JSON.stringify({ id:draftKey, draft:draft, prompt:prompt }));
       } catch(err) {}
-      var basePrompt = 'Leia o DAJ recem-criado a partir do atendimento inicial demonstrativo e faca uma analise da Charlie Echo.';
-      var url = 'app-ia-profissional.html?prompt=' + encodeURIComponent(basePrompt) + '&dajDraft=' + encodeURIComponent(draftKey) + '#chat-ia';
+      var basePrompt = 'Leia o DAJ recem-criado a partir do atendimento inicial demonstrativo, gere relatorio de analise da Charlie Echo e salve no Cartorio Digital se a classificacao governada permitir.';
+      var url = 'app-ia-profissional.html?prompt=' + encodeURIComponent(basePrompt) + '&dajDraft=' + encodeURIComponent(draftKey) + '&autorun=1#chat-ia';
       window.location.href = url;
     });
   }
@@ -1650,8 +1653,43 @@ window.jus9DemoLogin = function(form){
     }
   };
 
+  function buildGenericMvpIntegrationContract(code){
+    var normalized = String(code || 'MVP').toUpperCase();
+    var rule = mvpPersonaRules[normalized] || mvpPersonaRules.DAJ;
+    return {
+      title: 'Contrato operacional Charlie Echo + ' + normalized,
+      activeDossier: normalized + '-MODELO-ATIVO',
+      purpose: 'orquestrar o modulo ' + normalized + ' como unidade independente da Charlie Echo: identidade propria, dossie ativo, workflow, fontes, Drive Saver, revisao humana e replicacao a partir do modelo-mae DAJ',
+      routes: [
+        ['Painel do ecossistema', 'mvp.html'],
+        ['IA profissional', 'app-ia-profissional.html#chat-ia'],
+        ['Equipe do modulo', 'app-equipe.html?mvp=' + encodeURIComponent(normalized)]
+      ],
+      workflow: [
+        'identificar objetivo do usuario e ambiente do modulo',
+        'separar fatos, documentos, pendencias, riscos e proximo ato humano',
+        'responder com a personalidade propria do modulo sem abandonar a matriz da Charlie Echo',
+        'usar fontes oficiais, institucionais ou academicas adequadas ao ambiente',
+        'salvar relatorio ou documento no Drive Saver quando classificacao e permissao permitirem',
+        'registrar melhoria normativa quando uma caixa/protocolo responder mal'
+      ],
+      drivePolicy: [
+        'PUBLICO somente para material demonstrativo e sanitizado',
+        'INTERNO para relatorios operacionais sem dados sensiveis',
+        'JURIDICO_SIGILOSO para dados pessoais, cliente, processo, saude, menor, violencia, prazo ou segredo',
+        'COFRE_NAO_AUTOMATICO permanece bloqueado'
+      ],
+      sourcePolicy: [
+        'fonte primaria oficial quando houver norma, regra, edital, processo ou decisao',
+        'base academica/institucional quando houver ensino, pesquisa, tese ou relatorio',
+        'nunca inventar autor, obra, pagina, julgado, dado ou link'
+      ],
+      replication: 'Modulo independente tocando a mesma partitura: matriz DAJ, personalidade propria, Drive governado, revisao humana e auditoria.'
+    };
+  }
+
   function mvpIntegrationContract(code){
-    return mvpIntegrationContracts[code] || null;
+    return mvpIntegrationContracts[code] || buildGenericMvpIntegrationContract(code);
   }
 
   function compactContractList(items){
@@ -2227,6 +2265,7 @@ window.jus9DemoLogin = function(form){
       'Resuma o DAJ-2026-0001 e indique proximos passos com documentos, prazos, riscos e revisao humana.',
       'Crie uma minuta completa demonstrativa a partir do DAJ ativo, com placeholders e checklist de revisao humana.',
       'Vou anexar um texto ficticio; extraia fatos, documentos, pedidos possiveis e pendencias do DAJ.',
+      'Gere relatorio de analise DAJ e salve no Cartorio Digital Charlie Echo sem link publico se houver sigilo.',
       'Prepare o salvamento governado da ultima resposta no Cartorio Digital Charlie Echo, com classificacao e Drive Saver.'
     ];
     var promptBox = panel.querySelector('.daj-integration-prompts');
