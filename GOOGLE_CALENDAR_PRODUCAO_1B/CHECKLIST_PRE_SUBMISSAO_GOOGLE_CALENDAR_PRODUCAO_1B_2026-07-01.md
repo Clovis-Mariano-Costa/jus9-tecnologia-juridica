@@ -27,9 +27,9 @@ Classificacao: PUBLICO TECNICO / SEM SEGREDOS
 - [ ] Confirmar dominios autorizados.
 - [ ] Confirmar redirect URI `https://jus9tecnologia.com.br/auth/google/callback`.
 - [ ] Confirmar redirect URI `https://www.jus9tecnologia.com.br/auth/google/callback`.
-- [ ] Declarar o escopo `https://www.googleapis.com/auth/calendar.events` apenas quando houver submissao.
-- [ ] Preencher justificativa de uso do escopo.
-- [ ] Enviar video demonstrando o fluxo.
+- [x] Declarar o escopo `https://www.googleapis.com/auth/calendar.events` apenas quando houver submissao.
+- [x] Preencher justificativa de uso do escopo.
+- [x] Enviar video demonstrando o fluxo.
 - [x] Preparar textos copiaveis para o Google Cloud.
 - [x] Preparar guia de cliques para o Fundador.
 
@@ -59,3 +59,12 @@ Classificacao: PUBLICO TECNICO / SEM SEGREDOS
 - [ ] Nao ativar se o video de verificacao nao estiver pronto.
 - [ ] Nao ativar se houver segredo em GitHub.
 - [ ] Nao ativar Drive/Gmail junto com Calendar 1B.
+
+## 7. Resposta do Google - 2026-07-10
+
+- [x] Ler retorno do Google sobre checklist de verificacao OAuth.
+- [x] Reforcar politica publica com dados acessados, uso, transferencia, protecao, retencao/exclusao e Uso Limitado.
+- [x] Reforcar pagina publica Calendar com caminho de teste, menor privilegio, ambiente governado e restricoes de IA/ML.
+- [x] Criar minuta de resposta ao Google sem publicar segredos.
+- [ ] Responder ao e-mail do Google com a minuta revisada pelo Fundador.
+- [ ] Fornecer conta de teste apenas se o Google solicitar, por canal privado e controlado.

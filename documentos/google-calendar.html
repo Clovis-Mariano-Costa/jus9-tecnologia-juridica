@@ -1,55 +1,66 @@
 <!--
-  Jus 9 Tecnologia Juridica - software livre, autoria preservada.
-  Producao do site: (c) Jus 9 Tecnologia Juridica. Direitos autorais da producao reservados.
-  DNA de referencia: charlieecho-jus9-tecnologia-juridica
+  Jus 9 Tecnologia Jurídica - software livre, autoria preservada.
+  Produção do site: (c) Jus 9 Tecnologia Jurídica. Direitos autorais da produção reservados.
+  DNA de referência: charlieecho-jus9-tecnologia-juridica
 -->
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Google Agenda na Jus 9</title><meta name="description" content="Como a Jus 9 prepara o uso governado do Google Calendar: consentimento separado, menor escopo possivel, limites do MVP e revogacao."><link rel="icon" href="../assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/css/visual-jus9-fase-final.css"></head><body>
-<div class="jus9-autoria-topo" role="note" aria-label="Autoria e licenca da producao do site" style="font-size: 0.82rem; line-height: 1.4; text-align: center; padding: 0.45rem 0.75rem; background: rgba(15, 23, 42, 0.94); color: #f8fafc; letter-spacing: 0.01em;">Jus 9 Tecnologia Juridica - software livre, autoria preservada.</div>
-<header class="header"><div class="container nav"><a href="../index.html#inicio" class="logo"><img src="../assets/jus9-logo.svg" alt="Jus 9 Tecnologia Juridica"></a><nav class="menu"><a href="../mvp.html">MVP</a><a href="../app-agenda.html">Agenda</a><a href="login-google.html">Login Google</a><a href="privacidade.html">Privacidade</a><a href="seguranca.html">Seguranca</a></nav><a class="cta" href="../app-agenda.html">Abrir Agenda</a><button class="mobile-toggle">☰</button></div></header>
-<main class="container legal-page"><div class="eyebrow">Calendar Producao 1B</div><h1>Como o Google Agenda sera usado na Jus 9</h1>
-<p><strong>Ultima atualizacao:</strong> 2026-07-01.</p>
-<p>A Google Agenda na Jus 9 e uma integracao separada do login basico. O login com Google pode apenas identificar uma sessao. A conexao com Google Agenda, quando ativada, exigira uma segunda autorizacao especifica.</p>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Google Agenda na Jus 9</title><meta name="description" content="Como a Jus 9 prepara o uso governado do Google Calendar: consentimento separado, menor escopo possível, limites do MVP, proteção, retenção e revogação."><link rel="icon" href="../assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/css/visual-jus9-fase-final.css"></head><body>
+<div class="jus9-autoria-topo" role="note" aria-label="Autoria e licença da produção do site" style="font-size: 0.82rem; line-height: 1.4; text-align: center; padding: 0.45rem 0.75rem; background: rgba(15, 23, 42, 0.94); color: #f8fafc; letter-spacing: 0.01em;">Jus 9 Tecnologia Jurídica - software livre, autoria preservada.</div>
+<header class="header"><div class="container nav"><a href="../index.html#inicio" class="logo"><img src="../assets/jus9-logo.svg" alt="Jus 9 Tecnologia Jurídica"></a><nav class="menu"><a href="../mvp.html">MVP</a><a href="../app-agenda.html">Agenda</a><a href="login-google.html">Login Google</a><a href="privacidade.html">Privacidade</a><a href="seguranca.html">Segurança</a></nav><a class="cta" href="../app-agenda.html">Abrir Agenda</a><button class="mobile-toggle">&#9776;</button></div></header>
+<main class="container legal-page"><div class="eyebrow">Calendar Produção 1B</div><h1>Como o Google Agenda será usado na Jus 9</h1>
+<p><strong>Última atualização:</strong> 2026-07-10.</p>
+<p>A Google Agenda na Jus 9 é uma integração separada do login básico. O login com Google identifica a sessão e aplica permissões. A conexão com Google Agenda, quando ativada para uma pessoa autorizada, exige uma segunda autorização específica, clara e incremental.</p>
 
-<h2>1. Estado atual</h2>
-<p>O fluxo tecnico esta preparado, mas a ativacao sensivel fica controlada por governanca. Enquanto a fase Calendar Producao 1B nao estiver ativada, o MVP pode mostrar Agenda local, link manual para Google Agenda e arquivo ICS, mas nao deve pedir consentimento real de Calendar.</p>
+<h2>1. Estado atual da integração</h2>
+<p>O fluxo técnico está preparado para verificação do Google, mas o acesso sensível de Calendar fica controlado por governança. O MVP público pode exibir a Agenda Jus 9, links manuais para Google Agenda e arquivos ICS sem solicitar consentimento real de Calendar para usuários públicos.</p>
+<p>Durante a verificação, o fluxo sensível deve ser demonstrado apenas em ambiente governado, com conta de teste, dados fictícios e perfil autorizado. A Jus 9 não libera escopos sensíveis novos para tráfego público antes da conclusão da verificação e da decisão operacional expressa.</p>
 
-<h2>2. Escopo previsto</h2>
-<p>O escopo candidato e <code>https://www.googleapis.com/auth/calendar.events</code>, usado para ver e editar eventos quando a pessoa escolhe conectar a propria agenda. Ele nao concede acesso a Gmail, Drive, senha Google ou documentos juridicos da Jus 9.</p>
-<p>A regra da Jus 9 e pedir o menor escopo possivel e explicar a finalidade antes de qualquer consentimento.</p>
+<h2>2. Escopo solicitado</h2>
+<p>O escopo solicitado para a fase Calendar Produção 1B é <code>https://www.googleapis.com/auth/calendar.events</code>. Ele permite ler e criar/editar eventos quando a pessoa autorizada conecta voluntariamente a própria Google Agenda.</p>
+<p>Esse escopo foi escolhido por menor privilégio: a Jus 9 precisa demonstrar criação de eventos operacionais revisados pela pessoa usuária, mas não precisa de Gmail, Drive, senhas, contatos, arquivos, documentos jurídicos ou acesso amplo a todos os serviços Google.</p>
 
 <h2>3. Quem pode conectar</h2>
-<p>A conexao real de Agenda nao e publica. O perfil publico <code>cidadao</code> permanece limitado a <code>auth:read</code>. Apenas perfis internos ou governados com permissao <code>calendar:write</code> poderao iniciar o consentimento de Calendar quando a fase for ativada.</p>
+<p>A conexão real de Agenda não é pública. O perfil público <code>cidadao</code> permanece limitado a permissões demonstrativas, como leitura básica de autenticação. Apenas perfis governados com permissão de agenda, como equipe autorizada ou conta de teste de verificação, podem iniciar o consentimento de Calendar quando a fase estiver habilitada.</p>
 
-<h2>4. O que pode ser salvo</h2>
-<ul>
-  <li>Eventos operacionais revisados pela pessoa usuaria.</li>
-  <li>Lembretes e compromissos sem segredo juridico.</li>
-  <li>Informacoes minimas para agenda: titulo, horario, local e descricao saneada.</li>
-</ul>
+<h2>4. Dados Google acessados</h2>
+<p>Quando a Agenda é conectada, a Jus 9 pode acessar dados mínimos necessários para a funcionalidade de eventos: identificador do evento, título, data e horário de início e fim, local, descrição saneada, status e link do evento quando retornado pela API.</p>
+<p>A Jus 9 não usa essa integração para acessar Gmail, Drive, arquivos, documentos, fotos, mensagens, contatos, senhas, dados financeiros, dados de saúde ou documentos protegidos. A equipe é orientada a não inserir dados reais de cliente, processos em segredo de justiça, estratégia jurídica sensível, tokens ou senhas em eventos de teste.</p>
 
-<h2>5. O que nao deve ser salvo</h2>
-<ul>
-  <li>Dados reais de clientes no MVP publico.</li>
-  <li>Processos em segredo de justica.</li>
-  <li>Conteudo de estrategia juridica sensivel.</li>
-  <li>Senhas, tokens, dados de saude, dados financeiros ou documentos protegidos.</li>
-</ul>
+<h2>5. Como os dados são usados</h2>
+<p>Os dados da Google Agenda são usados somente para funcionalidades visíveis à pessoa usuária: listar eventos necessários à tela de Agenda e criar eventos operacionais revisados, como lembretes, reuniões e compromissos de rotina jurídica.</p>
+<p>Dados agregados ou anonimizados, quando existirem, podem ser usados apenas para segurança, diagnóstico técnico, auditoria operacional e melhoria da experiência, sem publicidade, venda de dados, análise de crédito ou treinamento de modelos generalizados de IA.</p>
 
-<h2>6. Revogacao</h2>
-<p>A pessoa usuaria podera desconectar a integracao pela propria Conta Google em <a href="https://myaccount.google.com/connections" target="_blank" rel="noopener">myaccount.google.com/connections</a>. A Jus 9 tambem devera manter rotina operacional para invalidar tokens armazenados quando houver pedido de revogacao.</p>
+<h2>6. Compartilhamento e transferência</h2>
+<p>A Jus 9 não vende dados Google, não compartilha dados Google com anunciantes, corretores de dados ou serviços de publicidade comportamental, e não transfere dados Google para treinamento de modelos generalizados de inteligência artificial ou aprendizado de máquina.</p>
+<p>Serviços de infraestrutura usados para hospedar, proteger e operar a aplicação podem processar dados técnicos mínimos somente como operadores necessários à prestação do serviço solicitado, sem permissão para uso próprio, publicidade ou venda.</p>
 
-<h2>7. Uso limitado dos dados Google</h2>
-<p>Dados recebidos de APIs Google serao usados somente para fornecer e melhorar funcionalidades visiveis ao usuario, como autenticacao governada e agenda conectada mediante consentimento. A Jus 9 nao vende dados Google, nao usa dados Google para publicidade comportamental e nao transfere dados Google para treinamento de modelos generalizados de IA.</p>
+<h2>7. Proteção, retenção e exclusão</h2>
+<p>A proteção combina HTTPS, cookies de sessão com atributos de segurança, permissões por perfil, minimização de dados, segregação de ambientes e armazenamento técnico limitado. Quando tokens OAuth forem usados, devem ser guardados em armazenamento controlado e criptografado.</p>
+<p>Autorizações de Agenda podem permanecer apenas pelo tempo necessário para a funcionalidade consentida, com prazo técnico operacional máximo de até 180 dias para renovação/revalidação, salvo revogação anterior, substituição de autorização, exclusão solicitada ou decisão de governança.</p>
+<p>A pessoa usuária pode revogar o acesso pela Conta Google em <a href="https://myaccount.google.com/connections" target="_blank" rel="noopener">myaccount.google.com/connections</a>. Também pode solicitar esclarecimento, desconexão ou exclusão pelo e-mail <strong>Contato@jus9tecnologia.com.br</strong>.</p>
 
-<h2>8. Referencias oficiais</h2>
+<h2>8. Uso limitado e IA/ML</h2>
+<p>Dados recebidos de APIs Google são usados somente para fornecer e melhorar funcionalidades voltadas à pessoa usuária, conforme consentimento e escopo autorizado. A Jus 9 segue a Google API Services User Data Policy, incluindo os requisitos de Uso Limitado.</p>
+<p>Dados do Google Workspace, incluindo dados da Google Agenda, não são usados para desenvolver, melhorar ou treinar modelos generalizados de IA/ML. A Jus 9 também não transfere dados Google para serviços de terceiros que treinem modelos generalizados com esses dados.</p>
+
+<h2>9. Caminho de teste para verificação</h2>
+<ol>
+  <li>Abrir <a href="../app-agenda.html">app-agenda.html</a>.</li>
+  <li>Entrar com Google usando uma conta de teste governada e autorizada.</li>
+  <li>Abrir o recurso de conexão com Google Agenda.</li>
+  <li>Conferir a tela de consentimento do Google com o escopo de eventos de Calendar visível.</li>
+  <li>Criar evento fictício e revisado pela pessoa usuária.</li>
+  <li>Confirmar o evento criado na própria Google Agenda da conta de teste.</li>
+</ol>
+
+<h2>10. Referências oficiais</h2>
 <ul>
   <li><a href="https://developers.google.com/workspace/calendar/api/auth" target="_blank" rel="noopener">Google Calendar API - OAuth scopes</a></li>
   <li><a href="https://developers.google.com/identity/protocols/oauth2/production-readiness/sensitive-scope-verification" target="_blank" rel="noopener">Google OAuth - sensitive scope verification</a></li>
   <li><a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener">Google API Services User Data Policy</a></li>
-  <li><a href="https://support.google.com/cloud/answer/13461325" target="_blank" rel="noopener">Google Cloud - submitting your app for verification</a></li>
+  <li><a href="https://developers.google.com/workspace/workspace-api-user-data-developer-policy" target="_blank" rel="noopener">Google Workspace API User Data Policy</a></li>
 </ul>
 
-<p><a class="btn" href="../app-agenda.html">Voltar a Agenda</a> <a class="btn" href="login-google.html">Ver login Google</a> <a class="btn" href="privacidade.html">Ver Privacidade</a></p>
+<p><a class="btn" href="../app-agenda.html">Voltar à Agenda</a> <a class="btn" href="login-google.html">Ver login Google</a> <a class="btn" href="privacidade.html">Ver Privacidade</a></p>
 </main><script src="../script.js"></script>
-<footer class="jus9-autoria-rodape" role="contentinfo" aria-label="Direitos autorais e origem da producao do site" style="font-size: 0.85rem; line-height: 1.5; text-align: center; padding: 1rem 0.75rem; margin-top: 2rem; background: rgba(15, 23, 42, 0.96); color: #f8fafc;">Producao do site: (c) Jus 9 Tecnologia Juridica. Software livre com autoria, origem e direitos autorais preservados.</footer>
+<footer class="jus9-autoria-rodape" role="contentinfo" aria-label="Direitos autorais e origem da produção do site" style="font-size: 0.85rem; line-height: 1.5; text-align: center; padding: 1rem 0.75rem; margin-top: 2rem; background: rgba(15, 23, 42, 0.96); color: #f8fafc;">Produção do site: (c) Jus 9 Tecnologia Jurídica. Software livre com autoria, origem e direitos autorais preservados.</footer>
 </body></html>

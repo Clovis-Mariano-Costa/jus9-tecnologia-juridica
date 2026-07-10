@@ -76,5 +76,15 @@ The app needs to create user-reviewed calendar events, not only display availabi
 
 ## Video demo URL
 
-Pendente. Inserir aqui o link do video depois de gravar e enviar como nao listado ou conforme a orientacao do Google Cloud.
+https://youtu.be/TVTkvGfIGj4
 
+## Atualizacao apos resposta do Google - 2026-07-10
+
+O Google solicitou reforco de transparencia para escopos sensiveis. As paginas publicas abaixo foram atualizadas para declarar dados acessados, finalidade, compartilhamento, protecao, retencao/exclusao, Uso Limitado e restricoes de IA/ML:
+
+- https://jus9tecnologia.com.br/documentos/privacidade.html
+- https://jus9tecnologia.com.br/documentos/google-calendar.html
+
+Texto curto para resposta:
+
+We reviewed Google's OAuth verification checklist and updated the public Privacy Policy and Google Calendar data-use page. The app requests only `https://www.googleapis.com/auth/calendar.events` for user-reviewed Calendar event functionality. Basic Google sign-in remains separate and uses only `openid`, `email`, and `profile`. Gmail, Drive, Contacts, files, passwords, and broader Google service scopes are not requested in this submission. Google user data is not sold, not used for behavioral advertising, not used for credit/lending decisions, and not used to train generalized AI/ML models.
