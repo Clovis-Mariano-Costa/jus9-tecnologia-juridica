@@ -1490,7 +1490,7 @@ window.jus9DemoLogin = function(form){
     var assistants = messages.filter(function(m){ return m.role === 'assistant' && m.content; });
     function cleanExecutiveMemory(text, fallback){
       var value = String(text || '').replace(/\s+/g, ' ').trim();
-      if(/Para pesquisar doutrina e jurisprudencia com seguranca|voce pediu pesquisa juridica guiada|Leitura do pedido: voce pediu pesquisa juridica guiada|Caminho escolhido: escutar/i.test(value)) return fallback || 'Resposta anterior descartada por conter protocolo antigo contaminado.';
+      if(/Para pesquisar doutrina e jurisprudencia com seguranca|voce pediu pesquisa juridica guiada|Leitura do pedido: voce pediu pesquisa juridica guiada|Caminho escolhido: escutar|Vou continuar pela memoria governada|API segura indisponivel|mantive fallback local/i.test(value)) return fallback || 'Resposta anterior descartada por conter protocolo antigo contaminado.';
       return value;
     }
     var lastUser = users.length ? users[users.length - 1].content : 'Ainda sem pergunta registrada.';
@@ -1524,6 +1524,33 @@ window.jus9DemoLogin = function(form){
     if(!asksWhereStopped(question)) return '';
     var smart = updateRoomIntelligence(code, room, focus);
     return 'Resumo executivo vivo desta sala:\n\n' + (smart && smart.smartSummary || buildRoomExecutiveSummary(room, code, focus));
+  }
+
+  function asksExplicitRoomMemory(question){
+    var q = plainAiText(question);
+    return asksPreviousQuestion(question) ||
+      asksWhereStopped(question) ||
+      /\b(continue|continuar|continua|siga|seguir|prossiga|retome|retomar|volte|voltar)\b/.test(q) ||
+      /\b(com base na memoria|com base no historico|nesta sala|desta sala|memoria da sala|historico da sala)\b/.test(q) ||
+      /\b(ultima resposta|resposta anterior|pergunta anterior|mensagem anterior|ultimo documento|documento anterior|ultima minuta|minuta anterior)\b/.test(q) ||
+      /\b(sobre isso|a partir disso|com isso|isso|esse ponto|este ponto|essa resposta|esta resposta|esse documento|este documento|essa minuta|esta minuta)\b/.test(q) ||
+      /\b(salve|salvar|salvamento|melhore|melhorar|refaca|refazer|transforme|transformar|converta|converter)\b.{0,80}\b(resposta|minuta|documento|texto|anterior|ultima|ultimo)\b/.test(q);
+  }
+
+  function asksStandaloneCurrentQuestion(question){
+    var q = plainAiText(question);
+    if(!q) return false;
+    if(asksExplicitRoomMemory(question)) return false;
+    if(/\b(o que e|oque e|o que eh|defina|definir|conceitue|conceituar|explique|explica|fale sobre|resuma|resumo de|qual e|quais sao|para que serve)\b/.test(q)) return true;
+    if(/\b(citando fontes|com fontes|cite fontes|fontes|direito de|direito da|direito do|peticao|peticao inicial|propriedade|usucapiao|contrato|responsabilidade civil)\b/.test(q)) return true;
+    return q.length <= 180 && /\?$/.test(String(question || '').trim());
+  }
+
+  function shouldUseRoomMemoryForQuestion(question, room){
+    if(!room || !Array.isArray(room.messages) || !room.messages.length) return false;
+    if(asksExplicitRoomMemory(question)) return true;
+    if(asksStandaloneCurrentQuestion(question)) return false;
+    return false;
   }
 
   function apiModeFor(mode){
@@ -1771,6 +1798,7 @@ window.jus9DemoLogin = function(form){
       'Foco do ambiente: ' + focus + '.',
       'Modo solicitado no frontend: ' + mode + '.',
       'Rota normativa escolhida antes da resposta: ' + normativeRouteLabel(question, mode, code) + '.',
+      'Regra de foco: a [PERGUNTA ATUAL] e o comando principal. Use memoria da sala apenas quando a pergunta pedir continuidade, ultima resposta, onde paramos, salvamento de resposta anterior ou contexto explicitamente anterior. Para pergunta nova, conceitual ou definitoria, ignore historico antigo e responda direto ao que foi perguntado.',
       'Ordem obrigatoria da Charlie Echo: 1) Prioritario; 2) Principios e clausulas petreas; 3) Constituicao; 4) Leis internas; 5) Regimentos do ambiente; 6) Protocolos. Protocolos sao ferramentas, nao mandamento maior.',
       'As Tres Leis da Robotica de Isaac Asimov sao clausulas petreas eticas internas da Charlie Echo, aplicadas como maxima de protecao humana, obediencia responsavel e autopreservacao subordinada ao bem, sem reproduzir obra protegida literalmente na resposta publica.',
       'Se o usuario for membro da equipe pelo contexto autenticado, Charlie pode sugerir melhoria normativa quando detectar lacuna, risco, contradicao ou oportunidade relevante. Visitante publico recebe orientacao; equipe recebe proposta; Fundador autoriza mudanca estrutural.',
@@ -1818,7 +1846,7 @@ window.jus9DemoLogin = function(form){
 
   async function askCharlieApiPayload(mode, code, focus, question, room){
     function contaminatedApiMemory(text){
-      return /Para pesquisar doutrina e jurisprudencia com seguranca|voce pediu pesquisa juridica guiada|Leitura do pedido: voce pediu pesquisa juridica guiada|Caminho escolhido: escutar/i.test(String(text || ''));
+      return /Para pesquisar doutrina e jurisprudencia com seguranca|voce pediu pesquisa juridica guiada|Leitura do pedido: voce pediu pesquisa juridica guiada|Caminho escolhido: escutar|Vou continuar pela memoria governada|API segura indisponivel|mantive fallback local/i.test(String(text || ''));
     }
     function cleanApiMemory(text, max){
       var value = String(text || '');
@@ -2254,8 +2282,9 @@ window.jus9DemoLogin = function(form){
     var userMemoryContext = buildUserMemoryInstruction();
     var instrumentContext = buildInstrumentConfigInstruction(code, focus);
     if(settings.memory === false) return '[CONFIGURACOES DO USUARIO]\nMemoria da sala desativada pelo usuario. Nivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '.' + userMemoryContext + instrumentContext + integrationContext + '\n\n[PERGUNTA ATUAL]\n' + question;
+    var useRoomMemory = shouldUseRoomMemoryForQuestion(question, room);
     function contaminatedMemoryText(text){
-      return /Para pesquisar doutrina e jurisprudencia com seguranca|voce pediu pesquisa juridica guiada|Sentire: risco|Leitura do pedido: voce pediu pesquisa juridica guiada|Caminho escolhido: escutar/i.test(String(text || ''));
+      return /Para pesquisar doutrina e jurisprudencia com seguranca|voce pediu pesquisa juridica guiada|Sentire: risco|Leitura do pedido: voce pediu pesquisa juridica guiada|Caminho escolhido: escutar|Vou continuar pela memoria governada|API segura indisponivel|mantive fallback local/i.test(String(text || ''));
     }
     function cleanMemoryText(text, max){
       var value = String(text || '');
@@ -2273,6 +2302,9 @@ window.jus9DemoLogin = function(form){
     var doctrineNote = asksDoctrineProduction(question) ? '\nNota: se memorias antigas tratarem doutrina como mera pesquisa de fontes, ignore essa classificacao antiga e produza conteudo doutrinario responsavel.\n' : '';
     var documentDownloadNote = asksDocumentProductionDownload(question) ? '\nNota: a pergunta atual pede producao de documento com download local. Ignore memorias antigas de pesquisa juridica guiada e nao ofereca bloco fixo de fontes.\n' : '';
     var completeDraftNote = asksCompleteLegalDraft(question) ? '\nNota: a pergunta atual pede peca/minuta completa. Produza estrutura completa de peca, use anexos extraidos quando houver e mantenha campos reais entre colchetes.\n' : '';
+    if(!useRoomMemory){
+      return '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '. Memoria da sala: disponivel, mas nao invocada para esta pergunta nova. Responda somente a [PERGUNTA ATUAL] e nao continue assunto anterior.' + documentDownloadNote + completeDraftNote + doctrineNote + userMemoryContext + instrumentContext + integrationContext + '\n\n[PERGUNTA ATUAL]\n' + question;
+    }
     return (room && (room.summary || room.smartSummary || recent))
       ? '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '. Use memoria: sim.' + doctrineNote + documentDownloadNote + completeDraftNote + userMemoryContext + instrumentContext + integrationContext + '\n[RESUMO EXECUTIVO DA SALA]\n' + (cleanSmartSummary || 'Resumo anterior contaminado ou ausente.') + '\n\n[MEMORIA GOVERNADA LOCAL]\n' + (cleanSummary || 'Memoria anterior contaminada ou ausente.') + '\n\n[DECISOES]\n' + (decisions || 'Sem decisoes marcadas.') + '\n\n[PENDENCIAS]\n' + (pending || 'Sem pendencias marcadas.') + '\n\n[HISTORICO RECENTE]\n' + (recent || 'Historico anterior contaminado ou ausente.') + '\n\n[PERGUNTA ATUAL]\n' + question
       : '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '.' + documentDownloadNote + completeDraftNote + userMemoryContext + instrumentContext + integrationContext + '\n\n[PERGUNTA ATUAL]\n' + question;
