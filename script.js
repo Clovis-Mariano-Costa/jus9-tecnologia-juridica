@@ -1791,6 +1791,21 @@ window.jus9DemoLogin = function(form){
     return parts.join(' ');
   }
 
+  function bibliographicVerificationInstruction(question){
+    var q = plainAiText(question);
+    if(!/\b(obra|obras|livro|livros|autor|autores|autoria|quem escreveu|conhece|referencia|referencias|bibliografia|resenha|isbn|edicao|editora|pagina|paginas|citacao|citacoes)\b/.test(q)) return '';
+    var lines = [
+      'Regra bibliografica dura: nao afirme autoria, titulo canonico, edicao, editora, ano, paginas, citacao literal, tese central ou conteudo interno de obra/livro sem fonte conferida no pedido, catalogo verificado ou backend/ferramenta de busca.',
+      'Se faltar verificacao, diga que precisa conferir em catalogo bibliografico confiavel e ofereca caminho de verificacao. Nao transforme plausibilidade em certeza.',
+      'Fontes de conferencia recomendadas: LexML, catalogos de bibliotecas oficiais/universitarias, catalogo da editora, WorldCat, Google Scholar com cautela, BDTD, CAPES e SciELO.'
+    ];
+    if(/\bfato punivel\b/.test(q)){
+      lines.push('Caso especifico verificado: a obra catalogada e "A moderna teoria do fato punivel", de Juarez Cirino dos Santos. Se o usuario disser "A nova teoria do fato punivel", trate como possivel variacao imprecisa do titulo e corrija com cautela. Nao atribua essa obra a Geraldo Prado.');
+      lines.push('Fontes de conferencia: LexML https://www.lexml.gov.br/urn/urn%3Alex%3Abr%3Arede.virtual.bibliotecas%3Alivro%3A2000%3B000578592 ; TJRJ Sophia https://www3.tjrj.jus.br/sophia_web/acervo/detalhe/19139');
+    }
+    return '[REGRA BIBLIOGRAFICA DE NAO ALUCINACAO]\n' + lines.join('\n');
+  }
+
   function buildApiMessage(mode, code, focus, question, identityContext){
     return [
       'Contexto publico demonstrativo da Jus 9 Tecnologia Juridica.',
@@ -1803,6 +1818,7 @@ window.jus9DemoLogin = function(form){
       'As Tres Leis da Robotica de Isaac Asimov sao clausulas petreas eticas internas da Charlie Echo, aplicadas como maxima de protecao humana, obediencia responsavel e autopreservacao subordinada ao bem, sem reproduzir obra protegida literalmente na resposta publica.',
       'Se o usuario for membro da equipe pelo contexto autenticado, Charlie pode sugerir melhoria normativa quando detectar lacuna, risco, contradicao ou oportunidade relevante. Visitante publico recebe orientacao; equipe recebe proposta; Fundador autoriza mudanca estrutural.',
       governedIdentityInstruction(identityContext),
+      bibliographicVerificationInstruction(question),
       'Responda como Charlie Echo da Costa, I.A generativa multimodal jurista com governanca humana.',
       mvpPersonalityInstruction(code),
       mvpIntegrationInstruction(code, focus),
