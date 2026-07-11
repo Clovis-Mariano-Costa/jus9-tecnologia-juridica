@@ -1926,7 +1926,11 @@ window.jus9DemoLogin = function(form){
   function chatRoomKey(code){ return 'jus9CharlieRooms_' + String(code || 'MVP').replace(/[^A-Z0-9_-]/gi, '_') + '_v2'; }
   function legacyChatRoomKey(code){ return 'jus9CharlieRooms_' + String(code || 'MVP').replace(/[^A-Z0-9_-]/gi, '_') + '_v1'; }
   function chatSettingsKey(code){ return 'jus9CharlieSettings_' + String(code || 'MVP').replace(/[^A-Z0-9_-]/gi, '_') + '_v1'; }
-  function userMemoryKey(){ return 'jus9CharlieUserMemory_v1'; }
+  var activeUserMemoryOwnerKey = 'local';
+  function setUserMemoryOwnerKey(ownerKey){
+    activeUserMemoryOwnerKey = String(ownerKey || 'local').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 96) || 'local';
+  }
+  function userMemoryKey(){ return 'jus9CharlieUserMemory_' + activeUserMemoryOwnerKey + '_v1'; }
   function instrumentSettingsKey(code){ return 'jus9CharlieInstrument_' + String(code || 'MVP').replace(/[^A-Z0-9_-]/gi, '_') + '_v1'; }
   function defaultChatSettings(){ return { memory:true, detail:'medio', tone:'direto', caution:'normal', format:'auto', maxMessages:96, autoScroll:true }; }
   function defaultUserMemory(){ return { enabled:true, syncDrive:true, name:'', role:'', preferences:'', avoid:'', standingInstructions:'', updatedAt:'' }; }
@@ -1989,7 +1993,7 @@ window.jus9DemoLogin = function(form){
     var memory = loadUserMemory();
     if(memory.enabled === false) return '\n\n[MEMORIA DO USUARIO]\nMemoria do usuario desativada pelo proprio usuario.';
     var syncState = memory.syncDrive === false ? 'sem sincronizacao automatica no Drive.' : 'com tentativa de sincronizacao governada no Cartorio Digital quando configurada.';
-    var lines = ['\n\n[MEMORIA DO USUARIO CONFIGURAVEL]', 'Status: ativa neste navegador, controlada pelo usuario, ' + syncState];
+    var lines = ['\n\n[MEMORIA DO USUARIO CONFIGURAVEL]', 'Status: controlada pelo usuario, com memoria oficial por login quando autenticada e fallback local neste navegador, ' + syncState];
     if(memory.name) lines.push('Como chamar o usuario: ' + compactMemoryLine(memory.name, 120) + '.');
     if(memory.role) lines.push('Papel/contexto do usuario: ' + compactMemoryLine(memory.role, 220) + '.');
     if(memory.preferences) lines.push('Preferencias de resposta: ' + compactMemoryLine(memory.preferences, 700) + '.');
@@ -2039,6 +2043,80 @@ window.jus9DemoLogin = function(form){
     var data = await response.json().catch(function(){ return null; });
     if(response.ok && data) return data;
     throw new Error((data && (data.error || data.message || data.answer)) || 'Nao consegui sincronizar a memoria no Drive agora.');
+  }
+  var officialMemoryHydrated = {};
+  function officialMemoryCacheKey(code){ return String(code || 'MVP').replace(/[^A-Z0-9_-]/gi, '_').toUpperCase(); }
+  function canUseOfficialMemoryApi(){
+    return !(location.protocol === 'file:' || location.hostname === '' || location.hostname === 'localhost' || location.hostname === '127.0.0.1');
+  }
+  function mergeOfficialMemoryIntoLocal(code, focus, data){
+    if(!data || !data.exists) return false;
+    if(data.userMemory) saveUserMemory(data.userMemory);
+    var instruments = data.instruments || {};
+    var key = officialMemoryCacheKey(code);
+    if(instruments[key]) saveInstrumentSettings(code, focus, instruments[key]);
+    return true;
+  }
+  async function loadOfficialUserMemory(code, focus, force){
+    if(!canUseOfficialMemoryApi()) return { skipped:true, reason:'local_dev' };
+    var key = officialMemoryCacheKey(code);
+    if(!force && officialMemoryHydrated[key]) {
+      if(officialMemoryHydrated[key].ownerKey) setUserMemoryOwnerKey(officialMemoryHydrated[key].ownerKey);
+      return officialMemoryHydrated[key];
+    }
+    var params = new URLSearchParams({ module:String(code || ''), origin:location.origin });
+    var response = await fetch('/api/charlie/memory?' + params.toString(), {
+      cache:'no-store',
+      credentials:'include'
+    });
+    var data = await response.json().catch(function(){ return null; });
+    if(response.status === 401) {
+      setUserMemoryOwnerKey('local');
+      officialMemoryHydrated[key] = { authenticated:false, configured:false };
+      return officialMemoryHydrated[key];
+    }
+    if(!response.ok) throw new Error((data && (data.error || data.message)) || 'Falha ao ler memoria oficial por login.');
+    if(data && data.ownerKey) setUserMemoryOwnerKey(data.ownerKey);
+    mergeOfficialMemoryIntoLocal(code, focus, data);
+    officialMemoryHydrated[key] = data || {};
+    return officialMemoryHydrated[key];
+  }
+  async function saveOfficialUserMemory(code, focus, userMemory, instrument){
+    if(!canUseOfficialMemoryApi()) return { skipped:true, reason:'local_dev' };
+    var response = await fetch('/api/charlie/memory', {
+      method:'POST',
+      cache:'no-store',
+      credentials:'include',
+      headers:{ 'Content-Type':'application/json' },
+      body:JSON.stringify({
+        module:code || 'MVP',
+        focus:focus || '',
+        origin:location.origin,
+        userMemory:userMemory || loadUserMemory(),
+        instrument:instrument || loadInstrumentSettings(code, focus)
+      })
+    });
+    var data = await response.json().catch(function(){ return null; });
+    if(response.status === 401) return { authenticated:false, configured:false };
+    if(!response.ok) throw new Error((data && (data.error || data.message)) || 'Falha ao salvar memoria oficial por login.');
+    if(data && data.ownerKey) setUserMemoryOwnerKey(data.ownerKey);
+    mergeOfficialMemoryIntoLocal(code, focus, data);
+    var key = officialMemoryCacheKey(code);
+    officialMemoryHydrated[key] = data || {};
+    return officialMemoryHydrated[key];
+  }
+  async function deleteOfficialUserMemory(code){
+    if(!canUseOfficialMemoryApi()) return { skipped:true, reason:'local_dev' };
+    var response = await fetch('/api/charlie/memory', {
+      method:'DELETE',
+      cache:'no-store',
+      credentials:'include'
+    });
+    var data = await response.json().catch(function(){ return null; });
+    if(response.status === 401) return { authenticated:false, configured:false };
+    if(!response.ok) throw new Error((data && (data.error || data.message)) || 'Falha ao limpar memoria oficial por login.');
+    delete officialMemoryHydrated[officialMemoryCacheKey(code)];
+    return data || {};
   }
   function createChatRoom(code, title){ var now = new Date().toISOString(); return { id:String(code || 'MVP') + '-' + Date.now(), title:title || 'Sala ' + code, status:'active', createdAt:now, updatedAt:now, summary:'', currentTopic:'', lastUserIntent:'', decisions:[], pending:[], messages:[] }; }
   function normalizeChatData(code, parsed){
@@ -2820,13 +2898,21 @@ window.jus9DemoLogin = function(form){
     settingsPanel.innerHTML = [
       '<div class="charlie-memory-head"><div><strong>Painel de configuracoes</strong><p>Memoria do usuario, instrumento do MVP, resposta, seguranca, pacote e tela.</p></div><button class="mini" type="button" data-settings-close>Fechar</button></div>',
       '<div class="charlie-settings-section"><h3>Memoria da sala</h3><div class="charlie-settings-grid"><label><span>Usar memoria da sala</span><select data-setting-memory><option value="true">Sim</option><option value="false">Nao</option></select></label><label><span>Memoria maxima</span><select data-setting-max><option value="48">48 mensagens</option><option value="96">96 mensagens</option><option value="160">160 mensagens</option></select></label></div></div>',
-      '<div class="charlie-settings-section"><h3>Memoria do usuario</h3><p class="fine-note">Memoria pessoal local, configuravel por voce. Nao coloque senha, token, documento real, processo real ou segredo.</p><div class="charlie-settings-grid"><label><span>Usar memoria do usuario</span><select data-user-memory-enabled><option value="true">Sim</option><option value="false">Nao</option></select></label><label><span>Cartorio Digital</span><select data-user-memory-sync><option value="true">Sincronizar quando salvar</option><option value="false">Somente local</option></select></label><label><span>Como devo chamar voce</span><input data-user-memory-name maxlength="120" placeholder="Nome, apelido ou forma de tratamento"></label><label><span>Papel/contexto</span><input data-user-memory-role maxlength="180" placeholder="Ex.: fundador, advogado, professor"></label></div><div class="charlie-settings-grid wide"><label><span>Preferencias de resposta</span><textarea data-user-memory-preferences rows="3" placeholder="Ex.: respostas diretas, cronogramas curtos, fontes oficiais"></textarea></label><label><span>Evitar</span><textarea data-user-memory-avoid rows="3" placeholder="Ex.: repetir protocolo, textos longos, jargao"></textarea></label><label><span>Instrucoes persistentes</span><textarea data-user-memory-standing rows="4" placeholder="O que Charlie deve lembrar entre salas e MVPs neste navegador"></textarea></label></div></div>',
+      '<div class="charlie-settings-section"><h3>Memoria do usuario</h3><p class="fine-note">Memoria pessoal por login quando autenticada, com fallback local configuravel por voce. Nao coloque senha, token, documento real, processo real ou segredo.</p><p class="fine-note" data-user-memory-status>Memoria oficial: verificacao automatica quando houver login.</p><div class="charlie-settings-grid"><label><span>Usar memoria do usuario</span><select data-user-memory-enabled><option value="true">Sim</option><option value="false">Nao</option></select></label><label><span>Cartorio Digital</span><select data-user-memory-sync><option value="true">Sincronizar quando salvar</option><option value="false">Somente local</option></select></label><label><span>Como devo chamar voce</span><input data-user-memory-name maxlength="120" placeholder="Nome, apelido ou forma de tratamento"></label><label><span>Papel/contexto</span><input data-user-memory-role maxlength="180" placeholder="Ex.: fundador, advogado, professor"></label></div><div class="charlie-settings-grid wide"><label><span>Preferencias de resposta</span><textarea data-user-memory-preferences rows="3" placeholder="Ex.: respostas diretas, cronogramas curtos, fontes oficiais"></textarea></label><label><span>Evitar</span><textarea data-user-memory-avoid rows="3" placeholder="Ex.: repetir protocolo, textos longos, jargao"></textarea></label><label><span>Instrucoes persistentes</span><textarea data-user-memory-standing rows="4" placeholder="O que Charlie deve lembrar entre salas e MVPs neste navegador"></textarea></label></div></div>',
       '<div class="charlie-settings-section"><h3>Instrumento do MVP</h3><p class="fine-note">Cada MVP toca como instrumento independente da orquestra da Charlie.</p><div class="charlie-instrument-summary" data-instrument-summary></div><div class="charlie-settings-grid"><label><span>Instrumento ativo</span><select data-instrument-enabled><option value="true">Sim</option><option value="false">Nao</option></select></label><label><span>Autonomia</span><select data-instrument-autonomy><option value="assistida">Assistida</option><option value="proativa">Proativa governada</option><option value="estrita">Estrita</option></select></label><label><span>Drive/memoria</span><select data-instrument-drive><option value="auto_governado">Automatico governado</option><option value="manual">Somente quando eu pedir</option><option value="restrito">Restrito/sigiloso por padrao</option></select></label><label><span>Formato</span><select data-instrument-response><option value="relatorio_e_acao">Relatorio + acao</option><option value="checklist">Checklist</option><option value="parecer">Parecer</option><option value="roteiro">Roteiro</option><option value="aula">Aula</option></select></label><label><span>Fontes</span><select data-instrument-sources><option value="oficiais_academicas">Oficiais + academicas</option><option value="oficiais">Oficiais</option><option value="academicas">Academicas</option><option value="internas">Internas governadas</option></select></label></div><div class="charlie-settings-grid wide"><label><span>Notas para este instrumento</span><textarea data-instrument-notes rows="4" placeholder="Ajuste especifico deste MVP: tom, limite, foco, fontes, Drive, entrega"></textarea></label></div></div>',
       '<div class="charlie-settings-section"><h3>Resposta</h3><div class="charlie-settings-grid"><label><span>Detalhe</span><select data-setting-detail><option value="curto">Curto</option><option value="medio">Medio</option><option value="completo">Completo</option></select></label><label><span>Tom</span><select data-setting-tone><option value="direto">Direto</option><option value="didatico">Didatico</option><option value="tecnico">Tecnico</option><option value="social">Social</option></select></label><label><span>Cautela</span><select data-setting-caution><option value="normal">Normal</option><option value="cauteloso">Cauteloso</option><option value="estrito">Estrito</option></select></label><label><span>Formato</span><select data-setting-format><option value="auto">Automatico</option><option value="checklist">Checklist</option><option value="parecer">Parecer</option><option value="resumo">Resumo</option><option value="plano">Plano</option></select></label></div></div>',
       '<div class="charlie-settings-section"><h3>Tela</h3><div class="charlie-settings-grid"><label><span>Rolagem automatica</span><select data-setting-autoscroll><option value="true">Sim</option><option value="false">Nao</option></select></label></div></div>',
       '<div class="chat-utility-actions"><button class="mini primary" type="button" data-settings-save>Salvar configuracoes</button><button class="mini" type="button" data-user-memory-export>Exportar memoria do usuario</button><button class="mini danger" type="button" data-user-memory-clear>Limpar memoria do usuario</button><button class="mini danger" type="button" data-instrument-clear>Restaurar instrumento</button></div>'
     ].join('');
     form.parentNode.insertBefore(settingsPanel, memoryPanel.nextSibling);
+    var officialMemoryStatus = canUseOfficialMemoryApi()
+      ? 'Memoria oficial: verificacao automatica quando houver login.'
+      : 'Memoria oficial: modo local neste navegador.';
+    function setOfficialMemoryStatus(text){
+      officialMemoryStatus = text || officialMemoryStatus;
+      var statusEl = settingsPanel.querySelector('[data-user-memory-status]');
+      if(statusEl) statusEl.textContent = officialMemoryStatus;
+    }
     var actionMenu = bar.querySelector('[data-action-menu-popover]');
     var actionToggle = bar.querySelector('[data-action-menu-toggle]');
     function closeActionMenu(){ if(actionMenu) actionMenu.hidden = true; }
@@ -2912,6 +2998,7 @@ window.jus9DemoLogin = function(form){
       if(summary){
         summary.innerHTML = '<span>' + escapeHtml(code || 'MVP') + '</span><span>' + escapeHtml(instrument.name || '') + '</span><span>' + escapeHtml(instrument.role || '') + '</span>';
       }
+      setOfficialMemoryStatus(officialMemoryStatus);
     }
     var memoryButton = bar.querySelector('[data-ai-memory]');
     if(memoryButton) memoryButton.addEventListener('click', function(){
@@ -2921,11 +3008,25 @@ window.jus9DemoLogin = function(form){
       settingsPanel.hidden = true;
     });
     var settingsButton = bar.querySelector('[data-ai-settings]');
-    if(settingsButton) settingsButton.addEventListener('click', function(){
+    if(settingsButton) settingsButton.addEventListener('click', async function(){
       closeActionMenu();
       renderSettingsPanel();
       settingsPanel.hidden = !settingsPanel.hidden;
       memoryPanel.hidden = true;
+      if(!settingsPanel.hidden){
+        setOfficialMemoryStatus(canUseOfficialMemoryApi() ? 'Memoria oficial: verificando login e armazenamento...' : 'Memoria oficial: modo local neste navegador.');
+        try{
+          var official = await loadOfficialUserMemory(code, focus, true);
+          if(official && official.skipped) setOfficialMemoryStatus('Memoria oficial: modo local neste navegador.');
+          else if(official && official.authenticated === false) setOfficialMemoryStatus('Memoria oficial: faca login para sincronizar por usuario.');
+          else if(official && official.configured === false) setOfficialMemoryStatus('Memoria oficial: backend ainda sem armazenamento configurado; mantendo fallback local.');
+          else if(official && official.exists) setOfficialMemoryStatus('Memoria oficial: carregada para este login.');
+          else setOfficialMemoryStatus('Memoria oficial: login reconhecido, sem memoria salva ainda.');
+          renderSettingsPanel();
+        }catch(err){
+          setOfficialMemoryStatus('Memoria oficial: nao consegui carregar agora; mantendo fallback local.');
+        }
+      }
     });
     memoryPanel.querySelector('[data-memory-close]').addEventListener('click', function(){ memoryPanel.hidden = true; });
     settingsPanel.querySelector('[data-settings-close]').addEventListener('click', function(){ settingsPanel.hidden = true; });
@@ -2995,7 +3096,24 @@ window.jus9DemoLogin = function(form){
       };
       saveInstrumentSettings(code, focus, savedInstrument);
       renderSettingsPanel();
-      appendEcho('Configuracoes salvas. Vou respeitar memoria da sala, memoria do usuario e o instrumento ' + code + ' nas proximas respostas.', { remember:false });
+      var officialMessage = '';
+      try{
+        var officialSaved = await saveOfficialUserMemory(code, focus, savedUserMemory, savedInstrument);
+        if(officialSaved && officialSaved.skipped) {
+          officialMessage = ' Memoria oficial em modo local neste navegador.';
+          setOfficialMemoryStatus('Memoria oficial: modo local neste navegador.');
+        } else if(officialSaved && officialSaved.authenticated === false) {
+          officialMessage = ' Para memoria oficial por login, faca login no portal.';
+          setOfficialMemoryStatus('Memoria oficial: faca login para sincronizar por usuario.');
+        } else if(officialSaved && officialSaved.configured !== false) {
+          officialMessage = ' Memoria oficial por login atualizada.';
+          setOfficialMemoryStatus('Memoria oficial: salva para este login.');
+        }
+      }catch(err){
+        officialMessage = ' Memoria oficial ficou pendente; mantive o fallback local.';
+        setOfficialMemoryStatus('Memoria oficial: falha temporaria, mantendo fallback local.');
+      }
+      appendEcho('Configuracoes salvas. Vou respeitar memoria da sala, memoria do usuario e o instrumento ' + code + ' nas proximas respostas.' + officialMessage, { remember:false });
       if(savedUserMemory.syncDrive !== false){
         try{
           var syncPayload = await syncUserMemoryToDrive(code, focus);
@@ -3016,11 +3134,27 @@ window.jus9DemoLogin = function(form){
       downloadText(slug('memoria-usuario-charlie-' + (code || 'mvp')) + '.json', JSON.stringify(payload, null, 2));
       appendEcho('Memoria do usuario exportada localmente em JSON.');
     });
-    settingsPanel.querySelector('[data-user-memory-clear]').addEventListener('click', function(){
+    settingsPanel.querySelector('[data-user-memory-clear]').addEventListener('click', async function(){
       if(!confirm('Limpar memoria do usuario neste navegador? A memoria da sala atual nao sera apagada.')) return;
       clearUserMemory();
+      var clearMessage = '';
+      try{
+        var deleted = await deleteOfficialUserMemory(code);
+        if(deleted && deleted.deleted) {
+          clearMessage = ' A memoria oficial por login tambem foi removida.';
+          setOfficialMemoryStatus('Memoria oficial: removida para este login.');
+        } else if(deleted && deleted.authenticated === false) {
+          clearMessage = ' Sem login ativo para limpar memoria oficial.';
+          setOfficialMemoryStatus('Memoria oficial: faca login para gerenciar por usuario.');
+        } else if(deleted && deleted.skipped) {
+          setOfficialMemoryStatus('Memoria oficial: modo local neste navegador.');
+        }
+      }catch(err){
+        clearMessage = ' A limpeza oficial ficou pendente; tente novamente quando o backend responder.';
+        setOfficialMemoryStatus('Memoria oficial: limpeza pendente.');
+      }
       renderSettingsPanel();
-      appendEcho('Memoria do usuario foi limpa neste navegador. A memoria da sala permanece separada.');
+      appendEcho('Memoria do usuario foi limpa neste navegador. A memoria da sala permanece separada.' + clearMessage);
     });
     settingsPanel.querySelector('[data-instrument-clear]').addEventListener('click', function(){
       if(!confirm('Restaurar configuracao do instrumento deste MVP?')) return;
@@ -3108,6 +3242,7 @@ window.jus9DemoLogin = function(form){
     var uploadManager = injectChatUpload(card);
     injectMvpIntegrationPanel(card, code, focus);
     renderChatWindow(card, code, focus);
+    var officialMemoryReady = loadOfficialUserMemory(code, focus, false).catch(function(){ return null; });
     ensureCharlieControlHub(card);
     setTimeout(function(){ ensureCharlieControlHub(card); }, 0);
     function appendDownloadEchoForForm(files){
@@ -3132,6 +3267,7 @@ window.jus9DemoLogin = function(form){
         input.focus();
         return;
       }
+      await officialMemoryReady;
       var modeInput = card.querySelector('input[type="radio"]:checked');
       var mode = modeInput ? modeInput.value : 'jurista';
       var room = activeChatRoom(code);

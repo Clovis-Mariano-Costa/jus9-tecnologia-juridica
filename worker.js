@@ -28,6 +28,11 @@ import {
   verifyPayload
 } from "./functions/_shared/oauth.js";
 import { getPermissions } from "./functions/_shared/permissions.js";
+import {
+  deleteUserMemoryRecord,
+  readUserMemoryRecord,
+  saveUserMemoryRecord
+} from "./functions/_shared/user-memory.js";
 
 export default {
   async fetch(request, env) {
@@ -79,6 +84,10 @@ export default {
 
     if (originalUrl.pathname === "/api/governed-profiles") {
       return handleGovernedProfiles(request, env);
+    }
+
+    if (originalUrl.pathname === "/api/charlie/memory") {
+      return handleCharlieMemory(request, env);
     }
 
     if (originalUrl.pathname === "/api/calendar/status") {
@@ -590,6 +599,32 @@ async function handleGovernedProfiles(request, env) {
   return jsonResponse({ ok: true, items }, 200, corsHeaders);
 }
 
+async function handleCharlieMemory(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  const session = await getSession(request, env);
+  if (!session) return jsonResponse({ authenticated: false }, 401, corsHeaders);
+  if (!hasPermission(session, "auth:read")) {
+    return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "auth:read" }, 403, corsHeaders);
+  }
+
+  if (request.method === "GET") {
+    const result = await readUserMemoryRecord(env, session);
+    return jsonResponse({ authenticated: true, profile: session.profile, ...result.payload }, result.status, corsHeaders);
+  }
+
+  if (request.method === "POST") {
+    const result = await saveUserMemoryRecord(env, session, request, await request.json().catch(() => null));
+    return jsonResponse({ authenticated: true, profile: session.profile, ...result.payload }, result.status, corsHeaders);
+  }
+
+  if (request.method === "DELETE") {
+    const result = await deleteUserMemoryRecord(env, session);
+    return jsonResponse({ authenticated: true, profile: session.profile, ...result.payload }, result.status, corsHeaders);
+  }
+
+  return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET, POST, DELETE" });
+}
+
 async function handleCalendarStatus(request, env) {
   const corsHeaders = getAuthCorsHeaders(request);
   if (request.method !== "GET") {
@@ -712,6 +747,7 @@ function isAuthCorsPath(pathname) {
     pathname === "/api/profile-requests/action" ||
     pathname === "/api/profile-requests/audit" ||
     pathname === "/api/governed-profiles" ||
+    pathname === "/api/charlie/memory" ||
     pathname === "/api/calendar/status" ||
     pathname === "/api/calendar/events" ||
     pathname === "/auth/logout";
@@ -730,7 +766,7 @@ function getAuthCorsHeaders(request) {
   return {
     "Access-Control-Allow-Origin": origin,
     "Access-Control-Allow-Credentials": "true",
-    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
     "Vary": "Origin"
   };

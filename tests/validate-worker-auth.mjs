@@ -22,6 +22,9 @@ const memoryKv = () => {
     },
     put: async (key, value) => {
       store.set(key, value);
+    },
+    delete: async (key) => {
+      store.delete(key);
     }
   };
 };
@@ -213,6 +216,101 @@ response = await worker.fetch(
 data = await response.json();
 assert(response.status === 200 && data.identity?.user?.family === "familia_virtual", "contexto deveria reconhecer Familia Virtual");
 console.log("AUTH_OK context=familia_virtual");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/charlie/memory"),
+  identityEnv
+);
+assert(response.status === 401, "memoria oficial sem sessao deve retornar 401");
+console.log("AUTH_OK user-memory-anonymous=401");
+
+const userMemoryEnv = {
+  ...identityEnv,
+  JUS9_USER_MEMORY: memoryKv()
+};
+const userMemoryCookie = await cookieFor("admin_sistema", Date.now() + 60_000, "clovis@jus9tecnologia.com.br");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/charlie/memory?module=DAJ", {
+    headers: { cookie: userMemoryCookie }
+  }),
+  userMemoryEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.configured === true && data.exists === false, "memoria oficial inicial deveria estar vazia e configurada");
+assert(typeof data.ownerKey === "string" && data.ownerKey.length > 12, "memoria oficial deveria expor chave opaca do usuario");
+console.log("AUTH_OK user-memory-empty=200");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/charlie/memory", {
+    method: "POST",
+    headers: {
+      cookie: userMemoryCookie,
+      "content-type": "application/json",
+      origin: "https://jus9tecnologia.com.br"
+    },
+    body: JSON.stringify({
+      module: "DAJ",
+      focus: "teste governado",
+      userMemory: {
+        enabled: true,
+        syncDrive: true,
+        name: "Clovis",
+        role: "fundador",
+        preferences: "respostas diretas",
+        avoid: "<script>protocolo repetitivo</script>",
+        standingInstructions: "priorizar DAJ"
+      },
+      instrument: {
+        enabled: true,
+        name: "DAJ Advogados",
+        role: "modelo-mae",
+        autonomy: "proativa",
+        drive: "auto_governado",
+        response: "relatorio_e_acao",
+        sources: "oficiais_academicas",
+        notes: "usar BDTD quando academico"
+      }
+    })
+  }),
+  userMemoryEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.exists === true && data.userMemory?.name === "Clovis", "memoria oficial deveria salvar memoria do usuario");
+assert(data.userMemory.avoid === "scriptprotocolo repetitivo/script", "memoria oficial deveria remover tags perigosas sem executar HTML");
+assert(data.instruments?.DAJ?.drive === "auto_governado", "memoria oficial deveria salvar instrumento DAJ");
+console.log("AUTH_OK user-memory-save=200");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/charlie/memory?module=DAJ", {
+    headers: { cookie: userMemoryCookie }
+  }),
+  userMemoryEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.exists === true && data.userMemory?.role === "fundador", "memoria oficial deveria ser relida por login");
+console.log("AUTH_OK user-memory-read=200");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/charlie/memory", {
+    method: "DELETE",
+    headers: { cookie: userMemoryCookie }
+  }),
+  userMemoryEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.deleted === true, "memoria oficial deveria ser removida por login");
+console.log("AUTH_OK user-memory-delete=200");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/charlie/memory?module=DAJ", {
+    headers: { cookie: userMemoryCookie }
+  }),
+  userMemoryEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.exists === false, "memoria oficial deveria sumir apos delete");
+console.log("AUTH_OK user-memory-after-delete=200");
 
 response = await request("/auth/google/calendar/start");
 assert(response.status === 403, "Agenda desligada deve bloquear consentimento sensivel");
