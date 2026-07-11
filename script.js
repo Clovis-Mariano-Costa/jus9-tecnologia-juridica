@@ -3171,20 +3171,30 @@ window.jus9DemoLogin = function(form){
         var improved = await askCharlieApi('jurista', code, focus, 'Refaca a resposta anterior com: resposta direta, exemplo pratico, riscos/limites, proximo passo e fonte/link confiavel quando cabivel.\n\nPergunta anterior: ' + lastQuestion + '\n\nResposta anterior: ' + lastAnswer, room);
         appendEcho(improved);
       }catch(err){
-        appendEcho('Versao melhorada local: resposta direta primeiro; depois exemplo pratico; em seguida riscos, limites e proximo passo. Se houver link, priorize fonte oficial HTTPS. Pergunta-base: ' + (lastQuestion || 'sem pergunta registrada') + '.');
+        appendEcho('Nao consegui consultar a API segura para melhorar a resposta agora. Tente novamente em instantes; nao vou substituir por resposta local.', { remember:false });
       }
     });
     var summaryButton = bar.querySelector('[data-ai-summary]');
-    if(summaryButton) summaryButton.addEventListener('click', function(){
+    if(summaryButton) summaryButton.addEventListener('click', async function(){
       closeActionMenu();
       var room = updateRoomIntelligence(code, activeChatRoom(code), focus);
-      appendEcho('Resumo executivo atualizado:\n\n' + (room.smartSummary || buildRoomExecutiveSummary(room, code, focus)));
+      try{
+        var summary = await askCharlieApi('jurista', code, focus, 'Atualize o resumo executivo desta sala usando a memoria enviada. Seja curto, pratico e separe: assunto ativo, decisoes, pendencias e proximo passo.', room);
+        appendEcho(summary);
+      }catch(err){
+        appendEcho('Nao consegui consultar a API segura para atualizar o resumo agora. Mantive a memoria local intacta; tente novamente em instantes.', { remember:false });
+      }
     });
     var sourcesButton = bar.querySelector('[data-ai-sources]');
-    if(sourcesButton) sourcesButton.addEventListener('click', function(){
+    if(sourcesButton) sourcesButton.addEventListener('click', async function(){
       closeActionMenu();
-      var room = activeChatRoom(code);
-      appendEcho(trustedSourcesSummary(room));
+      var room = activeChatRoom(code), lastQuestion = lastUserText(), lastAnswer = lastEchoText();
+      try{
+        var sources = await askCharlieApi('jurista', code, focus, 'Liste fontes confiaveis para conferir o tema desta sala. Use URLs HTTPS completas quando possivel, classifique confianca e explique uso. Nao use lista fixa como limite.\n\nPergunta-base: ' + (lastQuestion || 'sem pergunta registrada') + '\n\nResposta-base: ' + (lastAnswer || 'sem resposta registrada'), room);
+        appendEcho(sources);
+      }catch(err){
+        appendEcho('Nao consegui consultar a API segura para buscar fontes agora. Tente novamente em instantes; nao vou responder com lista local fixa.', { remember:false });
+      }
     });
     var packageButton = bar.querySelector('[data-ai-package]');
     if(packageButton) packageButton.addEventListener('click', function(){
@@ -3207,11 +3217,16 @@ window.jus9DemoLogin = function(form){
       ]);
     });
     var driveSaverButton = bar.querySelector('[data-ai-drive-saver]');
-    if(driveSaverButton) driveSaverButton.addEventListener('click', function(){
+    if(driveSaverButton) driveSaverButton.addEventListener('click', async function(){
       closeActionMenu();
       var prompt = 'Ensine Charlie Echo a usar o miniBackend JUS9_DRIVE_SAVER_MVP e gerar pacote de download.';
-      appendEcho(driveSaverAnswer(prompt));
-      appendDownloadEcho(buildDriveSaverDownloads(prompt, code, focus));
+      try{
+        var answer = await askCharlieApi('jurista', code, focus, prompt + ' Responda operacionalmente, sem expor segredo, URL interna, token ou chave.', activeChatRoom(code));
+        appendEcho(answer);
+        appendDownloadEcho(buildDriveSaverDownloads(prompt, code, focus));
+      }catch(err){
+        appendEcho('Nao consegui consultar a API segura para orientar o Drive Saver agora. Tente novamente em instantes; nao vou substituir por resposta local.', { remember:false });
+      }
     });
     var saveDriveButton = bar.querySelector('[data-ai-save-drive]');
     if(saveDriveButton) saveDriveButton.addEventListener('click', async function(){
@@ -3283,59 +3298,33 @@ window.jus9DemoLogin = function(form){
       }) + attachmentUserHtml(attachments);
       var echoMsg = document.createElement('div');
       echoMsg.className = 'ai-message ai-message-echo';
-      var localIdentity = shouldBypassLocalFallback(questionForContext)
-        ? ''
-        : (previousQuestionAnswer(question, room) || whereStoppedAnswer(question, room, code, focus) || identityAnswer(question) || driveSaverAnswer(questionForContext) || legalResearchAnswer(questionForContext));
-      if (localIdentity) {
-        echoMsg.setAttribute('data-ai-answer-text', localIdentity);
-        echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(localIdentity);
-        var rememberedLocal = rememberChatExchange(code, question, localIdentity);
-        updateRoomIntelligence(code, rememberedLocal, focus);
-      } else {
-        echoMsg.innerHTML = '<strong>Charlie Echo:</strong> Consultando API segura da Charlie Echo...';
-      }
+      echoMsg.innerHTML = '<strong>Charlie Echo:</strong> Consultando API segura da Charlie Echo...';
       windowEl.querySelectorAll('.ai-message-empty').forEach(function(item){ item.remove(); });
       windowEl.appendChild(userMsg);
       windowEl.appendChild(echoMsg);
       input.value = '';
       if(uploadManager) uploadManager.clear();
       keepChatInView(card, echoMsg);
-      if(localIdentity && asksDriveSaver(questionForContext)) {
-        appendDownloadEchoForForm(buildDriveSaverDownloads(questionForContext, code, focus));
-      }
-      if (!localIdentity) {
-        try {
-          var apiPayload = await askCharlieApiPayload(mode, code, focus, contextualQuestion, room);
-          var answer = apiPayload.answer;
-          if(asksPreviousQuestion(question)){
-            var recall = previousQuestionAnswer(question, room);
-            if(recall) answer = recall;
-          }
-          answer = applyCreativeReasoningFrame(answer, question, code, focus);
-          echoMsg.setAttribute('data-ai-answer-text', answer);
-          echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(answer) + renderDriveSaverCard(apiPayload);
-          keepChatInView(card, echoMsg);
-          var remembered = rememberChatExchange(code, question, answer);
-          updateRoomIntelligence(code, remembered, focus);
-          if(shouldOfferDocumentDownloads(questionForContext)) {
-            appendDownloadEchoForForm(buildResponseDownloads(questionForContext, answer, code, focus));
-          }
-        } catch (error) {
-          var fallback = textForMode(mode, code, focus, questionForContext);
-          var safeSummary = room.summary && !/Para pesquisar doutrina e jurisprudencia com seguranca|voce pediu pesquisa juridica guiada|Leitura do pedido: voce pediu pesquisa juridica guiada/i.test(room.summary) ? room.summary : '';
-          if(settings.memory !== false && safeSummary && !asksDoctrineProduction(questionForContext) && !shouldOfferDocumentDownloads(questionForContext)) fallback = 'Vou continuar pela memoria governada desta sala. ' + safeSummary + '\n\n' + fallback;
-          fallback = applyCreativeReasoningFrame(fallback, questionForContext, code, focus);
-          echoMsg.setAttribute('data-ai-answer-text', fallback);
-          echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(fallback) + '<br><br><em>API segura indisponivel agora; mantive fallback local sem dados reais.</em>';
-          keepChatInView(card, echoMsg);
-          var rememberedFallback = rememberChatExchange(code, question, fallback);
-          updateRoomIntelligence(code, rememberedFallback, focus);
-          if(shouldOfferDocumentDownloads(questionForContext)) {
-            appendDownloadEchoForForm(buildResponseDownloads(questionForContext, fallback, code, focus));
-          }
-        }
+      try {
+        var apiPayload = await askCharlieApiPayload(mode, code, focus, contextualQuestion, room);
+        var answer = applyCreativeReasoningFrame(apiPayload.answer, question, code, focus);
+        echoMsg.setAttribute('data-ai-answer-text', answer);
+        echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(answer) + renderDriveSaverCard(apiPayload);
         keepChatInView(card, echoMsg);
+        var remembered = rememberChatExchange(code, question, answer);
+        updateRoomIntelligence(code, remembered, focus);
+        if(shouldOfferDocumentDownloads(questionForContext)) {
+          appendDownloadEchoForForm(buildResponseDownloads(questionForContext, answer, code, focus));
+        }
+      } catch (error) {
+        var apiError = 'Nao consegui consultar a API segura da Charlie Echo agora. Tente novamente em instantes; nao vou substituir por resposta local, para evitar resposta travada ou desatualizada.';
+        echoMsg.setAttribute('data-ai-answer-text', apiError);
+        echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(apiError);
+        keepChatInView(card, echoMsg);
+        var rememberedQuestionOnly = rememberChatExchange(code, question, '');
+        updateRoomIntelligence(code, rememberedQuestionOnly, focus);
       }
+      keepChatInView(card, echoMsg);
     });
   }
 
