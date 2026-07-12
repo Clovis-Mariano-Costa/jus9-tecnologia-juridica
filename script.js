@@ -1676,6 +1676,125 @@ window.jus9DemoLogin = function(form){
     return false;
   }
 
+  function charlieRouteDecision(question, mode, code, room){
+    var currentQuestion = plainQuestionText(question);
+    var route = {
+      id: 'api_geral',
+      label: 'API segura da Charlie Echo',
+      apiFirst: true,
+      useRoomMemory: shouldUseRoomMemoryForQuestion(currentQuestion, room),
+      allowLocalFallback: false,
+      localFallback: '',
+      reason: 'pergunta atual deve ser respondida pela API antes de qualquer recurso local'
+    };
+    if(asksDriveSaverCorrectiveAction(currentQuestion)){
+      route.id = 'drive_correcao_governada';
+      route.label = 'Drive Saver - acao corretiva governada';
+      route.allowLocalFallback = true;
+      route.localFallback = 'driveSaverCorrectiveFallback';
+      route.reason = 'acao operacional de Drive/Docs nao pode cair em pesquisa juridica';
+      return route;
+    }
+    if(asksPreviousQuestion(currentQuestion)){
+      route.id = 'memoria_pergunta_anterior';
+      route.label = 'Memoria da sala - pergunta anterior';
+      route.useRoomMemory = true;
+      route.allowLocalFallback = true;
+      route.localFallback = 'previousQuestionAnswer';
+      route.reason = 'usuario pediu memoria explicita da sala';
+      return route;
+    }
+    if(asksWhereStopped(currentQuestion)){
+      route.id = 'memoria_resumo_sala';
+      route.label = 'Memoria da sala - resumo executivo';
+      route.useRoomMemory = true;
+      route.allowLocalFallback = true;
+      route.localFallback = 'whereStoppedAnswer';
+      route.reason = 'usuario pediu continuidade ou estado da sala';
+      return route;
+    }
+    if(asksCompleteLegalDraft(currentQuestion)){
+      route.id = 'peca_juridica_completa';
+      route.label = 'DAJ - minuta/peca completa';
+      route.reason = 'pedido pede producao documental inteira, nao protocolo de pesquisa';
+      return route;
+    }
+    if(asksDocumentProductionDownload(currentQuestion)){
+      route.id = 'documento_download_local';
+      route.label = 'Documento com download local';
+      route.reason = 'pedido combina documento e arquivo/link de download';
+      return route;
+    }
+    if(asksDajDoctrineBibliographyProduct(currentQuestion)){
+      route.id = 'doutrina_bibliografia_conferida';
+      route.label = 'Doutrina/bibliografia governada';
+      route.reason = 'risco de obra, autor, pagina ou citacao inventada';
+      return route;
+    }
+    if(asksDajJurisprudenceProduct(currentQuestion)){
+      route.id = 'jurisprudencia_produto_daj';
+      route.label = 'Produto jurisprudencial DAJ';
+      route.reason = 'pedido pede transformar precedente em argumento/checklist/quadro';
+      return route;
+    }
+    if(asksSources(currentQuestion)){
+      route.id = 'fontes_juridicas_com_sintese';
+      route.label = 'Fontes juridicas com sintese';
+      route.reason = 'pedido envolve fonte, doutrina, jurisprudencia ou pesquisa';
+      return route;
+    }
+    if(asksStandaloneCurrentQuestion(currentQuestion)){
+      route.id = 'pergunta_nova_sem_memoria';
+      route.label = 'Pergunta nova, sem memoria da sala';
+      route.useRoomMemory = false;
+      route.reason = 'pergunta conceitual/definitoria deve ignorar historico antigo';
+      return route;
+    }
+    if(mode === 'social'){
+      route.id = 'social_acolhimento';
+      route.label = 'Modulo social/cidadao';
+      route.reason = 'modo social exige linguagem simples, triagem e encaminhamento humano';
+      return route;
+    }
+    return route;
+  }
+
+  function localFallbackForRoute(route, question, mode, code, focus, room){
+    if(!route || !route.allowLocalFallback) return '';
+    var currentQuestion = plainQuestionText(question);
+    if(route.localFallback === 'driveSaverCorrectiveFallback') return driveSaverCorrectiveFallback(currentQuestion);
+    if(route.localFallback === 'previousQuestionAnswer') return previousQuestionAnswer(currentQuestion, room);
+    if(route.localFallback === 'whereStoppedAnswer') return whereStoppedAnswer(currentQuestion, room, code, focus);
+    return '';
+  }
+
+  function criticalBibliographicCorrection(question){
+    return [
+      'Correcao bibliografica governada',
+      '',
+      'A expressao parece se referir a obra "A moderna teoria do fato punivel", de Juarez Cirino dos Santos.',
+      '',
+      'Eu nao devo atribuir essa obra a Geraldo Prado nem inventar edicao, pagina ou citacao literal sem fonte conferida.',
+      '',
+      'Fontes para conferencia:',
+      '- LexML: https://www.lexml.gov.br/urn/urn%3Alex%3Abr%3Arede.virtual.bibliotecas%3Alivro%3A2000%3B000578592',
+      '- TJRJ Sophia: https://www3.tjrj.jus.br/sophia_web/acervo/detalhe/19139',
+      '',
+      'Leitura segura: trate como referencia de dogmatica penal sobre estrutura do fato punivel/crime, categorias analiticas e limites de imputacao. Para uso em peca, aula ou parecer, confira catalogo, edicao consultada e pagina antes de citar.'
+    ].join('\n');
+  }
+
+  function enforceCriticalAnswerGuards(answer, question, route){
+    var text = String(answer || '');
+    var q = plainAiText(plainQuestionText(question));
+    var routeId = route && route.id || '';
+    var asksFatoPunivel = /\bfato punivel\b/.test(q) || /\bfato punível\b/.test(String(question || '').toLowerCase());
+    if(asksFatoPunivel && (/geraldo prado/i.test(text) || (routeId === 'doutrina_bibliografia_conferida' && !/juarez\s+cirino/i.test(text)))){
+      return criticalBibliographicCorrection(question);
+    }
+    return text;
+  }
+
   function apiModeFor(mode){
     if (mode === 'social') return 'social';
     return 'profissional';
@@ -2037,12 +2156,15 @@ window.jus9DemoLogin = function(form){
     return '[REGRA BIBLIOGRAFICA DE NAO ALUCINACAO]\n' + lines.join('\n');
   }
 
-  function buildApiMessage(mode, code, focus, question, identityContext){
+  function buildApiMessage(mode, code, focus, question, identityContext, routeDecision){
+    routeDecision = routeDecision || charlieRouteDecision(question, mode, code, null);
     return [
       'Contexto publico demonstrativo da Jus 9 Tecnologia Juridica.',
       'MVP/dossie: ' + code + '.',
       'Foco do ambiente: ' + focus + '.',
       'Modo solicitado no frontend: ' + mode + '.',
+      'Decisao de roteamento da orquestra: ' + routeDecision.id + ' | ' + routeDecision.label + ' | apiFirst=' + String(routeDecision.apiFirst) + ' | useRoomMemory=' + String(routeDecision.useRoomMemory) + ' | fallbackLocalPermitido=' + String(routeDecision.allowLocalFallback) + '. Motivo: ' + routeDecision.reason + '.',
+      'Regra operacional dura: consulte e responda pela API segura primeiro. Fallback local so pode aparecer quando fallbackLocalPermitido=true e deve declarar limite operacional, sem fingir execucao, fonte, link, arquivo ou certeza.',
       'Rota normativa escolhida antes da resposta: ' + normativeRouteLabel(question, mode, code) + '.',
       'Regra de foco: a [PERGUNTA ATUAL] e o comando principal. Use memoria da sala apenas quando a pergunta pedir continuidade, ultima resposta, onde paramos, salvamento de resposta anterior ou contexto explicitamente anterior. Para pergunta nova, conceitual ou definitoria, ignore historico antigo e responda direto ao que foi perguntado.',
       'Ordem obrigatoria da Charlie Echo: 1) Prioritario; 2) Principios e clausulas petreas; 3) Constituicao; 4) Leis internas; 5) Regimentos do ambiente; 6) Protocolos. Protocolos sao ferramentas, nao mandamento maior.',
@@ -2091,7 +2213,7 @@ window.jus9DemoLogin = function(form){
     }
   }
 
-  async function askCharlieApiPayload(mode, code, focus, question, room){
+  async function askCharlieApiPayload(mode, code, focus, question, room, routeDecision){
     function contaminatedApiMemory(text){
       return /Para pesquisar doutrina e jurisprudencia com seguranca|voce pediu pesquisa juridica guiada|Leitura do pedido: voce pediu pesquisa juridica guiada|Caminho escolhido: escutar|Vou continuar pela memoria governada|API segura indisponivel|mantive fallback local/i.test(String(text || ''));
     }
@@ -2112,18 +2234,20 @@ window.jus9DemoLogin = function(form){
       }).filter(function(m){ return m.content; })
     } : null;
     var identityContext = await loadGovernedIdentityContext(code);
+    routeDecision = routeDecision || charlieRouteDecision(question, mode, code, room);
     var response = await fetch('https://charlieecho.jus9tecnologia.com.br/api/ia', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         mode: apiModeFor(mode),
-        message: buildApiMessage(mode, code, focus, question, identityContext),
+        route: routeDecision,
+        message: buildApiMessage(mode, code, focus, question, identityContext, routeDecision),
         room: apiRoom
       })
     });
     var data = await response.json().catch(function(){ return null; });
-    if (response.ok && data && typeof data.answer === 'string' && data.answer.trim()) return Object.assign({}, data, { answer:data.answer.trim() });
-    if (data && typeof data.answer === 'string' && data.answer.trim()) return Object.assign({}, data, { answer:data.answer.trim() });
+    if (response.ok && data && typeof data.answer === 'string' && data.answer.trim()) return Object.assign({}, data, { answer:data.answer.trim(), route:routeDecision });
+    if (data && typeof data.answer === 'string' && data.answer.trim()) return Object.assign({}, data, { answer:data.answer.trim(), route:routeDecision });
     throw new Error((data && (data.error || data.message)) || 'API sem resposta textual reconhecida.');
   }
 
@@ -2134,8 +2258,14 @@ window.jus9DemoLogin = function(form){
 
   function plainQuestionText(question){
     var text = String(question || '');
-    var current = /\[PERGUNTA ATUAL\]\s*([\s\S]+)$/i.exec(text);
-    if(current && current[1]) text = current[1];
+    var matches = Array.prototype.slice.call(text.matchAll ? text.matchAll(/\[PERGUNTA ATUAL\]\s*/gi) : []);
+    if(matches.length){
+      var last = matches[matches.length - 1];
+      text = text.slice(last.index + last[0].length);
+    } else {
+      var current = /\[PERGUNTA ATUAL\]\s*([\s\S]+)$/i.exec(text);
+      if(current && current[1]) text = current[1];
+    }
     text = text.replace(/\[RESUMO EXECUTIVO DA SALA\][\s\S]*?\[PERGUNTA ATUAL\]/i, '');
     text = text.replace(/\n*\[ANEXOS DO USUARIO - UPLOAD LOCAL GOVERNADO\][\s\S]*$/i, '');
     return text.replace(/\s+/g, ' ').trim();
@@ -3688,6 +3818,7 @@ window.jus9DemoLogin = function(form){
       var attachments = uploadManager ? await uploadManager.read() : [];
       var attachmentContext = buildAttachmentContext(attachments);
       var questionForContext = attachmentContext ? question + '\n\n' + attachmentContext : question;
+      var routeDecision = charlieRouteDecision(questionForContext, mode, code, room);
       var contextualQuestion = buildQuestionWithRoom(questionForContext, room, settings, code, focus);
       var userMsg = document.createElement('div');
       userMsg.className = 'ai-message ai-message-user';
@@ -3704,8 +3835,9 @@ window.jus9DemoLogin = function(form){
       if(uploadManager) uploadManager.clear();
       keepChatInView(card, echoMsg);
       try {
-        var apiPayload = await askCharlieApiPayload(mode, code, focus, contextualQuestion, room);
-        var answer = applyCreativeReasoningFrame(apiPayload.answer, question, code, focus);
+        var apiPayload = await askCharlieApiPayload(mode, code, focus, contextualQuestion, room, routeDecision);
+        var guardedAnswer = enforceCriticalAnswerGuards(apiPayload.answer, questionForContext, apiPayload.route || routeDecision);
+        var answer = applyCreativeReasoningFrame(guardedAnswer, question, code, focus);
         echoMsg.setAttribute('data-ai-answer-text', answer);
         echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(answer) + renderDriveSaverCard(apiPayload);
         keepChatInView(card, echoMsg);
@@ -3715,6 +3847,16 @@ window.jus9DemoLogin = function(form){
           appendDownloadEchoForForm(buildResponseDownloads(questionForContext, answer, code, focus));
         }
       } catch (error) {
+        var localFallback = localFallbackForRoute(routeDecision, questionForContext, mode, code, focus, room);
+        if(localFallback){
+          var fallbackAnswer = applyCreativeReasoningFrame(localFallback, question, code, focus);
+          echoMsg.setAttribute('data-ai-answer-text', fallbackAnswer);
+          echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(fallbackAnswer);
+          keepChatInView(card, echoMsg);
+          var rememberedFallback = rememberChatExchange(code, question, fallbackAnswer);
+          updateRoomIntelligence(code, rememberedFallback, focus);
+          return;
+        }
         var apiError = 'Nao consegui consultar a API segura da Charlie Echo agora. Tente novamente em instantes; nao vou substituir por resposta local, para evitar resposta travada ou desatualizada.';
         echoMsg.setAttribute('data-ai-answer-text', apiError);
         echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(apiError);

@@ -25,6 +25,12 @@ const checks = [
     args: ["scripts/audit-charlie-echo-mvp-personas.mjs"]
   },
   {
+    label: "Roteamento API-primeiro da Charlie Echo",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-charlie-echo-routing.mjs"]
+  },
+  {
     label: "Matriz controlada de RLS",
     cwd: portalRoot,
     command: process.execPath,
