@@ -15,6 +15,10 @@ for (const pattern of [
   "apiFirst: true",
   "localFallbackForRoute",
   "fallbackLocalPermitido",
+  "postCharlieApiBody",
+  "compactApiQuestionForRetry",
+  "retry_compacto",
+  "Detalhe:",
   "Regra operacional dura: consulte e responda pela API segura primeiro",
   "function asksDajAnalysisWithUpload",
   "function dajOperativeDeliveryInstruction",
@@ -40,6 +44,8 @@ assert(submitBlock.indexOf("charlieRouteDecision(questionForContext") >= 0, "sub
 assert(submitBlock.indexOf("askCharlieApiPayload") >= 0, "submit: chamada da API ausente");
 assert(submitBlock.includes("askCharlieApiPayload(mode, code, focus, contextualQuestion, room, routeDecision)"), "submit: rota original precisa acompanhar payload da API");
 assert(submitBlock.indexOf("enforceCriticalAnswerGuards") > submitBlock.indexOf("askCharlieApiPayload"), "submit: guarda critica precisa ocorrer depois da API");
+assert(script.indexOf("postCharlieApiBody") < script.indexOf("askCharlieApiPayload"), "API: helper de POST precisa existir antes do uso");
+assert(script.includes("compactApiQuestionForRetry(question, code, focus)"), "API: retry compacto precisa reduzir contexto contaminado/grande");
 assert(submitBlock.indexOf("localFallbackForRoute") > submitBlock.indexOf("catch (error)"), "submit: fallback local deve existir apenas no catch");
 assert(!/catch \(error\)[\s\S]{0,1200}textForMode/.test(submitBlock), "submit: catch nao pode chamar textForMode como fallback generico");
 assert(!/catch \(error\)[\s\S]{0,1200}legalResearchAnswer/.test(submitBlock), "submit: catch nao pode cair em protocolo local de pesquisa juridica");

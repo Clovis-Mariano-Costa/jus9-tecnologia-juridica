@@ -2265,6 +2265,60 @@ window.jus9DemoLogin = function(form){
     }
   }
 
+  function charlieApiErrorDetail(response, data, fallback){
+    var status = response && response.status ? 'HTTP ' + response.status : '';
+    var detail = data && (data.error || data.message || data.answer || data.reason) ? String(data.error || data.message || data.answer || data.reason) : '';
+    return [status, detail || fallback || 'API sem resposta textual reconhecida.'].filter(Boolean).join(' - ');
+  }
+
+  function isRetryableCharlieApiFailure(response, data){
+    var status = response && response.status ? response.status : 0;
+    if(status === 408 || status === 413 || status === 429 || status === 500 || status === 502 || status === 503 || status === 504) return true;
+    if(response && response.ok && (!data || typeof data.answer !== 'string' || !data.answer.trim())) return true;
+    return false;
+  }
+
+  function compactApiQuestionForRetry(question, code, focus){
+    var plain = plainQuestionText(question || '').slice(0, 3200);
+    return [
+      '[PERGUNTA ATUAL]',
+      plain || String(question || '').slice(0, 3200),
+      '',
+      '[CONTEXTO REDUZIDO PELO PORTAL]',
+      'A primeira chamada completa falhou, expirou ou ficou grande. Responda pela API segura com base na pergunta atual, sem depender de memoria contaminada da sala.',
+      'MVP: ' + (code || 'MVP'),
+      'Foco: ' + (focus || 'contexto demonstrativo do MVP')
+    ].join('\n');
+  }
+
+  async function postCharlieApiBody(body, timeoutMs){
+    var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    var timer = controller ? setTimeout(function(){ controller.abort(); }, timeoutMs || 45000) : null;
+    try {
+      var response = await fetch('https://charlieecho.jus9tecnologia.com.br/api/ia', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller ? controller.signal : undefined,
+        body: JSON.stringify(body)
+      });
+      var data = await response.json().catch(function(){ return null; });
+      return { response:response, data:data };
+    } catch (error) {
+      if(error && error.name === 'AbortError') {
+        var timeoutError = new Error('Tempo limite ao consultar a API segura da Charlie Echo.');
+        timeoutError.apiStatus = 'timeout';
+        throw timeoutError;
+      }
+      throw error;
+    } finally {
+      if(timer) clearTimeout(timer);
+    }
+  }
+
+  function successfulCharlieApiPayload(response, data){
+    return response && response.ok && data && typeof data.answer === 'string' && data.answer.trim();
+  }
+
   async function askCharlieApiPayload(mode, code, focus, question, room, routeDecision){
     function contaminatedApiMemory(text){
       return /Para pesquisar doutrina e jurisprudencia com seguranca|voce pediu pesquisa juridica guiada|Leitura do pedido: voce pediu pesquisa juridica guiada|Caminho escolhido: escutar|Vou continuar pela memoria governada|API segura indisponivel|mantive fallback local/i.test(String(text || ''));
@@ -2287,20 +2341,31 @@ window.jus9DemoLogin = function(form){
     } : null;
     var identityContext = await loadGovernedIdentityContext(code);
     routeDecision = routeDecision || charlieRouteDecision(question, mode, code, room);
-    var response = await fetch('https://charlieecho.jus9tecnologia.com.br/api/ia', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        mode: apiModeFor(mode),
-        route: routeDecision,
-        message: buildApiMessage(mode, code, focus, question, identityContext, routeDecision),
-        room: apiRoom
-      })
-    });
-    var data = await response.json().catch(function(){ return null; });
-    if (response.ok && data && typeof data.answer === 'string' && data.answer.trim()) return Object.assign({}, data, { answer:data.answer.trim(), route:routeDecision });
+    var requestBody = {
+      mode: apiModeFor(mode),
+      route: routeDecision,
+      message: buildApiMessage(mode, code, focus, question, identityContext, routeDecision),
+      room: apiRoom
+    };
+    var first = await postCharlieApiBody(requestBody, 45000);
+    var response = first.response;
+    var data = first.data;
+    if (successfulCharlieApiPayload(response, data)) return Object.assign({}, data, { answer:data.answer.trim(), route:routeDecision, apiRecovery:'primeira_tentativa' });
     if (data && typeof data.answer === 'string' && data.answer.trim()) return Object.assign({}, data, { answer:data.answer.trim(), route:routeDecision });
-    throw new Error((data && (data.error || data.message)) || 'API sem resposta textual reconhecida.');
+    if(isRetryableCharlieApiFailure(response, data)){
+      var compactQuestion = compactApiQuestionForRetry(question, code, focus);
+      var retry = await postCharlieApiBody({
+        mode: apiModeFor(mode),
+        route: Object.assign({}, routeDecision, { retryCompacto:true }),
+        message: buildApiMessage(mode, code, focus, compactQuestion, identityContext, routeDecision),
+        room: null
+      }, 45000);
+      if (successfulCharlieApiPayload(retry.response, retry.data)) {
+        return Object.assign({}, retry.data, { answer:retry.data.answer.trim(), route:routeDecision, apiRecovery:'retry_compacto' });
+      }
+      throw new Error(charlieApiErrorDetail(retry.response, retry.data, charlieApiErrorDetail(response, data)));
+    }
+    throw new Error(charlieApiErrorDetail(response, data));
   }
 
   async function askCharlieApi(mode, code, focus, question, room){
@@ -4259,7 +4324,8 @@ window.jus9DemoLogin = function(form){
           updateRoomIntelligence(code, rememberedFallback, focus);
           return;
         }
-        var apiError = 'Nao consegui consultar a API segura da Charlie Echo agora. Tente novamente em instantes; nao vou substituir por resposta local, para evitar resposta travada ou desatualizada.';
+        var diagnostic = error && error.message ? String(error.message).slice(0, 260) : 'falha sem detalhe tecnico retornado.';
+        var apiError = 'Nao consegui concluir a consulta na API segura da Charlie Echo agora. Detalhe: ' + diagnostic + ' A pergunta ficou preservada nesta sala; tente novamente em instantes ou abra uma nova sala se o contexto estiver muito grande.';
         echoMsg.setAttribute('data-ai-answer-text', apiError);
         echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(apiError);
         keepChatInView(card, echoMsg);

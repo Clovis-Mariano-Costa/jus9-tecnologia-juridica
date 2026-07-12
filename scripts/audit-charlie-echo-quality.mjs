@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
-const expectedScriptVersion = "script.js?v=20260712-charlie-drive-daj-card-v1";
+const expectedScriptVersion = "script.js?v=20260712-charlie-api-diagnostico-v1";
 
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), "utf8");
@@ -17,7 +17,7 @@ const checks = [
   {
     name: "chat MVP envia message para API da Charlie",
     file: "script.js",
-    patterns: ["https://charlieecho.jus9tecnologia.com.br/api/ia", "message: buildApiMessage", "route: routeDecision", "charlieRouteDecision", "apiFirst: true", "fallbackLocalPermitido", "localFallbackForRoute", "enforceCriticalAnswerGuards", "mvpPersonaRules", "mvpPersonalityInstruction", "Personalidade operacional do MVP", "Assinatura criativa do ambiente", "Limite duro do ambiente", "mvpIntegrationContracts", "mvpIntegrationInstruction", "Contrato operacional especializado", "Dossie ativo", "Padrao replicavel", "mvpInstrumentPackages", "mvpInstrumentAnswer", "Modulo social/cidadao", "Orientacao social", "Encaminhamento humano", "data-mvp-instrument-panel", "Protocolo Centelha Criativa 5.4", "applyCreativeReasoningFrame", "Leitura do pedido", "Caminho escolhido", "Proximo passo criativo", "Rota normativa escolhida antes da resposta", "Decisao de roteamento da orquestra", "Ordem obrigatoria da Charlie Echo", "Principios e clausulas petreas", "As Tres Leis da Robotica de Isaac Asimov"],
+    patterns: ["https://charlieecho.jus9tecnologia.com.br/api/ia", "message: buildApiMessage", "route: routeDecision", "charlieRouteDecision", "apiFirst: true", "fallbackLocalPermitido", "localFallbackForRoute", "postCharlieApiBody", "compactApiQuestionForRetry", "retry_compacto", "Tempo limite ao consultar a API segura", "Detalhe:", "enforceCriticalAnswerGuards", "mvpPersonaRules", "mvpPersonalityInstruction", "Personalidade operacional do MVP", "Assinatura criativa do ambiente", "Limite duro do ambiente", "mvpIntegrationContracts", "mvpIntegrationInstruction", "Contrato operacional especializado", "Dossie ativo", "Padrao replicavel", "mvpInstrumentPackages", "mvpInstrumentAnswer", "Modulo social/cidadao", "Orientacao social", "Encaminhamento humano", "data-mvp-instrument-panel", "Protocolo Centelha Criativa 5.4", "applyCreativeReasoningFrame", "Leitura do pedido", "Caminho escolhido", "Proximo passo criativo", "Rota normativa escolhida antes da resposta", "Decisao de roteamento da orquestra", "Ordem obrigatoria da Charlie Echo", "Principios e clausulas petreas", "As Tres Leis da Robotica de Isaac Asimov"],
   },
   {
     name: "chat MVP possui ferramentas de qualidade",
@@ -97,7 +97,7 @@ const checks = [
   {
     name: "service worker nao prende MVP antigo",
     file: "service-worker.js",
-    patterns: ["jus9-pwa-v22-2026-07-12-charlie-drive-daj-card", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
+    patterns: ["jus9-pwa-v23-2026-07-12-charlie-api-diagnostico", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
   },
   {
     name: "casa propria da Charlie Echo publicada",
