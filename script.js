@@ -1099,6 +1099,26 @@ window.jus9DemoLogin = function(form){
     return /\b(link|fonte|fontes|confiavel|confiáveis|confiaveis|oficial|pesquisar|pesquisa|busque|buscar|procure|procurar|jurisprudencia|jurisprudência|precedente|acordao|acórdão|lei|legislacao|legislação|doutrina|bibliografia|obra|livro|artigo cientifico|tese|dissertacao|dissertação)\b/.test(q);
   }
 
+  function asksActiveLegalCitationResearch(question){
+    var q = String(question || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if(asksDocumentProductionDownload(question)) return false;
+    if(asksCompleteLegalDraft(question)) return false;
+    var wantsCitation = /\b(citacao|citacoes|cite|citar|trecho literal|pagina|paginas|referencia com pagina|doutrina com pagina|doutrina e pagina|autor e pagina)\b/.test(q);
+    var wantsDoctrineOrSource = /\b(doutrina|doutrinario|doutrinaria|obra|livro|artigo|tese|dissertacao|bibliografia|fonte|fontes|autor|autores)\b/.test(q);
+    var legalSignal = /\b(direito|juridico|juridica|constitucional|civil|penal|processual|propriedade|alimentos|contrato|responsabilidade|familia|trabalhista|tributario|administrativo|consumidor)\b/.test(q);
+    return wantsCitation && (wantsDoctrineOrSource || legalSignal);
+  }
+
+  function activeLegalCitationInstruction(question){
+    if(!asksActiveLegalCitationResearch(question)) return '';
+    return [
+      '[PESQUISA JURIDICA ATIVA - PORTAL]',
+      'A pergunta pede citacao, doutrina, pagina ou fonte verificavel. A Charlie deve tentar consulta ativa pela API/backend antes de responder.',
+      'Nao responda apenas com lista de fontes para o usuario pesquisar. Se houver tema minimo, pesquise e entregue sintese, fonte, URL, pagina quando verificavel, nivel de confianca e limite de uso.',
+      'Se faltar tema, obra, autor ou arquivo minimo, faca uma pergunta curta de recorte. Nunca invente autor, obra, pagina, julgado ou trecho literal.'
+    ].join('\n');
+  }
+
   function asksDocumentProductionDownload(question){
     var q = String(question || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     var wantsDocument = /\b(minuta|modelo|contrato|peticao|peca|documento|oficio|requerimento|manifestacao|recurso|contestacao|inicial)\b/.test(q);
@@ -1752,6 +1772,12 @@ window.jus9DemoLogin = function(form){
       route.reason = 'pedido combina documento e arquivo/link de download';
       return route;
     }
+    if(asksActiveLegalCitationResearch(currentQuestion)){
+      route.id = 'pesquisa_citacao_doutrinaria_ativa';
+      route.label = 'Pesquisa ativa de citacao/doutrina com pagina';
+      route.reason = 'pedido exige consulta ativa antes de autor, pagina, obra ou citacao';
+      return route;
+    }
     if(asksDajDoctrineBibliographyProduct(currentQuestion)){
       route.id = 'doutrina_bibliografia_conferida';
       route.label = 'Doutrina/bibliografia governada';
@@ -2223,6 +2249,7 @@ window.jus9DemoLogin = function(form){
       'Se o usuario for membro da equipe pelo contexto autenticado, Charlie pode sugerir melhoria normativa quando detectar lacuna, risco, contradicao ou oportunidade relevante. Visitante publico recebe orientacao; equipe recebe proposta; Fundador autoriza mudanca estrutural.',
       governedIdentityInstruction(identityContext),
       bibliographicVerificationInstruction(question),
+      activeLegalCitationInstruction(question),
       dajOperativeDeliveryInstruction(code, question, routeDecision),
       'Responda como Charlie Echo da Costa, I.A generativa multimodal jurista com governanca humana.',
       mvpPersonalityInstruction(code),

@@ -19,6 +19,10 @@ for (const pattern of [
   "compactApiQuestionForRetry",
   "retry_compacto",
   "Detalhe:",
+  "asksActiveLegalCitationResearch",
+  "activeLegalCitationInstruction",
+  "pesquisa_citacao_doutrinaria_ativa",
+  "[PESQUISA JURIDICA ATIVA - PORTAL]",
   "Regra operacional dura: consulte e responda pela API segura primeiro",
   "function asksDajAnalysisWithUpload",
   "function dajOperativeDeliveryInstruction",
@@ -56,6 +60,7 @@ const routeBlock = routeBlockStart >= 0 && routeBlockEnd > routeBlockStart ? scr
 assert(routeBlock.includes("asksCompleteLegalDraft"), "roteador: pedido de peca completa deve ter rota propria");
 assert(routeBlock.includes("asksDajAnalysisWithUpload"), "roteador: analise DAJ/upload deve ter rota propria");
 assert(routeBlock.includes("asksDocumentProductionDownload"), "roteador: documento/download deve ter rota propria");
+assert(routeBlock.includes("asksActiveLegalCitationResearch"), "roteador: citacao/doutrina com pagina deve ter rota propria");
 assert(routeBlock.includes("asksDajDoctrineBibliographyProduct"), "roteador: doutrina/bibliografia deve ter rota propria");
 assert(routeBlock.includes("asksStandaloneCurrentQuestion"), "roteador: pergunta nova deve ignorar memoria antiga");
 

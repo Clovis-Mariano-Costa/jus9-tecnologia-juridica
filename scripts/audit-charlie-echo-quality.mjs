@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
-const expectedScriptVersion = "script.js?v=20260712-charlie-api-diagnostico-v1";
+const expectedScriptVersion = "script.js?v=20260712-charlie-pesquisa-ativa-v1";
 
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), "utf8");
@@ -17,7 +17,7 @@ const checks = [
   {
     name: "chat MVP envia message para API da Charlie",
     file: "script.js",
-    patterns: ["https://charlieecho.jus9tecnologia.com.br/api/ia", "message: buildApiMessage", "route: routeDecision", "charlieRouteDecision", "apiFirst: true", "fallbackLocalPermitido", "localFallbackForRoute", "postCharlieApiBody", "compactApiQuestionForRetry", "retry_compacto", "Tempo limite ao consultar a API segura", "Detalhe:", "enforceCriticalAnswerGuards", "mvpPersonaRules", "mvpPersonalityInstruction", "Personalidade operacional do MVP", "Assinatura criativa do ambiente", "Limite duro do ambiente", "mvpIntegrationContracts", "mvpIntegrationInstruction", "Contrato operacional especializado", "Dossie ativo", "Padrao replicavel", "mvpInstrumentPackages", "mvpInstrumentAnswer", "Modulo social/cidadao", "Orientacao social", "Encaminhamento humano", "data-mvp-instrument-panel", "Protocolo Centelha Criativa 5.4", "applyCreativeReasoningFrame", "Leitura do pedido", "Caminho escolhido", "Proximo passo criativo", "Rota normativa escolhida antes da resposta", "Decisao de roteamento da orquestra", "Ordem obrigatoria da Charlie Echo", "Principios e clausulas petreas", "As Tres Leis da Robotica de Isaac Asimov"],
+    patterns: ["https://charlieecho.jus9tecnologia.com.br/api/ia", "message: buildApiMessage", "route: routeDecision", "charlieRouteDecision", "apiFirst: true", "fallbackLocalPermitido", "localFallbackForRoute", "postCharlieApiBody", "compactApiQuestionForRetry", "retry_compacto", "Tempo limite ao consultar a API segura", "Detalhe:", "asksActiveLegalCitationResearch", "activeLegalCitationInstruction", "pesquisa_citacao_doutrinaria_ativa", "[PESQUISA JURIDICA ATIVA - PORTAL]", "enforceCriticalAnswerGuards", "mvpPersonaRules", "mvpPersonalityInstruction", "Personalidade operacional do MVP", "Assinatura criativa do ambiente", "Limite duro do ambiente", "mvpIntegrationContracts", "mvpIntegrationInstruction", "Contrato operacional especializado", "Dossie ativo", "Padrao replicavel", "mvpInstrumentPackages", "mvpInstrumentAnswer", "Modulo social/cidadao", "Orientacao social", "Encaminhamento humano", "data-mvp-instrument-panel", "Protocolo Centelha Criativa 5.4", "applyCreativeReasoningFrame", "Leitura do pedido", "Caminho escolhido", "Proximo passo criativo", "Rota normativa escolhida antes da resposta", "Decisao de roteamento da orquestra", "Ordem obrigatoria da Charlie Echo", "Principios e clausulas petreas", "As Tres Leis da Robotica de Isaac Asimov"],
   },
   {
     name: "chat MVP possui ferramentas de qualidade",
@@ -62,7 +62,7 @@ const checks = [
   {
     name: "Charlie pesquisa doutrina e jurisprudencia com fontes",
     file: "script.js",
-    patterns: ["trustedLegalSources", "legalResearchAnswer", "legalSynthesisWithSourcesAnswer", "Direito de propriedade - sintese com fontes", "Constituicao Federal, art. 5, XXII e XXIII", "buildOperationalResearchAnswer", "Pesquisa juridica operacional", "Busca pronta no Google limitada ao TJSC", "Google Academico com busca pronta", "Como fichar cada resultado", "classifyLinkTrust", "trustedSourcesSummary", "buildSourceLinesFromRoom", "STF - Pesquisa de jurisprudencia", "TJSC - Portal da jurisprudencia", "Portal de Periodicos CAPES", "BDTD - Biblioteca Digital Brasileira de Teses e Dissertacoes", "BDTD - teses e dissertacoes", "bibliographicVerificationInstruction", "Regra bibliografica dura", "A moderna teoria do fato punivel", "doctrineBibliographyProductAnswer", "Conferencia bibliografica governada", "lista fixa"],
+    patterns: ["trustedLegalSources", "legalResearchAnswer", "legalSynthesisWithSourcesAnswer", "Direito de propriedade - sintese com fontes", "Constituicao Federal, art. 5, XXII e XXIII", "buildOperationalResearchAnswer", "Pesquisa juridica operacional", "Busca pronta no Google limitada ao TJSC", "Google Academico com busca pronta", "Como fichar cada resultado", "classifyLinkTrust", "trustedSourcesSummary", "buildSourceLinesFromRoom", "STF - Pesquisa de jurisprudencia", "TJSC - Portal da jurisprudencia", "Portal de Periodicos CAPES", "BDTD - Biblioteca Digital Brasileira de Teses e Dissertacoes", "BDTD - teses e dissertacoes", "bibliographicVerificationInstruction", "Regra bibliografica dura", "activeLegalCitationInstruction", "pesquise e entregue sintese", "A moderna teoria do fato punivel", "doctrineBibliographyProductAnswer", "Conferencia bibliografica governada", "lista fixa"],
   },
   {
     name: "acoes corretivas do Drive Saver bypassam fallback juridico",
@@ -77,7 +77,7 @@ const checks = [
   {
     name: "painel de saude publicado",
     file: "saude-charlie-echo.html",
-    patterns: ["operacional da Charlie Echo", "Protocolo 4.1", "Centelha Criativa 5.4", "Salas inteligentes", "Atualizar resumo", "Onde paramos?", "Fontes", "doutrina/jurisprudencia", "Baixar PDF", "Gerar PDF", "OCR local governado", "Ativo v5.6", "Ativos v5.7", "card DAJ/Drive"],
+    patterns: ["operacional da Charlie Echo", "Protocolo 4.1", "Centelha Criativa 5.4", "Salas inteligentes", "Atualizar resumo", "Onde paramos?", "Fontes", "pesquisa ativa de citacao", "Baixar PDF", "Gerar PDF", "OCR local governado", "Ativo v5.6", "Ativos v5.8", "card DAJ/Drive"],
   },
   {
     name: "manual publico publicado",
@@ -97,7 +97,7 @@ const checks = [
   {
     name: "service worker nao prende MVP antigo",
     file: "service-worker.js",
-    patterns: ["jus9-pwa-v23-2026-07-12-charlie-api-diagnostico", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
+    patterns: ["jus9-pwa-v24-2026-07-12-charlie-pesquisa-ativa", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
   },
   {
     name: "casa propria da Charlie Echo publicada",
