@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
-const expectedScriptVersion = "script.js?v=20260705-chat-hub-v1";
+const expectedScriptVersion = "script.js?v=20260712-jurisprudencia-daj-v1";
 
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), "utf8");
@@ -22,7 +22,7 @@ const checks = [
   {
     name: "chat MVP possui ferramentas de qualidade",
     file: "script.js",
-    patterns: ["Melhorar resposta", "Fontes", "Atualizar resumo", "Resumo executivo", "Gerar PDF", "Baixar PDF", "Abrir no Drive", "link clicavel de download", "Renomear", "application/pdf", ".pdf", "buildPdfBlob", "download-link", "Helvetica-Bold", "Informacoes do pacote", "Historico recente", "Fontes e links confiaveis", "Pagina ", "pdfSafeText", "pdfLiteral", "eef4ff", "asksDocumentProductionDownload", "buildResponseDownloads", "donwload", "asksCompleteLegalDraft", "shouldOfferDocumentDownloads", "completeLegalDraftAnswer", "askCharlieApiPayload", "renderDriveSaverCard", "drive-saver-result-card", "data-ai-save-drive", "downloadUrl real", "data-ai-layout') || card.getAttribute('data-chat-layout", "Faca uma peticao completa de revisao de alimentos", "download local", "usando somente o conteudo extraido do anexo"],
+    patterns: ["Melhorar resposta", "Fontes", "Atualizar resumo", "Resumo executivo", "Gerar PDF", "Baixar PDF", "Abrir no Drive", "link clicavel de download", "Renomear", "application/pdf", ".pdf", "buildPdfBlob", "download-link", "Helvetica-Bold", "Informacoes do pacote", "Historico recente", "Fontes e links confiaveis", "Pagina ", "pdfSafeText", "pdfLiteral", "eef4ff", "asksDocumentProductionDownload", "buildResponseDownloads", "donwload", "asksCompleteLegalDraft", "shouldOfferDocumentDownloads", "completeLegalDraftAnswer", "askCharlieApiPayload", "renderDriveSaverCard", "drive-saver-result-card", "data-ai-save-drive", "downloadUrl real", "data-ai-layout') || card.getAttribute('data-chat-layout", "Faca uma peticao completa de revisao de alimentos", "download local", "Monte um argumento de peticao com o REsp 2.077.278"],
   },
   {
     name: "chat MVP aceita upload local governado",
@@ -32,7 +32,7 @@ const checks = [
   {
     name: "DAJ integrado como modelo-mae da Charlie Echo",
     file: "script.js",
-    patterns: ["injectMvpIntegrationPanel", "data-daj-integration-panel", "Contrato DAJ ativo", "DAJ-2026-0001", "initCharliePromptFromUrl", "Resuma o DAJ-2026-0001", "jus9DajInitialAttendanceDraftV1", "appendDajDraftFromUrl"],
+    patterns: ["injectMvpIntegrationPanel", "data-daj-integration-panel", "Contrato DAJ ativo", "DAJ-2026-0001", "initCharliePromptFromUrl", "Resuma o DAJ-2026-0001", "jus9DajInitialAttendanceDraftV1", "appendDajDraftFromUrl", "dajJurisprudenceProductPrompts", "Jurisprudencia governada DAJ", "Argumento com precedente", "Checklist probatorio", "Quadro comparativo"],
   },
   {
     name: "hub de configuracoes padroniza botoes da Charlie",
@@ -47,7 +47,7 @@ const checks = [
   {
     name: "estilo do upload local governado",
     file: "style.css",
-    patterns: ["ai-upload-panel", "ai-upload-button", "ai-upload-list", "ai-upload-user-list", "daj-integration-panel", "daj-integration-routes", "daj-integration-prompts", "charlie-control-hub", "charlie-control-section", "charlie-speak-button", "event-quick-nav .event-links"],
+    patterns: ["ai-upload-panel", "ai-upload-button", "ai-upload-list", "ai-upload-user-list", "daj-integration-panel", "daj-integration-routes", "daj-integration-prompts", "daj-jurisprudence-product-panel", "daj-jurisprudence-product-prompts", "charlie-control-hub", "charlie-control-section", "charlie-speak-button", "event-quick-nav .event-links"],
   },
   {
     name: "estilo do cartao Drive Saver",
@@ -62,7 +62,7 @@ const checks = [
   {
     name: "acoes corretivas do Drive Saver bypassam fallback juridico",
     file: "script.js",
-    patterns: ["asksDriveSaverCorrectiveAction", "shouldBypassLocalFallback", "driveSaverCorrectiveFallback", "Protocolo de acao corretiva Drive Saver", "if(asksDriveSaverCorrectiveAction(question)) return '';", "var localIdentity = shouldBypassLocalFallback(questionForContext)", "Recebi isso como acao corretiva de Drive/Docs", "downloadUrl real"],
+    patterns: ["asksDriveSaverCorrectiveAction", "shouldBypassLocalFallback", "driveSaverCorrectiveFallback", "Protocolo de acao corretiva Drive Saver", "if(asksDriveSaverCorrectiveAction(question)) return '';", "var correctiveDrive = driveSaverCorrectiveFallback(cleanQuestion)", "Recebi isso como acao corretiva de Drive/Docs", "downloadUrl real"],
   },
   {
     name: "lider MVP lista ambientes prontos",
@@ -92,17 +92,17 @@ const checks = [
   {
     name: "service worker nao prende MVP antigo",
     file: "service-worker.js",
-    patterns: ["jus9-pwa-v10-2026-07-05-chat-hub", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
+    patterns: ["jus9-pwa-v13-2026-07-12-jurisprudencia-daj", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
   },
   {
     name: "casa propria da Charlie Echo publicada",
     file: "charlie-echo.html",
-    patterns: ["Casa propria da IA", "data-ai-chat", "app-ia-profissional.html#chat-ia", "script.js?v=20260705-chat-hub-v1"],
+    patterns: ["Casa propria da IA", "data-ai-chat", "app-ia-profissional.html#chat-ia", expectedScriptVersion],
   },
   {
     name: "pagina publica da Charlie usa script versionado",
     file: "ia-profissional.html",
-    patterns: ["data-ai-chat", "script.js?v=20260705-chat-hub-v1"],
+    patterns: ["data-ai-chat", expectedScriptVersion],
   },
 ];
 

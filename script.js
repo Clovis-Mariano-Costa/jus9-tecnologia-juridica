@@ -1000,6 +1000,7 @@ window.jus9DemoLogin = function(form){
 
   function normativeRouteLabel(question, mode, code){
     if(asksDriveSaverCorrectiveAction(question)) return 'Prioritario > Principios > Constituicao > Lei do Drive Governado > Regimento ' + (code || 'DAJ') + ' > Protocolo de acao corretiva Drive Saver';
+    if(asksDajJurisprudenceProduct(question)) return 'Prioritario > Principios > Constituicao > Lei de Fontes Conferidas > Regimento ' + (code || 'DAJ') + ' > Protocolo de produto jurisprudencial governado';
     if(asksCompleteLegalDraft(question)) return 'Prioritario > Principios > Constituicao > Lei de Pecas e Minutas > Regimento ' + (code || 'DAJ') + ' > Protocolo de peca completa e upload governado';
     if(asksDocumentProductionDownload(question)) return 'Prioritario > Principios > Constituicao > Lei de Documentos > Regimento ' + (code || 'DAJ') + ' > Protocolo de minuta/download';
     if(asksDriveSaver(question)) return 'Prioritario > Principios > Constituicao > Lei do MiniBackend e Drive Governado > Regimento ' + (code || 'DAJ') + ' > Protocolo Drive Saver';
@@ -1101,6 +1102,30 @@ window.jus9DemoLogin = function(form){
 
   function shouldOfferDocumentDownloads(question){
     return asksDocumentProductionDownload(question) || asksCompleteLegalDraft(question);
+  }
+
+  function dajJurisprudenceProductPrompts(){
+    return [
+      {
+        label:'Argumento com precedente',
+        prompt:'Monte um argumento de peticao com o REsp 2.077.278 sobre golpe do boleto, citando fontes oficiais conferidas, limites de uso no DAJ e revisao humana.'
+      },
+      {
+        label:'Checklist probatorio',
+        prompt:'Monte checklist probatorio do REsp 2.077.278 sobre golpe do boleto e gere link de download em PDF se a classificacao governada permitir.'
+      },
+      {
+        label:'Quadro comparativo',
+        prompt:'Monte quadro comparativo do REsp 2.077.278, distinguindo dados publicos, dados bancarios sigilosos, nexo causal e responsabilidade. Gere arquivo para download se for publico.'
+      }
+    ];
+  }
+
+  function asksDajJurisprudenceProduct(question){
+    var q = plainAiText(question);
+    var hasProduct = /\b(argumento|argumentacao|fundamento|tese|checklist|quadro|comparativo|comparar|peca|peticao|minuta|produto|pacote)\b/.test(q);
+    var hasJuris = /\b(jurisprudencia|precedente|resp|stj|acordao|tese)\b/.test(q);
+    return hasProduct && hasJuris;
   }
 
   function legalDraftSubject(question){
@@ -2484,7 +2509,8 @@ window.jus9DemoLogin = function(form){
     panel.innerHTML =
       '<div class="daj-integration-head"><div><strong>Contrato DAJ ativo</strong><p></p></div><span>modelo-mae</span></div>' +
       '<div class="daj-integration-routes" aria-label="Rotas do DAJ"></div>' +
-      '<div class="daj-integration-prompts" aria-label="Acoes rapidas DAJ"></div>';
+      '<div class="daj-integration-prompts" aria-label="Acoes rapidas DAJ"></div>' +
+      '<div class="daj-jurisprudence-product-panel"><div><strong>Jurisprudencia governada DAJ</strong><p>Transforma ficha conferida em argumento, checklist ou quadro, com Drive Saver quando houver download permitido.</p></div><div class="daj-jurisprudence-product-prompts" aria-label="Produtos jurisprudenciais DAJ"></div></div>';
     panel.querySelector('p').textContent = contract.activeDossier + ' - ' + (focus || 'dossie juridico demonstrativo');
     var routes = panel.querySelector('.daj-integration-routes');
     contract.routes.slice(0, 7).forEach(function(route){
@@ -2510,6 +2536,18 @@ window.jus9DemoLogin = function(form){
         input.focus();
       });
       promptBox.appendChild(button);
+    });
+    var jurisprudenceBox = panel.querySelector('.daj-jurisprudence-product-prompts');
+    dajJurisprudenceProductPrompts().forEach(function(item){
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = item.label;
+      button.setAttribute('data-daj-jurisprudence-product', item.label);
+      button.addEventListener('click', function(){
+        input.value = item.prompt;
+        input.focus();
+      });
+      jurisprudenceBox.appendChild(button);
     });
     windowEl.parentNode.insertBefore(panel, windowEl);
   }
@@ -3429,7 +3467,7 @@ window.jus9DemoLogin = function(form){
     DAJ: [
       'Resuma o DAJ-2026-0001 e indique proximos passos com documentos, prazos, riscos e revisao humana.',
       'Faca uma peticao completa de revisao de alimentos com placeholders, checklist de revisao humana e download local.',
-      'Vou anexar um texto ficticio; redija uma peticao inicial completa usando somente o conteudo extraido do anexo.'
+      'Monte um argumento de peticao com o REsp 2.077.278 sobre golpe do boleto, citando fontes oficiais conferidas.'
     ],
     DEJI: [
       'Crie um roteiro de revisao de contrato empresarial ficticio.',
