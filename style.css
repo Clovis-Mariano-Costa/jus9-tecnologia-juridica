@@ -1349,6 +1349,11 @@ button,input,select,textarea{max-width:100%}
   background:#fffbed;
   color:#3b2f05;
 }
+.drive-saver-result-card.is-decision{
+  border-color:rgba(37,99,235,.22);
+  background:#f7fbff;
+  color:#14233d;
+}
 .drive-saver-result-head{
   display:flex;
   align-items:flex-start;
@@ -1362,6 +1367,9 @@ button,input,select,textarea{max-width:100%}
 }
 .drive-saver-result-card.is-pending .drive-saver-result-head strong{
   color:#4b3103;
+}
+.drive-saver-result-card.is-decision .drive-saver-result-head strong{
+  color:#1d4ed8;
 }
 .drive-saver-result-head p,
 .drive-saver-result-meta,
@@ -1383,6 +1391,11 @@ button,input,select,textarea{max-width:100%}
   border-color:rgba(161,98,7,.18);
   background:#fef3c7;
   color:#713f12;
+}
+.drive-saver-result-card.is-decision .drive-saver-result-status{
+  border-color:rgba(37,99,235,.16);
+  background:#dbeafe;
+  color:#1d4ed8;
 }
 .drive-saver-result-links{
   display:flex;

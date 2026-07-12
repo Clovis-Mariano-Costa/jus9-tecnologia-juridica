@@ -901,32 +901,44 @@ window.jus9DemoLogin = function(form){
 
   function renderDriveSaverCard(payload){
     var data = payload || {};
-    var drive = data.driveSaver || null;
-    if(!drive) return '';
     var artifact = data.artifact || {};
     var decision = artifact.driveDecision || {};
-    var ok = !!drive.ok;
-    var hasDownload = isSafeDriveUrl(drive.downloadUrl);
-    var hasView = isSafeDriveUrl(drive.viewUrl);
-    var hasAudit = isSafeDriveUrl(drive.auditUrl);
-    var hasUsefulStatus = ok || hasDownload || hasView || hasAudit || drive.reason || decision.action;
+    var drive = data.driveSaver || null;
+    var hasArtifactDecision = !!(artifact.kind || decision.classificacao || decision.classification || typeof artifact.shouldSaveToDrive !== 'undefined');
+    if(!drive && !hasArtifactDecision) return '';
+    var ok = !!(drive && drive.ok);
+    var hasDownload = !!(drive && isSafeDriveUrl(drive.downloadUrl));
+    var hasView = !!(drive && isSafeDriveUrl(drive.viewUrl));
+    var hasAudit = !!(drive && isSafeDriveUrl(drive.auditUrl));
+    var hasUsefulStatus = ok || hasDownload || hasView || hasAudit || (drive && drive.reason) || decision.action || hasArtifactDecision;
     if(!hasUsefulStatus) return '';
-    var classification = drive.classificacaoFinal || drive.classification || decision.classificacao || decision.classification || artifact.classificacao || artifact.classification || 'NAO_INFORMADA';
-    var destination = drive.folderName || drive.folderKey || decision.folderName || decision.folderKey || decision.action || '';
-    var status = hasDownload ? 'Download real criado' : (ok ? 'Salvo no Drive' : 'Drive Saver pendente');
+    var governance = artifact.governance || {};
+    var shouldSave = artifact.shouldSaveToDrive === true || governance.shouldSaveToDrive === true;
+    var publicLinkAllowed = artifact.criarLinkDownload === true || governance.publicLinkAllowed === true;
+    var classification = (drive && (drive.classificacaoFinal || drive.classification)) || decision.classificacao || decision.classification || artifact.classificacao || artifact.classification || 'NAO_INFORMADA';
+    var destination = (drive && (drive.pastaDestino || drive.folderName || drive.folderKey)) || decision.pastaDestino || decision.folderName || decision.folderKey || decision.action || '';
+    var status = hasDownload ? 'Download real criado' : (ok ? 'Salvo no Drive' : (shouldSave ? 'Drive Saver preparado' : 'Decisao governada'));
     var links = [
-      driveSaverCardLink(drive.downloadUrl, 'Baixar PDF', 'primary'),
-      driveSaverCardLink(drive.viewUrl, 'Abrir no Drive', ''),
-      driveSaverCardLink(drive.auditUrl, 'Auditoria', '')
+      driveSaverCardLink(drive && drive.downloadUrl, 'Baixar PDF', 'primary'),
+      driveSaverCardLink(drive && drive.viewUrl, 'Abrir no Drive', ''),
+      driveSaverCardLink(drive && drive.auditUrl, 'Auditoria', '')
     ].filter(Boolean).join('');
+    var humanReview = (drive && drive.revisaoHumanaObrigatoria === true) || decision.revisaoHumanaObrigatoria === true || decision.humanReviewRequired === true;
     var meta = [
       'Classificacao: ' + classification,
       destination ? 'Destino: ' + destination : '',
-      drive.humanReviewRequired || decision.humanReviewRequired ? 'Revisao humana: obrigatoria' : ''
+      humanReview ? 'Revisao humana: obrigatoria' : '',
+      hasDownload ? 'Link publico: criado' : (publicLinkAllowed ? 'Link publico: permitido com URL real' : 'Link publico: nao permitido')
     ].filter(Boolean).map(escapeHtml).join(' &middot; ');
-    var note = !ok && drive.reason ? '<p class="drive-saver-result-note">Status tecnico: ' + escapeHtml(drive.reason) + '</p>' : '';
-    return '<section class="drive-saver-result-card ' + (ok ? 'is-ok' : 'is-pending') + '">' +
-      '<div class="drive-saver-result-head"><div><strong>Salvo no Drive</strong><p>Cartorio Digital Charlie Echo</p></div><span class="drive-saver-result-status">' + escapeHtml(status) + '</span></div>' +
+    var noteText = '';
+    if(!ok && drive && drive.reason) noteText = 'Status tecnico: ' + drive.reason;
+    else if(!drive && shouldSave) noteText = 'A API classificou este artefato para salvamento governado. Quando o backend autorizado concluir, o card mostra o Drive real.';
+    else if(!drive && hasArtifactDecision) noteText = 'Artefato preparado para download local; Drive nao foi acionado pela classificacao ou pela escolha do usuario.';
+    var note = noteText ? '<p class="drive-saver-result-note">' + escapeHtml(noteText) + '</p>' : '';
+    var stateClass = ok ? 'is-ok' : (shouldSave ? 'is-pending' : 'is-decision');
+    var title = ok ? 'Salvo no Drive' : (shouldSave ? 'Drive Saver preparado' : 'Governanca do artefato');
+    return '<section class="drive-saver-result-card ' + stateClass + '">' +
+      '<div class="drive-saver-result-head"><div><strong>' + escapeHtml(title) + '</strong><p>Cartorio Digital Charlie Echo / DAJ</p></div><span class="drive-saver-result-status">' + escapeHtml(status) + '</span></div>' +
       (links ? '<div class="drive-saver-result-links">' + links + '</div>' : '') +
       (meta ? '<p class="drive-saver-result-meta">' + meta + '</p>' : '') +
       note +

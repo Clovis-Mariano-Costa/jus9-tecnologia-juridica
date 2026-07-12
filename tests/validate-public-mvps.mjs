@@ -54,6 +54,10 @@ assert(sharedScript.includes("ensureUploadPdfJs"), "OCR local governado sem PDF.
 assert(sharedScript.includes("OCR local governado"), "rotulo de OCR local governado ausente");
 assert(sharedScript.includes("pdf_ocr_local_first_pages"), "modo OCR de PDF escaneado ausente");
 assert(sharedScript.includes("image_ocr_local"), "modo OCR de imagem ausente");
+assert(sharedScript.includes("Drive Saver preparado"), "card DAJ/Drive nao mostra preparo governado");
+assert(sharedScript.includes("Governanca do artefato"), "card DAJ/Drive nao mostra decisao governada");
+assert(sharedScript.includes("pastaDestino"), "card DAJ/Drive nao exibe pasta destino real");
+assert(sharedScript.includes("revisaoHumanaObrigatoria"), "card DAJ/Drive nao exibe revisao humana real");
 assert(sharedScript.includes("jus9MvpTeamMembersV1"), "persistencia local de equipe ausente");
 assert(sharedScript.includes("jus9MvpTeamAuditV1"), "auditoria local de equipe ausente");
 assert(teamPage.includes("data-team-page"), "pagina compartilhada de equipe sem raiz");
@@ -64,7 +68,7 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v21-2026-07-12-charlie-ocr-local"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("jus9-pwa-v22-2026-07-12-charlie-drive-daj-card"), "cache PWA principal desatualizado");
 assert(canonicalServiceWorker.includes("caches.match('/offline.html')"), "fallback de arquivos estaticos do worker principal incorreto");
 
 for (const code of expectedCodes) {
@@ -92,7 +96,7 @@ for (const [code, page] of Object.entries(priorityAiPages)) {
   const html = await fs.readFile(new URL(`../${page}`, import.meta.url), "utf8");
   assert(html.includes("data-ai-chat"), `${code}: chat ausente em ${page}`);
   assert(html.includes(`data-ai-code="${code}"`), `${code}: codigo incorreto em ${page}`);
-  assert(html.includes('script.js?v=20260712-charlie-ocr-local-v1'), `${code}: script sem versao em ${page}`);
+  assert(html.includes('script.js?v=20260712-charlie-drive-daj-card-v1'), `${code}: script sem versao em ${page}`);
   assert(html.includes('charlie-mvp-shell'), `${code}: pagina da Charlie sem shell visual em ${page}`);
   console.log(`AI_PAGE_OK ${code} page=${page}`);
 }

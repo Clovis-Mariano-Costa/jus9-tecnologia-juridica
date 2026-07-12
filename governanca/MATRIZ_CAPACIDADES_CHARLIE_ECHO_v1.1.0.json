@@ -124,6 +124,15 @@
       "dependencias": ["frontend", "Tesseract.js", "PDF.js", "revisao_humana"],
       "evidencia": "pacote 20260712-charlie-ocr-local-v1 com auditorias locais e publicas",
       "limite": "OCR pode errar letras, numeros e acentos; imagem e PDF escaneado exigem revisao no original antes de uso real"
+    },
+    {
+      "id": "CAP-013",
+      "nome": "Card DAJ/Drive Saver governado",
+      "estado": "ativo",
+      "ambientes": ["DAJ", "demais_mvp"],
+      "dependencias": ["frontend", "artifact", "driveSaver", "backend_autorizado"],
+      "evidencia": "pacote 20260712-charlie-drive-daj-card-v1 com card de classificacao, destino, revisao humana e link publico real",
+      "limite": "o card nao cria link, arquivo ou permissao sozinho; apenas exibe decisao e retorno real do backend autorizado"
     }
   ]
 }
