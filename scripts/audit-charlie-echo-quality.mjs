@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
-const expectedScriptVersion = "script.js?v=20260712-charlie-daj-upload-v1";
+const expectedScriptVersion = "script.js?v=20260712-charlie-pdf-extractor-v1";
 
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), "utf8");
@@ -27,7 +27,7 @@ const checks = [
   {
     name: "chat MVP aceita upload local governado",
     file: "script.js",
-    patterns: ["injectChatUpload", "data-ai-upload", "readAiUploadedFiles", "buildAttachmentContext", "[ANEXOS DO USUARIO - UPLOAD LOCAL GOVERNADO]", "Arquivos locais para contexto", "PDF/DOCX aguardam extrator", "attachmentUserHtml"],
+    patterns: ["injectChatUpload", "data-ai-upload", "readAiUploadedFiles", "buildAttachmentContext", "[ANEXOS DO USUARIO - UPLOAD LOCAL GOVERNADO]", "Texto e PDF textual sao lidos", "extractPdfTextHeuristic", "pdf_text_heuristic", "PDF textual lido em modo heuristico", "DOCX, imagem", "attachmentUserHtml"],
   },
   {
     name: "DAJ integrado como modelo-mae da Charlie Echo",
@@ -92,7 +92,7 @@ const checks = [
   {
     name: "service worker nao prende MVP antigo",
     file: "service-worker.js",
-    patterns: ["jus9-pwa-v18-2026-07-12-charlie-daj-upload", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
+    patterns: ["jus9-pwa-v19-2026-07-12-charlie-pdf-extractor", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
   },
   {
     name: "casa propria da Charlie Echo publicada",

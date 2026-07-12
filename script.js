@@ -2762,6 +2762,103 @@ window.jus9DemoLogin = function(form){
     return /^text\//.test(type) || /(json|xml|csv|markdown|javascript|html|rtf)/.test(type) || /\.(txt|md|markdown|csv|json|html?|xml|rtf|log)$/i.test(name);
   }
 
+  function canReadUploadAsPdf(file){
+    var name = String(file && file.name || '').toLowerCase();
+    var type = String(file && file.type || '').toLowerCase();
+    return type === 'application/pdf' || /\.pdf$/i.test(name);
+  }
+
+  function binaryStringFromArrayBuffer(buffer){
+    var bytes = new Uint8Array(buffer || []);
+    var output = '';
+    var chunkSize = 8192;
+    for(var i = 0; i < bytes.length; i += chunkSize){
+      output += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
+    }
+    return output;
+  }
+
+  function normalizePdfExtractedText(text){
+    return String(text || '')
+      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function decodePdfLiteralString(value){
+    var text = String(value || '').replace(/\\\r?\n/g, '');
+    text = text.replace(/\\([0-7]{1,3})/g, function(_, octal){
+      return String.fromCharCode(parseInt(octal, 8));
+    });
+    return text.replace(/\\([nrtbf()\\])/g, function(_, code){
+      var map = { n:'\n', r:'\r', t:'\t', b:'\b', f:'\f', '(':'(', ')':')', '\\':'\\' };
+      return Object.prototype.hasOwnProperty.call(map, code) ? map[code] : code;
+    });
+  }
+
+  function decodePdfHexString(value){
+    var clean = String(value || '').replace(/\s+/g, '');
+    if(!clean || clean.length < 2) return '';
+    if(clean.length % 2) clean += '0';
+    var bytes = [];
+    for(var i = 0; i < clean.length; i += 2){
+      var valueByte = parseInt(clean.slice(i, i + 2), 16);
+      if(Number.isFinite(valueByte)) bytes.push(valueByte);
+    }
+    if(bytes[0] === 0xFE && bytes[1] === 0xFF){
+      var utf16 = '';
+      for(var j = 2; j + 1 < bytes.length; j += 2){
+        utf16 += String.fromCharCode((bytes[j] << 8) + bytes[j + 1]);
+      }
+      return utf16;
+    }
+    return bytes.map(function(byte){ return String.fromCharCode(byte); }).join('');
+  }
+
+  function collectPdfTextChunk(chunks, text){
+    var clean = normalizePdfExtractedText(text);
+    if(clean && (/[A-Za-z0-9]/.test(clean) || clean.length >= 6)) chunks.push(clean);
+  }
+
+  function extractPdfTextHeuristic(buffer, limit){
+    var raw = binaryStringFromArrayBuffer(buffer);
+    var scanLimit = 3 * 1024 * 1024;
+    var scan = raw.slice(0, scanLimit);
+    var chunks = [];
+    var literalRegex = /\((?:\\.|[^\\()]){1,4000}\)\s*Tj/g;
+    var hexRegex = /<([0-9A-Fa-f\s]{2,4000})>\s*Tj/g;
+    var arrayRegex = /\[((?:.|\r|\n){1,4000}?)\]\s*TJ/g;
+    var match;
+    while((match = literalRegex.exec(scan))){
+      collectPdfTextChunk(chunks, decodePdfLiteralString(match[0].replace(/\)\s*Tj\s*$/, '').slice(1)));
+      if(chunks.join(' ').length > (limit || 24000) * 1.5) break;
+    }
+    while((match = hexRegex.exec(scan))){
+      collectPdfTextChunk(chunks, decodePdfHexString(match[1]));
+      if(chunks.join(' ').length > (limit || 24000) * 1.5) break;
+    }
+    while((match = arrayRegex.exec(scan))){
+      var arrayBody = match[1];
+      var arrayParts = [];
+      arrayBody.replace(/\((?:\\.|[^\\()]){1,1000}\)|<([0-9A-Fa-f\s]{2,2000})>/g, function(part, hexPart){
+        if(part.charAt(0) === '('){
+          arrayParts.push(decodePdfLiteralString(part.slice(1, -1)));
+        } else if(hexPart){
+          arrayParts.push(decodePdfHexString(hexPart));
+        }
+        return part;
+      });
+      collectPdfTextChunk(chunks, arrayParts.join(' '));
+      if(chunks.join(' ').length > (limit || 24000) * 1.5) break;
+    }
+    var joined = normalizePdfExtractedText(chunks.join('\n'));
+    return {
+      text: joined.slice(0, Math.max(0, limit || 0)),
+      truncated: raw.length > scan.length || joined.length > Math.max(0, limit || 0),
+      scannedBytes: scan.length
+    };
+  }
+
   function readUploadFile(file, remainingChars){
     return new Promise(function(resolve){
       var base = {
@@ -2771,8 +2868,34 @@ window.jus9DemoLogin = function(form){
         readable:false,
         truncated:false,
         text:'',
+        extractionMode:'none',
+        confidence:'none',
         note:'Arquivo aceito como anexo, mas sem extracao textual automatica nesta versao.'
       };
+      if(file && canReadUploadAsPdf(file)){
+        var pdfReader = new FileReader();
+        pdfReader.onload = function(event){
+          var limit = Math.max(0, remainingChars || 0);
+          var extracted = extractPdfTextHeuristic(event && event.target ? event.target.result : null, limit);
+          base.extractionMode = 'pdf_text_heuristic';
+          base.text = extracted.text;
+          base.readable = base.text.length >= 20;
+          base.truncated = extracted.truncated;
+          base.confidence = base.readable ? (base.text.length >= 800 ? 'media' : 'baixa') : 'nenhuma';
+          base.note = base.readable
+            ? (base.truncated ? 'PDF textual extraido parcialmente por limite de seguranca.' : 'PDF textual lido localmente em modo heuristico.')
+            : 'PDF sem texto pesquisavel nesta leitura local; use OCR ou backend extrator antes de afirmar conteudo.';
+          resolve(base);
+        };
+        pdfReader.onerror = function(){
+          base.extractionMode = 'pdf_text_heuristic';
+          base.confidence = 'nenhuma';
+          base.note = 'Falha ao ler PDF localmente; use OCR ou backend extrator.';
+          resolve(base);
+        };
+        pdfReader.readAsArrayBuffer(file);
+        return;
+      }
       if(!file || !canReadUploadAsText(file)){
         resolve(base);
         return;
@@ -2784,10 +2907,14 @@ window.jus9DemoLogin = function(form){
         base.readable = true;
         base.text = fullText.slice(0, limit);
         base.truncated = fullText.length > base.text.length;
+        base.extractionMode = 'text_reader';
+        base.confidence = 'alta';
         base.note = base.truncated ? 'Texto extraido parcialmente por limite de seguranca.' : 'Texto extraido localmente no navegador.';
         resolve(base);
       };
       reader.onerror = function(){
+        base.extractionMode = 'text_reader';
+        base.confidence = 'nenhuma';
         base.note = 'Falha ao ler texto localmente; use transcricao ou backend extrator.';
         resolve(base);
       };
@@ -2816,7 +2943,7 @@ window.jus9DemoLogin = function(form){
     ];
     attachments.forEach(function(item, index){
       lines.push('Anexo ' + (index + 1) + ': ' + item.name);
-      lines.push('Tipo: ' + item.type + ' | tamanho: ' + formatUploadSize(item.size) + ' | leitura: ' + (item.readable ? 'texto extraido' : 'sem texto extraido'));
+      lines.push('Tipo: ' + item.type + ' | tamanho: ' + formatUploadSize(item.size) + ' | leitura: ' + (item.readable ? 'texto extraido' : 'sem texto extraido') + ' | modo: ' + (item.extractionMode || 'none') + ' | confianca: ' + (item.confidence || 'none'));
       lines.push('Observacao: ' + item.note);
       if(item.text){
         lines.push('Conteudo extraido:');
@@ -2826,7 +2953,7 @@ window.jus9DemoLogin = function(form){
       }
       lines.push('');
     });
-    lines.push('Regra: para PDF, DOCX, imagem ou arquivo sem texto extraido, peca transcricao, OCR ou backend extrator antes de usar o conteudo como fato.');
+    lines.push('Regra: PDF textual lido em modo heuristico pode orientar analise com cautela. PDF sem texto, DOCX, imagem ou arquivo sem texto extraido exigem transcricao, OCR ou backend extrator antes de usar o conteudo como fato.');
     return lines.join('\n');
   }
 
@@ -2848,7 +2975,7 @@ window.jus9DemoLogin = function(form){
     var panel = document.createElement('div');
     panel.className = 'ai-upload-panel';
     panel.setAttribute('data-ai-upload-panel', 'true');
-    panel.innerHTML = '<div><strong>Anexos</strong><p>Arquivos locais para contexto. Texto e lido quando possivel; PDF/DOCX aguardam extrator.</p></div><label class="ai-upload-button">Anexar<input type="file" data-ai-upload multiple accept=".txt,.md,.markdown,.csv,.json,.html,.htm,.xml,.rtf,.pdf,.doc,.docx,.png,.jpg,.jpeg"></label><button class="mini" type="button" data-ai-upload-clear>Limpar</button><div class="ai-upload-list" data-ai-upload-list></div>';
+    panel.innerHTML = '<div><strong>Anexos</strong><p>Texto e PDF textual sao lidos quando possivel; DOCX, imagem e PDF escaneado pedem extrator/OCR.</p></div><label class="ai-upload-button">Anexar<input type="file" data-ai-upload multiple accept=".txt,.md,.markdown,.csv,.json,.html,.htm,.xml,.rtf,.pdf,.doc,.docx,.png,.jpg,.jpeg"></label><button class="mini" type="button" data-ai-upload-clear>Limpar</button><div class="ai-upload-list" data-ai-upload-list></div>';
     form.parentNode.insertBefore(panel, form);
     var fileInput = panel.querySelector('[data-ai-upload]');
     var clear = panel.querySelector('[data-ai-upload-clear]');
@@ -2857,7 +2984,7 @@ window.jus9DemoLogin = function(form){
       var files = Array.prototype.slice.call(fileInput.files || []);
       list.innerHTML = files.length
         ? files.slice(0, 5).map(function(file){
-            var readable = canReadUploadAsText(file) ? 'texto' : 'metadados';
+            var readable = canReadUploadAsText(file) ? 'texto' : (canReadUploadAsPdf(file) ? 'pdf textual' : 'metadados');
             return '<span>' + escapeHtml(file.name) + ' - ' + escapeHtml(formatUploadSize(file.size)) + ' - ' + readable + '</span>';
           }).join('')
         : '<span class="fine-note">Nenhum arquivo anexado.</span>';
