@@ -57,6 +57,16 @@ rotas:
     saida: [source_check_id, confidence, status]
     eventos_emitidos: [source.checked]
     bloqueios: [fonte_fraca_como_certeza, link_duvidoso_sem_alerta]
+  - path: /api/attachments/extract
+    methods: [POST, OPTIONS]
+    estado: ativo
+    finalidade: extrair texto temporario de anexos TXT, PDF textual e DOCX para orientar resposta sem salvar arquivo
+    auth: opcional_com_permissoes_quando_sessao_existir
+    rate_limit: obrigatorio
+    entrada: [file, limit, module]
+    saida: [ok, files, classification, storage, retention, policy]
+    eventos_emitidos: [attachment.extracted, attachment.rejected]
+    bloqueios: [salvar_upload_sem_acao_explicita, tratar_pdf_escaneado_como_texto, inventar_conteudo_de_anexo]
   - path: /exports
     methods: [POST]
     estado: planejado
@@ -95,6 +105,7 @@ catalogo_eventos:
   - room.updated
   - summary.updated
   - source.checked
+  - attachment.extracted
   - export.generated
   - attachment.rejected
   - health.checked

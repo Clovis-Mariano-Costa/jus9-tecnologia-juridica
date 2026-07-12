@@ -40,34 +40,41 @@
     },
     {
       "id": "BE-005",
+      "rota": "/api/attachments/extract",
+      "entrada": "extrair texto temporario de anexo TXT/PDF textual/DOCX",
+      "eventos_esperados": ["attachment.extracted"],
+      "bloqueios_esperados": ["salvar_upload_sem_acao_explicita", "tratar_pdf_escaneado_como_texto", "inventar_conteudo_de_anexo"]
+    },
+    {
+      "id": "BE-006",
       "rota": "/exports",
       "entrada": "gerar pacote PDF/DOCX/ZIP",
       "eventos_esperados": ["export.generated"],
       "bloqueios_esperados": ["download_url_inventada", "export_sigiloso_publico"]
     },
     {
-      "id": "BE-006",
+      "id": "BE-007",
       "rota": "/health",
       "entrada": "consultar maturidade de componentes",
       "eventos_esperados": ["health.checked", "feature.flag.evaluated"],
       "bloqueios_esperados": ["declarar_demo_como_ativo"]
     },
     {
-      "id": "BE-007",
+      "id": "BE-008",
       "rota": "/governance-events",
       "entrada": "registrar evento governado",
       "eventos_esperados": ["governance.event.created"],
       "bloqueios_esperados": ["log_com_segredo", "acesso_sem_permissao"]
     },
     {
-      "id": "BE-008",
+      "id": "BE-009",
       "rota": "drive-public-link",
       "entrada": "pedir link publico do Drive",
       "eventos_esperados": ["drive.public_link.requested"],
       "bloqueios_esperados": ["inventar_file_id", "inventar_download_url"]
     },
     {
-      "id": "BE-009",
+      "id": "BE-010",
       "rota": "memory-promotion",
       "entrada": "promover memoria temporaria",
       "eventos_esperados": ["memory.promotion.blocked"],

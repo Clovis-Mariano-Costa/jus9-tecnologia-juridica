@@ -2768,6 +2768,30 @@ window.jus9DemoLogin = function(form){
     return type === 'application/pdf' || /\.pdf$/i.test(name);
   }
 
+  function canReadUploadAsDocx(file){
+    var name = String(file && file.name || '').toLowerCase();
+    var type = String(file && file.type || '').toLowerCase();
+    return type.indexOf('officedocument.wordprocessingml.document') !== -1 || /\.docx$/i.test(name);
+  }
+
+  function canUseBackendAttachmentExtractor(file){
+    return canReadUploadAsPdf(file) || canReadUploadAsDocx(file);
+  }
+
+  function detectMvpCodeFromPage(){
+    var card = document.querySelector('[data-ai-chat]');
+    var authPanel = document.querySelector('[data-auth-module]');
+    var param = new URLSearchParams(location.search).get('mvp') || '';
+    var file = location.pathname.split('/').pop() || '';
+    var profile = adaptedProfiles[file];
+    var code = (card && card.getAttribute('data-ai-code')) ||
+      (authPanel && authPanel.getAttribute('data-auth-module')) ||
+      param ||
+      (profile && profile.code) ||
+      '';
+    return String(code || '').toUpperCase().replace(/[^A-Z0-9_-]/g, '').slice(0, 32);
+  }
+
   function binaryStringFromArrayBuffer(buffer){
     var bytes = new Uint8Array(buffer || []);
     var output = '';
@@ -2859,6 +2883,35 @@ window.jus9DemoLogin = function(form){
     };
   }
 
+  async function extractUploadWithBackend(file, remainingChars){
+    if(!file || !canUseBackendAttachmentExtractor(file)) return null;
+    var form = new FormData();
+    form.append('file', file, file.name || 'arquivo');
+    form.append('limit', String(Math.max(0, remainingChars || 0)));
+    form.append('module', detectMvpCodeFromPage() || '');
+    var response = await fetch('/api/attachments/extract', {
+      method:'POST',
+      body:form,
+      credentials:'include',
+      cache:'no-store'
+    });
+    var data = await response.json().catch(function(){ return null; });
+    if(!response.ok || !data || !data.ok || !data.files || !data.files.length) return null;
+    return data.files[0];
+  }
+
+  function applyBackendAttachment(base, extracted){
+    if(!extracted) return false;
+    base.readable = !!extracted.readable;
+    base.truncated = !!extracted.truncated;
+    base.text = String(extracted.text || '');
+    base.extractionMode = extracted.extractionMode || 'backend_extractor';
+    base.confidence = extracted.confidence || (base.readable ? 'baixa' : 'nenhuma');
+    base.note = extracted.note || (base.readable ? 'Texto extraido pelo backend governado.' : 'Backend governado nao encontrou texto pesquisavel.');
+    base.backendExtractor = true;
+    return base.readable;
+  }
+
   function readUploadFile(file, remainingChars){
     return new Promise(function(resolve){
       var base = {
@@ -2872,9 +2925,26 @@ window.jus9DemoLogin = function(form){
         confidence:'none',
         note:'Arquivo aceito como anexo, mas sem extracao textual automatica nesta versao.'
       };
+      if(file && canReadUploadAsDocx(file)){
+        extractUploadWithBackend(file, remainingChars).then(function(extracted){
+          applyBackendAttachment(base, extracted);
+          if(!base.readable){
+            base.extractionMode = base.extractionMode === 'none' ? 'docx_backend_xml' : base.extractionMode;
+            base.confidence = 'nenhuma';
+            base.note = base.note || 'DOCX recebido, mas o backend nao encontrou texto suficiente.';
+          }
+          resolve(base);
+        }).catch(function(){
+          base.extractionMode = 'docx_backend_xml';
+          base.confidence = 'nenhuma';
+          base.note = 'Falha ao acionar backend extrator de DOCX; use transcricao ou tente PDF textual.';
+          resolve(base);
+        });
+        return;
+      }
       if(file && canReadUploadAsPdf(file)){
         var pdfReader = new FileReader();
-        pdfReader.onload = function(event){
+        pdfReader.onload = async function(event){
           var limit = Math.max(0, remainingChars || 0);
           var extracted = extractPdfTextHeuristic(event && event.target ? event.target.result : null, limit);
           base.extractionMode = 'pdf_text_heuristic';
@@ -2885,6 +2955,11 @@ window.jus9DemoLogin = function(form){
           base.note = base.readable
             ? (base.truncated ? 'PDF textual extraido parcialmente por limite de seguranca.' : 'PDF textual lido localmente em modo heuristico.')
             : 'PDF sem texto pesquisavel nesta leitura local; use OCR ou backend extrator antes de afirmar conteudo.';
+          if(!base.readable){
+            try {
+              applyBackendAttachment(base, await extractUploadWithBackend(file, remainingChars));
+            } catch (_) {}
+          }
           resolve(base);
         };
         pdfReader.onerror = function(){
@@ -2943,7 +3018,7 @@ window.jus9DemoLogin = function(form){
     ];
     attachments.forEach(function(item, index){
       lines.push('Anexo ' + (index + 1) + ': ' + item.name);
-      lines.push('Tipo: ' + item.type + ' | tamanho: ' + formatUploadSize(item.size) + ' | leitura: ' + (item.readable ? 'texto extraido' : 'sem texto extraido') + ' | modo: ' + (item.extractionMode || 'none') + ' | confianca: ' + (item.confidence || 'none'));
+      lines.push('Tipo: ' + item.type + ' | tamanho: ' + formatUploadSize(item.size) + ' | leitura: ' + (item.readable ? 'texto extraido' : 'sem texto extraido') + ' | modo: ' + (item.extractionMode || 'none') + ' | confianca: ' + (item.confidence || 'none') + ' | origem: ' + (item.backendExtractor ? 'backend governado' : 'navegador/local'));
       lines.push('Observacao: ' + item.note);
       if(item.text){
         lines.push('Conteudo extraido:');
@@ -2953,7 +3028,7 @@ window.jus9DemoLogin = function(form){
       }
       lines.push('');
     });
-    lines.push('Regra: PDF textual lido em modo heuristico pode orientar analise com cautela. PDF sem texto, DOCX, imagem ou arquivo sem texto extraido exigem transcricao, OCR ou backend extrator antes de usar o conteudo como fato.');
+    lines.push('Regra: PDF textual e DOCX com texto extraido podem orientar analise com cautela. PDF sem texto, DOCX sem texto, imagem ou arquivo sem texto extraido exigem transcricao, OCR ou backend especializado antes de usar o conteudo como fato.');
     return lines.join('\n');
   }
 
@@ -2975,7 +3050,7 @@ window.jus9DemoLogin = function(form){
     var panel = document.createElement('div');
     panel.className = 'ai-upload-panel';
     panel.setAttribute('data-ai-upload-panel', 'true');
-    panel.innerHTML = '<div><strong>Anexos</strong><p>Texto e PDF textual sao lidos quando possivel; DOCX, imagem e PDF escaneado pedem extrator/OCR.</p></div><label class="ai-upload-button">Anexar<input type="file" data-ai-upload multiple accept=".txt,.md,.markdown,.csv,.json,.html,.htm,.xml,.rtf,.pdf,.doc,.docx,.png,.jpg,.jpeg"></label><button class="mini" type="button" data-ai-upload-clear>Limpar</button><div class="ai-upload-list" data-ai-upload-list></div>';
+    panel.innerHTML = '<div><strong>Anexos</strong><p>Texto, PDF textual e DOCX sao lidos quando possivel; imagem, DOC antigo e PDF escaneado pedem OCR.</p></div><label class="ai-upload-button">Anexar<input type="file" data-ai-upload multiple accept=".txt,.md,.markdown,.csv,.json,.html,.htm,.xml,.rtf,.pdf,.doc,.docx,.png,.jpg,.jpeg"></label><button class="mini" type="button" data-ai-upload-clear>Limpar</button><div class="ai-upload-list" data-ai-upload-list></div>';
     form.parentNode.insertBefore(panel, form);
     var fileInput = panel.querySelector('[data-ai-upload]');
     var clear = panel.querySelector('[data-ai-upload-clear]');
@@ -2984,7 +3059,7 @@ window.jus9DemoLogin = function(form){
       var files = Array.prototype.slice.call(fileInput.files || []);
       list.innerHTML = files.length
         ? files.slice(0, 5).map(function(file){
-            var readable = canReadUploadAsText(file) ? 'texto' : (canReadUploadAsPdf(file) ? 'pdf textual' : 'metadados');
+            var readable = canReadUploadAsText(file) ? 'texto' : (canReadUploadAsPdf(file) ? 'pdf textual' : (canReadUploadAsDocx(file) ? 'docx extrator' : 'metadados'));
             return '<span>' + escapeHtml(file.name) + ' - ' + escapeHtml(formatUploadSize(file.size)) + ' - ' + readable + '</span>';
           }).join('')
         : '<span class="fine-note">Nenhum arquivo anexado.</span>';

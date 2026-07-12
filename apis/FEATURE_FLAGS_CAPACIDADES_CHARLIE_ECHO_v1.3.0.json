@@ -76,6 +76,13 @@
       "bloqueio": "somente_fluxo_auditado"
     },
     {
+      "id": "flag.attachments.extract",
+      "estado": "ativo",
+      "descricao": "Extracao temporaria governada de texto em TXT, PDF textual e DOCX, sem persistir upload.",
+      "dependencias": ["/api/attachments/extract", "classification", "retencao_temporaria"],
+      "bloqueio": "nao_salvar_upload_sem_acao_explicita"
+    },
+    {
       "id": "flag.ocr.upload",
       "estado": "planejado",
       "descricao": "Extracao de texto de PDF/imagem por backend.",

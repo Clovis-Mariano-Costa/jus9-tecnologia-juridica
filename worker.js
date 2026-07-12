@@ -90,6 +90,10 @@ export default {
       return handleCharlieMemory(request, env);
     }
 
+    if (originalUrl.pathname === "/api/attachments/extract") {
+      return handleAttachmentExtract(request, env);
+    }
+
     if (originalUrl.pathname === "/api/calendar/status") {
       return handleCalendarStatus(request, env);
     }
@@ -625,6 +629,52 @@ async function handleCharlieMemory(request, env) {
   return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET, POST, DELETE" });
 }
 
+async function handleAttachmentExtract(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  if (request.method !== "POST") {
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "POST" });
+  }
+  const contentType = String(request.headers.get("content-type") || "").toLowerCase();
+  if (!contentType.includes("multipart/form-data")) {
+    return jsonResponse({ ok: false, error: "multipart_obrigatorio" }, 400, corsHeaders);
+  }
+
+  const session = await getSession(request, env).catch(() => null);
+  if (session && !hasPermission(session, "auth:read")) {
+    return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "auth:read" }, 403, corsHeaders);
+  }
+
+  const form = await request.formData().catch(() => null);
+  if (!form) return jsonResponse({ ok: false, error: "formulario_invalido" }, 400, corsHeaders);
+
+  const maxChars = clampNumber(form.get("limit"), 1000, ATTACHMENT_MAX_EXTRACTED_CHARS, ATTACHMENT_MAX_EXTRACTED_CHARS);
+  const moduleCode = normalizeModuleCode(form.get("module"));
+  const files = form.getAll("file").filter((item) => item && typeof item.arrayBuffer === "function").slice(0, ATTACHMENT_MAX_FILES);
+  if (!files.length) {
+    return jsonResponse({ ok: false, error: "arquivo_obrigatorio" }, 400, corsHeaders);
+  }
+
+  let remaining = maxChars;
+  const extracted = [];
+  for (const file of files) {
+    const result = await extractGovernedAttachment(file, remaining);
+    remaining = Math.max(0, remaining - String(result.text || "").length);
+    extracted.push(result);
+  }
+
+  return jsonResponse({
+    ok: true,
+    authenticated: Boolean(session),
+    profile: session?.profile || "anonimo_demo",
+    module: moduleCode,
+    classification: "UPLOAD_TEMPORARIO_GOVERNADO",
+    storage: "nao_salvo",
+    retention: "somente_resposta_atual",
+    policy: "Use apenas texto extraido. Nao afirme conteudo de arquivo sem texto extraido. PDF escaneado, imagem e DOC antigo exigem OCR/conversao.",
+    files: extracted
+  }, 200, corsHeaders);
+}
+
 async function handleCalendarStatus(request, env) {
   const corsHeaders = getAuthCorsHeaders(request);
   if (request.method !== "GET") {
@@ -748,6 +798,7 @@ function isAuthCorsPath(pathname) {
     pathname === "/api/profile-requests/audit" ||
     pathname === "/api/governed-profiles" ||
     pathname === "/api/charlie/memory" ||
+    pathname === "/api/attachments/extract" ||
     pathname === "/api/calendar/status" ||
     pathname === "/api/calendar/events" ||
     pathname === "/auth/logout";
@@ -774,6 +825,277 @@ function getAuthCorsHeaders(request) {
 
 function hasPermission(session, permission) {
   return getPermissions(session?.profile).includes(permission);
+}
+
+const ATTACHMENT_MAX_FILES = 3;
+const ATTACHMENT_MAX_BYTES = 2 * 1024 * 1024;
+const ATTACHMENT_MAX_EXTRACTED_CHARS = 24000;
+
+function clampNumber(value, min, max, fallback) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return fallback;
+  return Math.min(max, Math.max(min, Math.floor(number)));
+}
+
+async function extractGovernedAttachment(file, remainingChars) {
+  const base = {
+    name: sanitizeFilename(file.name || "arquivo"),
+    type: sanitizeText(file.type || "tipo nao informado", 120),
+    size: Number(file.size || 0),
+    readable: false,
+    truncated: false,
+    text: "",
+    extractionMode: "backend_none",
+    confidence: "nenhuma",
+    classification: "UPLOAD_TEMPORARIO_GOVERNADO",
+    storage: "nao_salvo",
+    note: "Arquivo recebido pelo backend extrator, mas sem extracao textual disponivel."
+  };
+
+  const limit = Math.max(0, Math.min(remainingChars || 0, ATTACHMENT_MAX_EXTRACTED_CHARS));
+  if (!limit) {
+    return { ...base, note: "Limite de texto da resposta ja foi atingido antes deste arquivo." };
+  }
+  if (base.size > ATTACHMENT_MAX_BYTES) {
+    return { ...base, note: "Arquivo acima do limite governado de 2 MB para extracao temporaria." };
+  }
+
+  const buffer = await file.arrayBuffer();
+  const kind = classifyAttachmentKind(base.name, base.type);
+  let extracted;
+  if (kind === "text") {
+    extracted = extractPlainText(buffer, limit);
+    return finalizeAttachmentExtraction(base, extracted, "text_backend_reader", "alta", "Texto extraido no backend temporario.");
+  }
+  if (kind === "pdf") {
+    extracted = extractPdfTextFromBuffer(buffer, limit);
+    return finalizeAttachmentExtraction(base, extracted, "pdf_backend_text_heuristic", extracted.text.length >= 800 ? "media" : "baixa", "PDF textual extraido no backend em modo heuristico.");
+  }
+  if (kind === "docx") {
+    extracted = await extractDocxTextFromBuffer(buffer, limit);
+    return finalizeAttachmentExtraction(base, extracted, "docx_backend_xml", extracted.text.length >= 800 ? "media" : "baixa", "DOCX extraido no backend a partir do XML interno do documento.");
+  }
+
+  return {
+    ...base,
+    extractionMode: "backend_unsupported",
+    note: "Formato sem extrator governado nesta versao; use transcricao, OCR ou conversao para PDF textual/DOCX."
+  };
+}
+
+function finalizeAttachmentExtraction(base, extracted, mode, confidence, successNote) {
+  const text = normalizeExtractedText(extracted?.text || "").slice(0, ATTACHMENT_MAX_EXTRACTED_CHARS);
+  const readable = text.length >= 20;
+  return {
+    ...base,
+    readable,
+    truncated: Boolean(extracted?.truncated || text.length < normalizeExtractedText(extracted?.text || "").length),
+    text,
+    extractionMode: mode,
+    confidence: readable ? confidence : "nenhuma",
+    note: readable ? successNote : "Nao encontrei texto pesquisavel suficiente; use OCR, transcricao ou backend especializado antes de afirmar conteudo."
+  };
+}
+
+function sanitizeFilename(value) {
+  return String(value || "arquivo")
+    .replace(/[\u0000-\u001f\u007f]/g, " ")
+    .replace(/[<>:"/\\|?*]+/g, "_")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 180) || "arquivo";
+}
+
+function classifyAttachmentKind(name, type) {
+  const lowerName = String(name || "").toLowerCase();
+  const lowerType = String(type || "").toLowerCase();
+  if (lowerType === "application/pdf" || /\.pdf$/i.test(lowerName)) return "pdf";
+  if (lowerType.includes("officedocument.wordprocessingml.document") || /\.docx$/i.test(lowerName)) return "docx";
+  if (/^text\//.test(lowerType) || /(json|xml|csv|markdown|javascript|html|rtf)/.test(lowerType) || /\.(txt|md|markdown|csv|json|html?|xml|rtf|log)$/i.test(lowerName)) return "text";
+  return "unsupported";
+}
+
+function extractPlainText(buffer, limit) {
+  const text = normalizeExtractedText(new TextDecoder("utf-8", { fatal: false }).decode(buffer));
+  return {
+    text: text.slice(0, limit),
+    truncated: text.length > limit
+  };
+}
+
+function binaryStringFromArrayBuffer(buffer) {
+  const bytes = new Uint8Array(buffer || []);
+  let output = "";
+  const chunkSize = 8192;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    output += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
+  }
+  return output;
+}
+
+function normalizeExtractedText(text) {
+  return String(text || "")
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function decodePdfLiteralString(value) {
+  const text = String(value || "").replace(/\\\r?\n/g, "");
+  return text
+    .replace(/\\([0-7]{1,3})/g, (_, octal) => String.fromCharCode(parseInt(octal, 8)))
+    .replace(/\\([nrtbf()\\])/g, (_, code) => {
+      const map = { n: "\n", r: "\r", t: "\t", b: "\b", f: "\f", "(": "(", ")": ")", "\\": "\\" };
+      return Object.prototype.hasOwnProperty.call(map, code) ? map[code] : code;
+    });
+}
+
+function decodePdfHexString(value) {
+  let clean = String(value || "").replace(/\s+/g, "");
+  if (!clean || clean.length < 2) return "";
+  if (clean.length % 2) clean += "0";
+  const bytes = [];
+  for (let i = 0; i < clean.length; i += 2) {
+    const byte = parseInt(clean.slice(i, i + 2), 16);
+    if (Number.isFinite(byte)) bytes.push(byte);
+  }
+  if (bytes[0] === 0xFE && bytes[1] === 0xFF) {
+    let utf16 = "";
+    for (let i = 2; i + 1 < bytes.length; i += 2) utf16 += String.fromCharCode((bytes[i] << 8) + bytes[i + 1]);
+    return utf16;
+  }
+  return bytes.map((byte) => String.fromCharCode(byte)).join("");
+}
+
+function collectPdfTextChunk(chunks, text) {
+  const clean = normalizeExtractedText(text);
+  if (clean && (/[A-Za-z0-9]/.test(clean) || clean.length >= 6)) chunks.push(clean);
+}
+
+function extractPdfTextFromBuffer(buffer, limit) {
+  const raw = binaryStringFromArrayBuffer(buffer);
+  const scan = raw.slice(0, 3 * 1024 * 1024);
+  const chunks = [];
+  const literalRegex = /\((?:\\.|[^\\()]){1,4000}\)\s*Tj/g;
+  const hexRegex = /<([0-9A-Fa-f\s]{2,4000})>\s*Tj/g;
+  const arrayRegex = /\[((?:.|\r|\n){1,4000}?)\]\s*TJ/g;
+  let match;
+  while ((match = literalRegex.exec(scan))) {
+    collectPdfTextChunk(chunks, decodePdfLiteralString(match[0].replace(/\)\s*Tj\s*$/, "").slice(1)));
+    if (chunks.join(" ").length > limit * 1.5) break;
+  }
+  while ((match = hexRegex.exec(scan))) {
+    collectPdfTextChunk(chunks, decodePdfHexString(match[1]));
+    if (chunks.join(" ").length > limit * 1.5) break;
+  }
+  while ((match = arrayRegex.exec(scan))) {
+    const parts = [];
+    match[1].replace(/\((?:\\.|[^\\()]){1,1000}\)|<([0-9A-Fa-f\s]{2,2000})>/g, (part, hexPart) => {
+      if (part.charAt(0) === "(") parts.push(decodePdfLiteralString(part.slice(1, -1)));
+      else if (hexPart) parts.push(decodePdfHexString(hexPart));
+      return part;
+    });
+    collectPdfTextChunk(chunks, parts.join(" "));
+    if (chunks.join(" ").length > limit * 1.5) break;
+  }
+  const joined = normalizeExtractedText(chunks.join("\n"));
+  return {
+    text: joined.slice(0, limit),
+    truncated: raw.length > scan.length || joined.length > limit
+  };
+}
+
+async function extractDocxTextFromBuffer(buffer, limit) {
+  const entries = await readZipEntries(buffer, (name) => /^word\/(?:document|footnotes|endnotes|comments|header\d+|footer\d+)\.xml$/i.test(name));
+  const chunks = [];
+  for (const entry of entries) {
+    const xml = new TextDecoder("utf-8", { fatal: false }).decode(entry.bytes);
+    const text = extractDocxXmlText(xml);
+    if (text) chunks.push(text);
+    if (chunks.join(" ").length > limit * 1.5) break;
+  }
+  const joined = normalizeExtractedText(chunks.join("\n"));
+  return {
+    text: joined.slice(0, limit),
+    truncated: joined.length > limit
+  };
+}
+
+function extractDocxXmlText(xml) {
+  const normalized = String(xml || "")
+    .replace(/<w:tab\s*\/>/g, "\t")
+    .replace(/<w:(?:br|cr)[^>]*\/>/g, "\n")
+    .replace(/<\/w:p>/g, "\n")
+    .replace(/<\/w:tr>/g, "\n");
+  const chunks = [];
+  normalized.replace(/<w:t(?:\s[^>]*)?>([\s\S]*?)<\/w:t>/g, (_, text) => {
+    chunks.push(decodeXmlEntities(text));
+    return text;
+  });
+  return normalizeExtractedText(chunks.join(" "));
+}
+
+function decodeXmlEntities(text) {
+  return String(text || "")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&amp;/g, "&")
+    .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(Number(code)))
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, code) => String.fromCharCode(parseInt(code, 16)));
+}
+
+async function readZipEntries(buffer, includeName) {
+  const bytes = new Uint8Array(buffer || []);
+  const centralOffset = findZipCentralDirectoryOffset(bytes);
+  if (centralOffset < 0) return [];
+  const entries = [];
+  let offset = centralOffset;
+  while (readUint32LE(bytes, offset) === 0x02014b50) {
+    const method = readUint16LE(bytes, offset + 10);
+    const compressedSize = readUint32LE(bytes, offset + 20);
+    const nameLength = readUint16LE(bytes, offset + 28);
+    const extraLength = readUint16LE(bytes, offset + 30);
+    const commentLength = readUint16LE(bytes, offset + 32);
+    const localOffset = readUint32LE(bytes, offset + 42);
+    const name = new TextDecoder("utf-8", { fatal: false }).decode(bytes.subarray(offset + 46, offset + 46 + nameLength));
+    if (includeName(name)) {
+      const localNameLength = readUint16LE(bytes, localOffset + 26);
+      const localExtraLength = readUint16LE(bytes, localOffset + 28);
+      const dataStart = localOffset + 30 + localNameLength + localExtraLength;
+      const compressed = bytes.subarray(dataStart, dataStart + compressedSize);
+      entries.push({ name, bytes: await inflateZipEntry(compressed, method) });
+    }
+    offset += 46 + nameLength + extraLength + commentLength;
+  }
+  return entries;
+}
+
+function findZipCentralDirectoryOffset(bytes) {
+  const min = Math.max(0, bytes.length - 65558);
+  for (let offset = bytes.length - 22; offset >= min; offset--) {
+    if (readUint32LE(bytes, offset) === 0x06054b50) return readUint32LE(bytes, offset + 16);
+  }
+  return -1;
+}
+
+async function inflateZipEntry(compressed, method) {
+  if (method === 0) return compressed;
+  if (method !== 8 || typeof DecompressionStream !== "function") return new Uint8Array();
+  const stream = new Blob([compressed]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+  return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+
+function readUint16LE(bytes, offset) {
+  return (bytes[offset] || 0) | ((bytes[offset + 1] || 0) << 8);
+}
+
+function readUint32LE(bytes, offset) {
+  return ((bytes[offset] || 0) |
+    ((bytes[offset + 1] || 0) << 8) |
+    ((bytes[offset + 2] || 0) << 16) |
+    ((bytes[offset + 3] || 0) << 24)) >>> 0;
 }
 
 async function saveProfileRequest(env, session, request, payload) {

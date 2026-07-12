@@ -4,7 +4,7 @@
   Não armazena dados sensíveis. Não altera login, backend ou rotas protegidas.
 */
 
-const JUS9_CACHE = 'jus9-pwa-v19-2026-07-12-charlie-pdf-extractor';
+const JUS9_CACHE = 'jus9-pwa-v20-2026-07-12-charlie-backend-extractor';
 const JUS9_ASSETS = [
   '/',
   '/index.html',

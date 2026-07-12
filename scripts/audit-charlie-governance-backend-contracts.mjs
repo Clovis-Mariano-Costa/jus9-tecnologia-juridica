@@ -8,6 +8,7 @@ const requiredRoutes = [
   "/rooms",
   "/summaries",
   "/sources",
+  "/api/attachments/extract",
   "/exports",
   "/health",
   "/governance-events"
@@ -20,6 +21,7 @@ const requiredEvents = [
   "room.created",
   "summary.updated",
   "source.checked",
+  "attachment.extracted",
   "export.generated",
   "health.checked",
   "feature.flag.evaluated",
@@ -37,6 +39,7 @@ const requiredFlags = [
   "flag.governance.events",
   "flag.drive.saver",
   "flag.drive.public_link",
+  "flag.attachments.extract",
   "flag.ocr.upload",
   "flag.rag.juridico",
   "flag.memory.user.persistent"
