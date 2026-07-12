@@ -2678,7 +2678,7 @@ window.jus9DemoLogin = function(form){
     var panel = document.createElement('div');
     panel.className = 'ai-upload-panel';
     panel.setAttribute('data-ai-upload-panel', 'true');
-    panel.innerHTML = '<div><strong>Anexos</strong><p>Upload local governado para contexto da minuta. TXT/MD/CSV/JSON/HTML/XML sao lidos; PDF/DOCX entram como arquivo aceito ate backend extrator.</p></div><label class="ai-upload-button">Anexar<input type="file" data-ai-upload multiple accept=".txt,.md,.markdown,.csv,.json,.html,.htm,.xml,.rtf,.pdf,.doc,.docx,.png,.jpg,.jpeg"></label><button class="mini" type="button" data-ai-upload-clear>Limpar</button><div class="ai-upload-list" data-ai-upload-list></div>';
+    panel.innerHTML = '<div><strong>Anexos</strong><p>Arquivos locais para contexto. Texto e lido quando possivel; PDF/DOCX aguardam extrator.</p></div><label class="ai-upload-button">Anexar<input type="file" data-ai-upload multiple accept=".txt,.md,.markdown,.csv,.json,.html,.htm,.xml,.rtf,.pdf,.doc,.docx,.png,.jpg,.jpeg"></label><button class="mini" type="button" data-ai-upload-clear>Limpar</button><div class="ai-upload-list" data-ai-upload-list></div>';
     form.parentNode.insertBefore(panel, form);
     var fileInput = panel.querySelector('[data-ai-upload]');
     var clear = panel.querySelector('[data-ai-upload-clear]');
@@ -2818,6 +2818,7 @@ window.jus9DemoLogin = function(form){
     var form = card.querySelector('[data-ai-chat-form]');
     if(!windowEl || !windowEl.parentNode || !form) return;
     card.classList.add('charlie-compact-chat');
+    card.classList.add('charlie-clean-chat');
 
     var submitButton = form.querySelector('button[type="submit"]');
     if(submitButton){
@@ -2858,6 +2859,36 @@ window.jus9DemoLogin = function(form){
         body.appendChild(element);
       });
     });
+    var quick = card.querySelector('[data-charlie-quick-controls]');
+    if(!quick){
+      quick = document.createElement('div');
+      quick.className = 'charlie-quick-controls';
+      quick.setAttribute('data-charlie-quick-controls', 'true');
+      quick.innerHTML = '<button class="charlie-quick-button" type="button" data-charlie-quick-upload>Anexar</button><button class="charlie-quick-button" type="button" data-charlie-quick-settings>Configuracoes</button>';
+      form.parentNode.insertBefore(quick, form.nextSibling);
+    }
+    var quickUpload = quick.querySelector('[data-charlie-quick-upload]');
+    if(quickUpload && !quickUpload.getAttribute('data-charlie-bound')){
+      quickUpload.setAttribute('data-charlie-bound', 'true');
+      quickUpload.setAttribute('aria-label', 'Anexar arquivo para Charlie Echo');
+      quickUpload.addEventListener('click', function(){
+        var uploadInput = card.querySelector('[data-ai-upload]');
+        if(uploadInput && uploadInput.click) uploadInput.click();
+        else hub.open = true;
+      });
+    }
+    var quickSettings = quick.querySelector('[data-charlie-quick-settings]');
+    if(quickSettings && !quickSettings.getAttribute('data-charlie-bound')){
+      quickSettings.setAttribute('data-charlie-bound', 'true');
+      quickSettings.setAttribute('aria-label', 'Abrir configuracoes da Charlie Echo');
+      quickSettings.addEventListener('click', function(){
+        hub.open = true;
+        var settingsPanel = hub.querySelector('.charlie-settings-panel');
+        var settingsAction = hub.querySelector('[data-ai-settings]');
+        if(settingsAction && (!settingsPanel || settingsPanel.hidden)) settingsAction.click();
+        else if(settingsPanel) settingsPanel.hidden = false;
+      });
+    }
     var actionToggle = hub.querySelector('[data-action-menu-toggle]');
     if(actionToggle) {
       actionToggle.textContent = 'Ferramentas';
@@ -3198,25 +3229,37 @@ window.jus9DemoLogin = function(form){
   function chatActionsForLayout(layout){
     if(layout === 'detalhista') return [
       ['data-ai-memory', 'Memoria'],
-      ['data-ai-settings', 'Painel'],
-      ['data-ai-improve', 'Melhorar resposta'],
+      ['data-ai-settings', 'Configurar'],
+      ['data-ai-improve', 'Melhorar', 'Melhorar resposta'],
       ['data-ai-sources', 'Fontes'],
-      ['data-ai-save-drive', 'Salvar no Drive'],
+      ['data-ai-save-drive', 'Drive', 'Salvar no Drive'],
       ['data-ai-drive-saver', 'Drive Saver'],
-      ['data-ai-summary', 'Atualizar resumo'],
-      ['data-ai-package', 'Gerar PDF']
+      ['data-ai-summary', 'Resumo', 'Atualizar resumo'],
+      ['data-ai-package', 'PDF', 'Gerar PDF']
     ];
     if(layout === 'medio') return [
-      ['data-ai-settings', 'Painel'],
-      ['data-ai-improve', 'Melhorar resposta'],
+      ['data-ai-settings', 'Configurar'],
+      ['data-ai-improve', 'Melhorar', 'Melhorar resposta'],
       ['data-ai-sources', 'Fontes'],
-      ['data-ai-save-drive', 'Salvar no Drive'],
+      ['data-ai-save-drive', 'Drive', 'Salvar no Drive'],
       ['data-ai-drive-saver', 'Drive Saver'],
-      ['data-ai-package', 'Gerar PDF']
+      ['data-ai-package', 'PDF', 'Gerar PDF']
     ];
     return [
-      ['data-ai-improve', 'Melhorar resposta'],
+      ['data-ai-settings', 'Configurar'],
+      ['data-ai-improve', 'Melhorar', 'Melhorar resposta'],
       ['data-ai-sources', 'Fontes']
+    ];
+  }
+
+  function charlieCapabilitySummary(code){
+    var upper = String(code || '').toUpperCase();
+    var isSocial = upper.indexOf('SOCIAL') >= 0;
+    return [
+      ['Ativo', isSocial ? 'Conversa social, memoria da sala e resposta adaptada.' : 'Chat, memoria da sala, fontes, minutas, downloads locais e instrumentos por MVP.'],
+      ['Configuravel', 'Memoria do usuario, autonomia do instrumento, Drive, formato, tom e cautela.'],
+      ['Governado', 'Drive Saver, Cartorio Digital e API externa entram somente por conector autorizado.'],
+      ['Limitado', 'Sem inventar URL publica, fonte, livro, pagina, processo ou dado real sem verificacao.']
     ];
   }
 
@@ -3227,7 +3270,8 @@ window.jus9DemoLogin = function(form){
     var layout = chatLayout(card);
     card.setAttribute('data-ai-layout', layout);
     var actionsHtml = chatActionsForLayout(layout).map(function(item){
-      return '<button type="button" ' + item[0] + '>' + item[1] + '</button>';
+      var title = item[2] || item[1];
+      return '<button type="button" ' + item[0] + ' aria-label="' + escapeHtml(title) + '" title="' + escapeHtml(title) + '">' + escapeHtml(item[1]) + '</button>';
     }).join('');
     var bar = document.createElement('div');
     bar.className = 'chat-utility-actions';
@@ -3243,10 +3287,11 @@ window.jus9DemoLogin = function(form){
     settingsPanel.className = 'charlie-memory-panel charlie-settings-panel';
     settingsPanel.hidden = true;
     settingsPanel.innerHTML = [
-      '<div class="charlie-memory-head"><div><strong>Painel de configuracoes</strong><p>Memoria do usuario, instrumento do MVP, resposta, seguranca, pacote e tela.</p></div><button class="mini" type="button" data-settings-close>Fechar</button></div>',
+      '<div class="charlie-memory-head"><div><strong>Configuracoes</strong><p>Memoria, instrumento, resposta e capacidades.</p></div><button class="mini" type="button" data-settings-close>Fechar</button></div>',
       '<div class="charlie-settings-section"><h3>Memoria da sala</h3><div class="charlie-settings-grid"><label><span>Usar memoria da sala</span><select data-setting-memory><option value="true">Sim</option><option value="false">Nao</option></select></label><label><span>Memoria maxima</span><select data-setting-max><option value="48">48 mensagens</option><option value="96">96 mensagens</option><option value="160">160 mensagens</option></select></label></div></div>',
       '<div class="charlie-settings-section"><h3>Memoria do usuario</h3><p class="fine-note">Memoria pessoal por login quando autenticada, com fallback local configuravel por voce. Nao coloque senha, token, documento real, processo real ou segredo.</p><p class="fine-note" data-user-memory-status>Memoria oficial: verificacao automatica quando houver login.</p><div class="charlie-settings-grid"><label><span>Usar memoria do usuario</span><select data-user-memory-enabled><option value="true">Sim</option><option value="false">Nao</option></select></label><label><span>Cartorio Digital</span><select data-user-memory-sync><option value="true">Sincronizar quando salvar</option><option value="false">Somente local</option></select></label><label><span>Como devo chamar voce</span><input data-user-memory-name maxlength="120" placeholder="Nome, apelido ou forma de tratamento"></label><label><span>Papel/contexto</span><input data-user-memory-role maxlength="180" placeholder="Ex.: fundador, advogado, professor"></label></div><div class="charlie-settings-grid wide"><label><span>Preferencias de resposta</span><textarea data-user-memory-preferences rows="3" placeholder="Ex.: respostas diretas, cronogramas curtos, fontes oficiais"></textarea></label><label><span>Evitar</span><textarea data-user-memory-avoid rows="3" placeholder="Ex.: repetir protocolo, textos longos, jargao"></textarea></label><label><span>Instrucoes persistentes</span><textarea data-user-memory-standing rows="4" placeholder="O que Charlie deve lembrar entre salas e MVPs neste navegador"></textarea></label></div></div>',
       '<div class="charlie-settings-section"><h3>Instrumento do MVP</h3><p class="fine-note">Cada MVP toca como instrumento independente da orquestra da Charlie.</p><div class="charlie-instrument-summary" data-instrument-summary></div><div class="charlie-settings-grid"><label><span>Instrumento ativo</span><select data-instrument-enabled><option value="true">Sim</option><option value="false">Nao</option></select></label><label><span>Autonomia</span><select data-instrument-autonomy><option value="assistida">Assistida</option><option value="proativa">Proativa governada</option><option value="estrita">Estrita</option></select></label><label><span>Drive/memoria</span><select data-instrument-drive><option value="auto_governado">Automatico governado</option><option value="manual">Somente quando eu pedir</option><option value="restrito">Restrito/sigiloso por padrao</option></select></label><label><span>Formato</span><select data-instrument-response><option value="relatorio_e_acao">Relatorio + acao</option><option value="checklist">Checklist</option><option value="parecer">Parecer</option><option value="roteiro">Roteiro</option><option value="aula">Aula</option></select></label><label><span>Fontes</span><select data-instrument-sources><option value="oficiais_academicas">Oficiais + academicas</option><option value="oficiais">Oficiais</option><option value="academicas">Academicas</option><option value="internas">Internas governadas</option></select></label></div><div class="charlie-settings-grid wide"><label><span>Notas para este instrumento</span><textarea data-instrument-notes rows="4" placeholder="Ajuste especifico deste MVP: tom, limite, foco, fontes, Drive, entrega"></textarea></label></div></div>',
+      '<div class="charlie-settings-section"><h3>Capacidades</h3><div class="charlie-capability-grid" data-capability-summary></div></div>',
       '<div class="charlie-settings-section"><h3>Resposta</h3><div class="charlie-settings-grid"><label><span>Detalhe</span><select data-setting-detail><option value="curto">Curto</option><option value="medio">Medio</option><option value="completo">Completo</option></select></label><label><span>Tom</span><select data-setting-tone><option value="direto">Direto</option><option value="didatico">Didatico</option><option value="tecnico">Tecnico</option><option value="social">Social</option></select></label><label><span>Cautela</span><select data-setting-caution><option value="normal">Normal</option><option value="cauteloso">Cauteloso</option><option value="estrito">Estrito</option></select></label><label><span>Formato</span><select data-setting-format><option value="auto">Automatico</option><option value="checklist">Checklist</option><option value="parecer">Parecer</option><option value="resumo">Resumo</option><option value="plano">Plano</option></select></label></div></div>',
       '<div class="charlie-settings-section"><h3>Tela</h3><div class="charlie-settings-grid"><label><span>Rolagem automatica</span><select data-setting-autoscroll><option value="true">Sim</option><option value="false">Nao</option></select></label></div></div>',
       '<div class="chat-utility-actions"><button class="mini primary" type="button" data-settings-save>Salvar configuracoes</button><button class="mini" type="button" data-user-memory-export>Exportar memoria do usuario</button><button class="mini danger" type="button" data-user-memory-clear>Limpar memoria do usuario</button><button class="mini danger" type="button" data-instrument-clear>Restaurar instrumento</button></div>'
@@ -3344,6 +3389,12 @@ window.jus9DemoLogin = function(form){
       var summary = settingsPanel.querySelector('[data-instrument-summary]');
       if(summary){
         summary.innerHTML = '<span>' + escapeHtml(code || 'MVP') + '</span><span>' + escapeHtml(instrument.name || '') + '</span><span>' + escapeHtml(instrument.role || '') + '</span>';
+      }
+      var capabilityBox = settingsPanel.querySelector('[data-capability-summary]');
+      if(capabilityBox){
+        capabilityBox.innerHTML = charlieCapabilitySummary(code).map(function(item){
+          return '<div class="charlie-capability-pill"><strong>' + escapeHtml(item[0]) + '</strong><span>' + escapeHtml(item[1]) + '</span></div>';
+        }).join('');
       }
       setOfficialMemoryStatus(officialMemoryStatus);
     }

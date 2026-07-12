@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
-const expectedScriptVersion = "script.js?v=20260712-instrumentos-sociais-v1";
+const expectedScriptVersion = "script.js?v=20260712-charlie-clean-ui-v1";
 
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), "utf8");
@@ -27,7 +27,7 @@ const checks = [
   {
     name: "chat MVP aceita upload local governado",
     file: "script.js",
-    patterns: ["injectChatUpload", "data-ai-upload", "readAiUploadedFiles", "buildAttachmentContext", "[ANEXOS DO USUARIO - UPLOAD LOCAL GOVERNADO]", "PDF/DOCX entram como arquivo aceito", "attachmentUserHtml"],
+    patterns: ["injectChatUpload", "data-ai-upload", "readAiUploadedFiles", "buildAttachmentContext", "[ANEXOS DO USUARIO - UPLOAD LOCAL GOVERNADO]", "Arquivos locais para contexto", "PDF/DOCX aguardam extrator", "attachmentUserHtml"],
   },
   {
     name: "DAJ integrado como modelo-mae da Charlie Echo",
@@ -37,7 +37,7 @@ const checks = [
   {
     name: "hub de configuracoes padroniza botoes da Charlie",
     file: "script.js",
-    patterns: ["ensureCharlieControlHub", "data-charlie-control-hub", "charlie-control-hub-body", "charlie-mvp-head-actions", "Falar com Charlie", "charlie-speak-button", "Ferramentas", "jus9EnsureCharlieControlHub"],
+    patterns: ["ensureCharlieControlHub", "data-charlie-control-hub", "charlie-control-hub-body", "charlie-mvp-head-actions", "Falar com Charlie", "charlie-speak-button", "Ferramentas", "data-charlie-quick-controls", "data-charlie-quick-upload", "data-charlie-quick-settings", "charlieCapabilitySummary", "data-capability-summary", "jus9EnsureCharlieControlHub"],
   },
   {
     name: "atendimento inicial envia DAJ para analise da Charlie",
@@ -47,7 +47,7 @@ const checks = [
   {
     name: "estilo do upload local governado",
     file: "style.css",
-    patterns: ["ai-upload-panel", "ai-upload-button", "ai-upload-list", "ai-upload-user-list", "daj-integration-panel", "daj-integration-routes", "daj-integration-prompts", "daj-jurisprudence-product-panel", "daj-jurisprudence-product-prompts", "daj-doctrine-product-panel", "daj-doctrine-product-prompts", "mvp-instrument-panel", "mvp-instrument-prompts", "charlie-control-hub", "charlie-control-section", "charlie-speak-button", "event-quick-nav .event-links"],
+    patterns: ["ai-upload-panel", "ai-upload-button", "ai-upload-list", "ai-upload-user-list", "daj-integration-panel", "daj-integration-routes", "daj-integration-prompts", "daj-jurisprudence-product-panel", "daj-jurisprudence-product-prompts", "daj-doctrine-product-panel", "daj-doctrine-product-prompts", "mvp-instrument-panel", "mvp-instrument-prompts", "charlie-control-hub", "charlie-control-section", "charlie-speak-button", "charlie-quick-controls", "charlie-capability-grid", "event-quick-nav .event-links"],
   },
   {
     name: "estilo do cartao Drive Saver",
@@ -92,7 +92,7 @@ const checks = [
   {
     name: "service worker nao prende MVP antigo",
     file: "service-worker.js",
-    patterns: ["jus9-pwa-v15-2026-07-12-instrumentos-sociais", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
+    patterns: ["jus9-pwa-v16-2026-07-12-charlie-clean-ui", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
   },
   {
     name: "casa propria da Charlie Echo publicada",

@@ -4,7 +4,7 @@
   Não armazena dados sensíveis. Não altera login, backend ou rotas protegidas.
 */
 
-const JUS9_CACHE = 'jus9-pwa-v15-2026-07-12-instrumentos-sociais';
+const JUS9_CACHE = 'jus9-pwa-v16-2026-07-12-charlie-clean-ui';
 const JUS9_ASSETS = [
   '/',
   '/index.html',

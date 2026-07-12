@@ -1653,6 +1653,32 @@ button,input,select,textarea{max-width:100%}
   font-weight:950;
 }
 .charlie-control-hub[open] summary:after{content:"-"}
+.charlie-quick-controls{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  grid-column:1/-1;
+  margin:8px 0 0;
+}
+.charlie-quick-button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:38px;
+  border:1px solid rgba(15,23,42,.14);
+  border-radius:999px;
+  background:#fff;
+  color:#07111f;
+  padding:8px 13px;
+  font-weight:900;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.charlie-quick-button:hover{
+  background:#07111f;
+  border-color:#07111f;
+  color:#e7c36c;
+}
 .charlie-control-hub-body{
   display:grid;
   gap:12px;
@@ -1708,6 +1734,11 @@ button,input,select,textarea{max-width:100%}
 .charlie-compact-chat .charlie-speak-button{
   min-width:150px;
   white-space:nowrap;
+}
+.charlie-clean-chat .ai-upload-panel p,
+.charlie-clean-chat .charlie-memory-head p,
+.charlie-clean-chat .fine-note{
+  line-height:1.35;
 }
 .charlie-chat-shell.charlie-compact-chat{
   grid-template-columns:1fr;
@@ -2289,6 +2320,8 @@ button,input,select,textarea{max-width:100%}
   margin:0 auto;
   padding:28px;
   gap:18px;
+  grid-template-columns:minmax(0,1fr);
+  min-width:0;
 }
 .charlie-mvp-shell .demo-topbar,
 .charlie-mvp-shell .demo-card,
@@ -2296,6 +2329,7 @@ button,input,select,textarea{max-width:100%}
 .charlie-mvp-shell .mvp-card{
   border-radius:22px;
   box-shadow:0 16px 42px rgba(15,23,42,.07);
+  min-width:0;
 }
 .charlie-mvp-shell .demo-topbar{
   display:grid;
@@ -2326,10 +2360,13 @@ button,input,select,textarea{max-width:100%}
 }
 .charlie-mvp-shell .ai-chat-card{
   display:grid;
+  grid-template-columns:minmax(0,1fr);
   gap:14px;
   padding:18px;
   border-color:rgba(197,139,47,.26);
   background:#fff;
+  max-width:100%;
+  min-width:0;
 }
 .charlie-mvp-chat-head{
   display:flex;
@@ -2618,6 +2655,29 @@ button,input,select,textarea{max-width:100%}
   padding:12px;
   margin-top:10px;
 }
+.charlie-capability-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:10px;
+}
+.charlie-capability-pill{
+  display:grid;
+  gap:4px;
+  min-height:86px;
+  border:1px solid rgba(15,23,42,.08);
+  border-radius:12px;
+  background:#fffdf8;
+  padding:10px;
+}
+.charlie-capability-pill strong{
+  color:#07111f;
+  font-size:.9rem;
+}
+.charlie-capability-pill span{
+  color:#51627a;
+  font-size:.86rem;
+  line-height:1.32;
+}
 @media(max-width:1180px){
   .charlie-mvp-shell .demo-layout{
     grid-template-columns:280px minmax(0,1fr);
@@ -2674,6 +2734,50 @@ button,input,select,textarea{max-width:100%}
   .charlie-mvp-shell .ai-chat-form{
     grid-template-columns:1fr;
     display:grid;
+  }
+  .charlie-mvp-shell .ai-chat-card,
+  .charlie-mvp-shell .charlie-mvp-chat-head,
+  .charlie-mvp-shell .charlie-control-hub,
+  .charlie-mvp-shell .charlie-control-hub-body,
+  .charlie-mvp-shell .charlie-control-section,
+  .charlie-mvp-shell .charlie-settings-panel,
+  .charlie-mvp-shell .ai-chat-window,
+  .charlie-mvp-shell .ai-chat-form,
+  .charlie-mvp-shell .charlie-quick-controls{
+    max-width:100%;
+    min-width:0;
+  }
+  .charlie-mvp-shell .chat-room-panel,
+  .charlie-mvp-shell .charlie-memory-grid,
+  .charlie-mvp-shell .charlie-settings-grid,
+  .charlie-mvp-shell .charlie-settings-grid.wide,
+  .charlie-mvp-shell .charlie-mvp-head-actions,
+  .charlie-mvp-shell .daj-integration-routes,
+  .charlie-mvp-shell .daj-integration-prompts,
+  .charlie-mvp-shell .daj-jurisprudence-product-prompts,
+  .charlie-mvp-shell .daj-doctrine-product-prompts,
+  .charlie-mvp-shell .mvp-instrument-routes,
+  .charlie-mvp-shell .mvp-instrument-prompts,
+  .charlie-mvp-shell .ai-guided-prompts .link-actions{
+    grid-template-columns:minmax(0,1fr);
+  }
+  .charlie-mvp-shell .chat-room-actions,
+  .charlie-mvp-shell .chat-room-list{
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    justify-content:stretch;
+  }
+  .charlie-mvp-shell .chat-room-actions .mini,
+  .charlie-mvp-shell .chat-room-more,
+  .charlie-mvp-shell .chat-room-more summary,
+  .charlie-mvp-shell .chat-room-pill,
+  .charlie-mvp-shell .ai-upload-button,
+  .charlie-mvp-shell .ai-upload-panel .mini,
+  .charlie-mvp-shell .charlie-mvp-head-actions a,
+  .charlie-mvp-shell .chat-action-menu,
+  .charlie-mvp-shell .chat-action-menu .mini{
+    width:100%;
+    justify-content:center;
   }
   .charlie-mvp-shell .ai-chat-form button{
     min-height:52px;
