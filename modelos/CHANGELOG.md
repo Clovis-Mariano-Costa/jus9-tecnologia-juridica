@@ -11,6 +11,10 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Modelos
 
+## 1.3.0 - 2026-07-12
+
+- Adicionado modelo de evento governado com campos minimos, retencao e proibicoes de segredo.
+
 ## 1.0.0 - 2026-07-12
 
 - Criados modelos iniciais de metadados, auditoria e roadmap.

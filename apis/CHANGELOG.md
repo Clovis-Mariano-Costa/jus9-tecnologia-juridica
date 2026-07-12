@@ -11,6 +11,11 @@ hash: nao-aplicavel-changelog
 
 # Changelog - APIs
 
+## 1.3.0 - 2026-07-12
+
+- Adicionado contrato de backend governado com rotas, eventos, bloqueios e regras de Drive/memoria.
+- Adicionadas feature flags de capacidades com estados de maturidade.
+
 ## 1.0.0 - 2026-07-12
 
 - Criada area de contratos de API.

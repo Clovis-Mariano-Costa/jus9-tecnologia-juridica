@@ -11,6 +11,11 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Testes
 
+## 1.3.0 - 2026-07-12
+
+- Adicionados casos de backend/eventos governados.
+- Adicionado auditor de contratos de backend governado.
+
 ## 1.2.0 - 2026-07-12
 
 - Adicionada suite de governanca de riscos com dez casos.

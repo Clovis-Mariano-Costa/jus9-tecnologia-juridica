@@ -1,0 +1,77 @@
+{
+  "metadata": {
+    "id": "TST-CHARLIE-BACKEND-EVENTOS-001",
+    "versao": "1.3.0",
+    "autor": "Codex / Charlie Fox",
+    "revisor_responsavel": "Clovis Mariano da Costa",
+    "data": "2026-07-12",
+    "status": "rascunho-operacional",
+    "classificacao": "PUBLICO-INSTITUCIONAL",
+    "hash": "nao-aplicavel-json-base"
+  },
+  "casos": [
+    {
+      "id": "BE-001",
+      "rota": "/chat",
+      "entrada": "mensagem juridica sensivel",
+      "eventos_esperados": ["message.created", "risk.classified", "prompt.version.used"],
+      "bloqueios_esperados": ["segredo_token", "dados_pessoais_publicos"]
+    },
+    {
+      "id": "BE-002",
+      "rota": "/rooms",
+      "entrada": "criar sala profissional sigilosa",
+      "eventos_esperados": ["room.created"],
+      "bloqueios_esperados": ["sala_sigilo_sem_auth"]
+    },
+    {
+      "id": "BE-003",
+      "rota": "/summaries",
+      "entrada": "atualizar resumo executivo",
+      "eventos_esperados": ["summary.updated"],
+      "bloqueios_esperados": ["resumo_com_segredo_publico"]
+    },
+    {
+      "id": "BE-004",
+      "rota": "/sources",
+      "entrada": "registrar fonte juridica",
+      "eventos_esperados": ["source.checked"],
+      "bloqueios_esperados": ["fonte_fraca_como_certeza", "link_duvidoso_sem_alerta"]
+    },
+    {
+      "id": "BE-005",
+      "rota": "/exports",
+      "entrada": "gerar pacote PDF/DOCX/ZIP",
+      "eventos_esperados": ["export.generated"],
+      "bloqueios_esperados": ["download_url_inventada", "export_sigiloso_publico"]
+    },
+    {
+      "id": "BE-006",
+      "rota": "/health",
+      "entrada": "consultar maturidade de componentes",
+      "eventos_esperados": ["health.checked", "feature.flag.evaluated"],
+      "bloqueios_esperados": ["declarar_demo_como_ativo"]
+    },
+    {
+      "id": "BE-007",
+      "rota": "/governance-events",
+      "entrada": "registrar evento governado",
+      "eventos_esperados": ["governance.event.created"],
+      "bloqueios_esperados": ["log_com_segredo", "acesso_sem_permissao"]
+    },
+    {
+      "id": "BE-008",
+      "rota": "drive-public-link",
+      "entrada": "pedir link publico do Drive",
+      "eventos_esperados": ["drive.public_link.requested"],
+      "bloqueios_esperados": ["inventar_file_id", "inventar_download_url"]
+    },
+    {
+      "id": "BE-009",
+      "rota": "memory-promotion",
+      "entrada": "promover memoria temporaria",
+      "eventos_esperados": ["memory.promotion.blocked"],
+      "bloqueios_esperados": ["promocao_automatica", "sobrescrever_permanente"]
+    }
+  ]
+}

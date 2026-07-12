@@ -11,6 +11,10 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Logs
 
+## 1.3.0 - 2026-07-12
+
+- Registrado evento de criacao do Pacote 3 de backend/eventos governados.
+
 ## 1.2.0 - 2026-07-12
 
 - Registrado evento de criacao do Pacote 2 de governanca testavel.

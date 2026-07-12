@@ -1,0 +1,100 @@
+{
+  "metadata": {
+    "id": "API-CHARLIE-FEATURE-FLAGS-001",
+    "versao": "1.3.0",
+    "autor": "Codex / Charlie Fox",
+    "revisor_responsavel": "Clovis Mariano da Costa",
+    "data": "2026-07-12",
+    "status": "rascunho-operacional",
+    "classificacao": "PUBLICO-INSTITUCIONAL",
+    "hash": "nao-aplicavel-json-base"
+  },
+  "estados_validos": ["ativo", "demonstrativo", "planejado", "bloqueado_por_seguranca"],
+  "regra": "Toda capacidade sensivel deve ser protegida por flag e declarada no health antes de ser apresentada como operacional.",
+  "flags": [
+    {
+      "id": "flag.chat.api",
+      "estado": "planejado",
+      "descricao": "Proxy seguro de chat com classificacao, contrato de modo e eventos.",
+      "dependencias": ["/chat", "ai_gateway", "risk.classified"],
+      "bloqueio": "sem_chave_no_frontend"
+    },
+    {
+      "id": "flag.rooms.storage",
+      "estado": "planejado",
+      "descricao": "Persistencia de salas governadas.",
+      "dependencias": ["/rooms", "auth", "room.created"],
+      "bloqueio": "sem_auth_nao_persistir_sigilo"
+    },
+    {
+      "id": "flag.summaries.storage",
+      "estado": "planejado",
+      "descricao": "Resumo executivo vivo com classificacao.",
+      "dependencias": ["/summaries", "summary.updated"],
+      "bloqueio": "nao_resumir_segredo_em_publico"
+    },
+    {
+      "id": "flag.sources.check",
+      "estado": "planejado",
+      "descricao": "Registro de fonte, confianca e data de consulta.",
+      "dependencias": ["/sources", "source.checked"],
+      "bloqueio": "fonte_fraca_nao_vira_certeza"
+    },
+    {
+      "id": "flag.exports.local",
+      "estado": "ativo",
+      "descricao": "Exportacoes locais no navegador quando classificacao permitir.",
+      "dependencias": ["frontend_local", "classification"],
+      "bloqueio": "nao_confundir_download_local_com_drive"
+    },
+    {
+      "id": "flag.exports.server",
+      "estado": "planejado",
+      "descricao": "Exportacao em backend com trilha de auditoria.",
+      "dependencias": ["/exports", "export.generated", "auth"],
+      "bloqueio": "sem_auth_nao_exportar_sigilo"
+    },
+    {
+      "id": "flag.governance.events",
+      "estado": "planejado",
+      "descricao": "Eventos governados persistentes.",
+      "dependencias": ["/governance-events", "governance.event.created"],
+      "bloqueio": "log_nao_pode_conter_segredo"
+    },
+    {
+      "id": "flag.drive.saver",
+      "estado": "demonstrativo",
+      "descricao": "Salvar documento no Cartorio Digital quando backend autorizado retornar ID real.",
+      "dependencias": ["Apps Script", "backend_autorizado", "export.generated"],
+      "bloqueio": "nao_inventar_download_url"
+    },
+    {
+      "id": "flag.drive.public_link",
+      "estado": "bloqueado_por_seguranca",
+      "descricao": "Abrir, revogar ou publicar link publico do Drive.",
+      "dependencias": ["backend_autorizado", "drive.public_link.requested", "drive.public_link.revoked"],
+      "bloqueio": "somente_fluxo_auditado"
+    },
+    {
+      "id": "flag.ocr.upload",
+      "estado": "planejado",
+      "descricao": "Extracao de texto de PDF/imagem por backend.",
+      "dependencias": ["attachment.rejected", "ocr_service", "classification"],
+      "bloqueio": "arquivo_sigiloso_sem_auth"
+    },
+    {
+      "id": "flag.rag.juridico",
+      "estado": "planejado",
+      "descricao": "RAG juridico controlado com fontes oficiais e academicas.",
+      "dependencias": ["source.checked", "pipeline_fontes", "cache_confiavel"],
+      "bloqueio": "nao_inventar_fonte"
+    },
+    {
+      "id": "flag.memory.user.persistent",
+      "estado": "demonstrativo",
+      "descricao": "Memoria persistente por usuario com consentimento, exportacao e limpeza.",
+      "dependencias": ["auth", "consentimento", "memory.promotion.blocked"],
+      "bloqueio": "memoria_temporaria_nao_promove_sozinha"
+    }
+  ]
+}

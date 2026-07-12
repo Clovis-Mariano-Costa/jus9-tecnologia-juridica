@@ -1,0 +1,115 @@
+---
+metadata:
+  id: API-CHARLIE-BACKEND-GOVERNADO-001
+  versao: 1.3.0
+  autor: Codex / Charlie Fox
+  revisor_responsavel: Clovis Mariano da Costa
+  data: 2026-07-12
+  status: rascunho-operacional
+  classificacao: PUBLICO-INSTITUCIONAL
+  hash: nao-aplicavel-yaml-base
+premissas:
+  sem_chaves_no_frontend: true
+  autenticar_quando_houver_memoria_ou_estado: true
+  rate_limit_obrigatorio: true
+  classificar_entrada_antes_do_modelo: true
+  validar_saida_antes_de_responder: true
+  registrar_evento_governado: true
+  diferenciar_ativo_demo_planejado_bloqueado: true
+rotas:
+  - path: /chat
+    methods: [POST]
+    estado: planejado
+    finalidade: receber mensagem classificada, aplicar contrato de modo e chamar gateway de IA
+    auth: opcional_publico_obrigatoria_profissional
+    rate_limit: obrigatorio
+    entrada: [workspace_id, room_id, mode, message, user_memory_ref, attachments_ref]
+    saida: [answer, mode, prompt_version, input_classification, output_classification, events]
+    eventos_emitidos: [message.created, risk.classified, prompt.version.used]
+    bloqueios: [segredo_token, dados_pessoais_publicos, memoria_temporaria_sem_revisao]
+  - path: /rooms
+    methods: [GET, POST, PATCH]
+    estado: planejado
+    finalidade: criar, listar e arquivar salas governadas
+    auth: obrigatoria_quando_persistente
+    rate_limit: obrigatorio
+    entrada: [workspace_id, title, mode, classification]
+    saida: [room_id, title, mode, classification, created_at, archived_at]
+    eventos_emitidos: [room.created, room.updated]
+    bloqueios: [sala_sigilo_sem_auth, dado_real_em_demo]
+  - path: /summaries
+    methods: [GET, POST, PATCH]
+    estado: planejado
+    finalidade: manter resumo executivo vivo com pendencias e classificacao
+    auth: obrigatoria
+    rate_limit: obrigatorio
+    entrada: [room_id, executive_summary, pending_items, next_step, classification]
+    saida: [summary_id, room_id, updated_at, governance_classification]
+    eventos_emitidos: [summary.updated]
+    bloqueios: [resumo_com_segredo_publico, promocao_memoria_sem_revisao]
+  - path: /sources
+    methods: [GET, POST]
+    estado: planejado
+    finalidade: registrar fonte, dominio, tipo, confianca, data de consulta e pendencia
+    auth: opcional_leitura_obrigatoria_escrita
+    rate_limit: obrigatorio
+    entrada: [message_id, url, domain, source_type, confidence, checked_at, notes]
+    saida: [source_check_id, confidence, status]
+    eventos_emitidos: [source.checked]
+    bloqueios: [fonte_fraca_como_certeza, link_duvidoso_sem_alerta]
+  - path: /exports
+    methods: [POST]
+    estado: planejado
+    finalidade: gerar PDF, DOCX, ZIP ou pacote de evidencias conforme classificacao
+    auth: obrigatoria_quando_servidor_ou_drive
+    rate_limit: obrigatorio
+    entrada: [room_id, message_id, format, classification, destination]
+    saida: [export_id, format, local_only, drive_file_id, download_url, classification]
+    eventos_emitidos: [export.generated]
+    bloqueios: [download_url_inventada, export_sigiloso_publico, drive_sem_backend_autorizado]
+  - path: /health
+    methods: [GET]
+    estado: planejado
+    finalidade: declarar estado de componentes e flags
+    auth: leitura_publica_prudente
+    rate_limit: recomendado
+    entrada: [component_optional]
+    saida: [components, flags, checked_at]
+    eventos_emitidos: [health.checked, feature.flag.evaluated]
+    bloqueios: [declarar_demo_como_ativo, omitir_dependencia_critica]
+  - path: /governance-events
+    methods: [GET, POST]
+    estado: planejado
+    finalidade: registrar e consultar trilha de auditoria autorizada
+    auth: obrigatoria
+    rate_limit: obrigatorio
+    entrada: [event_type, actor, entity_type, entity_id, classification, reason, metadata]
+    saida: [event_id, event_type, result, created_at]
+    eventos_emitidos: [governance.event.created, governance.event.read]
+    bloqueios: [log_com_segredo, acesso_sem_permissao, alteracao_sem_justificativa]
+catalogo_eventos:
+  - message.created
+  - risk.classified
+  - prompt.version.used
+  - room.created
+  - room.updated
+  - summary.updated
+  - source.checked
+  - export.generated
+  - attachment.rejected
+  - health.checked
+  - feature.flag.evaluated
+  - governance.event.created
+  - governance.event.read
+  - drive.public_link.requested
+  - drive.public_link.revoked
+  - memory.promotion.blocked
+regras_drive:
+  gerar_link_publico: somente_backend_autorizado_com_evento
+  revogar_link_publico: somente_backend_autorizado_com_evento
+  apagar_documento: somente_fluxo_auditado
+  proibido: [inventar_file_id, inventar_download_url, publicar_sigiloso_sem_classificacao]
+regras_memoria:
+  persistir_por_usuario: exige_login_consentimento_e_exportacao
+  promover_temporaria: exige_revisao_teste_homologacao_release_auditoria
+  proibido: [promocao_automatica, memoria_secreta_em_log_publico, sobrescrever_permanente]

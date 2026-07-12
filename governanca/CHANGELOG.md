@@ -11,6 +11,11 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.3.0 - 2026-07-12
+
+- Adicionados contratos de backend governado, catalogo de eventos e feature flags.
+- Criado auditor especifico para rotas, eventos, flags e bloqueios.
+
 ## 1.2.0 - 2026-07-12
 
 - Adicionada governanca testavel para riscos sensiveis.

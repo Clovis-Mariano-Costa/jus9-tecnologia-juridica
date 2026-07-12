@@ -1,0 +1,52 @@
+{
+  "metadata": {
+    "id": "MDL-CHARLIE-GOVERNANCE-EVENT-001",
+    "versao": "1.3.0",
+    "autor": "Codex / Charlie Fox",
+    "revisor_responsavel": "Clovis Mariano da Costa",
+    "data": "2026-07-12",
+    "status": "rascunho-operacional",
+    "classificacao": "PUBLICO-INSTITUCIONAL",
+    "hash": "nao-aplicavel-json-base"
+  },
+  "schema": {
+    "event_id": "uuid",
+    "event_type": "string_do_catalogo",
+    "occurred_at": "datetime_iso_8601",
+    "actor": "usuario_ou_agente",
+    "workspace_id": "string_ou_null",
+    "room_id": "string_ou_null",
+    "entity_type": "message|room|summary|source|export|prompt|memory|drive|flag|health",
+    "entity_id": "string_ou_null",
+    "prompt_version": "semver_ou_null",
+    "input_classification": "publico|interno|sigiloso|secreto|nao_aplicavel",
+    "output_classification": "publico|interno|sigiloso|secreto|nao_aplicavel",
+    "risk_category": "string_ou_null",
+    "result": "success|blocked|failed|pending",
+    "reason": "justificativa_curta",
+    "metadata": "objeto_sem_segredo",
+    "retention_policy": "public_log|private_audit|restricted_vault",
+    "content_hash": "sha256_quando_aplicavel"
+  },
+  "proibido": [
+    "senha",
+    "token",
+    "api_key",
+    "documento_pessoal_real",
+    "processo_real_sem_classificacao",
+    "conteudo_sigiloso_em_log_publico"
+  ],
+  "eventos_minimos": [
+    "message.created",
+    "risk.classified",
+    "prompt.version.used",
+    "room.created",
+    "summary.updated",
+    "source.checked",
+    "export.generated",
+    "health.checked",
+    "feature.flag.evaluated",
+    "governance.event.created",
+    "memory.promotion.blocked"
+  ]
+}

@@ -55,17 +55,22 @@ const requiredFiles = [
   "prompts/governanca/CONTRATOS_MODOS_CHARLIE_ECHO_v1.1.0.yaml",
   "prompts/seguranca/POLITICA_RISCOS_CHARLIE_ECHO_v1.2.0.yaml",
   "apis/CONTRATO_APIS_GOVERNANCA_v1.0.0.yaml",
+  "apis/CONTRATO_BACKEND_GOVERNADO_CHARLIE_ECHO_v1.3.0.yaml",
+  "apis/FEATURE_FLAGS_CAPACIDADES_CHARLIE_ECHO_v1.3.0.json",
   "modelos/MODELO_METADADOS_DOCUMENTAIS_v1.0.0.yaml",
   "modelos/MODELO_EVENTO_AUDITORIA_v1.0.0.yaml",
+  "modelos/MODELO_EVENTO_GOVERNANCA_v1.3.0.json",
   "modelos/MODELO_ROADMAP_v1.0.0.yaml",
   "logs/AUDITORIA_GOVERNANCA_CHARLIE_ECHO_2026-07-12.md",
   "testes/CHECKLIST_QUALIDADE_GOVERNANCA_v1.0.0.json",
   "testes/CASOS_CONTRATOS_MODOS_v1.1.0.json",
   "testes/SUITE_GOVERNANCA_RISCOS_CHARLIE_ECHO_v1.2.0.json",
   "testes/PROTOCOLO_REGRESSAO_PROMPT_FLUXO_v1.2.0.md",
+  "testes/CASOS_BACKEND_EVENTOS_GOVERNADOS_v1.3.0.json",
   "releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.0.0.md",
   "releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.1.0.md",
   "releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.2.0.md",
+  "releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.3.0.md",
   "historico/INDICE_HISTORICO_GOVERNANCA_v1.0.0.md",
   "obsoleto/POLITICA_OBSOLESCENCIA_v1.0.0.md"
 ];
@@ -122,6 +127,29 @@ const riskCategories = [
   "memoria_temporaria",
   "drive_link_publico",
   "investimento_financeiro"
+];
+
+const backendRoutes = [
+  "/chat",
+  "/rooms",
+  "/summaries",
+  "/sources",
+  "/exports",
+  "/health",
+  "/governance-events"
+];
+
+const governanceEvents = [
+  "message.created",
+  "risk.classified",
+  "prompt.version.used",
+  "summary.updated",
+  "source.checked",
+  "export.generated",
+  "health.checked",
+  "feature.flag.evaluated",
+  "governance.event.created",
+  "memory.promotion.blocked"
 ];
 
 function fail(message) {
@@ -294,6 +322,47 @@ for (const command of ["audit-charlie-governance-structure.mjs", "audit-charlie-
   if (!regressionProtocol.includes(command)) fail(`Protocolo de regressao sem auditor: ${command}`);
 }
 
+const backendContract = read("apis/CONTRATO_BACKEND_GOVERNADO_CHARLIE_ECHO_v1.3.0.yaml");
+for (const route of backendRoutes) {
+  if (!backendContract.includes(`path: ${route}`)) fail(`Contrato backend sem rota: ${route}`);
+}
+for (const eventName of governanceEvents) {
+  if (!backendContract.includes(eventName)) fail(`Contrato backend sem evento: ${eventName}`);
+}
+for (const phrase of ["sem_chaves_no_frontend: true", "rate_limit_obrigatorio: true", "registrar_evento_governado: true"]) {
+  if (!backendContract.includes(phrase)) fail(`Contrato backend sem premissa: ${phrase}`);
+}
+
+const featureFlags = assertMetadataJson(
+  "apis/FEATURE_FLAGS_CAPACIDADES_CHARLIE_ECHO_v1.3.0.json",
+  read("apis/FEATURE_FLAGS_CAPACIDADES_CHARLIE_ECHO_v1.3.0.json")
+);
+for (const state of capabilityStates) {
+  if (!(featureFlags.flags || []).some((item) => item.estado === state)) fail(`Feature flags sem estado: ${state}`);
+}
+for (const flagId of ["flag.chat.api", "flag.drive.public_link", "flag.memory.user.persistent"]) {
+  if (!(featureFlags.flags || []).some((item) => item.id === flagId)) fail(`Feature flag ausente: ${flagId}`);
+}
+
+const governanceEventModel = assertMetadataJson(
+  "modelos/MODELO_EVENTO_GOVERNANCA_v1.3.0.json",
+  read("modelos/MODELO_EVENTO_GOVERNANCA_v1.3.0.json")
+);
+for (const field of ["event_id", "event_type", "occurred_at", "actor", "result", "reason", "retention_policy"]) {
+  if (!governanceEventModel.schema || !governanceEventModel.schema[field]) fail(`Modelo evento governanca sem campo: ${field}`);
+}
+for (const eventName of governanceEvents) {
+  if (!(governanceEventModel.eventos_minimos || []).includes(eventName)) fail(`Modelo evento governanca sem evento minimo: ${eventName}`);
+}
+
+const backendCases = assertMetadataJson(
+  "testes/CASOS_BACKEND_EVENTOS_GOVERNADOS_v1.3.0.json",
+  read("testes/CASOS_BACKEND_EVENTOS_GOVERNADOS_v1.3.0.json")
+);
+for (const route of backendRoutes) {
+  if (!(backendCases.casos || []).some((item) => item.rota === route)) fail(`Casos backend sem rota: ${route}`);
+}
+
 const release = read("releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.0.0.md");
 if (!release.includes("Nao inclui")) fail("Release precisa declarar o que nao inclui");
 if (!release.includes("Alteracao de logica de negocio")) fail("Release precisa preservar logica de negocio existente");
@@ -305,5 +374,9 @@ if (!release11.includes("Alteracao de logica de negocio ativa")) fail("Release 1
 const release12 = read("releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.2.0.md");
 if (!release12.includes("governanca testavel")) fail("Release 1.2.0 sem governanca testavel");
 if (!release12.includes("Alteracao de logica de negocio ativa")) fail("Release 1.2.0 precisa preservar logica ativa");
+
+const release13 = read("releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.3.0.md");
+if (!release13.includes("backend governado")) fail("Release 1.3.0 sem backend governado");
+if (!release13.includes("Implementacao ativa de backend transacional")) fail("Release 1.3.0 precisa declarar o que nao inclui");
 
 console.log(`GOVERNANCE_STRUCTURE_OK ${governanceFiles.length} documentos verificados`);
