@@ -1560,6 +1560,8 @@ window.jus9DemoLogin = function(form){
     if (documentDownload) return documentDownload;
     var doctrineBibliography = doctrineBibliographyProductAnswer(cleanQuestion);
     if (doctrineBibliography) return doctrineBibliography;
+    var mvpInstrument = mvpInstrumentAnswer(code, focus, cleanQuestion, mode);
+    if (mvpInstrument) return mvpInstrument;
     var integration = mvpIntegrationAnswer(code, focus, cleanQuestion);
     if (integration) return integration;
     var doctrineProduction = doctrineProductionAnswer(cleanQuestion);
@@ -1570,7 +1572,7 @@ window.jus9DemoLogin = function(form){
       return 'Vou tratar como governanca do ' + code + '. Primeiro confiro classificacao, risco, versionamento e necessidade de revisao humana. Foco atual: ' + focus + '.\n\nResposta direta: organize o pedido em registro, criterio de decisao, responsavel e proximo passo verificavel.\n\nLimite: nao use segredo, cofre, token ou dado real em ambiente publico.';
     }
     if (mode === 'social') {
-      return 'Vamos por partes. Primeiro separe o objetivo, depois o que e ficticio, depois o que precisa de ajuda humana.\n\nPara ' + code + ', eu faria uma lista curta de passos e deixaria qualquer decisao importante para revisao humana.';
+      return 'Vamos por partes, em linguagem simples.\n\n1. Diga o problema sem nomes, documentos, processo, telefone, endereco ou dado real.\n2. Eu separo informacao geral, fonte oficial e caminho humano possivel.\n3. Se houver urgencia, risco, prazo, violencia, saude, crianca/adolescente, dinheiro ou documento real, procure atendimento humano qualificado.\n\nPara ' + code + ', eu faria uma lista curta de passos e deixaria qualquer decisao importante para revisao humana.';
     }
     if (mode === 'especialista') {
       return 'No ' + code + ', o foco e: ' + focus + '.\n\nResposta direta: transforme o pedido em tarefa, documento, prazo ou item de dossie.\n\nProximo passo: criar um checklist curto e marcar o que precisa de revisao humana.';
@@ -1840,6 +1842,82 @@ window.jus9DemoLogin = function(form){
     return mvpIntegrationContracts[code] || buildGenericMvpIntegrationContract(code);
   }
 
+  function mvpInstrumentPackages(code){
+    var packages = {
+      DAA: {
+        title:'Instrumentos DAA - professor',
+        subtitle:'Aula, rubrica e material academico com fontes conferidas e revisao humana.',
+        prompts:[
+          { label:'Plano de aula', prompt:'No DAA, crie um plano de aula demonstrativo sobre funcao social da propriedade, com objetivos, roteiro, atividade, avaliacao e fontes oficiais/academicas para conferencia.' },
+          { label:'Rubrica', prompt:'No DAA, monte uma rubrica simples para avaliar trabalho academico ficticio, separando criterio, peso, evidencias e limite de uso sem substituir professor humano.' },
+          { label:'Fontes de aula', prompt:'No DAA, organize fontes confiaveis para aula introdutoria, separando Planalto, LexML, BDTD, CAPES e SciELO, sem inventar autor, pagina ou citacao.' }
+        ]
+      },
+      DEJ: {
+        title:'Instrumentos DEJ - estudante',
+        subtitle:'Estudo guiado, mapa de conceitos e revisao sem promessa de aprovacao.',
+        prompts:[
+          { label:'Plano de estudo', prompt:'No DEJ, monte plano de estudo demonstrativo de 30 minutos sobre direito de propriedade, com leitura, resumo, perguntas de revisao e fonte oficial.' },
+          { label:'Mapa mental', prompt:'No DEJ, explique funcao social da propriedade em linguagem de estudante, com mapa de conceitos, exemplo ficticio e alerta de revisao humana.' },
+          { label:'Checklist de pesquisa', prompt:'No DEJ, crie checklist para pesquisar doutrina sem plagio: tema, fonte, autor, ano, pagina conferida, citacao correta e limite academico.' }
+        ]
+      },
+      DIC: {
+        title:'Modulo social/cidadao',
+        subtitle:'Acolhe, traduz direitos em linguagem simples e encaminha para ajuda humana adequada.',
+        prompts:[
+          { label:'Orientacao social', prompt:'No modulo social DIC, explique em linguagem simples o que fazer diante de uma duvida juridica comum, sem pedir dados pessoais, indicando quando procurar advogado, defensoria ou orgao publico.' },
+          { label:'Encaminhamento humano', prompt:'No modulo social DIC, monte um roteiro de encaminhamento humano seguro: o que anotar, quais documentos ficticios organizar, quais fontes oficiais consultar e quando buscar ajuda urgente.' },
+          { label:'Direitos em linguagem simples', prompt:'No modulo social DIC, explique o direito de propriedade em linguagem cidada, citando fontes oficiais e avisando limites da IA, sem juridiquês e sem substituir profissional.' }
+        ]
+      },
+      DPJ: {
+        title:'Instrumentos DPJ - perito',
+        subtitle:'Quesitos, metodologia, anexos e laudo demonstrativo sem ato oficial.',
+        prompts:[
+          { label:'Quesitos', prompt:'No DPJ, organize quesitos periciais ficticios sobre responsabilidade civil, separando objetivo, documentos necessarios, metodo e limites da analise.' },
+          { label:'Roteiro de laudo', prompt:'No DPJ, monte roteiro de laudo demonstrativo com objeto, metodologia, documentos, achados, limitacoes e revisao humana.' },
+          { label:'Cadeia tecnica', prompt:'No DPJ, crie checklist de cadeia tecnica de anexos ficticios, preservando integridade, origem, descricao e pendencias.' }
+        ]
+      },
+      DEE: {
+        title:'Instrumentos DEE - escritorio',
+        subtitle:'Equipe, tarefas, clientes ficticios, sigilo e auditoria interna.',
+        prompts:[
+          { label:'Distribuir tarefas', prompt:'No DEE, distribua tarefas ficticias de escritorio juridico por papel, prioridade, prazo interno, risco e revisao do advogado responsavel.' },
+          { label:'Triagem sigilosa', prompt:'No DEE, monte checklist para separar demanda publica, interna e juridico-sigilosa sem expor cliente ou dados reais.' },
+          { label:'Auditoria de fluxo', prompt:'No DEE, gere quadro de auditoria interna para acompanhar documentos, prazos, responsaveis e pendencias ficticias.' }
+        ]
+      },
+      DEJI: {
+        title:'Instrumentos DEJI - empresa',
+        subtitle:'Contrato, compliance, LGPD, responsabilidade social e decisao revisavel.',
+        prompts:[
+          { label:'Risco contratual', prompt:'No DEJI, classifique uma demanda contratual ficticia por risco, urgencia, area responsavel, documento necessario e decisao humana.' },
+          { label:'LGPD e compliance', prompt:'No DEJI, monte checklist de LGPD e compliance para fornecedor ficticio, separando dados, base legal, risco e proximo passo.' },
+          { label:'Responsabilidade social', prompt:'No DEJI, proponha metas verificaveis de responsabilidade social empresarial, com indicadores, evidencias e limite contra publicidade vazia.' }
+        ]
+      }
+    };
+    var normalized = String(code || '').toUpperCase();
+    if(packages[normalized]) return packages[normalized];
+    var rule = mvpPersonaRules[normalized] || mvpPersonaRules.DAJ;
+    return {
+      title:'Instrumentos ' + (normalized || 'MVP'),
+      subtitle:'Acoes rapidas do modulo com personalidade propria, Drive governado e revisao humana.',
+      prompts:[
+        { label:'Resumo do modulo', prompt:'No ' + normalized + ', resuma o pedido como tarefa do modulo, com objetivo, risco, fonte confiavel, proximo passo humano e limite da IA.' },
+        { label:'Checklist', prompt:'No ' + normalized + ', crie checklist operacional curto conforme a assinatura do ambiente: ' + rule.signature + '.' },
+        { label:'Fontes e limites', prompt:'No ' + normalized + ', indique fontes confiaveis e limites duros do ambiente: ' + rule.limit + '.' }
+      ]
+    };
+  }
+
+  function asksMvpInstrument(question){
+    var q = plainAiText(question);
+    return /\b(instrumento|instrumentos|modulo|mvp|painel|roteiro|checklist|plano de aula|plano de estudo|rubrica|encaminhamento|orientacao social|cidadao|social|quesitos|laudo|escritorio|compliance|lgpd|responsabilidade social|distribua tarefas|auditoria de fluxo)\b/.test(q);
+  }
+
   function compactContractList(items){
     return (items || []).map(function(item){
       return Array.isArray(item) ? item[0] + ' -> ' + item[1] : String(item || '');
@@ -1887,6 +1965,38 @@ window.jus9DemoLogin = function(form){
       '',
       'Proximo passo: escolha uma acao concreta: resumir o DAJ, criar minuta, analisar anexo, montar checklist de prazo/documentos ou salvar resposta no Drive.'
     ].join('\n');
+  }
+
+  function mvpInstrumentAnswer(code, focus, question, mode){
+    if(code === 'DAJ') return '';
+    if(!asksMvpInstrument(question)) return '';
+    var normalized = String(code || 'MVP').toUpperCase();
+    var pack = mvpInstrumentPackages(normalized);
+    var rule = mvpPersonaRules[normalized] || mvpPersonaRules.DAJ;
+    var isSocial = normalized === 'DIC' || mode === 'social';
+    var lines = [
+      isSocial ? 'Modulo social/cidadao da Charlie Echo' : 'Instrumentos do modulo ' + normalized,
+      '',
+      'Foco: ' + (focus || pack.subtitle) + '.',
+      'Personalidade: ' + rule.persona + '.',
+      '',
+      'Como vou responder:',
+      isSocial
+        ? '1. Primeiro acolho e traduzo em linguagem simples, sem pedir dado pessoal real.'
+        : '1. Primeiro identifico o objetivo do modulo, o risco e o proximo passo humano.',
+      isSocial
+        ? '2. Depois separo informacao geral, fonte oficial e encaminhamento humano adequado.'
+        : '2. Depois transformo o pedido em roteiro, checklist, quadro ou relatorio curto.',
+      '3. Se houver documento, fonte, autoria, prazo, dado pessoal ou sigilo, aplico revisao humana e nao invento informacao.',
+      '',
+      'Acoes rapidas deste instrumento:'
+    ];
+    pack.prompts.forEach(function(item){
+      lines.push('- ' + item.label + ': ' + item.prompt);
+    });
+    lines.push('', 'Limite duro: ' + rule.limit + '.');
+    lines.push(isSocial ? 'Proximo passo social: diga o problema em termos gerais e sem dados pessoais; eu devolvo orientacao simples e caminhos oficiais.' : 'Proximo passo: escolha uma acao rapida do painel ou descreva a tarefa do modulo.');
+    return lines.join('\n');
   }
 
   function governedIdentityInstruction(identityContext){
@@ -2595,7 +2705,47 @@ window.jus9DemoLogin = function(form){
   }
 
   function injectMvpIntegrationPanel(card, code, focus){
-    if(code !== 'DAJ' || card.querySelector('[data-daj-integration-panel]')) return;
+    if(code !== 'DAJ'){
+      if(card.querySelector('[data-mvp-instrument-panel]')) return;
+      var genericWindow = card.querySelector('[data-ai-chat-window]');
+      var genericInput = card.querySelector('[data-ai-chat-input]');
+      if(!genericWindow || !genericWindow.parentNode || !genericInput) return;
+      var normalized = String(code || 'MVP').toUpperCase();
+      var contractGeneric = mvpIntegrationContract(normalized);
+      var pack = mvpInstrumentPackages(normalized);
+      var genericPanel = document.createElement('div');
+      genericPanel.className = 'mvp-instrument-panel';
+      genericPanel.setAttribute('data-mvp-instrument-panel', normalized);
+      genericPanel.innerHTML =
+        '<div class="mvp-instrument-head"><div><strong></strong><p></p></div><span></span></div>' +
+        '<div class="mvp-instrument-routes" aria-label="Rotas do modulo"></div>' +
+        '<div class="mvp-instrument-prompts" aria-label="Instrumentos do modulo"></div>';
+      genericPanel.querySelector('strong').textContent = pack.title;
+      genericPanel.querySelector('p').textContent = pack.subtitle;
+      genericPanel.querySelector('span').textContent = normalized === 'DIC' ? 'social' : 'instrumento';
+      var genericRoutes = genericPanel.querySelector('.mvp-instrument-routes');
+      (contractGeneric.routes || []).slice(0, 5).forEach(function(route){
+        var link = document.createElement('a');
+        link.href = route[1];
+        link.textContent = route[0];
+        genericRoutes.appendChild(link);
+      });
+      var genericPromptBox = genericPanel.querySelector('.mvp-instrument-prompts');
+      pack.prompts.forEach(function(item){
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = item.label;
+        button.setAttribute('data-mvp-instrument-prompt', item.label);
+        button.addEventListener('click', function(){
+          genericInput.value = item.prompt;
+          genericInput.focus();
+        });
+        genericPromptBox.appendChild(button);
+      });
+      genericWindow.parentNode.insertBefore(genericPanel, genericWindow);
+      return;
+    }
+    if(card.querySelector('[data-daj-integration-panel]')) return;
     var windowEl = card.querySelector('[data-ai-chat-window]');
     var input = card.querySelector('[data-ai-chat-input]');
     if(!windowEl || !windowEl.parentNode || !input) return;
@@ -2696,6 +2846,7 @@ window.jus9DemoLogin = function(form){
       '.ai-mode-row',
       '[data-ai-upload-panel]',
       '[data-daj-integration-panel]',
+      '[data-mvp-instrument-panel]',
       '[data-ai-guided-prompts]',
       '[data-ai-utility-actions]',
       '.charlie-memory-panel'

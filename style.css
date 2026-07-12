@@ -1546,8 +1546,39 @@ button,input,select,textarea{max-width:100%}
 }
 .daj-doctrine-product-panel strong{display:block;color:#07111f}
 .daj-doctrine-product-panel p{margin:3px 0 0;color:#51627a;font-size:.92rem}
+.mvp-instrument-panel{
+  display:grid;
+  gap:10px;
+  padding:12px;
+  border:1px solid rgba(15,23,42,.10);
+  border-radius:14px;
+  background:#f8fbff;
+}
+.mvp-instrument-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:10px;
+}
+.mvp-instrument-head strong{display:block;color:#07111f}
+.mvp-instrument-head p{margin:3px 0 0;color:#51627a;font-size:.92rem}
+.mvp-instrument-head span{
+  border-radius:999px;
+  background:#07111f;
+  color:#e7c36c;
+  padding:4px 8px;
+  font-size:.76rem;
+  font-weight:950;
+  text-transform:uppercase;
+}
+.mvp-instrument-panel[data-mvp-instrument-panel="DIC"]{
+  border-color:rgba(23,107,56,.22);
+  background:#f3fff8;
+}
 .daj-jurisprudence-product-prompts,
-.daj-doctrine-product-prompts{
+.daj-doctrine-product-prompts,
+.mvp-instrument-routes,
+.mvp-instrument-prompts{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
   gap:8px;
@@ -1555,7 +1586,9 @@ button,input,select,textarea{max-width:100%}
 .daj-integration-routes a,
 .daj-integration-prompts button,
 .daj-jurisprudence-product-prompts button,
-.daj-doctrine-product-prompts button{
+.daj-doctrine-product-prompts button,
+.mvp-instrument-routes a,
+.mvp-instrument-prompts button{
   border:1px solid rgba(197,139,47,.30);
   border-radius:12px;
   background:#fff;
@@ -1566,7 +1599,8 @@ button,input,select,textarea{max-width:100%}
 }
 .daj-integration-prompts button,
 .daj-jurisprudence-product-prompts button,
-.daj-doctrine-product-prompts button{
+.daj-doctrine-product-prompts button,
+.mvp-instrument-prompts button{
   cursor:pointer;
   text-align:left;
   line-height:1.25;
@@ -1574,7 +1608,9 @@ button,input,select,textarea{max-width:100%}
 .daj-integration-routes a:hover,
 .daj-integration-prompts button:hover,
 .daj-jurisprudence-product-prompts button:hover,
-.daj-doctrine-product-prompts button:hover{
+.daj-doctrine-product-prompts button:hover,
+.mvp-instrument-routes a:hover,
+.mvp-instrument-prompts button:hover{
   background:#07111f;
   color:#e7c36c;
 }
@@ -1631,6 +1667,7 @@ button,input,select,textarea{max-width:100%}
 .charlie-control-hub .ai-upload-panel,
 .charlie-control-hub .ai-guided-prompts,
 .charlie-control-hub .daj-integration-panel,
+.charlie-control-hub .mvp-instrument-panel,
 .charlie-control-hub .charlie-context-panel,
 .charlie-control-hub .charlie-mvp-head-actions,
 .charlie-control-hub .chat-utility-actions[data-ai-utility-actions]{
@@ -1651,6 +1688,8 @@ button,input,select,textarea{max-width:100%}
 .charlie-control-hub .daj-integration-prompts,
 .charlie-control-hub .daj-jurisprudence-product-prompts,
 .charlie-control-hub .daj-doctrine-product-prompts,
+.charlie-control-hub .mvp-instrument-routes,
+.charlie-control-hub .mvp-instrument-prompts,
 .charlie-control-hub .ai-guided-prompts .link-actions{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
