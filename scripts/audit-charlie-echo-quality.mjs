@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
-const expectedScriptVersion = "script.js?v=20260712-charlie-router-v1";
+const expectedScriptVersion = "script.js?v=20260712-charlie-daj-upload-v1";
 
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), "utf8");
@@ -22,7 +22,7 @@ const checks = [
   {
     name: "chat MVP possui ferramentas de qualidade",
     file: "script.js",
-    patterns: ["Melhorar resposta", "Fontes", "Atualizar resumo", "Resumo executivo", "Gerar PDF", "Baixar PDF", "Abrir no Drive", "link clicavel de download", "Renomear", "application/pdf", ".pdf", "buildPdfBlob", "download-link", "Helvetica-Bold", "Informacoes do pacote", "Historico recente", "Fontes e links confiaveis", "Pagina ", "pdfSafeText", "pdfLiteral", "eef4ff", "asksDocumentProductionDownload", "buildResponseDownloads", "donwload", "asksCompleteLegalDraft", "shouldOfferDocumentDownloads", "completeLegalDraftAnswer", "askCharlieApiPayload", "renderDriveSaverCard", "drive-saver-result-card", "data-ai-save-drive", "downloadUrl real", "data-ai-layout') || card.getAttribute('data-chat-layout", "Faca uma peticao completa de revisao de alimentos", "download local", "Monte um argumento de peticao com o REsp 2.077.278"],
+    patterns: ["Melhorar resposta", "Fontes", "Atualizar resumo", "Resumo executivo", "Gerar PDF", "Baixar PDF", "Abrir no Drive", "link clicavel de download", "Renomear", "application/pdf", ".pdf", "buildPdfBlob", "download-link", "Helvetica-Bold", "Informacoes do pacote", "Historico recente", "Fontes e links confiaveis", "Pagina ", "pdfSafeText", "pdfLiteral", "eef4ff", "asksDocumentProductionDownload", "buildResponseDownloads", "donwload", "asksCompleteLegalDraft", "shouldOfferDocumentDownloads", "completeLegalDraftAnswer", "askCharlieApiPayload", "renderDriveSaverCard", "drive-saver-result-card", "data-ai-save-drive", "downloadUrl real", "data-ai-layout') || card.getAttribute('data-chat-layout", "Leia o DAJ ativo e os anexos textuais enviados", "download local", "Monte um argumento de peticao com o REsp 2.077.278"],
   },
   {
     name: "chat MVP aceita upload local governado",
@@ -92,7 +92,7 @@ const checks = [
   {
     name: "service worker nao prende MVP antigo",
     file: "service-worker.js",
-    patterns: ["jus9-pwa-v17-2026-07-12-charlie-router", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
+    patterns: ["jus9-pwa-v18-2026-07-12-charlie-daj-upload", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
   },
   {
     name: "casa propria da Charlie Echo publicada",

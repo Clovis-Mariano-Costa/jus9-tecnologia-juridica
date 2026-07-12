@@ -1101,6 +1101,15 @@ window.jus9DemoLogin = function(form){
     return wantsLegalDocument && wantsProduction;
   }
 
+  function asksDajAnalysisWithUpload(question){
+    var raw = String(question || '');
+    var q = plainAiText(raw);
+    var hasDajContext = /\b(daj|dossie|dossie administrativo|atendimento inicial|cliente demonstracao|triagem)\b/.test(q) || /\[ATENDIMENTO INICIAL DO DAJ/i.test(raw);
+    var hasAnalysisIntent = /\b(leia|ler|analise|analisar|analisa|resuma|resumir|relatorio|organize|organizar|extraia|extrair|fatos|documentos|pendencias|proximos passos|proximo ato)\b/.test(q);
+    var hasUploadContext = /\[ANEXOS DO USUARIO - UPLOAD LOCAL GOVERNADO\]/i.test(raw) || /\b(anexo|anexos|arquivo|upload|documento enviado|texto extraido)\b/.test(q);
+    return hasDajContext && (hasAnalysisIntent || hasUploadContext);
+  }
+
   function shouldOfferDocumentDownloads(question){
     return asksDocumentProductionDownload(question) || asksCompleteLegalDraft(question);
   }
@@ -1713,6 +1722,12 @@ window.jus9DemoLogin = function(form){
       route.reason = 'usuario pediu continuidade ou estado da sala';
       return route;
     }
+    if(asksDajAnalysisWithUpload(question) || asksDajAnalysisWithUpload(currentQuestion)){
+      route.id = 'daj_analise_upload';
+      route.label = 'DAJ - leitura, anexos e relatorio';
+      route.reason = 'pedido pede leitura do dossie/atendimento/anexos antes de conclusao';
+      return route;
+    }
     if(asksCompleteLegalDraft(currentQuestion)){
       route.id = 'peca_juridica_completa';
       route.label = 'DAJ - minuta/peca completa';
@@ -2156,6 +2171,30 @@ window.jus9DemoLogin = function(form){
     return '[REGRA BIBLIOGRAFICA DE NAO ALUCINACAO]\n' + lines.join('\n');
   }
 
+  function dajOperativeDeliveryInstruction(code, question, routeDecision){
+    var routeId = routeDecision && routeDecision.id || '';
+    var isDaj = String(code || '').toUpperCase() === 'DAJ';
+    var hasUpload = /\[ANEXOS DO USUARIO - UPLOAD LOCAL GOVERNADO\]/i.test(String(question || ''));
+    var isDraft = routeId === 'peca_juridica_completa' || asksCompleteLegalDraft(question);
+    var isDajAnalysis = routeId === 'daj_analise_upload' || asksDajAnalysisWithUpload(question);
+    if(!isDaj && !isDraft && !hasUpload) return '';
+    var lines = [
+      '[ORDEM DE ENTREGA DAJ - MAO NA MASSA]',
+      'Nao responda com protocolo generico quando houver DAJ, minuta, peca ou upload. Entregue produto concreto.',
+      'Antes da conclusao, organize: dossie ativo, fatos extraidos, documentos citados, lacunas, urgencia, sigilo, risco, fontes aplicaveis, proximo ato humano e decisao de Drive/download.',
+      'Use textos extraidos de anexos como insumo. Para PDF, DOCX, imagem, audio ou video sem texto extraido, reconheca o arquivo recebido, use apenas metadados e peca OCR, transcricao ou backend extrator antes de afirmar conteudo.',
+      'Se os dados parecerem reais ou sensiveis, classifique como JURIDICO_SIGILOSO, mantenha placeholders e exija revisao humana.'
+    ];
+    if(isDajAnalysis){
+      lines.push('Para analise DAJ, entregue nesta ordem: resumo executivo do caso; fatos; documentos existentes; documentos faltantes; perguntas de retorno; riscos/prazos; caminhos juridicos possiveis; fontes para conferencia; proximo ato sugerido; classificacao e Drive Saver.');
+    }
+    if(isDraft){
+      lines.push('Para peca/minuta completa, entregue a peca inteira: enderecamento; qualificacao com campos entre colchetes; fatos; fundamentos; tutela provisoria se cabivel; pedidos; provas; valor da causa/fechamento; assinatura; checklist de revisao humana; decisao de download local/Drive Saver.');
+      lines.push('Se faltarem fatos, nao pare em orientacao: redija uma minuta-base com placeholders e indique exatamente quais campos precisam ser preenchidos.');
+    }
+    return lines.join('\n');
+  }
+
   function buildApiMessage(mode, code, focus, question, identityContext, routeDecision){
     routeDecision = routeDecision || charlieRouteDecision(question, mode, code, null);
     return [
@@ -2172,6 +2211,7 @@ window.jus9DemoLogin = function(form){
       'Se o usuario for membro da equipe pelo contexto autenticado, Charlie pode sugerir melhoria normativa quando detectar lacuna, risco, contradicao ou oportunidade relevante. Visitante publico recebe orientacao; equipe recebe proposta; Fundador autoriza mudanca estrutural.',
       governedIdentityInstruction(identityContext),
       bibliographicVerificationInstruction(question),
+      dajOperativeDeliveryInstruction(code, question, routeDecision),
       'Responda como Charlie Echo da Costa, I.A generativa multimodal jurista com governanca humana.',
       mvpPersonalityInstruction(code),
       mvpIntegrationInstruction(code, focus),
@@ -3920,7 +3960,7 @@ window.jus9DemoLogin = function(form){
   var guidedPrompts = {
     DAJ: [
       'Resuma o DAJ-2026-0001 e indique proximos passos com documentos, prazos, riscos e revisao humana.',
-      'Faca uma peticao completa de revisao de alimentos com placeholders, checklist de revisao humana e download local.',
+      'Leia o DAJ ativo e os anexos textuais enviados, depois faca uma peticao completa de revisao de alimentos com placeholders, checklist de revisao humana e download local.',
       'Fiche a obra A nova teoria do fato punivel. Primeiro confirme autoria real e fonte confiavel; se o titulo estiver impreciso, corrija com cautela.'
     ],
     DEJI: [

@@ -1,4 +1,4 @@
-import fs from "node:fs";
+﻿import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
@@ -16,11 +16,15 @@ for (const pattern of [
   "localFallbackForRoute",
   "fallbackLocalPermitido",
   "Regra operacional dura: consulte e responda pela API segura primeiro",
+  "function asksDajAnalysisWithUpload",
+  "function dajOperativeDeliveryInstruction",
+  "ORDEM DE ENTREGA DAJ - MAO NA MASSA",
   "enforceCriticalAnswerGuards",
   "criticalBibliographicCorrection",
   "Juarez Cirino dos Santos",
   "Nao atribua essa obra a Geraldo Prado",
   "pergunta_nova_sem_memoria",
+  "daj_analise_upload",
   "peca_juridica_completa",
   "drive_correcao_governada"
 ]) {
@@ -44,6 +48,7 @@ const routeBlockStart = script.indexOf("function charlieRouteDecision");
 const routeBlockEnd = script.indexOf("function localFallbackForRoute", routeBlockStart);
 const routeBlock = routeBlockStart >= 0 && routeBlockEnd > routeBlockStart ? script.slice(routeBlockStart, routeBlockEnd) : "";
 assert(routeBlock.includes("asksCompleteLegalDraft"), "roteador: pedido de peca completa deve ter rota propria");
+assert(routeBlock.includes("asksDajAnalysisWithUpload"), "roteador: analise DAJ/upload deve ter rota propria");
 assert(routeBlock.includes("asksDocumentProductionDownload"), "roteador: documento/download deve ter rota propria");
 assert(routeBlock.includes("asksDajDoctrineBibliographyProduct"), "roteador: doutrina/bibliografia deve ter rota propria");
 assert(routeBlock.includes("asksStandaloneCurrentQuestion"), "roteador: pergunta nova deve ignorar memoria antiga");
