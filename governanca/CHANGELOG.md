@@ -11,6 +11,11 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.1.0 - 2026-07-12
+
+- Adicionada matriz de capacidades por estado: ativo, demonstrativo, planejado e bloqueado por seguranca.
+- Vinculados os estados a ambientes, dependencias, evidencias e limites.
+
 ## 1.0.0 - 2026-07-12
 
 - Criada fundacao de governanca modular conforme especificacao v1.0.

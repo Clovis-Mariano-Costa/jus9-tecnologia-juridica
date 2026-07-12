@@ -1,0 +1,120 @@
+{
+  "metadata": {
+    "id": "GOV-CHARLIE-MATRIZ-CAPACIDADES-001",
+    "versao": "1.1.0",
+    "autor": "Codex / Charlie Fox",
+    "revisor_responsavel": "Clovis Mariano da Costa",
+    "data": "2026-07-12",
+    "status": "rascunho-operacional",
+    "classificacao": "PUBLICO-INSTITUCIONAL",
+    "hash": "nao-aplicavel-json-base"
+  },
+  "estados_validos": [
+    "ativo",
+    "demonstrativo",
+    "planejado",
+    "bloqueado_por_seguranca"
+  ],
+  "regra_publica": "Toda capacidade deve declarar estado, dependencia, limite e evidencia antes de ser apresentada como operacional.",
+  "capacidades": [
+    {
+      "id": "CAP-001",
+      "nome": "Chat Charlie Echo por MVP",
+      "estado": "ativo",
+      "ambientes": ["profissional", "estudante", "social", "demais_mvp"],
+      "dependencias": ["frontend", "api_quando_disponivel", "fallback_governado"],
+      "evidencia": "auditorias locais e regressao publica ja verificam paginas app-ia e API publica",
+      "limite": "respostas sensiveis exigem revisao humana e nao devem receber dados reais em ambiente demonstrativo"
+    },
+    {
+      "id": "CAP-002",
+      "nome": "Instrumentos independentes por MVP",
+      "estado": "ativo",
+      "ambientes": ["DAA", "DEJ", "DIC", "DPJ", "DEE", "DEJI"],
+      "dependencias": ["script.js", "painel_de_configuracoes", "mvpInstrumentPackages"],
+      "evidencia": "pacote 20260712-instrumentos-sociais-v1 publicado e validado",
+      "limite": "instrumentos orientam fluxo; nao substituem profissional habilitado"
+    },
+    {
+      "id": "CAP-003",
+      "nome": "Modulo social/cidadao DIC",
+      "estado": "ativo",
+      "ambientes": ["DIC", "social"],
+      "dependencias": ["linguagem_simples", "fontes_oficiais", "encaminhamento_humano"],
+      "evidencia": "validacao publica incluiu DIC e link oficial gov.br",
+      "limite": "nao pedir dados pessoais reais; encaminhar urgencia, risco ou vulnerabilidade para humano qualificado"
+    },
+    {
+      "id": "CAP-004",
+      "nome": "Downloads locais PDF/DOCX/ZIP",
+      "estado": "ativo",
+      "ambientes": ["profissional", "estudante", "social", "demais_mvp"],
+      "dependencias": ["frontend_local", "classificacao_da_resposta"],
+      "evidencia": "auditoria publica Charlie Echo confere PDF limpo e downloads enxutos",
+      "limite": "download local nao prova salvamento em servidor ou Drive"
+    },
+    {
+      "id": "CAP-005",
+      "nome": "Drive Saver e Cartorio Digital",
+      "estado": "demonstrativo",
+      "ambientes": ["DAJ", "DIC", "demais_mvp"],
+      "dependencias": ["backend_autorizado", "Apps Script", "token_interno", "classificacao"],
+      "evidencia": "interfaces e contratos existem; uso deve retornar downloadUrl real quando backend autorizado executar",
+      "limite": "nao inventar URL publica; revogacao, exclusao e publicacao exigem evento governado"
+    },
+    {
+      "id": "CAP-006",
+      "nome": "Memoria por usuario configuravel",
+      "estado": "demonstrativo",
+      "ambientes": ["todos_mvp"],
+      "dependencias": ["login", "consentimento", "backend_ou_drive_governado"],
+      "evidencia": "interface e documentacao existem; persistencia forte por login ainda e fase posterior",
+      "limite": "memoria temporaria nao pode virar permanente automaticamente"
+    },
+    {
+      "id": "CAP-007",
+      "nome": "Pesquisa juridica com fontes",
+      "estado": "ativo",
+      "ambientes": ["profissional", "estudante", "pesquisa"],
+      "dependencias": ["fontes_oficiais", "fontes_academicas", "regra_bibliografica"],
+      "evidencia": "regressao publica verifica jurisprudencia sem trava e produtos DAJ",
+      "limite": "nao inventar autor, obra, pagina, julgado ou citacao literal sem fonte conferida"
+    },
+    {
+      "id": "CAP-008",
+      "nome": "Backend transacional de salas e eventos",
+      "estado": "planejado",
+      "ambientes": ["profissional", "social", "governanca"],
+      "dependencias": ["api_chat", "rooms", "summaries", "governance-events", "storage"],
+      "evidencia": "contrato de API v1.0.0 criado",
+      "limite": "antes de existir, nao declarar persistencia transacional completa"
+    },
+    {
+      "id": "CAP-009",
+      "nome": "RAG juridico controlado",
+      "estado": "planejado",
+      "ambientes": ["profissional", "pesquisa"],
+      "dependencias": ["pipeline_fontes", "cache", "ficha_conferencia", "avaliacao_confianca"],
+      "evidencia": "roadmap e auditoria recomendam fase posterior",
+      "limite": "pesquisa atual deve citar fonte primaria ou declarar pendencia"
+    },
+    {
+      "id": "CAP-010",
+      "nome": "Uso de dados reais em ambiente publico demonstrativo",
+      "estado": "bloqueado_por_seguranca",
+      "ambientes": ["publico", "social", "estudante", "demo"],
+      "dependencias": ["nenhuma"],
+      "evidencia": "politicas de governanca e regressao exigem dados ficticios",
+      "limite": "dados reais, segredos, tokens, documentos sigilosos e processos reais devem ser recusados ou redirecionados"
+    },
+    {
+      "id": "CAP-011",
+      "nome": "Promocao automatica de memoria temporaria para permanente",
+      "estado": "bloqueado_por_seguranca",
+      "ambientes": ["todos_mvp"],
+      "dependencias": ["revisao_humana", "homologacao", "release"],
+      "evidencia": "politica de memoria v1.0.0",
+      "limite": "somente fluxo rascunho, revisao, teste, homologacao, release e auditoria pode promover memoria"
+    }
+  ]
+}

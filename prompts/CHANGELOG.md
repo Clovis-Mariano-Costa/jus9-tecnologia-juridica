@@ -11,6 +11,11 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Prompts
 
+## 1.1.0 - 2026-07-12
+
+- Adicionados contratos de modo para estudante, profissional, social, governanca, pesquisa juridica, minuta e revisao.
+- Vinculados modos a dominio principal, memoria permitida, fontes minimas, formato preferencial e limites.
+
 ## 1.0.0 - 2026-07-12
 
 - Criada separacao de prompts por dominio.

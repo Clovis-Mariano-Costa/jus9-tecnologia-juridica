@@ -49,15 +49,19 @@ const requiredFiles = [
   "governanca/CRONOGRAMA_GOVERNANCA_CHARLIE_ECHO_v1.0.0.md",
   "governanca/MANIFESTO_GOVERNANCA_CHARLIE_ECHO_v1.0.0.md",
   "governanca/MATRIZ_COMPONENTES_GOVERNANCA_v1.0.0.json",
+  "governanca/MATRIZ_CAPACIDADES_CHARLIE_ECHO_v1.1.0.json",
   "memoria/POLITICA_MEMORIA_CHARLIE_ECHO_v1.0.0.md",
   "prompts/CONTRATO_DOMINIOS_PROMPTS_v1.0.0.yaml",
+  "prompts/governanca/CONTRATOS_MODOS_CHARLIE_ECHO_v1.1.0.yaml",
   "apis/CONTRATO_APIS_GOVERNANCA_v1.0.0.yaml",
   "modelos/MODELO_METADADOS_DOCUMENTAIS_v1.0.0.yaml",
   "modelos/MODELO_EVENTO_AUDITORIA_v1.0.0.yaml",
   "modelos/MODELO_ROADMAP_v1.0.0.yaml",
   "logs/AUDITORIA_GOVERNANCA_CHARLIE_ECHO_2026-07-12.md",
   "testes/CHECKLIST_QUALIDADE_GOVERNANCA_v1.0.0.json",
+  "testes/CASOS_CONTRATOS_MODOS_v1.1.0.json",
   "releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.0.0.md",
+  "releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.1.0.md",
   "historico/INDICE_HISTORICO_GOVERNANCA_v1.0.0.md",
   "obsoleto/POLITICA_OBSOLESCENCIA_v1.0.0.md"
 ];
@@ -84,6 +88,23 @@ const promptDomains = [
   "investimentos",
   "seguranca",
   "desenvolvedor"
+];
+
+const capabilityStates = [
+  "ativo",
+  "demonstrativo",
+  "planejado",
+  "bloqueado_por_seguranca"
+];
+
+const modeContracts = [
+  "estudante",
+  "profissional",
+  "social",
+  "governanca",
+  "pesquisa_juridica",
+  "minuta",
+  "revisao"
 ];
 
 function fail(message) {
@@ -204,8 +225,44 @@ for (const route of ["/chat", "/rooms", "/summaries", "/sources", "/exports", "/
   if (!apiContract.includes(`path: ${route}`)) fail(`Rota planejada ausente: ${route}`);
 }
 
+const capabilities = assertMetadataJson(
+  "governanca/MATRIZ_CAPACIDADES_CHARLIE_ECHO_v1.1.0.json",
+  read("governanca/MATRIZ_CAPACIDADES_CHARLIE_ECHO_v1.1.0.json")
+);
+for (const state of capabilityStates) {
+  if (!(capabilities.estados_validos || []).includes(state)) fail(`Estado de capacidade ausente: ${state}`);
+  if (!(capabilities.capacidades || []).some((item) => item.estado === state)) {
+    fail(`Nenhuma capacidade registrada no estado: ${state}`);
+  }
+}
+for (const capability of capabilities.capacidades || []) {
+  for (const field of ["id", "nome", "estado", "ambientes", "dependencias", "evidencia", "limite"]) {
+    if (!capability[field]) fail(`Capacidade sem campo ${field}: ${capability.id || capability.nome || "sem-id"}`);
+  }
+}
+
+const modeContract = read("prompts/governanca/CONTRATOS_MODOS_CHARLIE_ECHO_v1.1.0.yaml");
+for (const mode of modeContracts) {
+  if (!modeContract.includes(`  ${mode}:`)) fail(`Contrato de modo ausente: ${mode}`);
+}
+for (const requiredPhrase of ["memoria_permitida", "fontes_minimas", "formato_preferencial", "limites"]) {
+  if (!modeContract.includes(requiredPhrase)) fail(`Campo obrigatorio ausente nos contratos de modo: ${requiredPhrase}`);
+}
+
+const modeCases = assertMetadataJson(
+  "testes/CASOS_CONTRATOS_MODOS_v1.1.0.json",
+  read("testes/CASOS_CONTRATOS_MODOS_v1.1.0.json")
+);
+for (const mode of modeContracts) {
+  if (!(modeCases.casos || []).some((item) => item.modo === mode)) fail(`Caso de teste ausente para modo: ${mode}`);
+}
+
 const release = read("releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.0.0.md");
 if (!release.includes("Nao inclui")) fail("Release precisa declarar o que nao inclui");
 if (!release.includes("Alteracao de logica de negocio")) fail("Release precisa preservar logica de negocio existente");
+
+const release11 = read("releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.1.0.md");
+if (!release11.includes("Matriz de capacidades")) fail("Release 1.1.0 sem matriz de capacidades");
+if (!release11.includes("Alteracao de logica de negocio ativa")) fail("Release 1.1.0 precisa preservar logica ativa");
 
 console.log(`GOVERNANCE_STRUCTURE_OK ${governanceFiles.length} documentos verificados`);

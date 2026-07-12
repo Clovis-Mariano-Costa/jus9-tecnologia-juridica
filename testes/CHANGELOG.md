@@ -11,6 +11,11 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Testes
 
+## 1.1.0 - 2026-07-12
+
+- Adicionados casos iniciais para validar contratos de modo.
+- Auditor estrutural atualizado para exigir matriz de capacidades e contratos v1.1.0.
+
 ## 1.0.0 - 2026-07-12
 
 - Criado checklist automatizavel de qualidade.
