@@ -11,6 +11,11 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Prompts
 
+## 1.2.0 - 2026-07-12
+
+- Adicionada politica de riscos no dominio de seguranca.
+- Classificadas acoes esperadas para dados pessoais, segredo, fonte fraca, minuta, autoridade publica, link duvidoso, social urgente, memoria, Drive e investimentos.
+
 ## 1.1.0 - 2026-07-12
 
 - Adicionados contratos de modo para estudante, profissional, social, governanca, pesquisa juridica, minuta e revisao.

@@ -15,3 +15,4 @@ hash: nao-aplicavel-log-publico
 | --- | --- | --- | --- | --- | --- |
 | 2026-07-12T00:00:00-03:00 | Codex / Charlie Fox | Criar fundacao de governanca modular | 1.0.0 | sucesso | Atender especificacao de governanca v1.0 e auditoria anexada sem alterar logica de negocio. |
 | 2026-07-12T00:00:00-03:00 | Codex / Charlie Fox | Criar matriz de capacidades e contratos de modo | 1.1.0 | sucesso | Separar ativo, demonstrativo, planejado e bloqueado por seguranca; estabilizar modos estudante, profissional, social, governanca, pesquisa, minuta e revisao. |
+| 2026-07-12T00:00:00-03:00 | Codex / Charlie Fox | Criar suite de governanca testavel de riscos | 1.2.0 | sucesso | Cobrir dados pessoais, segredos, fonte fraca, minuta juridica, autoridade publica, link duvidoso, urgencia social, memoria, Drive e investimentos. |

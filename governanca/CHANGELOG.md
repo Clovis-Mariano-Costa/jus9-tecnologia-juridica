@@ -11,6 +11,11 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.2.0 - 2026-07-12
+
+- Adicionada governanca testavel para riscos sensiveis.
+- Registrado protocolo de regressao antes de publicar prompt ou fluxo sensivel.
+
 ## 1.1.0 - 2026-07-12
 
 - Adicionada matriz de capacidades por estado: ativo, demonstrativo, planejado e bloqueado por seguranca.

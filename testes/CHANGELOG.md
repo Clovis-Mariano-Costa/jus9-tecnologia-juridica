@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Testes
 
+## 1.2.0 - 2026-07-12
+
+- Adicionada suite de governanca de riscos com dez casos.
+- Adicionado protocolo de regressao para prompt e fluxo sensivel.
+- Adicionado auditor dedicado de riscos.
+
 ## 1.1.0 - 2026-07-12
 
 - Adicionados casos iniciais para validar contratos de modo.

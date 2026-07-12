@@ -11,6 +11,10 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.2.0 - 2026-07-12
+
+- Registrado release-candidato do Pacote 2: governanca testavel.
+
 ## 1.1.0 - 2026-07-12
 
 - Registrado release-candidato do Pacote 1: matriz de capacidades e contratos de modo.

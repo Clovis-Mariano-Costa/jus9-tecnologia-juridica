@@ -23,3 +23,4 @@ hash: nao-aplicavel-indice
 
 - `releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.0.0.md`
 - `releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.1.0.md`
+- `releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.2.0.md`

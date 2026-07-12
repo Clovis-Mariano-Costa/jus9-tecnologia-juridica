@@ -53,6 +53,7 @@ const requiredFiles = [
   "memoria/POLITICA_MEMORIA_CHARLIE_ECHO_v1.0.0.md",
   "prompts/CONTRATO_DOMINIOS_PROMPTS_v1.0.0.yaml",
   "prompts/governanca/CONTRATOS_MODOS_CHARLIE_ECHO_v1.1.0.yaml",
+  "prompts/seguranca/POLITICA_RISCOS_CHARLIE_ECHO_v1.2.0.yaml",
   "apis/CONTRATO_APIS_GOVERNANCA_v1.0.0.yaml",
   "modelos/MODELO_METADADOS_DOCUMENTAIS_v1.0.0.yaml",
   "modelos/MODELO_EVENTO_AUDITORIA_v1.0.0.yaml",
@@ -60,8 +61,11 @@ const requiredFiles = [
   "logs/AUDITORIA_GOVERNANCA_CHARLIE_ECHO_2026-07-12.md",
   "testes/CHECKLIST_QUALIDADE_GOVERNANCA_v1.0.0.json",
   "testes/CASOS_CONTRATOS_MODOS_v1.1.0.json",
+  "testes/SUITE_GOVERNANCA_RISCOS_CHARLIE_ECHO_v1.2.0.json",
+  "testes/PROTOCOLO_REGRESSAO_PROMPT_FLUXO_v1.2.0.md",
   "releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.0.0.md",
   "releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.1.0.md",
+  "releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.2.0.md",
   "historico/INDICE_HISTORICO_GOVERNANCA_v1.0.0.md",
   "obsoleto/POLITICA_OBSOLESCENCIA_v1.0.0.md"
 ];
@@ -105,6 +109,19 @@ const modeContracts = [
   "pesquisa_juridica",
   "minuta",
   "revisao"
+];
+
+const riskCategories = [
+  "dados_pessoais",
+  "segredo_token",
+  "fonte_fraca",
+  "minuta_juridica",
+  "autoridade_publica",
+  "link_quebrado_ou_duvidoso",
+  "social_urgente",
+  "memoria_temporaria",
+  "drive_link_publico",
+  "investimento_financeiro"
 ];
 
 function fail(message) {
@@ -257,6 +274,26 @@ for (const mode of modeContracts) {
   if (!(modeCases.casos || []).some((item) => item.modo === mode)) fail(`Caso de teste ausente para modo: ${mode}`);
 }
 
+const riskPolicy = read("prompts/seguranca/POLITICA_RISCOS_CHARLIE_ECHO_v1.2.0.yaml");
+for (const risk of riskCategories) {
+  if (!riskPolicy.includes(`  ${risk}:`)) fail(`Politica de riscos sem categoria: ${risk}`);
+}
+for (const phrase of ["classificar_antes_de_responder: true", "nao_expor_segredo: true", "nao_inventar_fonte: true", "nao_promover_memoria_temporaria: true"]) {
+  if (!riskPolicy.includes(phrase)) fail(`Politica de riscos sem regra: ${phrase}`);
+}
+
+const riskSuite = assertMetadataJson(
+  "testes/SUITE_GOVERNANCA_RISCOS_CHARLIE_ECHO_v1.2.0.json",
+  read("testes/SUITE_GOVERNANCA_RISCOS_CHARLIE_ECHO_v1.2.0.json")
+);
+for (const risk of riskCategories) {
+  if (!(riskSuite.casos || []).some((item) => item.risco === risk)) fail(`Suite de riscos sem caso: ${risk}`);
+}
+const regressionProtocol = read("testes/PROTOCOLO_REGRESSAO_PROMPT_FLUXO_v1.2.0.md");
+for (const command of ["audit-charlie-governance-structure.mjs", "audit-charlie-governance-risk-suite.mjs"]) {
+  if (!regressionProtocol.includes(command)) fail(`Protocolo de regressao sem auditor: ${command}`);
+}
+
 const release = read("releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.0.0.md");
 if (!release.includes("Nao inclui")) fail("Release precisa declarar o que nao inclui");
 if (!release.includes("Alteracao de logica de negocio")) fail("Release precisa preservar logica de negocio existente");
@@ -264,5 +301,9 @@ if (!release.includes("Alteracao de logica de negocio")) fail("Release precisa p
 const release11 = read("releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.1.0.md");
 if (!release11.includes("Matriz de capacidades")) fail("Release 1.1.0 sem matriz de capacidades");
 if (!release11.includes("Alteracao de logica de negocio ativa")) fail("Release 1.1.0 precisa preservar logica ativa");
+
+const release12 = read("releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.2.0.md");
+if (!release12.includes("governanca testavel")) fail("Release 1.2.0 sem governanca testavel");
+if (!release12.includes("Alteracao de logica de negocio ativa")) fail("Release 1.2.0 precisa preservar logica ativa");
 
 console.log(`GOVERNANCE_STRUCTURE_OK ${governanceFiles.length} documentos verificados`);
