@@ -55,7 +55,7 @@ for (const file of appIaFiles) {
   assert(Boolean(match), `${file}: data-ai-code ausente`);
   if (match) assert(requiredCodes.includes(match[1]), `${file}: codigo inesperado ${match[1]}`);
   assert(html.includes("data-ai-focus"), `${file}: data-ai-focus ausente`);
-  assert(html.includes("script.js?v=20260712-jurisprudencia-daj-v1"), `${file}: script do pacote de jurisprudencia DAJ ausente`);
+  assert(html.includes("script.js?v=20260712-doutrina-daj-v1"), `${file}: script do pacote de doutrina DAJ ausente`);
 }
 
 if (failures.length) {

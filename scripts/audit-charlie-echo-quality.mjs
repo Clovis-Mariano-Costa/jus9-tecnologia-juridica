@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
-const expectedScriptVersion = "script.js?v=20260712-jurisprudencia-daj-v1";
+const expectedScriptVersion = "script.js?v=20260712-doutrina-daj-v1";
 
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), "utf8");
@@ -32,7 +32,7 @@ const checks = [
   {
     name: "DAJ integrado como modelo-mae da Charlie Echo",
     file: "script.js",
-    patterns: ["injectMvpIntegrationPanel", "data-daj-integration-panel", "Contrato DAJ ativo", "DAJ-2026-0001", "initCharliePromptFromUrl", "Resuma o DAJ-2026-0001", "jus9DajInitialAttendanceDraftV1", "appendDajDraftFromUrl", "dajJurisprudenceProductPrompts", "Jurisprudencia governada DAJ", "Argumento com precedente", "Checklist probatorio", "Quadro comparativo"],
+    patterns: ["injectMvpIntegrationPanel", "data-daj-integration-panel", "Contrato DAJ ativo", "DAJ-2026-0001", "initCharliePromptFromUrl", "Resuma o DAJ-2026-0001", "jus9DajInitialAttendanceDraftV1", "appendDajDraftFromUrl", "dajJurisprudenceProductPrompts", "Jurisprudencia governada DAJ", "Argumento com precedente", "Checklist probatorio", "Quadro comparativo", "dajDoctrineBibliographyProductPrompts", "Doutrina e bibliografia DAJ", "Mapa bibliografico", "Sintese doutrinaria", "Ficha de obra"],
   },
   {
     name: "hub de configuracoes padroniza botoes da Charlie",
@@ -47,7 +47,7 @@ const checks = [
   {
     name: "estilo do upload local governado",
     file: "style.css",
-    patterns: ["ai-upload-panel", "ai-upload-button", "ai-upload-list", "ai-upload-user-list", "daj-integration-panel", "daj-integration-routes", "daj-integration-prompts", "daj-jurisprudence-product-panel", "daj-jurisprudence-product-prompts", "charlie-control-hub", "charlie-control-section", "charlie-speak-button", "event-quick-nav .event-links"],
+    patterns: ["ai-upload-panel", "ai-upload-button", "ai-upload-list", "ai-upload-user-list", "daj-integration-panel", "daj-integration-routes", "daj-integration-prompts", "daj-jurisprudence-product-panel", "daj-jurisprudence-product-prompts", "daj-doctrine-product-panel", "daj-doctrine-product-prompts", "charlie-control-hub", "charlie-control-section", "charlie-speak-button", "event-quick-nav .event-links"],
   },
   {
     name: "estilo do cartao Drive Saver",
@@ -57,7 +57,7 @@ const checks = [
   {
     name: "Charlie pesquisa doutrina e jurisprudencia com fontes",
     file: "script.js",
-    patterns: ["trustedLegalSources", "legalResearchAnswer", "legalSynthesisWithSourcesAnswer", "Direito de propriedade - sintese com fontes", "Constituicao Federal, art. 5, XXII e XXIII", "buildOperationalResearchAnswer", "Pesquisa juridica operacional", "Busca pronta no Google limitada ao TJSC", "Google Academico com busca pronta", "Como fichar cada resultado", "classifyLinkTrust", "trustedSourcesSummary", "buildSourceLinesFromRoom", "STF - Pesquisa de jurisprudencia", "TJSC - Portal da jurisprudencia", "Portal de Periodicos CAPES", "BDTD - Biblioteca Digital Brasileira de Teses e Dissertacoes", "BDTD - teses e dissertacoes", "lista fixa"],
+    patterns: ["trustedLegalSources", "legalResearchAnswer", "legalSynthesisWithSourcesAnswer", "Direito de propriedade - sintese com fontes", "Constituicao Federal, art. 5, XXII e XXIII", "buildOperationalResearchAnswer", "Pesquisa juridica operacional", "Busca pronta no Google limitada ao TJSC", "Google Academico com busca pronta", "Como fichar cada resultado", "classifyLinkTrust", "trustedSourcesSummary", "buildSourceLinesFromRoom", "STF - Pesquisa de jurisprudencia", "TJSC - Portal da jurisprudencia", "Portal de Periodicos CAPES", "BDTD - Biblioteca Digital Brasileira de Teses e Dissertacoes", "BDTD - teses e dissertacoes", "bibliographicVerificationInstruction", "Regra bibliografica dura", "A moderna teoria do fato punivel", "doctrineBibliographyProductAnswer", "Conferencia bibliografica governada", "lista fixa"],
   },
   {
     name: "acoes corretivas do Drive Saver bypassam fallback juridico",
@@ -92,7 +92,7 @@ const checks = [
   {
     name: "service worker nao prende MVP antigo",
     file: "service-worker.js",
-    patterns: ["jus9-pwa-v13-2026-07-12-jurisprudencia-daj", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
+    patterns: ["jus9-pwa-v14-2026-07-12-doutrina-daj", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
   },
   {
     name: "casa propria da Charlie Echo publicada",

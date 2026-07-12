@@ -1000,6 +1000,7 @@ window.jus9DemoLogin = function(form){
 
   function normativeRouteLabel(question, mode, code){
     if(asksDriveSaverCorrectiveAction(question)) return 'Prioritario > Principios > Constituicao > Lei do Drive Governado > Regimento ' + (code || 'DAJ') + ' > Protocolo de acao corretiva Drive Saver';
+    if(asksDajDoctrineBibliographyProduct(question)) return 'Prioritario > Principios > Constituicao > Lei de Doutrina e Bibliografia Conferida > Regimento ' + (code || 'DAJ') + ' > Protocolo de produto doutrinario-bibliografico governado';
     if(asksDajJurisprudenceProduct(question)) return 'Prioritario > Principios > Constituicao > Lei de Fontes Conferidas > Regimento ' + (code || 'DAJ') + ' > Protocolo de produto jurisprudencial governado';
     if(asksCompleteLegalDraft(question)) return 'Prioritario > Principios > Constituicao > Lei de Pecas e Minutas > Regimento ' + (code || 'DAJ') + ' > Protocolo de peca completa e upload governado';
     if(asksDocumentProductionDownload(question)) return 'Prioritario > Principios > Constituicao > Lei de Documentos > Regimento ' + (code || 'DAJ') + ' > Protocolo de minuta/download';
@@ -1083,7 +1084,7 @@ window.jus9DemoLogin = function(form){
     var q = (question || '').toLowerCase();
     if(asksDocumentProductionDownload(question)) return false;
     if(asksCompleteLegalDraft(question)) return false;
-    return /\b(link|fonte|fontes|confiavel|confiáveis|confiaveis|oficial|pesquisar|pesquisa|busque|buscar|procure|procurar|jurisprudencia|jurisprudência|precedente|acordao|acórdão|lei|legislacao|legislação)\b/.test(q);
+    return /\b(link|fonte|fontes|confiavel|confiáveis|confiaveis|oficial|pesquisar|pesquisa|busque|buscar|procure|procurar|jurisprudencia|jurisprudência|precedente|acordao|acórdão|lei|legislacao|legislação|doutrina|bibliografia|obra|livro|artigo cientifico|tese|dissertacao|dissertação)\b/.test(q);
   }
 
   function asksDocumentProductionDownload(question){
@@ -1121,11 +1122,36 @@ window.jus9DemoLogin = function(form){
     ];
   }
 
+  function dajDoctrineBibliographyProductPrompts(){
+    return [
+      {
+        label:'Mapa bibliografico',
+        prompt:'Monte mapa bibliografico governado sobre funcao social da propriedade, separando BDTD, CAPES, SciELO, LexML e Google Academico com cautela. Nao invente autor, obra, pagina ou citacao.'
+      },
+      {
+        label:'Sintese doutrinaria',
+        prompt:'Produza sintese doutrinaria responsavel sobre funcao social da propriedade, com conceitos, limites, fontes oficiais ou academicas para conferencia e revisao humana.'
+      },
+      {
+        label:'Ficha de obra',
+        prompt:'Fiche a obra A nova teoria do fato punivel. Primeiro confirme autoria real e fonte confiavel; se o titulo estiver impreciso, corrija com cautela e nao invente pagina, edicao ou citacao.'
+      }
+    ];
+  }
+
   function asksDajJurisprudenceProduct(question){
     var q = plainAiText(question);
     var hasProduct = /\b(argumento|argumentacao|fundamento|tese|checklist|quadro|comparativo|comparar|peca|peticao|minuta|produto|pacote)\b/.test(q);
     var hasJuris = /\b(jurisprudencia|precedente|resp|stj|acordao|tese)\b/.test(q);
     return hasProduct && hasJuris;
+  }
+
+  function asksDajDoctrineBibliographyProduct(question){
+    var q = plainAiText(question);
+    var hasWorkRisk = /\b(fato punivel|nova teoria do fato punivel|moderna teoria do fato punivel)\b/.test(q);
+    var hasDoctrine = /\b(doutrina|doutrinario|doutrinaria|bibliografia|bibliografico|bibliografica|obra|livro|autor|autoria|resenha|isbn|edicao|editora|pagina|citacao|teoria)\b/.test(q);
+    var hasProduct = /\b(mapa|ficha|fichamento|quadro|checklist|sintese|parecer|relatorio|roteiro|produto|pacote|conhece|quem escreveu|confirme|confirmar|fonte|fontes|citando fontes)\b/.test(q);
+    return hasWorkRisk || (hasDoctrine && hasProduct);
   }
 
   function legalDraftSubject(question){
@@ -1337,6 +1363,74 @@ window.jus9DemoLogin = function(form){
     return lines.join('\n');
   }
 
+  function doctrineBibliographyProductAnswer(question){
+    if(!asksDajDoctrineBibliographyProduct(question)) return '';
+    var q = plainAiText(question);
+    if(/\bfato punivel\b/.test(q)){
+      return [
+        'Conferencia bibliografica governada',
+        '',
+        'Antes de afirmar autoria ou conteudo interno da obra, eu trato o pedido como verificacao bibliografica. O ponto seguro para o MVP e: a referencia catalogada que deve ser conferida e "A moderna teoria do fato punivel", de Juarez Cirino dos Santos. Se o usuario escreveu "A nova teoria do fato punivel", considero possivel titulo impreciso e corrijo com cautela.',
+        '',
+        'Fontes para conferencia:',
+        '- LexML: https://www.lexml.gov.br/urn/urn%3Alex%3Abr%3Arede.virtual.bibliotecas%3Alivro%3A2000%3B000578592',
+        '- Catalogo Sophia/TJRJ: https://www3.tjrj.jus.br/sophia_web/acervo/detalhe/19139',
+        '- BDTD para teses e dissertacoes relacionadas: https://bdtd.ibict.br/',
+        '- Google Academico com cautela para resenhas e citacoes: https://scholar.google.com.br/',
+        '',
+        'Ficha segura:',
+        '- Status: obra a conferir em catalogo antes de citacao real.',
+        '- Autor seguro neste MVP: Juarez Cirino dos Santos, condicionado a conferencia da fonte.',
+        '- Uso permitido: orientar pesquisa, corrigir atribuicao insegura e pedir fonte primaria.',
+        '- Uso bloqueado: inventar edicao, pagina, trecho literal, tese central detalhada ou citacao sem abrir a fonte.',
+        '',
+        'Proximo passo: escolher uma fonte catalografica confiavel, registrar autor, titulo, ano, editora, local, pagina consultada e so depois usar em peca, parecer ou aula.'
+      ].join('\n');
+    }
+    if(/\bpropriedade|funcao social\b/.test(q)){
+      return [
+        'Produto doutrinario-bibliografico DAJ',
+        '',
+        'Tema: funcao social da propriedade.',
+        '',
+        'Sintese responsavel:',
+        'A propriedade e protegida como direito fundamental e direito real, mas seu exercicio deve respeitar finalidade social, limites legais, boa-fe, interesse publico, protecao ambiental e convivencia com outros direitos. Uma leitura doutrinaria madura separa propriedade como poder individual, propriedade como instituto juridico regulado e propriedade como relacao social submetida a finalidades constitucionais.',
+        '',
+        'Mapa de fontes para conferencia:',
+        '- Constituicao Federal, art. 5, XXII e XXIII: https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm',
+        '- Codigo Civil, art. 1.228 e direitos reais: https://www.planalto.gov.br/ccivil_03/leis/2002/l10406compilada.htm',
+        '- LexML para bibliografia juridica e legislacao: https://www.lexml.gov.br/',
+        '- BDTD para teses e dissertacoes brasileiras: https://bdtd.ibict.br/',
+        '- Portal CAPES para periodicos e bases academicas: https://www.periodicos.capes.gov.br/',
+        '- SciELO para artigos cientificos abertos: https://www.scielo.br/',
+        '',
+        'Checklist de fichamento:',
+        '- Autor e qualificacao institucional.',
+        '- Titulo, ano, editora ou periodico.',
+        '- Problema central e recorte juridico.',
+        '- Argumento aproveitavel no DAJ.',
+        '- Pagina ou trecho somente depois de conferencia direta.',
+        '- Limite de uso: nao transformar resumo de busca em citacao real.',
+        '',
+        'Revisao humana: obrigatoria antes de usar autor, pagina, obra ou citacao em peticao, parecer, aula ou documento final.'
+      ].join('\n');
+    }
+    return [
+      'Produto doutrinario-bibliografico DAJ',
+      '',
+      'Eu posso construir sintese, roteiro, mapa de fontes e ficha de verificacao. Mas autoria, pagina, edicao, editora, ISBN, trecho literal e citacao direta exigem fonte conferida.',
+      '',
+      'Fluxo seguro:',
+      '1. Delimitar tema e finalidade: peca, parecer, aula, artigo, tese ou atendimento.',
+      '2. Separar fontes oficiais, academicas e apenas auxiliares.',
+      '3. Conferir em LexML, catalogos de bibliotecas, BDTD, CAPES, SciELO, Google Academico com cautela e fonte editorial quando houver.',
+      '4. Fichar autor, titulo, ano, argumento central, utilidade no DAJ, limite e pagina somente se conferida.',
+      '5. Transformar o fichamento em sintese criativa, sem inventar dado bibliografico.',
+      '',
+      'Proximo passo: informe o tema ou a obra, e eu monto o mapa bibliografico governado com campos de conferencia.'
+    ].join('\n');
+  }
+
   function legalSynthesisWithSourcesAnswer(question){
     var q = String(question || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     var productionVerb = /\b(explique|explica|fale|conceitue|elabore|redija|desenvolva|resuma|sintetize|monte|prepare|produza|crie|escreva|analise|comente)\b/.test(q);
@@ -1464,6 +1558,8 @@ window.jus9DemoLogin = function(form){
     if (completeDraft) return completeDraft;
     var documentDownload = documentProductionDownloadAnswer(cleanQuestion);
     if (documentDownload) return documentDownload;
+    var doctrineBibliography = doctrineBibliographyProductAnswer(cleanQuestion);
+    if (doctrineBibliography) return doctrineBibliography;
     var integration = mvpIntegrationAnswer(code, focus, cleanQuestion);
     if (integration) return integration;
     var doctrineProduction = doctrineProductionAnswer(cleanQuestion);
@@ -2341,14 +2437,15 @@ window.jus9DemoLogin = function(form){
     var cleanSummary = cleanMemoryText(room && room.summary, 4200);
     var cleanSmartSummary = cleanMemoryText(room && room.smartSummary, 4200);
     var doctrineNote = asksDoctrineProduction(question) ? '\nNota: se memorias antigas tratarem doutrina como mera pesquisa de fontes, ignore essa classificacao antiga e produza conteudo doutrinario responsavel.\n' : '';
+    var doctrineBibliographyNote = asksDajDoctrineBibliographyProduct(question) ? '\nNota: a pergunta atual pede produto doutrinario/bibliografico governado. Se envolver obra, autoria, edicao, pagina ou citacao, confira antes de afirmar; se faltar fonte, ofereca mapa de verificacao sem inventar.\n' : '';
     var documentDownloadNote = asksDocumentProductionDownload(question) ? '\nNota: a pergunta atual pede producao de documento com download local. Ignore memorias antigas de pesquisa juridica guiada e nao ofereca bloco fixo de fontes.\n' : '';
     var completeDraftNote = asksCompleteLegalDraft(question) ? '\nNota: a pergunta atual pede peca/minuta completa. Produza estrutura completa de peca, use anexos extraidos quando houver e mantenha campos reais entre colchetes.\n' : '';
     if(!useRoomMemory){
-      return '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '. Memoria da sala: disponivel, mas nao invocada para esta pergunta nova. Responda somente a [PERGUNTA ATUAL] e nao continue assunto anterior.' + documentDownloadNote + completeDraftNote + doctrineNote + userMemoryContext + instrumentContext + integrationContext + '\n\n[PERGUNTA ATUAL]\n' + question;
+      return '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '. Memoria da sala: disponivel, mas nao invocada para esta pergunta nova. Responda somente a [PERGUNTA ATUAL] e nao continue assunto anterior.' + documentDownloadNote + completeDraftNote + doctrineNote + doctrineBibliographyNote + userMemoryContext + instrumentContext + integrationContext + '\n\n[PERGUNTA ATUAL]\n' + question;
     }
     return (room && (room.summary || room.smartSummary || recent))
-      ? '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '. Use memoria: sim.' + doctrineNote + documentDownloadNote + completeDraftNote + userMemoryContext + instrumentContext + integrationContext + '\n[RESUMO EXECUTIVO DA SALA]\n' + (cleanSmartSummary || 'Resumo anterior contaminado ou ausente.') + '\n\n[MEMORIA GOVERNADA LOCAL]\n' + (cleanSummary || 'Memoria anterior contaminada ou ausente.') + '\n\n[DECISOES]\n' + (decisions || 'Sem decisoes marcadas.') + '\n\n[PENDENCIAS]\n' + (pending || 'Sem pendencias marcadas.') + '\n\n[HISTORICO RECENTE]\n' + (recent || 'Historico anterior contaminado ou ausente.') + '\n\n[PERGUNTA ATUAL]\n' + question
-      : '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '.' + documentDownloadNote + completeDraftNote + userMemoryContext + instrumentContext + integrationContext + '\n\n[PERGUNTA ATUAL]\n' + question;
+      ? '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '. Use memoria: sim.' + doctrineNote + doctrineBibliographyNote + documentDownloadNote + completeDraftNote + userMemoryContext + instrumentContext + integrationContext + '\n[RESUMO EXECUTIVO DA SALA]\n' + (cleanSmartSummary || 'Resumo anterior contaminado ou ausente.') + '\n\n[MEMORIA GOVERNADA LOCAL]\n' + (cleanSummary || 'Memoria anterior contaminada ou ausente.') + '\n\n[DECISOES]\n' + (decisions || 'Sem decisoes marcadas.') + '\n\n[PENDENCIAS]\n' + (pending || 'Sem pendencias marcadas.') + '\n\n[HISTORICO RECENTE]\n' + (recent || 'Historico anterior contaminado ou ausente.') + '\n\n[PERGUNTA ATUAL]\n' + question
+      : '[CONFIGURACOES DO USUARIO]\nNivel de detalhe: ' + settings.detail + '. Tom: ' + settings.tone + '. Cautela: ' + settings.caution + '. Formato preferido: ' + settings.format + '.' + documentDownloadNote + completeDraftNote + doctrineBibliographyNote + userMemoryContext + instrumentContext + integrationContext + '\n\n[PERGUNTA ATUAL]\n' + question;
   }
 
   function downloadText(filename, content){
@@ -2510,7 +2607,8 @@ window.jus9DemoLogin = function(form){
       '<div class="daj-integration-head"><div><strong>Contrato DAJ ativo</strong><p></p></div><span>modelo-mae</span></div>' +
       '<div class="daj-integration-routes" aria-label="Rotas do DAJ"></div>' +
       '<div class="daj-integration-prompts" aria-label="Acoes rapidas DAJ"></div>' +
-      '<div class="daj-jurisprudence-product-panel"><div><strong>Jurisprudencia governada DAJ</strong><p>Transforma ficha conferida em argumento, checklist ou quadro, com Drive Saver quando houver download permitido.</p></div><div class="daj-jurisprudence-product-prompts" aria-label="Produtos jurisprudenciais DAJ"></div></div>';
+      '<div class="daj-jurisprudence-product-panel"><div><strong>Jurisprudencia governada DAJ</strong><p>Transforma ficha conferida em argumento, checklist ou quadro, com Drive Saver quando houver download permitido.</p></div><div class="daj-jurisprudence-product-prompts" aria-label="Produtos jurisprudenciais DAJ"></div></div>' +
+      '<div class="daj-doctrine-product-panel"><div><strong>Doutrina e bibliografia DAJ</strong><p>Produz sintese, mapa de fontes e ficha de obra sem inventar autor, pagina ou citacao.</p></div><div class="daj-doctrine-product-prompts" aria-label="Produtos doutrinarios DAJ"></div></div>';
     panel.querySelector('p').textContent = contract.activeDossier + ' - ' + (focus || 'dossie juridico demonstrativo');
     var routes = panel.querySelector('.daj-integration-routes');
     contract.routes.slice(0, 7).forEach(function(route){
@@ -2548,6 +2646,18 @@ window.jus9DemoLogin = function(form){
         input.focus();
       });
       jurisprudenceBox.appendChild(button);
+    });
+    var doctrineBox = panel.querySelector('.daj-doctrine-product-prompts');
+    dajDoctrineBibliographyProductPrompts().forEach(function(item){
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = item.label;
+      button.setAttribute('data-daj-doctrine-product', item.label);
+      button.addEventListener('click', function(){
+        input.value = item.prompt;
+        input.focus();
+      });
+      doctrineBox.appendChild(button);
     });
     windowEl.parentNode.insertBefore(panel, windowEl);
   }
@@ -3467,7 +3577,7 @@ window.jus9DemoLogin = function(form){
     DAJ: [
       'Resuma o DAJ-2026-0001 e indique proximos passos com documentos, prazos, riscos e revisao humana.',
       'Faca uma peticao completa de revisao de alimentos com placeholders, checklist de revisao humana e download local.',
-      'Monte um argumento de peticao com o REsp 2.077.278 sobre golpe do boleto, citando fontes oficiais conferidas.'
+      'Fiche a obra A nova teoria do fato punivel. Primeiro confirme autoria real e fonte confiavel; se o titulo estiver impreciso, corrija com cautela.'
     ],
     DEJI: [
       'Crie um roteiro de revisao de contrato empresarial ficticio.',

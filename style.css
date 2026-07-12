@@ -1536,14 +1536,26 @@ button,input,select,textarea{max-width:100%}
 }
 .daj-jurisprudence-product-panel strong{display:block;color:#07111f}
 .daj-jurisprudence-product-panel p{margin:3px 0 0;color:#51627a;font-size:.92rem}
-.daj-jurisprudence-product-prompts{
+.daj-doctrine-product-panel{
+  display:grid;
+  gap:10px;
+  padding:12px;
+  border:1px solid rgba(197,139,47,.22);
+  border-radius:14px;
+  background:#fffaf0;
+}
+.daj-doctrine-product-panel strong{display:block;color:#07111f}
+.daj-doctrine-product-panel p{margin:3px 0 0;color:#51627a;font-size:.92rem}
+.daj-jurisprudence-product-prompts,
+.daj-doctrine-product-prompts{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
   gap:8px;
 }
 .daj-integration-routes a,
 .daj-integration-prompts button,
-.daj-jurisprudence-product-prompts button{
+.daj-jurisprudence-product-prompts button,
+.daj-doctrine-product-prompts button{
   border:1px solid rgba(197,139,47,.30);
   border-radius:12px;
   background:#fff;
@@ -1553,14 +1565,16 @@ button,input,select,textarea{max-width:100%}
   text-decoration:none;
 }
 .daj-integration-prompts button,
-.daj-jurisprudence-product-prompts button{
+.daj-jurisprudence-product-prompts button,
+.daj-doctrine-product-prompts button{
   cursor:pointer;
   text-align:left;
   line-height:1.25;
 }
 .daj-integration-routes a:hover,
 .daj-integration-prompts button:hover,
-.daj-jurisprudence-product-prompts button:hover{
+.daj-jurisprudence-product-prompts button:hover,
+.daj-doctrine-product-prompts button:hover{
   background:#07111f;
   color:#e7c36c;
 }
@@ -1636,6 +1650,7 @@ button,input,select,textarea{max-width:100%}
 .charlie-control-hub .daj-integration-routes,
 .charlie-control-hub .daj-integration-prompts,
 .charlie-control-hub .daj-jurisprudence-product-prompts,
+.charlie-control-hub .daj-doctrine-product-prompts,
 .charlie-control-hub .ai-guided-prompts .link-actions{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
