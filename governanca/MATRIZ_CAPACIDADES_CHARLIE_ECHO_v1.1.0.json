@@ -115,6 +115,15 @@
       "dependencias": ["revisao_humana", "homologacao", "release"],
       "evidencia": "politica de memoria v1.0.0",
       "limite": "somente fluxo rascunho, revisao, teste, homologacao, release e auditoria pode promover memoria"
+    },
+    {
+      "id": "CAP-012",
+      "nome": "OCR local governado de anexos",
+      "estado": "ativo",
+      "ambientes": ["DAJ", "DIC", "demais_mvp"],
+      "dependencias": ["frontend", "Tesseract.js", "PDF.js", "revisao_humana"],
+      "evidencia": "pacote 20260712-charlie-ocr-local-v1 com auditorias locais e publicas",
+      "limite": "OCR pode errar letras, numeros e acentos; imagem e PDF escaneado exigem revisao no original antes de uso real"
     }
   ]
 }

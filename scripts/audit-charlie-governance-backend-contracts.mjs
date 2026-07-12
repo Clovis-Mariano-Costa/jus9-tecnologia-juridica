@@ -40,6 +40,7 @@ const requiredFlags = [
   "flag.drive.saver",
   "flag.drive.public_link",
   "flag.attachments.extract",
+  "flag.ocr.local",
   "flag.ocr.upload",
   "flag.rag.juridico",
   "flag.memory.user.persistent"

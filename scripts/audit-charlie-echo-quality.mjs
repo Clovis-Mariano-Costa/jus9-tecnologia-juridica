@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
-const expectedScriptVersion = "script.js?v=20260712-charlie-backend-extractor-v1";
+const expectedScriptVersion = "script.js?v=20260712-charlie-ocr-local-v1";
 
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), "utf8");
@@ -27,7 +27,7 @@ const checks = [
   {
     name: "chat MVP aceita upload local governado",
     file: "script.js",
-    patterns: ["injectChatUpload", "data-ai-upload", "readAiUploadedFiles", "buildAttachmentContext", "[ANEXOS DO USUARIO - UPLOAD LOCAL GOVERNADO]", "Texto, PDF textual e DOCX sao lidos", "extractPdfTextHeuristic", "pdf_text_heuristic", "PDF textual lido localmente em modo heuristico", "canReadUploadAsDocx", "docx_backend_xml", "api/attachments/extract", "backend governado", "attachmentUserHtml"],
+    patterns: ["injectChatUpload", "data-ai-upload", "readAiUploadedFiles", "buildAttachmentContext", "[ANEXOS DO USUARIO - UPLOAD LOCAL GOVERNADO]", "Texto, PDF textual, DOCX e OCR local governado", "extractPdfTextHeuristic", "pdf_text_heuristic", "PDF textual lido localmente em modo heuristico", "canReadUploadAsDocx", "docx_backend_xml", "api/attachments/extract", "backend governado", "ensureUploadTesseract", "ensureUploadPdfJs", "OCR_MAX_BYTES", "image_ocr_local", "pdf_ocr_local_first_pages", "ocr local governado", "data-ai-upload-status", "attachmentUserHtml"],
   },
   {
     name: "backend possui extrator governado temporario de anexos",
@@ -77,7 +77,7 @@ const checks = [
   {
     name: "painel de saude publicado",
     file: "saude-charlie-echo.html",
-    patterns: ["operacional da Charlie Echo", "Protocolo 4.1", "Centelha Criativa 5.4", "Salas inteligentes", "Atualizar resumo", "Onde paramos?", "Fontes", "doutrina/jurisprudencia", "Baixar PDF", "Gerar PDF"],
+    patterns: ["operacional da Charlie Echo", "Protocolo 4.1", "Centelha Criativa 5.4", "Salas inteligentes", "Atualizar resumo", "Onde paramos?", "Fontes", "doutrina/jurisprudencia", "Baixar PDF", "Gerar PDF", "OCR local governado", "Ativo v5.6"],
   },
   {
     name: "manual publico publicado",
@@ -97,7 +97,7 @@ const checks = [
   {
     name: "service worker nao prende MVP antigo",
     file: "service-worker.js",
-    patterns: ["jus9-pwa-v20-2026-07-12-charlie-backend-extractor", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
+    patterns: ["jus9-pwa-v21-2026-07-12-charlie-ocr-local", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
   },
   {
     name: "casa propria da Charlie Echo publicada",

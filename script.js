@@ -2756,6 +2756,11 @@ window.jus9DemoLogin = function(form){
     return value + ' B';
   }
 
+  var uploadPdfJsPromise = null;
+  var uploadTesseractPromise = null;
+  var OCR_MAX_BYTES = 6 * 1024 * 1024;
+  var OCR_PDF_MAX_PAGES = 2;
+
   function canReadUploadAsText(file){
     var name = String(file && file.name || '').toLowerCase();
     var type = String(file && file.type || '').toLowerCase();
@@ -2768,6 +2773,12 @@ window.jus9DemoLogin = function(form){
     return type === 'application/pdf' || /\.pdf$/i.test(name);
   }
 
+  function canReadUploadAsImage(file){
+    var name = String(file && file.name || '').toLowerCase();
+    var type = String(file && file.type || '').toLowerCase();
+    return type.indexOf('image/') === 0 || /\.(png|jpe?g|webp)$/i.test(name);
+  }
+
   function canReadUploadAsDocx(file){
     var name = String(file && file.name || '').toLowerCase();
     var type = String(file && file.type || '').toLowerCase();
@@ -2776,6 +2787,45 @@ window.jus9DemoLogin = function(form){
 
   function canUseBackendAttachmentExtractor(file){
     return canReadUploadAsPdf(file) || canReadUploadAsDocx(file);
+  }
+
+  function loadUploadScript(src, globalName){
+    if(window[globalName]) return Promise.resolve(window[globalName]);
+    return new Promise(function(resolve, reject){
+      var existing = document.querySelector('script[src="' + src + '"]');
+      if(existing){
+        existing.addEventListener('load', function(){ window[globalName] ? resolve(window[globalName]) : reject(new Error(globalName + ' nao carregou.')); }, { once:true });
+        existing.addEventListener('error', function(){ reject(new Error('Falha ao carregar ' + globalName + '.')); }, { once:true });
+        return;
+      }
+      var script = document.createElement('script');
+      script.src = src;
+      script.async = true;
+      script.onload = function(){ window[globalName] ? resolve(window[globalName]) : reject(new Error(globalName + ' nao carregou.')); };
+      script.onerror = function(){ reject(new Error('Falha ao carregar ' + globalName + '.')); };
+      document.head.appendChild(script);
+    });
+  }
+
+  function ensureUploadPdfJs(){
+    if(window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+    if(uploadPdfJsPromise) return uploadPdfJsPromise;
+    uploadPdfJsPromise = loadUploadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js', 'pdfjsLib').then(function(pdfjs){
+      pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      return pdfjs;
+    });
+    return uploadPdfJsPromise;
+  }
+
+  function ensureUploadTesseract(){
+    if(window.Tesseract) return Promise.resolve(window.Tesseract);
+    if(uploadTesseractPromise) return uploadTesseractPromise;
+    uploadTesseractPromise = loadUploadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js', 'Tesseract');
+    return uploadTesseractPromise;
+  }
+
+  function setUploadStatus(notify, message){
+    if(typeof notify === 'function') notify(message);
   }
 
   function detectMvpCodeFromPage(){
@@ -2883,6 +2933,81 @@ window.jus9DemoLogin = function(form){
     };
   }
 
+  function readUploadArrayBuffer(file){
+    return new Promise(function(resolve, reject){
+      var reader = new FileReader();
+      reader.onload = function(event){ resolve(event && event.target ? event.target.result : null); };
+      reader.onerror = function(){ reject(reader.error || new Error('Falha ao ler arquivo.')); };
+      reader.readAsArrayBuffer(file);
+    });
+  }
+
+  async function applyOcrAttachment(base, file, remainingChars, notify){
+    var limit = Math.max(0, remainingChars || 0);
+    if(!file || limit <= 0) return false;
+    if((file.size || 0) > OCR_MAX_BYTES){
+      base.extractionMode = canReadUploadAsPdf(file) ? 'pdf_ocr_local_pending' : 'image_ocr_local_pending';
+      base.confidence = 'nenhuma';
+      base.note = 'Arquivo acima do limite de 6 MB para OCR local governado nesta versao; use PDF textual, DOCX, transcricao ou backend especializado.';
+      return false;
+    }
+    try {
+      var Tesseract = await ensureUploadTesseract();
+      var chunks = [];
+      if(canReadUploadAsImage(file)){
+        base.extractionMode = 'image_ocr_local';
+        setUploadStatus(notify, 'OCR local governado: lendo imagem ' + (file.name || 'anexo') + '...');
+        var imageResult = await Tesseract.recognize(file, 'por+eng', {
+          logger:function(progress){
+            if(progress && progress.status){
+              var pct = progress.progress ? ' ' + Math.round(progress.progress * 100) + '%' : '';
+              setUploadStatus(notify, 'OCR local governado: ' + progress.status + pct);
+            }
+          }
+        });
+        var imageText = imageResult && imageResult.data && imageResult.data.text ? imageResult.data.text : '';
+        chunks.push(imageText);
+      } else if(canReadUploadAsPdf(file)){
+        base.extractionMode = 'pdf_ocr_local_first_pages';
+        setUploadStatus(notify, 'OCR local governado: preparando PDF escaneado ' + (file.name || 'anexo') + '...');
+        var pdfjs = await ensureUploadPdfJs();
+        var data = await readUploadArrayBuffer(file);
+        var pdf = await pdfjs.getDocument({ data:data }).promise;
+        var pages = Math.min(pdf.numPages || 0, OCR_PDF_MAX_PAGES);
+        for(var pageNum = 1; pageNum <= pages; pageNum++){
+          setUploadStatus(notify, 'OCR local governado: pagina ' + pageNum + ' de ' + pages + '...');
+          var page = await pdf.getPage(pageNum);
+          var viewport = page.getViewport({ scale:1.45 });
+          var canvas = document.createElement('canvas');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          await page.render({ canvasContext:canvas.getContext('2d'), viewport:viewport }).promise;
+          var result = await Tesseract.recognize(canvas.toDataURL('image/png'), 'por+eng');
+          var pageText = result && result.data && result.data.text ? result.data.text.trim() : '';
+          if(pageText) chunks.push('[OCR pagina ' + pageNum + ']\n' + pageText);
+        }
+      } else {
+        return false;
+      }
+      var text = normalizePdfExtractedText(chunks.join('\n\n'));
+      base.text = text.slice(0, limit);
+      base.readable = base.text.length >= 20;
+      base.truncated = text.length > base.text.length;
+      base.confidence = base.readable ? (base.text.length >= 800 ? 'media' : 'baixa') : 'nenhuma';
+      base.note = base.readable
+        ? 'OCR local governado aplicado no navegador. Use com cautela: OCR pode trocar letras, numeros e acentos; revise o arquivo original antes de uso real.'
+        : 'OCR local governado nao encontrou texto pesquisavel suficiente; use transcricao, PDF textual, DOCX ou backend especializado.';
+      base.localOcr = true;
+      setUploadStatus(notify, base.readable ? 'OCR local governado concluiu leitura textual.' : 'OCR local governado terminou sem texto suficiente.');
+      return base.readable;
+    } catch (error) {
+      base.confidence = 'nenhuma';
+      base.note = 'OCR local governado indisponivel ou falhou: ' + (error && error.message ? error.message : 'erro desconhecido') + '. Use transcricao, PDF textual, DOCX ou backend especializado.';
+      setUploadStatus(notify, 'OCR local governado falhou; anexo mantido apenas por metadados.');
+      return false;
+    }
+  }
+
   async function extractUploadWithBackend(file, remainingChars){
     if(!file || !canUseBackendAttachmentExtractor(file)) return null;
     var form = new FormData();
@@ -2912,7 +3037,7 @@ window.jus9DemoLogin = function(form){
     return base.readable;
   }
 
-  function readUploadFile(file, remainingChars){
+  function readUploadFile(file, remainingChars, notify){
     return new Promise(function(resolve){
       var base = {
         name:String(file && file.name || 'arquivo'),
@@ -2926,6 +3051,7 @@ window.jus9DemoLogin = function(form){
         note:'Arquivo aceito como anexo, mas sem extracao textual automatica nesta versao.'
       };
       if(file && canReadUploadAsDocx(file)){
+        setUploadStatus(notify, 'Backend governado: extraindo DOCX ' + (file.name || 'anexo') + '...');
         extractUploadWithBackend(file, remainingChars).then(function(extracted){
           applyBackendAttachment(base, extracted);
           if(!base.readable){
@@ -2945,6 +3071,7 @@ window.jus9DemoLogin = function(form){
       if(file && canReadUploadAsPdf(file)){
         var pdfReader = new FileReader();
         pdfReader.onload = async function(event){
+          setUploadStatus(notify, 'Leitura governada: verificando PDF textual ' + (file.name || 'anexo') + '...');
           var limit = Math.max(0, remainingChars || 0);
           var extracted = extractPdfTextHeuristic(event && event.target ? event.target.result : null, limit);
           base.extractionMode = 'pdf_text_heuristic';
@@ -2960,6 +3087,9 @@ window.jus9DemoLogin = function(form){
               applyBackendAttachment(base, await extractUploadWithBackend(file, remainingChars));
             } catch (_) {}
           }
+          if(!base.readable){
+            await applyOcrAttachment(base, file, remainingChars, notify);
+          }
           resolve(base);
         };
         pdfReader.onerror = function(){
@@ -2969,6 +3099,17 @@ window.jus9DemoLogin = function(form){
           resolve(base);
         };
         pdfReader.readAsArrayBuffer(file);
+        return;
+      }
+      if(file && canReadUploadAsImage(file)){
+        applyOcrAttachment(base, file, remainingChars, notify).then(function(){
+          resolve(base);
+        }).catch(function(){
+          base.extractionMode = 'image_ocr_local';
+          base.confidence = 'nenhuma';
+          base.note = 'Falha ao aplicar OCR local governado; use transcricao ou backend especializado.';
+          resolve(base);
+        });
         return;
       }
       if(!file || !canReadUploadAsText(file)){
@@ -2997,15 +3138,17 @@ window.jus9DemoLogin = function(form){
     });
   }
 
-  async function readAiUploadedFiles(files){
+  async function readAiUploadedFiles(files, notify){
     var list = Array.prototype.slice.call(files || []).slice(0, 5);
     var remaining = 24000;
     var attachments = [];
     for(var i = 0; i < list.length; i++){
-      var attachment = await readUploadFile(list[i], remaining);
+      setUploadStatus(notify, 'Processando anexo ' + (i + 1) + ' de ' + list.length + ': ' + (list[i].name || 'arquivo') + '...');
+      var attachment = await readUploadFile(list[i], remaining, notify);
       remaining -= attachment.text ? attachment.text.length : 0;
       attachments.push(attachment);
     }
+    setUploadStatus(notify, list.length ? 'Anexos processados com governanca.' : 'Nenhum arquivo anexado.');
     return attachments;
   }
 
@@ -3018,7 +3161,7 @@ window.jus9DemoLogin = function(form){
     ];
     attachments.forEach(function(item, index){
       lines.push('Anexo ' + (index + 1) + ': ' + item.name);
-      lines.push('Tipo: ' + item.type + ' | tamanho: ' + formatUploadSize(item.size) + ' | leitura: ' + (item.readable ? 'texto extraido' : 'sem texto extraido') + ' | modo: ' + (item.extractionMode || 'none') + ' | confianca: ' + (item.confidence || 'none') + ' | origem: ' + (item.backendExtractor ? 'backend governado' : 'navegador/local'));
+      lines.push('Tipo: ' + item.type + ' | tamanho: ' + formatUploadSize(item.size) + ' | leitura: ' + (item.readable ? 'texto extraido' : 'sem texto extraido') + ' | modo: ' + (item.extractionMode || 'none') + ' | confianca: ' + (item.confidence || 'none') + ' | origem: ' + (item.localOcr ? 'ocr local governado' : (item.backendExtractor ? 'backend governado' : 'navegador/local')));
       lines.push('Observacao: ' + item.note);
       if(item.text){
         lines.push('Conteudo extraido:');
@@ -3028,7 +3171,7 @@ window.jus9DemoLogin = function(form){
       }
       lines.push('');
     });
-    lines.push('Regra: PDF textual e DOCX com texto extraido podem orientar analise com cautela. PDF sem texto, DOCX sem texto, imagem ou arquivo sem texto extraido exigem transcricao, OCR ou backend especializado antes de usar o conteudo como fato.');
+    lines.push('Regra: PDF textual, DOCX com texto extraido e OCR local governado podem orientar analise com cautela. OCR pode errar caracteres e exige revisao humana no arquivo original. Arquivo sem texto extraido exige transcricao, OCR ou backend especializado antes de usar o conteudo como fato.');
     return lines.join('\n');
   }
 
@@ -3050,19 +3193,24 @@ window.jus9DemoLogin = function(form){
     var panel = document.createElement('div');
     panel.className = 'ai-upload-panel';
     panel.setAttribute('data-ai-upload-panel', 'true');
-    panel.innerHTML = '<div><strong>Anexos</strong><p>Texto, PDF textual e DOCX sao lidos quando possivel; imagem, DOC antigo e PDF escaneado pedem OCR.</p></div><label class="ai-upload-button">Anexar<input type="file" data-ai-upload multiple accept=".txt,.md,.markdown,.csv,.json,.html,.htm,.xml,.rtf,.pdf,.doc,.docx,.png,.jpg,.jpeg"></label><button class="mini" type="button" data-ai-upload-clear>Limpar</button><div class="ai-upload-list" data-ai-upload-list></div>';
+    panel.innerHTML = '<div><strong>Anexos</strong><p>Texto, PDF textual, DOCX e OCR local governado quando possivel; DOC antigo e arquivo grande pedem conversao/transcricao.</p></div><label class="ai-upload-button">Anexar<input type="file" data-ai-upload multiple accept=".txt,.md,.markdown,.csv,.json,.html,.htm,.xml,.rtf,.pdf,.doc,.docx,.png,.jpg,.jpeg,.webp"></label><button class="mini" type="button" data-ai-upload-clear>Limpar</button><div class="ai-upload-list" data-ai-upload-list></div><div class="fine-note" data-ai-upload-status>Nenhum arquivo anexado.</div>';
     form.parentNode.insertBefore(panel, form);
     var fileInput = panel.querySelector('[data-ai-upload]');
     var clear = panel.querySelector('[data-ai-upload-clear]');
     var list = panel.querySelector('[data-ai-upload-list]');
+    var status = panel.querySelector('[data-ai-upload-status]');
+    function setStatus(message){
+      if(status) status.textContent = message || 'Anexos prontos.';
+    }
     function render(){
       var files = Array.prototype.slice.call(fileInput.files || []);
       list.innerHTML = files.length
         ? files.slice(0, 5).map(function(file){
-            var readable = canReadUploadAsText(file) ? 'texto' : (canReadUploadAsPdf(file) ? 'pdf textual' : (canReadUploadAsDocx(file) ? 'docx extrator' : 'metadados'));
+            var readable = canReadUploadAsText(file) ? 'texto' : (canReadUploadAsPdf(file) ? 'pdf/ocr' : (canReadUploadAsDocx(file) ? 'docx extrator' : (canReadUploadAsImage(file) ? 'ocr local' : 'metadados')));
             return '<span>' + escapeHtml(file.name) + ' - ' + escapeHtml(formatUploadSize(file.size)) + ' - ' + readable + '</span>';
           }).join('')
         : '<span class="fine-note">Nenhum arquivo anexado.</span>';
+      setStatus(files.length ? 'Pronto para processar ao enviar.' : 'Nenhum arquivo anexado.');
     }
     fileInput.addEventListener('change', render);
     clear.addEventListener('click', function(){
@@ -3071,7 +3219,7 @@ window.jus9DemoLogin = function(form){
     });
     render();
     return {
-      read:function(){ return readAiUploadedFiles(fileInput.files); },
+      read:function(){ return readAiUploadedFiles(fileInput.files, setStatus); },
       clear:function(){ fileInput.value = ''; render(); }
     };
   }

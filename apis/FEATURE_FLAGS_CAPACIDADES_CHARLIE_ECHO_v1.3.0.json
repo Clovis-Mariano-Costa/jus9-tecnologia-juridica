@@ -83,6 +83,13 @@
       "bloqueio": "nao_salvar_upload_sem_acao_explicita"
     },
     {
+      "id": "flag.ocr.local",
+      "estado": "ativo",
+      "descricao": "OCR local governado no navegador para imagem e primeiras paginas de PDF escaneado, sem persistir upload.",
+      "dependencias": ["Tesseract.js", "PDF.js", "revisao_humana"],
+      "bloqueio": "nao_tratar_ocr_como_prova_sem_revisao"
+    },
+    {
       "id": "flag.ocr.upload",
       "estado": "planejado",
       "descricao": "Extracao de texto de PDF/imagem por backend.",
