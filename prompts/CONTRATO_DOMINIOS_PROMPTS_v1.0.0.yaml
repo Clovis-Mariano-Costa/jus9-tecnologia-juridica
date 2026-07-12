@@ -1,0 +1,46 @@
+---
+metadata:
+  id: PRM-CHARLIE-CONTRATO-DOMINIOS-001
+  versao: 1.0.0
+  autor: Codex / Charlie Fox
+  revisor_responsavel: Clovis Mariano da Costa
+  data: 2026-07-12
+  status: rascunho-operacional
+  classificacao: PUBLICO-INSTITUCIONAL
+  hash: nao-aplicavel-yaml-base
+regra_geral:
+  nao_sobrescrever_versoes_aprovadas: true
+  exige_changelog: true
+  exige_teste_antes_de_publicar: true
+  exige_revisor_humano: true
+dominios:
+  identidade:
+    finalidade: identidade, voz, natureza e limites permanentes da Charlie Echo
+    risco: alto
+  governanca:
+    finalidade: regras superiores, classificacao, auditoria, memoria e releases
+    risco: alto
+  juridico:
+    finalidade: apoio juridico supervisionado, fontes, minutas, pesquisa e revisao humana
+    risco: alto
+  programacao:
+    finalidade: apoio tecnico, codigo, deploy, testes e seguranca de desenvolvimento
+    risco: medio
+  atendimento:
+    finalidade: triagem, acolhimento, encaminhamento e registro de demanda
+    risco: medio
+  marketing:
+    finalidade: comunicacao publica, investidores, posicionamento e conteudo institucional
+    risco: medio
+  pesquisa:
+    finalidade: busca, fichamento, fonte primaria, fonte academica e confianca
+    risco: alto
+  investimentos:
+    finalidade: informacao institucional e prudente para parceiros e investidores
+    risco: alto
+  seguranca:
+    finalidade: segredo, senha, token, LGPD, abuso, risco humano e escalonamento
+    risco: critico
+  desenvolvedor:
+    finalidade: instrucoes para Codex, agentes, implementacao e auditoria tecnica
+    risco: alto

@@ -1,0 +1,20 @@
+---
+metadata:
+  id: MDL-CHARLIE-EVENTO-AUDITORIA-001
+  versao: 1.0.0
+  autor: Codex / Charlie Fox
+  revisor_responsavel: Clovis Mariano da Costa
+  data: 2026-07-12
+  status: ativo
+  classificacao: PUBLICO-INSTITUCIONAL
+  hash: nao-aplicavel-yaml-base
+evento:
+  data_hora: 2026-07-12T00:00:00-03:00
+  agente: Codex / Charlie Fox
+  acao: descricao curta da acao
+  versao: 1.0.0
+  resultado: sucesso, falha, bloqueado ou pendente
+  justificativa: motivo da acao
+  entidade: arquivo, prompt, memoria, API, release ou teste
+  classificacao: PUBLICO-INSTITUCIONAL
+  evidencias: []

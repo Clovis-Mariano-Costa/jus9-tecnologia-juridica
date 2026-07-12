@@ -1,0 +1,21 @@
+---
+metadata:
+  id: MDL-CHARLIE-METADADOS-001
+  versao: 1.0.0
+  autor: Codex / Charlie Fox
+  revisor_responsavel: Clovis Mariano da Costa
+  data: 2026-07-12
+  status: ativo
+  classificacao: PUBLICO-INSTITUCIONAL
+  hash: nao-aplicavel-yaml-base
+campos_obrigatorios:
+  id: identificador estavel do documento
+  versao: versionamento semantico MAJOR.MINOR.PATCH
+  autor: pessoa ou agente que criou o documento
+  revisor_responsavel: humano responsavel pela revisao
+  data: data ISO 8601
+  status: rascunho, revisao, homologado, ativo, obsoleto ou arquivado
+  classificacao: PUBLICO, INTERNO, SIGILOSO, SECRETO ou derivacao institucional
+  hash: hash quando aplicavel ou justificativa de nao aplicacao
+regra:
+  documentos_sem_metadados: reprovados em auditoria

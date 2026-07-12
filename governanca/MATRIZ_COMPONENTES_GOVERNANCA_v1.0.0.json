@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "id": "GOV-CHARLIE-MATRIZ-COMPONENTES-001",
+    "versao": "1.0.0",
+    "autor": "Codex / Charlie Fox",
+    "revisor_responsavel": "Clovis Mariano da Costa",
+    "data": "2026-07-12",
+    "status": "rascunho-operacional",
+    "classificacao": "PUBLICO-INSTITUCIONAL",
+    "hash": "nao-aplicavel-json-base"
+  },
+  "componentes": [
+    { "nome": "governanca", "responsabilidade": "principios, cronograma, versoes e regras superiores", "estado": "fundacao-v1" },
+    { "nome": "memoria", "responsabilidade": "permanente, evolutiva, temporaria e conversacional", "estado": "fundacao-v1" },
+    { "nome": "prompts", "responsabilidade": "contratos por dominio e modo", "estado": "fundacao-v1" },
+    { "nome": "documentacao", "responsabilidade": "manuais, auditorias, especificacoes e evidencias", "estado": "fundacao-v1" },
+    { "nome": "apis", "responsabilidade": "contratos de backend e integracoes seguras", "estado": "planejado" },
+    { "nome": "modelos", "responsabilidade": "templates de metadados, auditoria e roadmap", "estado": "fundacao-v1" },
+    { "nome": "logs", "responsabilidade": "eventos de governanca e rastreabilidade", "estado": "fundacao-v1" },
+    { "nome": "testes", "responsabilidade": "checklists automatizaveis e regressao", "estado": "fundacao-v1" },
+    { "nome": "releases", "responsabilidade": "pacotes aprovados e notas de entrega", "estado": "fundacao-v1" },
+    { "nome": "historico", "responsabilidade": "indice de versoes e decisoes anteriores", "estado": "fundacao-v1" },
+    { "nome": "obsoleto", "responsabilidade": "itens descontinuados sem exclusao silenciosa", "estado": "fundacao-v1" }
+  ],
+  "fluxo_git_recomendado": ["main", "release", "homolog", "develop", "feature/*"],
+  "regra": "versoes aprovadas nao devem ser sobrescritas"
+}

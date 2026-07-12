@@ -1,0 +1,37 @@
+---
+metadata:
+  id: API-CHARLIE-CONTRATO-001
+  versao: 1.0.0
+  autor: Codex / Charlie Fox
+  revisor_responsavel: Clovis Mariano da Costa
+  data: 2026-07-12
+  status: planejado
+  classificacao: PUBLICO-INSTITUCIONAL
+  hash: nao-aplicavel-yaml-base
+seguranca:
+  sem_chaves_no_frontend: true
+  rate_limit_obrigatorio: true
+  logs_governados: true
+  escopos_minimos: true
+rotas:
+  - path: /chat
+    finalidade: enviar mensagem classificada para gateway de IA
+    eventos: [message.created, risk.classified, prompt.version.used]
+  - path: /rooms
+    finalidade: criar e consultar salas governadas
+    eventos: [room.created, room.updated]
+  - path: /summaries
+    finalidade: manter resumo executivo vivo com revisao e classificacao
+    eventos: [summary.updated]
+  - path: /sources
+    finalidade: registrar fontes, dominios, confianca e data de consulta
+    eventos: [source.checked]
+  - path: /exports
+    finalidade: gerar PDF, DOCX, ZIP ou pacote de evidencias conforme classificacao
+    eventos: [export.generated]
+  - path: /health
+    finalidade: declarar estado ativo, demonstrativo, planejado ou bloqueado
+    eventos: [health.checked]
+  - path: /governance-events
+    finalidade: consultar trilha de auditoria autorizada
+    eventos: [governance.event.read]

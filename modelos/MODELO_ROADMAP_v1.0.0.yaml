@@ -1,0 +1,18 @@
+---
+metadata:
+  id: MDL-CHARLIE-ROADMAP-001
+  versao: 1.0.0
+  autor: Codex / Charlie Fox
+  revisor_responsavel: Clovis Mariano da Costa
+  data: 2026-07-12
+  status: ativo
+  classificacao: PUBLICO-INSTITUCIONAL
+  hash: nao-aplicavel-yaml-base
+item_roadmap:
+  id: ROADMAP-EXEMPLO-001
+  funcionalidade: nome da funcionalidade
+  versao_planejada: 1.1.0
+  dependencias: []
+  risco: baixo, medio, alto ou critico
+  criterio_aceite: criterio verificavel
+  status: planejado

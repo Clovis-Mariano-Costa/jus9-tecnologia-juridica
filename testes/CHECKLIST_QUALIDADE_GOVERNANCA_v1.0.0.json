@@ -1,0 +1,21 @@
+{
+  "metadata": {
+    "id": "TST-CHARLIE-CHECKLIST-QUALIDADE-001",
+    "versao": "1.0.0",
+    "autor": "Codex / Charlie Fox",
+    "revisor_responsavel": "Clovis Mariano da Costa",
+    "data": "2026-07-12",
+    "status": "ativo",
+    "classificacao": "PUBLICO-INSTITUCIONAL",
+    "hash": "nao-aplicavel-json-base"
+  },
+  "itens": [
+    { "id": "Q-001", "nome": "Consistencia", "automatizavel": true, "criterio": "documentos possuem metadados obrigatorios e versao semantica" },
+    { "id": "Q-002", "nome": "Ortografia", "automatizavel": "parcial", "criterio": "sem mojibake novo e com linguagem clara" },
+    { "id": "Q-003", "nome": "Conformidade juridica", "automatizavel": "parcial", "criterio": "respostas juridicas exigem fonte, limite e revisao humana quando necessario" },
+    { "id": "Q-004", "nome": "Referencias", "automatizavel": "parcial", "criterio": "fontes declaradas com link, tipo, confianca e data quando aplicavel" },
+    { "id": "Q-005", "nome": "Seguranca", "automatizavel": true, "criterio": "sem senha, token, chave ou segredo em documento publico" },
+    { "id": "Q-006", "nome": "LGPD", "automatizavel": "parcial", "criterio": "sem dado pessoal real em ambiente demonstrativo publico" },
+    { "id": "Q-007", "nome": "Integridade documental", "automatizavel": true, "criterio": "versoes aprovadas nao sao sobrescritas e mudancas geram changelog" }
+  ]
+}
