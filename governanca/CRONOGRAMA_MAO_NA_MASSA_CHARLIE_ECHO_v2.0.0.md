@@ -49,15 +49,17 @@ hash: nao-aplicavel-planejamento
 
 ## Pacote 4 - Replicacao (dias 8 a 12)
 
-- Estado: em execucao em 2026-07-13.
+- Estado tecnico: concluido e publicado em 2026-07-13.
 - DED promovido a instrumento independente com IA, perfis, documentos e workspace proprios.
 - Preservacao automatizada do DIC social como instrumento proprio.
-- Proximo marco: auditoria visual e funcional de fala, upload, configuracoes e menu dos 14 MVPs.
+- Fala, upload, configuracoes, memoria por usuario e menu usam o mesmo controle compacto nos 14 MVPs.
+- Criterio: CI completa, prova visual desktop/celular e consulta real da API no DED aprovadas.
 
 ## Pacote 5 - Auditoria e release (dias 12 a 15)
 
-- LGPD, seguranca, fontes, regressao, documentacao institucional e rollback.
-- Observacao de producao por 72 horas.
+- Estado tecnico: auditoria inicial concluida e release 1.7.0 publicada em 2026-07-13.
+- LGPD, seguranca, fontes, regressao, documentacao institucional e rollback registrados.
+- Pendente: observacao humana de producao por 72 horas, ate 2026-07-16, e aceite do responsavel.
 
 ## Dependencias externas
 
