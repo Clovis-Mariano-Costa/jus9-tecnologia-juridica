@@ -1,13 +1,83 @@
-<!--
-Jus 9 Tecnologia Juridica
-Repositorio: jus9-tecnologia-juridica
-IA por MVP conectada a API segura da Charlie Echo. Sem tokens no frontend e sem dados reais.
--->
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><title>IA Professor / Academia - Charlie Echo da Costa</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css"><meta name="theme-color" content="#07111f"><link rel="manifest" href="manifest.webmanifest"></head><body class="demo-shell charlie-workbench-page charlie-mvp-shell">
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Charlie Professor - DAA | Jus 9 Tecnologia Juridica</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
+  <meta name="theme-color" content="#07111f">
+  <link rel="manifest" href="manifest.webmanifest">
+</head>
+<body class="demo-shell charlie-workbench-page charlie-mvp-shell">
 <div class="jus9-autoria-topo" role="note" style="font-size:.82rem;line-height:1.4;text-align:center;padding:.45rem .75rem;background:rgba(15,23,42,.94);color:#f8fafc;letter-spacing:.01em;">Jus 9 Tecnologia Juridica - software livre, autoria preservada.</div>
-<div class="demo-layout"><aside class="demo-sidebar"><img src="assets/jus9-logo.svg" alt="Jus 9"><nav><a href="app-demo-professor.html">Painel Demo 2</a><a class="active" href="app-ia-professor.html">IA Profissional</a><a href="app-agenda.html">Agenda</a><a href="app-documentos-professor.html">Documentos</a><a href="mvp.html#demos-jus9">Sair do demo</a></nav></aside><main class="demo-main">
-<section class="demo-topbar"><div><div class="eyebrow">Charlie Echo da Costa - especialista academica</div><h1 style="font-size:42px;color:#0b1728;margin-top:8px">IA Professor / Academia</h1><p style="color:#51627a;margin:8px 0 0">IA generativa multimodal jurista com governanca humana, ajustada ao DAA: aulas, turmas, alunos ficticios, planos de ensino, avaliacoes, orientacoes e materiais academicos.</p><div class="daj-actions-fixed"><a href="#chat-ia">Abrir chat</a><a href="app-demo-professor.html">Voltar ao painel</a><a href="app-ia-profissional.html">Modo jurista geral</a><a href="https://jus9verde.jus9tecnologia.com.br/charlie-echo-social#chat-social">Charlie Echo Social</a></div></div><span class="badge secret">Demo 2 - sem dados reais</span></section>
-<section class="demo-grid"><article class="mvp-card"><h3>Modo jurista</h3><p>Modo jurista: prioriza doutrina, fontes e fundamentos educacionais juridicos.</p></article><article class="mvp-card"><h3>Modo especialista</h3><p>Modo especialista: foca no DAA, turma, disciplina, avaliacao e orientacao.</p></article><article class="mvp-card"><h3>Modo publico/social</h3><p>Modo publico/social: explica em linguagem simples para aluno e comunidade academica.</p></article><article class="mvp-card"><h3>Governanca humana</h3><p>Nao decide, nao assina, nao protocola, nao substitui profissional habilitado e exige revisao humana.</p></article></section>
-<section id="chat-ia" class="demo-card ai-chat-card" data-ai-chat data-ai-layout="medio" data-ai-title="IA Professor / Academia" data-ai-code="DAA" data-ai-focus="aulas, turmas, alunos ficticios, planos de ensino, avaliacoes, orientacoes e materiais academicos"><div class="eyebrow">Chat demonstrativo</div><h2 style="color:#0b1728">Falar com Charlie Echo</h2><p style="color:#51627a">Digite uma pergunta ficticia. A consulta usa a API segura da Charlie Echo quando disponivel e mantem fallback local sem dados reais.</p><div class="ai-mode-row" role="radiogroup" aria-label="Modo de resposta"><label><input type="radio" name="mode-DAA" value="jurista" checked> Jurista</label><label><input type="radio" name="mode-DAA" value="especialista"> Especialista DAA</label><label><input type="radio" name="mode-DAA" value="social"> Publico/social</label></div><div class="ai-chat-window" data-ai-chat-window><div class="ai-message ai-message-echo"><strong>Charlie Echo:</strong> Ola. Estou em modo demonstrativo do DAA. Use dados ficticios e me diga o que deseja organizar.</div></div><form class="ai-chat-form" data-ai-chat-form><textarea data-ai-chat-input rows="4" placeholder="Como organizo um DAA de aula sem dados reais?"></textarea><button class="mvp-button" type="submit">Enviar para Charlie Echo</button></form><div class="fine-note"><strong>Limite:</strong> nao informe dados reais, nomes reais, processos reais, WhatsApp, tokens, senhas, arquivos internos ou documentos sigilosos.</div></section>
-</main></div><footer class="jus9-autoria-rodape" role="contentinfo" style="font-size:.85rem;line-height:1.5;text-align:center;padding:1rem .75rem;margin-top:2rem;background:rgba(15,23,42,.96);color:#f8fafc;">Producao do site: Jus 9 Tecnologia Juridica. Software livre com autoria, origem e direitos autorais preservados.</footer><script src="script.js?v=20260712-charlie-pesquisa-ativa-v1"></script><script src="assets/js/pwa-install.js"></script></body></html>
+<div class="demo-layout">
+  <aside class="demo-sidebar">
+    <img src="assets/jus9-logo.svg" alt="Jus 9">
+    <nav>
+      <a href="app-demo-professor.html">Painel DAA</a>
+      <a href="demo-02-professor.html">Pagina Demo 2</a>
+      <a class="active" href="app-ia-professor.html">Charlie Professor</a>
+      <a href="app-documentos-professor.html">Documentos</a>
+      <a href="app-workspace-professor.html">Workspace</a>
+      <a href="app-perfis-professor.html">Perfis</a>
+      <a href="app-agenda.html">Agenda</a>
+      <a href="mvp.html#demos-jus9">Sair do demo</a>
+    </nav>
+  </aside>
+  <main class="demo-main">
+    <section class="demo-topbar">
+      <div>
+        <div class="eyebrow">Charlie Echo - modulo academico</div>
+        <h1 style="font-size:42px;color:#0b1728;margin-top:8px">Charlie Professor</h1>
+        <p style="color:#51627a;margin:8px 0 0">Instrumento DAA para criar aulas, pesquisas, rubricas, orientacoes e sinteses com fonte conferivel. Quando houver conteudo juridico, a resposta deve consultar a API segura.</p>
+        <div class="daj-actions-fixed">
+          <a href="#chat-ia">Chat</a>
+          <a href="app-documentos-professor.html">Documentos</a>
+          <a href="app-workspace-professor.html">Workspace</a>
+          <a href="https://jus9verde.jus9tecnologia.com.br/charlie-echo-social#chat-social">Modulo social</a>
+        </div>
+      </div>
+      <span class="badge secret">DAA - SEM DADOS REAIS</span>
+    </section>
 
+    <section class="demo-grid">
+      <article class="mvp-card"><h3>Plano de aula</h3><p>Objetivos, conteudo, metodologia, atividade, avaliacao e fonte para conferencia.</p></article>
+      <article class="mvp-card"><h3>Pesquisa com fontes</h3><p>Busca orientada em fontes oficiais, BDTD, SciELO, LexML e tribunais quando couber.</p></article>
+      <article class="mvp-card"><h3>Rubrica</h3><p>Criterios, pesos, evidencia esperada e feedback ao aluno.</p></article>
+      <article class="mvp-card"><h3>Orientacao</h3><p>Problema, hipotese, metodo, cronograma e limites de autoria.</p></article>
+    </section>
+
+    <section id="chat-ia" class="demo-card ai-chat-card" data-ai-chat data-ai-layout="medio" data-ai-title="Charlie Professor - DAA" data-ai-code="DAA" data-ai-focus="ensino juridico, pesquisa academica, plano de aula, orientacao, rubrica, fontes oficiais e bases academicas">
+      <div class="eyebrow">Chat demonstrativo</div>
+      <h2 style="color:#0b1728">Falar com Charlie Professor</h2>
+      <p style="color:#51627a">Use um pedido ficticio. A Charlie deve criar conteudo academico util, consultar a API quando necessario e separar criacao autoral de fonte conferida.</p>
+      <div class="ai-mode-row" role="radiogroup" aria-label="Modo de resposta">
+        <label><input type="radio" name="mode-DAA" value="jurista"> Jurista</label>
+        <label><input type="radio" name="mode-DAA" value="especialista" checked> Especialista DAA</label>
+        <label><input type="radio" name="mode-DAA" value="social"> Publico/social</label>
+      </div>
+      <div class="link-actions ia-actions" aria-label="Atalhos de prompt">
+        <button class="mvp-button" type="button" data-charlie-prompt="Crie um plano de aula demonstrativo sobre direito de propriedade, com objetivos, roteiro, atividade, avaliacao e fontes para conferencia.">Plano de aula</button>
+        <button class="mvp-button" type="button" data-charlie-prompt="Pesquise fontes confiaveis sobre a funcao social da propriedade e entregue sintese com links para conferencia, sem inventar pagina ou citacao literal.">Pesquisa com fontes</button>
+        <button class="mvp-button" type="button" data-charlie-prompt="Crie uma rubrica demonstrativa para seminario de Direito Constitucional, com criterios, pesos e feedback.">Rubrica</button>
+        <button class="mvp-button" type="button" data-charlie-prompt="Organize um roteiro de orientacao demonstrativo para artigo juridico, com problema, hipotese, metodo e cronograma.">Orientacao</button>
+      </div>
+      <div class="ai-chat-window" data-ai-chat-window>
+        <div class="ai-message ai-message-echo"><strong>Charlie Echo:</strong> Ola. Estou no DAA. Posso criar aula, pesquisa, rubrica, roteiro e orientacao com governanca, fonte conferivel e revisao humana.</div>
+      </div>
+      <form class="ai-chat-form" data-ai-chat-form>
+        <textarea data-ai-chat-input rows="4" placeholder="Crie um plano de aula demonstrativo sobre direito de propriedade com fontes para conferencia."></textarea>
+        <button class="mvp-button" type="submit">Enviar para Charlie Echo</button>
+      </form>
+      <div class="fine-note"><strong>Limite:</strong> nao informe dados reais, nomes reais, avaliacoes reais, processos reais, WhatsApp, tokens, senhas, arquivos internos ou documentos sigilosos.</div>
+    </section>
+  </main>
+</div>
+<footer class="jus9-autoria-rodape" role="contentinfo" style="font-size:.85rem;line-height:1.5;text-align:center;padding:1rem .75rem;margin-top:2rem;background:rgba(15,23,42,.96);color:#f8fafc;">Producao do site: Jus 9 Tecnologia Juridica. Software livre com autoria, origem e direitos autorais preservados.</footer>
+<script src="script.js?v=20260712-charlie-pesquisa-ativa-v1"></script>
+<script src="assets/js/pwa-install.js"></script>
+</body>
+</html>
