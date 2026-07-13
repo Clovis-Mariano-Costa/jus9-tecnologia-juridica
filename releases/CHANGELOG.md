@@ -11,6 +11,21 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.7.0 - 2026-07-13
+
+- DED promovido a instrumento independente com IA, perfis, documentos e workspace proprios.
+- Quatorze MVPs passam a possuir salas de IA dedicadas.
+- Preservacao do modo social padrao do DIC adicionada a auditoria automatica.
+
+## 1.6.0 - 2026-07-13
+
+- DataJud estabilizado com cache, limite, auditoria e DTO de metadados oficiais.
+- PDPJ preparado somente para readiness e teste seguro de token.
+
+## 1.5.0 - 2026-07-13
+
+- Memoria por usuario e Drive oficial protegidos por proxy autenticado.
+
 ## 1.3.0 - 2026-07-12
 
 - Registrado release-candidato do Pacote 3: contratos de backend e eventos governados.

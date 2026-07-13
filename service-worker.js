@@ -4,7 +4,7 @@
   Não armazena dados sensíveis. Não altera login, backend ou rotas protegidas.
 */
 
-const JUS9_CACHE = 'jus9-pwa-v26-2026-07-13-drive-oficial';
+const JUS9_CACHE = 'jus9-pwa-v27-2026-07-13-ded-independente';
 const JUS9_ASSETS = [
   '/',
   '/index.html',
@@ -14,6 +14,10 @@ const JUS9_ASSETS = [
   '/app-demo-advogar.html',
   '/demo-14-autor-editor.html',
   '/app-demo-autor-editor.html',
+  '/app-ia-autor-editor.html',
+  '/app-perfis-autor-editor.html',
+  '/app-documentos-autor-editor.html',
+  '/app-workspace-autor-editor.html',
   '/app-ia-profissional.html',
   '/app-agenda.html',
   '/app-clientes.html',

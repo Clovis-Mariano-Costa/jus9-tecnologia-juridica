@@ -107,7 +107,7 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v26-2026-07-13-drive-oficial"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("jus9-pwa-v27-2026-07-13-ded-independente"), "cache PWA principal desatualizado");
 assert(canonicalServiceWorker.includes("caches.match('/offline.html')"), "fallback de arquivos estaticos do worker principal incorreto");
 
 for (const code of expectedCodes) {
@@ -129,6 +129,7 @@ const priorityAiPages = {
   DMG: "app-ia-juiz.html",
   DMP: "app-ia-promotor.html",
   DAP: "app-ia-delegado.html",
+  DED: "app-ia-autor-editor.html",
 };
 
 for (const [code, page] of Object.entries(priorityAiPages)) {
@@ -160,6 +161,7 @@ const workspacePages = [
   "app-workspace-juiz.html",
   "app-workspace-promotor.html",
   "app-workspace-delegado.html",
+  "app-workspace-autor-editor.html",
 ];
 
 assert(sharedScript.includes("initWorkspaceSocialLinks"), "integracao social compartilhada ausente");

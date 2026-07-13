@@ -19,8 +19,8 @@
   "canonicalSource": "data-publica/mvp-perfis.json",
   "counts": {
     "mvps": 14,
-    "dedicatedAiPages": 13,
-    "sharedAiRoutes": 1
+    "dedicatedAiPages": 14,
+    "sharedAiRoutes": 0
   },
   "codes": [
     "DAJ",
@@ -38,14 +38,12 @@
     "DAP",
     "DED"
   ],
-  "sharedAiRoutes": {
-    "DED": "app-ia-profissional.html"
-  },
+  "sharedAiRoutes": {},
   "invariants": [
     "Cada MVP possui codigo canonico, dossie, entrada e personalidade operacional.",
     "A identidade matriz e a governanca geral da Charlie Echo permanecem comuns.",
     "Cada instrumento conserva memoria, fontes, limites e configuracoes proprias.",
-    "O DIC preserva o modulo social e o DED usa rota de IA compartilhada apenas de forma transitoria.",
+    "O DIC preserva o modulo social e o DED possui ambiente editorial independente.",
     "INV e ORG sao aliases legados; DIP e DOI sao os codigos canonicos."
   ]
 }

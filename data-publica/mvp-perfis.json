@@ -6,7 +6,7 @@
     "Os perfis organizam ambientes demonstrativos e nao concedem permissao real.",
     "Autenticacao, autorizacao, titularidade, RLS, logs e revisao humana continuam obrigatorios antes de dados reais.",
     "INV e ORG sao aliases legados aceitos para compatibilidade; os codigos canonicos sao DIP e DOI.",
-    "O inventario canonico possui 14 MVPs. Treze possuem pagina de IA dedicada; o DED usa transitoriamente a IA profissional compartilhada."
+    "O inventario canonico possui 14 MVPs e todos possuem pagina de IA dedicada."
   ],
   "profiles": [
     {
@@ -176,7 +176,7 @@
       "dossier_label": "Dossie Editorial Demonstrativo",
       "demo_email": "demo14@jus9tecnologia.com.br",
       "entry_page": "app-demo-autor-editor.html",
-      "profiles_page": "app-demo-autor-editor.html",
+      "profiles_page": "app-perfis-autor-editor.html",
       "subprofiles": ["Autor", "Autor-editor", "Editora", "Editor", "Revisor", "Curador", "Designer editorial", "Publicador"]
     }
   ]

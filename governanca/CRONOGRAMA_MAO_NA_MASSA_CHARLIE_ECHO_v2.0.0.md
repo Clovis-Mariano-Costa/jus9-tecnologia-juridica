@@ -17,7 +17,7 @@ hash: nao-aplicavel-planejamento
 - Governanca geral aplicada primeiro ao DAJ.
 - DataJud/CNJ ativo para busca por numero processual.
 - Vinculo DAJ-processo em KV oficial autenticado.
-- Quatorze MVPs canonicos; treze paginas de IA dedicadas e uma rota DED compartilhada.
+- Quatorze MVPs canonicos e quatorze paginas de IA dedicadas.
 
 ## Pacote 0 - Consolidacao (dia 1)
 
@@ -49,9 +49,10 @@ hash: nao-aplicavel-planejamento
 
 ## Pacote 4 - Replicacao (dias 8 a 12)
 
-- Revisao final de DOI, DGE, DMG, DMP, DAP e DED.
-- Preservacao do DIC social como instrumento proprio.
-- Padronizacao de fala, upload, configuracoes e menu dos 14 MVPs.
+- Estado: em execucao em 2026-07-13.
+- DED promovido a instrumento independente com IA, perfis, documentos e workspace proprios.
+- Preservacao automatizada do DIC social como instrumento proprio.
+- Proximo marco: auditoria visual e funcional de fala, upload, configuracoes e menu dos 14 MVPs.
 
 ## Pacote 5 - Auditoria e release (dias 12 a 15)
 

@@ -15,6 +15,7 @@ const pages = [
   "app-ia-juiz.html",
   "app-ia-promotor.html",
   "app-ia-delegado.html",
+  "app-ia-autor-editor.html",
   "charlie-echo.html",
   "ia-profissional",
   "manual-charlie-echo.html",

@@ -11,6 +11,20 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.7.0 - 2026-07-13
+
+- Inventario atualizado para quatorze MVPs com IA dedicada.
+- DED recebeu contrato operacional editorial independente.
+- Invariante do modulo social DIC passou a ser auditada.
+
+## 1.6.0 - 2026-07-13
+
+- DataJud e readiness PDPJ incorporados a governanca operacional.
+
+## 1.5.0 - 2026-07-13
+
+- Memoria por usuario e Drive oficial passaram a usar proxy governado.
+
 ## 1.3.0 - 2026-07-12
 
 - Adicionados contratos de backend governado, catalogo de eventos e feature flags.

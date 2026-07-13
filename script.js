@@ -458,7 +458,7 @@ window.jus9DemoLogin = function(form){
       DMG: 'app-ia-juiz.html',
       DMP: 'app-ia-promotor.html',
       DAP: 'app-ia-delegado.html',
-      DED: 'app-ia-profissional.html'
+      DED: 'app-ia-autor-editor.html'
     }[code] || 'app-ia-profissional.html';
   }
 
@@ -506,7 +506,8 @@ window.jus9DemoLogin = function(form){
       ['DGE', 'Administrador', 'app-ia-administrador.html'],
       ['DMG', 'Juiz', 'app-ia-juiz.html'],
       ['DMP', 'Promotor', 'app-ia-promotor.html'],
-      ['DAP', 'Delegado', 'app-ia-delegado.html']
+      ['DAP', 'Delegado', 'app-ia-delegado.html'],
+      ['DED', 'Autor / Editor', 'app-ia-autor-editor.html']
     ];
 
     var menu = document.createElement('div');
@@ -1972,6 +1973,40 @@ window.jus9DemoLogin = function(form){
         'nunca inventar autor, obra, pagina, julgado ou citacao literal'
       ],
       replication: 'Para outro MVP, manter a mesma forma: dossie ativo, rotas, workflow, politica de arquivo/Drive, fontes do ambiente, limites duros e prompts guiados.'
+    },
+    DED: {
+      title: 'Contrato operacional Charlie Echo + DED',
+      activeDossier: 'DED-MODELO-ATIVO',
+      purpose: 'orquestrar a obra como dossie editorial: identidade, autoria, estrutura, fontes, versoes, equipe, direitos, prova, publicacao e memoria documental no Drive',
+      routes: [
+        ['Painel DED', 'app-demo-autor-editor.html'],
+        ['IA Editorial', 'app-ia-autor-editor.html#chat-ia'],
+        ['Documentos', 'app-documentos-autor-editor.html'],
+        ['Perfis', 'app-perfis-autor-editor.html'],
+        ['Workspace', 'app-workspace-autor-editor.html'],
+        ['Agenda', 'app-agenda.html']
+      ],
+      workflow: [
+        'identificar objetivo, publico, genero, voz e criterio de sucesso da obra',
+        'separar criacao autoral, pesquisa, fonte conferida e sugestao editorial',
+        'propor estruturas e alternativas criativas sem substituir a decisao do autor',
+        'registrar leitura critica, versao analisada, justificativa e aceite ou rejeicao',
+        'conferir autoria, titularidade, licencas, citacoes e metadados antes da prova',
+        'preparar PDF ou documento e salvar no Drive quando login, classificacao e permissao permitirem',
+        'publicar ou compartilhar somente o pacote aprovado e rastreavel'
+      ],
+      drivePolicy: [
+        'rascunhos e pareceres permanecem restritos por padrao',
+        'a Charlie pode salvar automaticamente marcos relevantes quando autorizada pelo perfil',
+        'link publico exige classificacao publicavel e URL real retornada pelo backend',
+        'revogacao, mudanca de acesso e exclusao ficam auditadas por usuario e versao'
+      ],
+      sourcePolicy: [
+        'usar fonte primaria para direitos, licencas, registro, ISBN e normas editoriais',
+        'separar referencia conferida de criacao original e hipotese de trabalho',
+        'nunca inventar autoria, obra, pagina, citacao, licenca, permissao ou titularidade'
+      ],
+      replication: 'O DED e instrumento independente da matriz Charlie Echo, com memoria, configuracoes, fontes, perfis e superficies editoriais proprias.'
     }
   };
 

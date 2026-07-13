@@ -48,8 +48,14 @@ for (const [code, phrase] of mustMention) {
 }
 
 const appIaFiles = fs.readdirSync(root).filter((name) => /^app-ia-.*\.html$/.test(name));
-assert(appIaFiles.length === 13, `esperados 13 app-ia-*.html, encontrados ${appIaFiles.length}`);
-assert(script.includes("DED: 'app-ia-profissional.html'"), "DED: rota compartilhada de IA profissional ausente");
+assert(appIaFiles.length === 14, `esperados 14 app-ia-*.html, encontrados ${appIaFiles.length}`);
+assert(script.includes("DED: 'app-ia-autor-editor.html'"), "DED: rota editorial dedicada ausente");
+assert(script.includes("['DED', 'Autor / Editor', 'app-ia-autor-editor.html']"), "DED: ambiente ausente no menu da Charlie");
+
+const socialPage = fs.readFileSync(path.join(root, "app-ia-cidadao.html"), "utf8");
+assert(socialPage.includes('data-ai-code="DIC"'), "DIC: codigo do modulo social ausente");
+assert(socialPage.includes('value="social" checked'), "DIC: modo social deve permanecer padrao");
+assert(script.includes("orientadora publica acolhedora para cidadao"), "DIC: identidade social foi descaracterizada");
 
 for (const file of appIaFiles) {
   const html = fs.readFileSync(path.join(root, file), "utf8");
@@ -60,10 +66,26 @@ for (const file of appIaFiles) {
   assert(html.includes("script.js?v=20260712-charlie-pesquisa-ativa-v1"), `${file}: script do pacote de instrumentos sociais ausente`);
 }
 
+const dedSupportingPages = [
+  "app-ia-autor-editor.html",
+  "app-perfis-autor-editor.html",
+  "app-documentos-autor-editor.html",
+  "app-workspace-autor-editor.html",
+];
+for (const file of dedSupportingPages) {
+  const html = fs.readFileSync(path.join(root, file), "utf8");
+  assert(html.includes("app-demo-autor-editor.html"), `${file}: retorno ao painel DED ausente`);
+  assert(html.includes("app-ia-autor-editor.html"), `${file}: IA editorial dedicada ausente`);
+}
+const dedAiPage = fs.readFileSync(path.join(root, "app-ia-autor-editor.html"), "utf8");
+for (const phrase of ["data-ai-code=\"DED\"", "autoria", "titularidade", "fontes", "versoes", "Drive oficial"]) {
+  assert(dedAiPage.includes(phrase), `DED: contrato editorial ausente na pagina de IA: ${phrase}`);
+}
+
 if (failures.length) {
   console.error("Falhas na auditoria de personas MVP da Charlie Echo:");
   for (const failure of failures) console.error(`- ${failure}`);
   process.exit(1);
 }
 
-console.log("AUDITORIA_PERSONAS_MVP_OK 14 personas e 13 paginas de IA dedicadas verificadas.");
+console.log("AUDITORIA_PERSONAS_MVP_OK 14 personas, 14 paginas dedicadas e DIC social verificados.");

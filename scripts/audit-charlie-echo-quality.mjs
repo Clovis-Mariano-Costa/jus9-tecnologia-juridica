@@ -97,7 +97,7 @@ const checks = [
   {
     name: "service worker nao prende MVP antigo",
     file: "service-worker.js",
-    patterns: ["jus9-pwa-v26-2026-07-13-drive-oficial", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
+    patterns: ["jus9-pwa-v27-2026-07-13-ded-independente", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
   },
   {
     name: "casa propria da Charlie Echo publicada",
@@ -125,8 +125,8 @@ for (const check of checks) {
 }
 
 const appIaFiles = fs.readdirSync(root).filter((name) => /^app-ia-.*\.html$/.test(name));
-if (appIaFiles.length !== 13) {
-  failures.push(`esperados 13 arquivos app-ia-*.html, encontrados ${appIaFiles.length}`);
+if (appIaFiles.length !== 14) {
+  failures.push(`esperados 14 arquivos app-ia-*.html, encontrados ${appIaFiles.length}`);
 }
 for (const file of appIaFiles) {
   const html = read(file);
