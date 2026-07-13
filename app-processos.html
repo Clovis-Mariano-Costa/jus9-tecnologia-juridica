@@ -1,36 +1,341 @@
 <!--
-Jus 9 Tecnologia Jurídica
-Repositório: jus9-tecnologia-juridica
+Jus 9 Tecnologia Juridica
+Repositorio: jus9-tecnologia-juridica
 Software livre com autoria preservada.
-Direitos autorais reservados para Jus 9 Tecnologia Jurídica.
-Produção do site: © Jus 9 Tecnologia Jurídica. Direitos autorais da produção reservados.
-A licença livre não remove autoria, origem, assinatura institucional nem direitos autorais.
-Referência oficial: https://www.jus9tecnologia.com.br/
+Direitos autorais reservados para Jus 9 Tecnologia Juridica.
+Producao do site: (c) Jus 9 Tecnologia Juridica. Direitos autorais da producao reservados.
+A licenca livre nao remove autoria, origem, assinatura institucional nem direitos autorais.
+Referencia oficial: https://www.jus9tecnologia.com.br/
 E-mail de contato: Contato@jus9tecnologia.com.br
-DNA de referência de <a href="https://charlieecho.jus9tecnologia.com.br/ia-profissional">Charlie Echo</a> da Costa: charlieecho-jus9-tecnologia-juridica
+DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
 -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Processos - Jus 9 Demo</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
+  <meta name="theme-color" content="#07111f">
+  <link rel="manifest" href="manifest.webmanifest">
+</head>
+<body class="demo-shell">
+<div class="jus9-autoria-topo" role="note" aria-label="Autoria e licenca da producao do site" style="font-size:0.82rem;line-height:1.4;text-align:center;padding:0.45rem 0.75rem;background:rgba(15,23,42,0.94);color:#f8fafc;letter-spacing:0.01em;">Jus 9 Tecnologia Juridica - software livre, autoria preservada.</div>
+<div class="demo-layout">
+  <aside class="demo-sidebar">
+    <img src="assets/jus9-logo.svg" alt="Jus 9">
+    <nav>
+      <a href="app-demo-advogar.html">Painel</a>
+      <a href="app-clientes.html">Clientes</a>
+      <a href="app-daj.html">DAJ</a>
+      <a class="active" href="app-processos.html">Processos</a>
+      <a href="app-agenda.html">Agenda</a>
+      <a href="app-prazos.html">Prazos</a>
+      <a href="app-documentos.html">Documentos</a>
+      <a href="app-cofre.html">Cofre Juridico</a>
+      <a href="app-workspace.html">Workspace</a>
+      <a href="app-ia-profissional.html">IA Profissional</a>
+      <a href="mvp.html">Sair do demo</a>
+    </nav>
+  </aside>
+  <main class="demo-main">
+    <section class="demo-topbar">
+      <div>
+        <div class="eyebrow">Processos</div>
+        <h1 style="font-size:42px;color:#0b1728;margin-top:8px">Pesquisa processual governada.</h1>
+        <p style="color:#51627a;margin:8px 0 0">Modelo DAJ: Charlie Echo consulta o gateway seguro, organiza metadados oficiais do DataJud/CNJ e orienta o proximo passo sem expor segredo no navegador.</p>
+      </div>
+      <span class="badge" id="datajud-status-badge">Verificando DataJud</span>
+    </section>
 
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><title>Processos — Jus 9 Demo</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css"><meta name="theme-color" content="#07111f"><link rel="manifest" href="manifest.webmanifest"></head><body class="demo-shell">
-<div class="jus9-autoria-topo" role="note" aria-label="Autoria e licença da produção do site" style="font-size: 0.82rem; line-height: 1.4; text-align: center; padding: 0.45rem 0.75rem; background: rgba(15, 23, 42, 0.94); color: #f8fafc; letter-spacing: 0.01em;">Jus 9 Tecnologia Jurídica — software livre, autoria preservada.</div>
-<div class="demo-layout"><aside class="demo-sidebar"><img src="assets/jus9-logo.svg" alt="Jus 9"><nav>
-<a href="app-demo-advogar.html">Painel</a><a href="app-clientes.html">Clientes</a><a href="app-daj.html">DAJ</a><a class="active" href="app-processos.html">Processos</a><a href="app-agenda.html">Agenda</a><a href="app-prazos.html">Prazos</a><a href="app-documentos.html">Documentos</a><a href="app-cofre.html">Cofre Jurídico</a><a href="app-workspace.html">Workspace</a><a href="app-ia-profissional.html">IA Profissional</a><a href="mvp.html">Sair do demo</a>
-</nav></aside><main class="demo-main"><section class="demo-topbar"><div><div class="eyebrow">Processos</div><h1 style="font-size:42px;color:#0b1728;margin-top:8px">Pesquisa processual por estado e tribunal.</h1><p style="color:#51627a;margin:8px 0 0">Cada estado e tribunal possui peculiaridades. O MVP prevê pesquisa por número CNJ, estado, tribunal, instância e fonte de integração.</p></div><span class="badge">Integração futura</span></section><section class="daj-card"><div class="daj-actions-fixed"><a href="app-atendimento-inicial.html">+ Novo DAJ</a><a href="app-clientes.html">Lista de DAJs</a><a href="app-daj.html">DAJ vinculado</a></div></section>
-<section class="process-layout"><article class="process-card"><h2>Pesquisa processual</h2><form class="form-grid" onsubmit="event.preventDefault(); alert('Demonstração: futura consulta ao DataJud/CNJ e outras integrações por tribunal.');"><div class="form-field" style="grid-column:1/-1"><label>Número do processo CNJ</label><input placeholder="0000000-00.0000.0.00.0000"></div><div class="form-field"><label>Estado / Tribunal estadual</label><select><option>Santa Catarina — TJSC</option><option>São Paulo — TJSP</option><option>Rio Grande do Sul — TJRS</option><option>Paraná — TJPR</option><option>Rio de Janeiro — TJRJ</option><option>Minas Gerais — TJMG</option><option>Adicionar tribunal/estado</option></select></div><div class="form-field"><label>Tribunal superior / federal</label><select><option>Não se aplica</option><option>STF</option><option>STJ</option><option>TST</option><option>TSE</option><option>STM</option><option>TRF1</option><option>TRF2</option><option>TRF3</option><option>TRF4</option><option>TRF5</option><option>TRF6</option><option>TNU</option></select></div><div class="form-field"><label>Fonte</label><select><option>Auto / DataJud</option><option>API Pública CNJ</option><option>Consulta pública do tribunal</option><option>Consulta manual</option><option>Integração parceira</option></select></div><div class="form-field"><label>Vincular ao DAJ</label><select><option>DAJ-2026-0001</option><option>DAJ-2026-0002</option><option>Criar novo DAJ</option></select></div><button class="mvp-button" type="submit">Consultar e vincular</button></form><h3 style="margin-top:20px">Tribunais estaduais</h3><div class="state-grid"><a href="#" onclick="alert('Demonstração: selecionar TJAC e consultar peculiaridades/endpoint do tribunal.')">TJAC</a><a href="#" onclick="alert('Demonstração: selecionar TJAL e consultar peculiaridades/endpoint do tribunal.')">TJAL</a><a href="#" onclick="alert('Demonstração: selecionar TJAP e consultar peculiaridades/endpoint do tribunal.')">TJAP</a><a href="#" onclick="alert('Demonstração: selecionar TJAM e consultar peculiaridades/endpoint do tribunal.')">TJAM</a><a href="#" onclick="alert('Demonstração: selecionar TJBA e consultar peculiaridades/endpoint do tribunal.')">TJBA</a><a href="#" onclick="alert('Demonstração: selecionar TJCE e consultar peculiaridades/endpoint do tribunal.')">TJCE</a><a href="#" onclick="alert('Demonstração: selecionar TJDFT e consultar peculiaridades/endpoint do tribunal.')">TJDFT</a><a href="#" onclick="alert('Demonstração: selecionar TJES e consultar peculiaridades/endpoint do tribunal.')">TJES</a><a href="#" onclick="alert('Demonstração: selecionar TJGO e consultar peculiaridades/endpoint do tribunal.')">TJGO</a><a href="#" onclick="alert('Demonstração: selecionar TJMA e consultar peculiaridades/endpoint do tribunal.')">TJMA</a><a href="#" onclick="alert('Demonstração: selecionar TJMT e consultar peculiaridades/endpoint do tribunal.')">TJMT</a><a href="#" onclick="alert('Demonstração: selecionar TJMS e consultar peculiaridades/endpoint do tribunal.')">TJMS</a><a href="#" onclick="alert('Demonstração: selecionar TJMG e consultar peculiaridades/endpoint do tribunal.')">TJMG</a><a href="#" onclick="alert('Demonstração: selecionar TJPA e consultar peculiaridades/endpoint do tribunal.')">TJPA</a><a href="#" onclick="alert('Demonstração: selecionar TJPB e consultar peculiaridades/endpoint do tribunal.')">TJPB</a><a href="#" onclick="alert('Demonstração: selecionar TJPR e consultar peculiaridades/endpoint do tribunal.')">TJPR</a><a href="#" onclick="alert('Demonstração: selecionar TJPE e consultar peculiaridades/endpoint do tribunal.')">TJPE</a><a href="#" onclick="alert('Demonstração: selecionar TJPI e consultar peculiaridades/endpoint do tribunal.')">TJPI</a><a href="#" onclick="alert('Demonstração: selecionar TJRJ e consultar peculiaridades/endpoint do tribunal.')">TJRJ</a><a href="#" onclick="alert('Demonstração: selecionar TJRN e consultar peculiaridades/endpoint do tribunal.')">TJRN</a><a href="#" onclick="alert('Demonstração: selecionar TJRS e consultar peculiaridades/endpoint do tribunal.')">TJRS</a><a href="#" onclick="alert('Demonstração: selecionar TJRO e consultar peculiaridades/endpoint do tribunal.')">TJRO</a><a href="#" onclick="alert('Demonstração: selecionar TJRR e consultar peculiaridades/endpoint do tribunal.')">TJRR</a><a href="#" onclick="alert('Demonstração: selecionar TJSC e consultar peculiaridades/endpoint do tribunal.')">TJSC</a><a href="#" onclick="alert('Demonstração: selecionar TJSP e consultar peculiaridades/endpoint do tribunal.')">TJSP</a><a href="#" onclick="alert('Demonstração: selecionar TJSE e consultar peculiaridades/endpoint do tribunal.')">TJSE</a><a href="#" onclick="alert('Demonstração: selecionar TJTO e consultar peculiaridades/endpoint do tribunal.')">TJTO</a></div><div class="quick-links"><a href="https://datajud-wiki.cnj.jus.br/api-publica/" target="_blank" rel="noopener">DataJud Wiki</a><a href="https://www.cnj.jus.br/sistemas/datajud/api-publica/" target="_blank" rel="noopener">API Pública CNJ</a></div></article><article class="process-card"><h2>DAJ vinculado</h2><p><strong>DAJ-2026-0001</strong></p><p>Último atendimento: 07/05/2026</p><p>Último documento: contrato trazido pelo cliente</p><p>Razão da atenção: prazo próximo</p><p>Observação: a consulta externa mostra o processo; o DAJ mostra o caso vivo por dentro.</p><div class="quick-links"><a href="app-daj.html">Abrir DAJ</a><a href="app-clientes.html">Cliente</a><a href="app-documentos.html">Documentos</a><a href="app-agenda.html">Agenda</a><a href="app-prazos.html">Prazos</a><a href="app-cofre.html">Cofre Jurídico</a><a href="app-workspace.html">Workspace</a></div></article></section>
-<section class="process-card"><h2>Últimos movimentos processuais demonstrativos</h2><table class="demo-table"><thead><tr><th>Data</th><th>Movimento</th><th>Origem</th><th>Ação interna</th></tr></thead><tbody><tr><td>08/05/2026</td><td>Conclusos para decisão</td><td>DataJud / tribunal</td><td>Notificar responsável</td></tr><tr><td>06/05/2026</td><td>Juntada de documento</td><td>Consulta pública</td><td>Vincular ao DAJ</td></tr><tr><td>04/05/2026</td><td>Intimação publicada</td><td>Tribunal</td><td>Criar prazo fatal</td></tr></tbody></table></section>
-<section class="process-card"><h2>Observação técnica</h2><p>O DataJud é o caminho público mais promissor para metadados processuais nacionais, mas não substitui a necessidade de tratar peculiaridades dos tribunais, disponibilidade de dados, sigilo, atraso de atualização e integrações específicas.</p></section><section class="daj-card"><h2>IA Profissional</h2><p>Apoio supervisionado sobre os dados autorizados deste contexto.</p><div class="link-actions"><a href="app-ia-profissional.html">Perguntar à IA</a><a href="app-ia-profissional.html">Resumir DAJ</a><a href="app-ia-profissional.html">Analisar documentos</a><a href="app-ia-profissional.html">Sugerir próximos passos</a></div></section>
+    <section class="daj-card">
+      <div class="daj-actions-fixed">
+        <a href="app-atendimento-inicial.html">+ Novo DAJ</a>
+        <a href="app-clientes.html">Lista de DAJs</a>
+        <a href="app-daj.html">DAJ vinculado</a>
+      </div>
+    </section>
 
-<section class="links-semanticos-jus9-v1-5" aria-label="Links institucionais Jus 9" style="margin:2rem auto;max-width:1100px;padding:1rem;border:1px solid rgba(212,180,99,.35);border-radius:18px;background:rgba(15,23,42,.04);font-size:.95rem;line-height:1.6">
-  <strong>Links Jus 9:</strong>
-  <a href="https://equipe.jus9tecnologia.com.br/">Equipe</a> ·
-  <a href="https://investimentos.jus9tecnologia.com.br/">Investimentos</a> ·
-  <a href="https://jus9tecnologia.com.br/mvp#demos-jus9">MVP</a> ·
-  <a href="https://charlieecho.jus9tecnologia.com.br/ia-profissional">Charlie Echo</a> ·
-  <a href="https://jus9verde.jus9tecnologia.com.br/charlie-echo-social">Charlie Echo Social</a> ·
-  <a href="mailto:Contato@jus9tecnologia.com.br">Contato</a>
-</section>
+    <section class="process-layout">
+      <article class="process-card">
+        <h2>Consulta via Charlie Echo</h2>
+        <form class="form-grid" data-process-form>
+          <div class="form-field" style="grid-column:1/-1">
+            <label for="process-number">Numero do processo CNJ</label>
+            <input id="process-number" name="numero" inputmode="numeric" autocomplete="off" placeholder="0000000-00.0000.0.00.0000" required>
+          </div>
+          <div class="form-field">
+            <label for="process-state-court">Estado / Tribunal estadual</label>
+            <select id="process-state-court" name="tribunalEstadual">
+              <option value="tjsc">Santa Catarina - TJSC</option>
+              <option value="tjsp">Sao Paulo - TJSP</option>
+              <option value="tjrs">Rio Grande do Sul - TJRS</option>
+              <option value="tjpr">Parana - TJPR</option>
+              <option value="tjrj">Rio de Janeiro - TJRJ</option>
+              <option value="tjmg">Minas Gerais - TJMG</option>
+              <option value="tjac">Acre - TJAC</option>
+              <option value="tjal">Alagoas - TJAL</option>
+              <option value="tjap">Amapa - TJAP</option>
+              <option value="tjam">Amazonas - TJAM</option>
+              <option value="tjba">Bahia - TJBA</option>
+              <option value="tjce">Ceara - TJCE</option>
+              <option value="tjdft">Distrito Federal - TJDFT</option>
+              <option value="tjes">Espirito Santo - TJES</option>
+              <option value="tjgo">Goias - TJGO</option>
+              <option value="tjma">Maranhao - TJMA</option>
+              <option value="tjmt">Mato Grosso - TJMT</option>
+              <option value="tjms">Mato Grosso do Sul - TJMS</option>
+              <option value="tjpa">Para - TJPA</option>
+              <option value="tjpb">Paraiba - TJPB</option>
+              <option value="tjpe">Pernambuco - TJPE</option>
+              <option value="tjpi">Piaui - TJPI</option>
+              <option value="tjrn">Rio Grande do Norte - TJRN</option>
+              <option value="tjro">Rondonia - TJRO</option>
+              <option value="tjrr">Roraima - TJRR</option>
+              <option value="tjse">Sergipe - TJSE</option>
+              <option value="tjto">Tocantins - TJTO</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="process-superior-court">Tribunal superior / federal</label>
+            <select id="process-superior-court" name="tribunalSuperior">
+              <option value="">Nao se aplica</option>
+              <option value="stj">STJ</option>
+              <option value="tst">TST</option>
+              <option value="tse">TSE</option>
+              <option value="stm">STM</option>
+              <option value="trf1">TRF1</option>
+              <option value="trf2">TRF2</option>
+              <option value="trf3">TRF3</option>
+              <option value="trf4">TRF4</option>
+              <option value="trf5">TRF5</option>
+              <option value="trf6">TRF6</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="process-source">Fonte</label>
+            <select id="process-source" name="fonte">
+              <option value="datajud">DataJud/CNJ - metadados oficiais</option>
+              <option value="tribunal">Tribunal - conferencia complementar</option>
+              <option value="manual">Manual - registrar observacao no DAJ</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="process-daj">Vincular ao DAJ</label>
+            <select id="process-daj" name="daj">
+              <option value="DAJ-2026-0001">DAJ-2026-0001</option>
+              <option value="DAJ-2026-0002">DAJ-2026-0002</option>
+              <option value="novo">Criar novo DAJ</option>
+            </select>
+          </div>
+          <button class="mvp-button" type="submit">Consultar via Charlie Echo</button>
+        </form>
 
-</main></div><script src="script.js?v=20260712-charlie-pesquisa-ativa-v1"></script>
-<footer class="jus9-autoria-rodape" role="contentinfo" aria-label="Direitos autorais e origem da produção do site" style="font-size: 0.85rem; line-height: 1.5; text-align: center; padding: 1rem 0.75rem; margin-top: 2rem; background: rgba(15, 23, 42, 0.96); color: #f8fafc;">Produção do site: © Jus 9 Tecnologia Jurídica. Software livre com autoria, origem e direitos autorais preservados.</footer>
-<script src="assets/js/pwa-install.js"></script></body></html>
+        <div id="process-result" aria-live="polite" style="margin-top:18px;background:#f8fafc;border:1px dashed #c58b2f;border-radius:16px;padding:16px">
+          <h3>Resultado governado</h3>
+          <p>Informe o numero CNJ e consulte. A Charlie deve responder com fonte, limites, metadados publicos e proximo passo no DAJ.</p>
+        </div>
 
+        <h3 style="margin-top:20px">Tribunais estaduais</h3>
+        <div class="state-grid" data-state-grid>
+          <a href="#" data-tribunal="tjac">TJAC</a><a href="#" data-tribunal="tjal">TJAL</a><a href="#" data-tribunal="tjap">TJAP</a><a href="#" data-tribunal="tjam">TJAM</a><a href="#" data-tribunal="tjba">TJBA</a><a href="#" data-tribunal="tjce">TJCE</a><a href="#" data-tribunal="tjdft">TJDFT</a><a href="#" data-tribunal="tjes">TJES</a><a href="#" data-tribunal="tjgo">TJGO</a><a href="#" data-tribunal="tjma">TJMA</a><a href="#" data-tribunal="tjmt">TJMT</a><a href="#" data-tribunal="tjms">TJMS</a><a href="#" data-tribunal="tjmg">TJMG</a><a href="#" data-tribunal="tjpa">TJPA</a><a href="#" data-tribunal="tjpb">TJPB</a><a href="#" data-tribunal="tjpr">TJPR</a><a href="#" data-tribunal="tjpe">TJPE</a><a href="#" data-tribunal="tjpi">TJPI</a><a href="#" data-tribunal="tjrj">TJRJ</a><a href="#" data-tribunal="tjrn">TJRN</a><a href="#" data-tribunal="tjrs">TJRS</a><a href="#" data-tribunal="tjro">TJRO</a><a href="#" data-tribunal="tjrr">TJRR</a><a href="#" data-tribunal="tjsc">TJSC</a><a href="#" data-tribunal="tjsp">TJSP</a><a href="#" data-tribunal="tjse">TJSE</a><a href="#" data-tribunal="tjto">TJTO</a>
+        </div>
+        <div class="quick-links">
+          <a href="https://datajud-wiki.cnj.jus.br/api-publica/" target="_blank" rel="noopener">DataJud Wiki</a>
+          <a href="https://www.cnj.jus.br/sistemas/datajud/api-publica/" target="_blank" rel="noopener">API Publica CNJ</a>
+        </div>
+      </article>
 
+      <article class="process-card">
+        <h2>DAJ vinculado</h2>
+        <p><strong>DAJ-2026-0001</strong></p>
+        <p>Ultimo atendimento: 07/05/2026</p>
+        <p>Ultimo documento: contrato trazido pelo cliente</p>
+        <p>Razao da atencao: prazo proximo</p>
+        <p>Observacao: a consulta externa mostra o processo; o DAJ mostra o caso vivo por dentro.</p>
+        <div class="quick-links">
+          <a href="app-daj.html">Abrir DAJ</a>
+          <a href="app-clientes.html">Cliente</a>
+          <a href="app-documentos.html">Documentos</a>
+          <a href="app-agenda.html">Agenda</a>
+          <a href="app-prazos.html">Prazos</a>
+          <a href="app-cofre.html">Cofre Juridico</a>
+          <a href="app-workspace.html">Workspace</a>
+        </div>
+      </article>
+    </section>
+
+    <section class="process-card">
+      <h2>Movimentos processuais demonstrativos</h2>
+      <table class="demo-table">
+        <thead><tr><th>Data</th><th>Movimento</th><th>Origem</th><th>Acao interna</th></tr></thead>
+        <tbody>
+          <tr><td>08/05/2026</td><td>Conclusos para decisao</td><td>DataJud / tribunal</td><td>Notificar responsavel</td></tr>
+          <tr><td>06/05/2026</td><td>Juntada de documento</td><td>Consulta publica</td><td>Vincular ao DAJ</td></tr>
+          <tr><td>04/05/2026</td><td>Intimacao publicada</td><td>Tribunal</td><td>Criar prazo fatal</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="process-card">
+      <h2>Regra de seguranca do modelo</h2>
+      <p>O DataJud e usado aqui como fonte oficial de metadados publicos. Nao substitui autos, documentos, sigilo, conferencia humana, peticionamento, ciencia ou protocolo.</p>
+    </section>
+
+    <section class="daj-card">
+      <h2>IA Profissional</h2>
+      <p>Apoio supervisionado sobre os dados autorizados deste contexto.</p>
+      <div class="link-actions">
+        <a href="app-ia-profissional.html">Perguntar a IA</a>
+        <a href="app-ia-profissional.html">Resumir DAJ</a>
+        <a href="app-ia-profissional.html">Analisar documentos</a>
+        <a href="app-ia-profissional.html">Sugerir proximos passos</a>
+      </div>
+    </section>
+
+    <section class="links-semanticos-jus9-v1-5" aria-label="Links institucionais Jus 9" style="margin:2rem auto;max-width:1100px;padding:1rem;border:1px solid rgba(212,180,99,.35);border-radius:18px;background:rgba(15,23,42,.04);font-size:.95rem;line-height:1.6">
+      <strong>Links Jus 9:</strong>
+      <a href="https://equipe.jus9tecnologia.com.br/">Equipe</a> &middot;
+      <a href="https://investimentos.jus9tecnologia.com.br/">Investimentos</a> &middot;
+      <a href="https://jus9tecnologia.com.br/mvp#demos-jus9">MVP</a> &middot;
+      <a href="https://charlieecho.jus9tecnologia.com.br/ia-profissional">Charlie Echo</a> &middot;
+      <a href="https://jus9verde.jus9tecnologia.com.br/charlie-echo-social">Charlie Echo Social</a> &middot;
+      <a href="mailto:Contato@jus9tecnologia.com.br">Contato</a>
+    </section>
+  </main>
+</div>
+
+<script>
+(function(){
+  var form = document.querySelector('[data-process-form]');
+  var result = document.getElementById('process-result');
+  var badge = document.getElementById('datajud-status-badge');
+  var stateSelect = document.getElementById('process-state-court');
+  var superiorSelect = document.getElementById('process-superior-court');
+  var sourceSelect = document.getElementById('process-source');
+  var dajSelect = document.getElementById('process-daj');
+  var numberInput = document.getElementById('process-number');
+  var submitButton = form ? form.querySelector('button[type="submit"]') : null;
+
+  function escapeHtml(value){
+    return String(value || '').replace(/[&<>"']/g, function(ch){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]);
+    });
+  }
+
+  function linkify(text){
+    return escapeHtml(text)
+      .replace(/(https?:\/\/[^\s<")]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>')
+      .replace(/\n/g, '<br>');
+  }
+
+  function render(title, text, tone){
+    if(!result) return;
+    var border = tone === 'error' ? '#b91c1c' : tone === 'ok' ? '#16734f' : '#c58b2f';
+    result.style.borderColor = border;
+    result.innerHTML = '<h3>' + escapeHtml(title) + '</h3><p>' + linkify(text) + '</p>';
+  }
+
+  function selectedTribunal(){
+    return (superiorSelect && superiorSelect.value) || (stateSelect && stateSelect.value) || 'tjsc';
+  }
+
+  function selectedTribunalLabel(){
+    var select = superiorSelect && superiorSelect.value ? superiorSelect : stateSelect;
+    var option = select && select.options ? select.options[select.selectedIndex] : null;
+    return option ? option.textContent.trim() : selectedTribunal().toUpperCase();
+  }
+
+  async function refreshStatus(){
+    if(!badge) return;
+    try {
+      var response = await fetch('/api/tribunais/datajud/status', { headers:{ 'Accept':'application/json' } });
+      var data = await response.json().catch(function(){ return null; });
+      if(response.ok && data && data.configured){
+        badge.textContent = 'DataJud pronto';
+        return;
+      }
+      if(response.ok && data && data.gatewayTokenConfigured){
+        badge.textContent = 'Gateway pronto; credencial CNJ pendente';
+        return;
+      }
+      badge.textContent = 'DataJud pendente';
+    } catch (error) {
+      badge.textContent = 'Status indisponivel';
+    }
+  }
+
+  async function askCharlieForProcess(numero, tribunal, tribunalLabel){
+    var prompt = [
+      'Consulte no CNJ/DataJud o processo ' + numero + ' no tribunal ' + tribunal + ' (' + tribunalLabel + ').',
+      'Contexto: pagina modelo Processos do DAJ Advogados.',
+      'Fonte selecionada: ' + (sourceSelect ? sourceSelect.value : 'datajud') + '. DAJ: ' + (dajSelect ? dajSelect.value : 'sem vinculo') + '.',
+      'Responda com metadados publicos oficiais, fonte, limites, status da consulta, riscos de sigilo e proximo passo seguro no DAJ.',
+      'Se a credencial ou o DataJud estiver indisponivel, diga isso sem inventar dados processuais.'
+    ].join('\n');
+    var response = await fetch('https://charlieecho.jus9tecnologia.com.br/api/ia', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify({
+        mode: 'jurista',
+        route: { operation:'consulta_datajud_cnj', tribunal:tribunal, numeroProcesso:numero, modulo:'DAJ' },
+        message: prompt,
+        room: {
+          title: 'Processos DAJ',
+          governanceClass: 'JURIDICO_PUBLICO_CONTROLADO',
+          currentTopic: 'consulta DataJud/CNJ',
+          messages: []
+        }
+      })
+    });
+    var data = await response.json().catch(function(){ return null; });
+    if(data && typeof data.answer === 'string' && data.answer.trim()) {
+      return data.answer.trim();
+    }
+    throw new Error(data && data.error ? data.error : 'API da Charlie nao retornou resposta utilizavel.');
+  }
+
+  if(form){
+    form.addEventListener('submit', async function(event){
+      event.preventDefault();
+      var numero = String(numberInput && numberInput.value || '').trim();
+      if(!numero){
+        render('Numero CNJ obrigatorio', 'Informe o numero do processo antes de consultar.', 'error');
+        if(numberInput) numberInput.focus();
+        return;
+      }
+      var tribunal = selectedTribunal();
+      var tribunalLabel = selectedTribunalLabel();
+      if(submitButton) submitButton.disabled = true;
+      render('Consultando Charlie Echo', 'A consulta esta indo para a API segura. O navegador nao recebe token interno do gateway.', 'info');
+      try {
+        var answer = await askCharlieForProcess(numero, tribunal, tribunalLabel);
+        render('Resposta da Charlie Echo', answer, 'ok');
+      } catch (error) {
+        render('Consulta nao concluida', 'Nao consegui concluir a consulta agora. Detalhe: ' + (error && error.message ? error.message : 'falha sem detalhe tecnico.') + ' A orientacao segura e tentar novamente em instantes ou abrir a IA Profissional com o mesmo numero CNJ.', 'error');
+      } finally {
+        if(submitButton) submitButton.disabled = false;
+      }
+    });
+  }
+
+  document.querySelectorAll('[data-state-grid] [data-tribunal]').forEach(function(link){
+    link.addEventListener('click', function(event){
+      event.preventDefault();
+      if(superiorSelect) superiorSelect.value = '';
+      if(stateSelect) stateSelect.value = link.getAttribute('data-tribunal') || 'tjsc';
+      render('Tribunal selecionado', 'Tribunal ativo: ' + link.textContent.trim() + '. Informe o numero CNJ e consulte via Charlie Echo.', 'info');
+    });
+  });
+
+  refreshStatus();
+})();
+</script>
+<script src="script.js?v=20260712-charlie-pesquisa-ativa-v1"></script>
+<footer class="jus9-autoria-rodape" role="contentinfo" aria-label="Direitos autorais e origem da producao do site" style="font-size:0.85rem;line-height:1.5;text-align:center;padding:1rem 0.75rem;margin-top:2rem;background:rgba(15,23,42,0.96);color:#f8fafc;">Producao do site: (c) Jus 9 Tecnologia Juridica. Software livre com autoria, origem e direitos autorais preservados.</footer>
+<script src="assets/js/pwa-install.js"></script>
+</body>
+</html>
