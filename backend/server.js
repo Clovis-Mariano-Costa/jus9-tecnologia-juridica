@@ -663,12 +663,23 @@ app.post("/api/dossiers", protectWhenEnabled("dajs:write"), (req, res) => {
 });
 
 app.post("/api/processos/consulta", protectWhenEnabled("processes:read"), (req, res) => {
-  const { numeroCnj, tribunal, fonte, dajId } = req.body;
+  const rawTipoPesquisa = String(req.body.tipoPesquisa || req.body.searchType || "").trim().toLowerCase();
+  const tipoPesquisa = ["nome", "cpf"].includes(rawTipoPesquisa)
+    ? rawTipoPesquisa
+    : "numeroProcesso";
+  const cpfDigits = String(req.body.cpf || req.body.valorBusca || "").replace(/\D/g, "");
+  const queryMasked = tipoPesquisa === "cpf"
+    ? (cpfDigits.length === 11 ? `***.***.***-${cpfDigits.slice(-2)}` : "***.***.***-**")
+    : String(req.body.nome || req.body.numeroCnj || req.body.numeroProcesso || req.body.valorBusca || "").slice(0, 120);
+  const { numeroCnj, numeroProcesso, tribunal, fonte, dajId } = req.body;
   res.json({
     fonte: fonte || "simulacao",
-    numeroCnj,
+    tipoPesquisa,
+    queryMasked,
+    numeroCnj: numeroCnj || numeroProcesso || null,
     tribunal,
     dajId,
+    avisoGovernado: "DataJud/CNJ publico prioriza numero CNJ e metadados. Pesquisa por nome ou CPF exige conector autorizado, finalidade legitima, minimizacao, auditoria e CPF mascarado.",
     aviso: "Consulta demonstrativa. Integração DataJud/CNJ deve respeitar disponibilidade, sigilo, limites e peculiaridades por tribunal.",
     movimentos: [
       { data: "2026-05-08", movimento: "Conclusos para decisão" },

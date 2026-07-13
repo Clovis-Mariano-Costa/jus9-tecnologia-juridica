@@ -20,6 +20,13 @@ Consultar metadados processuais e movimentos públicos para vincular ao DAJ.
 
 A consulta processual mostra o processo por fora. O DAJ mostra o caso por dentro.
 
+## Chaves de pesquisa governadas
+
+- Numero CNJ: consulta principal suportada pela API Publica DataJud/CNJ, com retorno de metadados publicos.
+- Nome da parte: chave aceita pela interface Jus 9, mas nao deve ser enviada ao DataJud publico como se houvesse suporte documentado a dados de partes. Exige conector autorizado do tribunal/parceiro, finalidade legitima, minimizacao e auditoria.
+- CPF: chave aceita pela interface Jus 9 apenas como dado pessoal processual controlado. A resposta deve mascarar o CPF, nao registrar o documento inteiro em log/memoria permanente e exigir conector autorizado.
+- Quando nao houver conector autorizado para nome/CPF, a Charlie Echo deve declarar a limitacao e orientar conferencia no tribunal competente, sem inventar resultado.
+
 ## Etapas
 
 1. Identificar tribunal pelo número CNJ.

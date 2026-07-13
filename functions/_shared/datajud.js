@@ -93,6 +93,11 @@ export function publicDataJudStatus(env) {
     endpointBase: DATAJUD_BASE_URL,
     configured: missingDataJudConfig(env).length === 0,
     gatewayTokenConfigured: Boolean(String(env.JUS9_TRIBUNAIS_GATEWAY_TOKEN || "").trim()),
+    supportedSearchTypes: [
+      { type: "numeroProcesso", label: "Numero CNJ", support: "datajud_publico" },
+      { type: "nome", label: "Nome da parte", support: "requer_conector_autorizado_de_partes" },
+      { type: "cpf", label: "CPF", support: "requer_conector_autorizado_de_partes" },
+    ],
     supportedAliases: Object.entries(DATAJUD_ALIASES).map(([code, value]) => ({
       code,
       alias: value.alias,
@@ -101,6 +106,7 @@ export function publicDataJudStatus(env) {
     limits: [
       "Somente leitura de metadados, capas e movimentacoes publicas.",
       "Nao acessa inteiro teor sigiloso, partes protegidas, peticionamento ou protocolo.",
+      "Busca por nome ou CPF nao e exposta pela API Publica DataJud; exige conector autorizado do tribunal/parceiro e finalidade legitima.",
       "Uso real exige revisao humana e conferencia no tribunal competente.",
     ],
   };
@@ -109,6 +115,54 @@ export function publicDataJudStatus(env) {
 export function normalizeProcessNumber(value) {
   const digits = String(value || "").replace(/\D/g, "");
   return digits.length === 20 ? digits : "";
+}
+
+export function normalizeProcessSearchType(body) {
+  const explicit = String(body?.tipoPesquisa || body?.searchType || body?.tipo || "").trim().toLowerCase();
+  if (["numero", "processo", "numero_processo", "numeroProcesso", "cnj"].map((item) => item.toLowerCase()).includes(explicit)) {
+    return "numeroProcesso";
+  }
+  if (["nome", "nome_parte", "parte"].includes(explicit)) return "nome";
+  if (explicit === "cpf") return "cpf";
+  if (String(body?.cpf || "").trim()) return "cpf";
+  if (String(body?.nome || body?.nomeParte || body?.parte || "").trim()) return "nome";
+  return "numeroProcesso";
+}
+
+export function normalizePersonName(value) {
+  return String(value || "")
+    .replace(/[0-9*_#@$%<>[\]{}|\\]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 120);
+}
+
+export function normalizeCpf(value) {
+  return String(value || "").replace(/\D/g, "");
+}
+
+export function isValidCpf(value) {
+  const cpf = normalizeCpf(value);
+  if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+  const calc = (size) => {
+    let sum = 0;
+    for (let i = 0; i < size; i += 1) sum += Number(cpf[i]) * (size + 1 - i);
+    const digit = (sum * 10) % 11;
+    return digit === 10 ? 0 : digit;
+  };
+  return calc(9) === Number(cpf[9]) && calc(10) === Number(cpf[10]);
+}
+
+export function maskCpf(value) {
+  const cpf = normalizeCpf(value);
+  if (cpf.length !== 11) return "***.***.***-**";
+  return `***.***.***-${cpf.slice(-2)}`;
+}
+
+function maskProcessNumber(value) {
+  const digits = normalizeProcessNumber(value);
+  if (!digits) return "";
+  return `${digits.slice(0, 7)}-${digits.slice(7, 9)}.${digits.slice(9, 13)}.${digits.slice(13, 14)}.${digits.slice(14, 16)}.${digits.slice(16)}`;
 }
 
 export function inferDataJudTribunalFromProcessNumber(numeroProcesso) {
@@ -147,7 +201,38 @@ function clampSize(value) {
   return Math.max(1, Math.min(size, 20));
 }
 
+function buildUnsupportedPartySearch(body, searchType) {
+  const requestedTribunal = normalizeDataJudTribunal(body?.tribunal || body?.alias || body?.sigla);
+  if (!requestedTribunal) {
+    return { ok: false, status: 400, error: "tribunal_obrigatorio_para_busca_por_parte" };
+  }
+  const meta = DATAJUD_ALIASES[requestedTribunal];
+  const isCpf = searchType === "cpf";
+  const rawValue = isCpf ? normalizeCpf(body?.cpf || body?.valor || body?.query) : normalizePersonName(body?.nome || body?.nomeParte || body?.parte || body?.valor || body?.query);
+  if (isCpf && !isValidCpf(rawValue)) {
+    return { ok: false, status: 400, error: "cpf_invalido" };
+  }
+  if (!isCpf && rawValue.length < 3) {
+    return { ok: false, status: 400, error: "nome_parte_obrigatorio" };
+  }
+  return {
+    ok: true,
+    unsupported: true,
+    status: 422,
+    tribunal: requestedTribunal,
+    alias: meta.alias,
+    tribunalName: meta.name,
+    searchType,
+    queryLabel: isCpf ? "CPF" : "Nome da parte",
+    queryMasked: isCpf ? maskCpf(rawValue) : rawValue,
+  };
+}
+
 export function buildDataJudSearch(body) {
+  const searchType = normalizeProcessSearchType(body);
+  if (searchType === "nome" || searchType === "cpf") {
+    return buildUnsupportedPartySearch(body, searchType);
+  }
   const numeroProcesso = normalizeProcessNumber(body?.numeroProcesso || body?.numero || body?.processo);
   if (!numeroProcesso) {
     return { ok: false, status: 400, error: "numero_processo_cnj_obrigatorio" };
@@ -165,6 +250,9 @@ export function buildDataJudSearch(body) {
     alias: meta.alias,
     tribunalName: meta.name,
     numeroProcesso,
+    searchType: "numeroProcesso",
+    queryLabel: "Numero CNJ",
+    queryMasked: maskProcessNumber(numeroProcesso),
     url: `${DATAJUD_BASE_URL}/${meta.alias}/_search`,
     payload: {
       size: clampSize(body?.size),
@@ -178,13 +266,20 @@ export function buildDataJudSearch(body) {
 }
 
 export async function searchDataJud(env, body) {
-  const missing = missingDataJudConfig(env);
-  if (missing.length) {
-    return { ok: false, status: 501, payload: { ok: false, error: "datajud_configuracao_pendente", missing } };
-  }
   const search = buildDataJudSearch(body);
   if (!search.ok) {
     return { ok: false, status: search.status, payload: { ok: false, error: search.error } };
+  }
+  if (search.unsupported) {
+    return {
+      ok: false,
+      status: search.status,
+      payload: buildUnsupportedPartySearchResponse(search),
+    };
+  }
+  const missing = missingDataJudConfig(env);
+  if (missing.length) {
+    return { ok: false, status: 501, payload: { ok: false, error: "datajud_configuracao_pendente", missing } };
   }
   const response = await fetch(search.url, {
     method: "POST",
@@ -215,6 +310,36 @@ export async function searchDataJud(env, body) {
   };
 }
 
+function buildUnsupportedPartySearchResponse(search) {
+  return {
+    ok: false,
+    error: "datajud_busca_por_parte_indisponivel_na_api_publica",
+    source: "CNJ/DataJud",
+    sourceUrl: "https://www.cnj.jus.br/sistemas/datajud/api-publica/",
+    tribunal: search.tribunal,
+    alias: search.alias,
+    tribunalName: search.tribunalName,
+    search: {
+      type: search.searchType,
+      label: search.queryLabel,
+      valueMasked: search.queryMasked,
+      providerSupport: "requer_conector_autorizado_de_partes",
+    },
+    guidance: [
+      "A API Publica DataJud documentada expõe metadados, capas e movimentacoes, preservando dados de partes.",
+      "Pesquisa por nome ou CPF deve passar por conector autorizado do tribunal/parceiro, com finalidade legitima, minimizacao e auditoria.",
+      "Nao registre CPF inteiro em log, memoria permanente ou resposta publica.",
+    ],
+    governance: {
+      classification: "DADO_PESSOAL_PROCESSUAL_CONTROLADO",
+      access: "negado_na_api_publica_datajud",
+      noPetitioning: true,
+      noSensitiveDisclosure: true,
+      review: "usar somente fonte autorizada e revisao humana antes de qualquer uso real",
+    },
+  };
+}
+
 function normalizeDataJudResponse(search, data) {
   const hits = Array.isArray(data?.hits?.hits) ? data.hits.hits : [];
   const total = typeof data?.hits?.total?.value === "number"
@@ -230,6 +355,12 @@ function normalizeDataJudResponse(search, data) {
     alias: search.alias,
     tribunalName: search.tribunalName,
     numeroProcesso: search.numeroProcesso,
+    search: {
+      type: search.searchType,
+      label: search.queryLabel,
+      valueMasked: search.queryMasked,
+      providerSupport: "datajud_publico",
+    },
     total,
     results: hits.map(normalizeDataJudHit),
     governance: {

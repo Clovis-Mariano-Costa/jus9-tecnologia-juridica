@@ -545,6 +545,9 @@ data = await response.json();
 assert(response.status === 200 && data.gateway === "tribunais-datajud", "status DataJud deveria responder");
 assert(data.configured === false && data.gatewayTokenConfigured === false, "status DataJud deveria ocultar segredos e indicar pendencias");
 assert(data.supportedAliases.some((item) => item.code === "tjsc" && item.alias === "api_publica_tjsc"), "aliases DataJud deveriam incluir TJSC");
+assert(data.supportedSearchTypes.some((item) => item.type === "numeroProcesso" && item.support === "datajud_publico"), "DataJud deveria declarar busca por numero CNJ");
+assert(data.supportedSearchTypes.some((item) => item.type === "nome" && item.support === "requer_conector_autorizado_de_partes"), "DataJud deveria governar busca por nome");
+assert(data.supportedSearchTypes.some((item) => item.type === "cpf" && item.support === "requer_conector_autorizado_de_partes"), "DataJud deveria governar busca por CPF");
 console.log("AUTH_OK datajud-status=200");
 
 response = await request("/api/tribunais/datajud/search", {
@@ -568,6 +571,18 @@ response = await worker.fetch(
 data = await response.json();
 assert(response.status === 501 && data.error === "datajud_configuracao_pendente", "DataJud sem credencial deveria declarar configuracao pendente");
 console.log("AUTH_OK datajud-credencial-pendente=501");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/tribunais/datajud/search", {
+    method: "POST",
+    headers: { "content-type": "application/json", "x-jus9-internal-token": "token-interno" },
+    body: JSON.stringify({ tribunal: "tjsc", tipoPesquisa: "cpf", cpf: "123" })
+  }),
+  dataJudEnvWithoutKey
+);
+data = await response.json();
+assert(response.status === 400 && data.error === "cpf_invalido", "CPF invalido deveria ser barrado antes de qualquer consulta");
+console.log("AUTH_OK datajud-cpf-invalido=400");
 
 const originalFetch = globalThis.fetch;
 globalThis.fetch = async (url, options = {}) => {
@@ -618,6 +633,44 @@ try {
   assert(data.governance.noPetitioning === true && data.governance.noSensitiveDisclosure === true, "DataJud deveria declarar limites governados");
   assert(!JSON.stringify(data).includes("NAO DEVE SAIR"), "DataJud nao deve repassar partes brutas");
   console.log("AUTH_OK datajud-search-normalizado=200");
+} finally {
+  globalThis.fetch = originalFetch;
+}
+
+let partySearchFetchCalled = false;
+globalThis.fetch = async () => {
+  partySearchFetchCalled = true;
+  return Response.json({ ok: false }, { status: 500 });
+};
+try {
+  response = await worker.fetch(
+    new Request("https://jus9.invalid/api/tribunais/datajud/search", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-jus9-internal-token": "token-interno" },
+      body: JSON.stringify({ tribunal: "tjsc", tipoPesquisa: "nome", nome: "Maria de Souza" })
+    }),
+    { ...dataJudEnvWithoutKey, DATAJUD_API_KEY: "chave-publica-ficticia" }
+  );
+  data = await response.json();
+  assert(response.status === 422 && data.error === "datajud_busca_por_parte_indisponivel_na_api_publica", "busca por nome deveria exigir conector autorizado");
+  assert(data.search.type === "nome" && data.search.valueMasked === "Maria de Souza", "busca por nome deveria retornar chave sanitizada");
+  assert(partySearchFetchCalled === false, "busca por nome nao deveria chamar DataJud publico");
+  console.log("AUTH_OK datajud-nome-requer-conector=422");
+
+  response = await worker.fetch(
+    new Request("https://jus9.invalid/api/tribunais/datajud/search", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-jus9-internal-token": "token-interno" },
+      body: JSON.stringify({ tribunal: "tjsc", tipoPesquisa: "cpf", cpf: "111.444.777-35" })
+    }),
+    { ...dataJudEnvWithoutKey, DATAJUD_API_KEY: "chave-publica-ficticia" }
+  );
+  data = await response.json();
+  assert(response.status === 422 && data.search.type === "cpf", "busca por CPF deveria exigir conector autorizado");
+  assert(data.search.valueMasked === "***.***.***-35", "CPF deveria retornar mascarado");
+  assert(!JSON.stringify(data).includes("11144477735"), "CPF integral nao deve sair na resposta");
+  assert(partySearchFetchCalled === false, "busca por CPF nao deveria chamar DataJud publico");
+  console.log("AUTH_OK datajud-cpf-requer-conector=422");
 } finally {
   globalThis.fetch = originalFetch;
 }

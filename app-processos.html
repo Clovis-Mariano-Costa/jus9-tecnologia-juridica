@@ -46,7 +46,7 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
       <div>
         <div class="eyebrow">Processos</div>
         <h1 style="font-size:42px;color:#0b1728;margin-top:8px">Pesquisa processual governada.</h1>
-        <p style="color:#51627a;margin:8px 0 0">Modelo DAJ: Charlie Echo consulta o gateway seguro, organiza metadados oficiais do DataJud/CNJ e orienta o proximo passo sem expor segredo no navegador.</p>
+        <p style="color:#51627a;margin:8px 0 0">Modelo DAJ: Charlie Echo consulta o gateway seguro por numero CNJ, nome ou CPF, organiza metadados oficiais quando houver fonte autorizada e orienta o proximo passo sem expor segredo no navegador.</p>
       </div>
       <span class="badge" id="datajud-status-badge">Verificando DataJud</span>
     </section>
@@ -63,9 +63,18 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
       <article class="process-card">
         <h2>Consulta via Charlie Echo</h2>
         <form class="form-grid" data-process-form>
-          <div class="form-field" style="grid-column:1/-1">
-            <label for="process-number">Numero do processo CNJ</label>
-            <input id="process-number" name="numero" inputmode="numeric" autocomplete="off" placeholder="0000000-00.0000.0.00.0000" required>
+          <div class="form-field">
+            <label for="process-search-type">Tipo de pesquisa</label>
+            <select id="process-search-type" name="tipoPesquisa">
+              <option value="numeroProcesso">Numero do processo CNJ</option>
+              <option value="nome">Nome da parte</option>
+              <option value="cpf">CPF</option>
+            </select>
+          </div>
+          <div class="form-field" style="grid-column:span 2">
+            <label for="process-number" data-process-search-label>Numero do processo CNJ</label>
+            <input id="process-number" name="valorBusca" inputmode="numeric" autocomplete="off" placeholder="0000000-00.0000.0.00.0000" required>
+            <small data-process-search-help>Use a numeracao unica do CNJ. A pesquisa por numero e a forma suportada pela API Publica DataJud.</small>
           </div>
           <div class="form-field">
             <label for="process-state-court">Estado / Tribunal estadual</label>
@@ -136,7 +145,7 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
 
         <div id="process-result" aria-live="polite" style="margin-top:18px;background:#f8fafc;border:1px dashed #c58b2f;border-radius:16px;padding:16px">
           <h3>Resultado governado</h3>
-          <p>Informe o numero CNJ e consulte. A Charlie deve responder com fonte, limites, metadados publicos e proximo passo no DAJ.</p>
+          <p>Informe numero CNJ, nome ou CPF e consulte. A Charlie deve responder com fonte, limites, metadados publicos quando disponiveis e proximo passo no DAJ. CPF deve aparecer sempre mascarado na resposta.</p>
         </div>
 
         <h3 style="margin-top:20px">Tribunais estaduais</h3>
@@ -182,7 +191,7 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
 
     <section class="process-card">
       <h2>Regra de seguranca do modelo</h2>
-      <p>O DataJud e usado aqui como fonte oficial de metadados publicos. Nao substitui autos, documentos, sigilo, conferencia humana, peticionamento, ciencia ou protocolo.</p>
+      <p>O DataJud e usado aqui como fonte oficial de metadados publicos por numero CNJ. Pesquisa por nome ou CPF exige conector autorizado do tribunal ou parceiro, finalidade legitima, minimizacao, auditoria e resposta com CPF mascarado. A consulta nao substitui autos, documentos, sigilo, conferencia humana, peticionamento, ciencia ou protocolo.</p>
     </section>
 
     <section class="daj-card">
@@ -218,6 +227,9 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
   var sourceSelect = document.getElementById('process-source');
   var dajSelect = document.getElementById('process-daj');
   var numberInput = document.getElementById('process-number');
+  var searchTypeSelect = document.getElementById('process-search-type');
+  var searchLabel = document.querySelector('[data-process-search-label]');
+  var searchHelp = document.querySelector('[data-process-search-help]');
   var submitButton = form ? form.querySelector('button[type="submit"]') : null;
 
   function escapeHtml(value){
@@ -249,6 +261,75 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
     return option ? option.textContent.trim() : selectedTribunal().toUpperCase();
   }
 
+  function currentSearchType(){
+    return searchTypeSelect && searchTypeSelect.value ? searchTypeSelect.value : 'numeroProcesso';
+  }
+
+  function onlyDigits(value){
+    return String(value || '').replace(/\D/g, '');
+  }
+
+  function maskCpf(value){
+    var digits = onlyDigits(value);
+    return digits.length === 11 ? '***.***.***-' + digits.slice(-2) : '***.***.***-**';
+  }
+
+  function searchTypeLabel(type){
+    if(type === 'nome') return 'nome da parte';
+    if(type === 'cpf') return 'CPF';
+    return 'numero CNJ';
+  }
+
+  function updateSearchInput(){
+    if(!numberInput) return;
+    var type = currentSearchType();
+    if(type === 'nome'){
+      if(searchLabel) searchLabel.textContent = 'Nome da parte';
+      if(searchHelp) searchHelp.textContent = 'Use somente quando houver finalidade legitima. A API Publica DataJud pode nao expor pesquisa por partes.';
+      numberInput.placeholder = 'Ex.: Maria de Souza';
+      numberInput.inputMode = 'text';
+      numberInput.autocomplete = 'off';
+      return;
+    }
+    if(type === 'cpf'){
+      if(searchLabel) searchLabel.textContent = 'CPF';
+      if(searchHelp) searchHelp.textContent = 'CPF e dado pessoal: sera mascarado na resposta e nao deve ir para memoria permanente.';
+      numberInput.placeholder = '000.000.000-00';
+      numberInput.inputMode = 'numeric';
+      numberInput.autocomplete = 'off';
+      return;
+    }
+    if(searchLabel) searchLabel.textContent = 'Numero do processo CNJ';
+    if(searchHelp) searchHelp.textContent = 'Use a numeracao unica do CNJ. A pesquisa por numero e a forma suportada pela API Publica DataJud.';
+    numberInput.placeholder = '0000000-00.0000.0.00.0000';
+    numberInput.inputMode = 'numeric';
+    numberInput.autocomplete = 'off';
+  }
+
+  function buildSearchPayload(rawValue){
+    var type = currentSearchType();
+    var value = String(rawValue || '').trim();
+    if(type === 'nome'){
+      var nome = value.replace(/[0-9*_#@$%<>[\]{}|\\]/g, ' ').replace(/\s+/g, ' ').trim();
+      if(nome.length < 3){
+        return { ok:false, title:'Nome obrigatorio', message:'Informe pelo menos 3 caracteres do nome da parte para a busca governada.' };
+      }
+      return { ok:true, type:type, label:'Nome da parte', display:nome, route:{ searchType:type, nome:nome, queryMasked:nome } };
+    }
+    if(type === 'cpf'){
+      var cpf = onlyDigits(value);
+      if(cpf.length !== 11){
+        return { ok:false, title:'CPF invalido', message:'Informe CPF com 11 digitos. A resposta deve mascarar o documento.' };
+      }
+      return { ok:true, type:type, label:'CPF', display:maskCpf(cpf), route:{ searchType:type, cpf:cpf, queryMasked:maskCpf(cpf) } };
+    }
+    var numero = onlyDigits(value);
+    if(numero.length !== 20){
+      return { ok:false, title:'Numero CNJ obrigatorio', message:'Informe o numero do processo com 20 digitos ou no formato CNJ.' };
+    }
+    return { ok:true, type:type, label:'Numero CNJ', display:value, route:{ searchType:type, numeroProcesso:value, queryMasked:value } };
+  }
+
   async function refreshStatus(){
     if(!badge) return;
     try {
@@ -268,20 +349,29 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
     }
   }
 
-  async function askCharlieForProcess(numero, tribunal, tribunalLabel){
+  async function askCharlieForProcess(search, tribunal, tribunalLabel){
     var prompt = [
-      'Consulte no CNJ/DataJud o processo ' + numero + ' no tribunal ' + tribunal + ' (' + tribunalLabel + ').',
+      'Consulte no gateway seguro de pesquisa processual por ' + searchTypeLabel(search.type) + ': ' + search.display + ' no tribunal ' + tribunal + ' (' + tribunalLabel + ').',
       'Contexto: pagina modelo Processos do DAJ Advogados.',
       'Fonte selecionada: ' + (sourceSelect ? sourceSelect.value : 'datajud') + '. DAJ: ' + (dajSelect ? dajSelect.value : 'sem vinculo') + '.',
-      'Responda com metadados publicos oficiais, fonte, limites, status da consulta, riscos de sigilo e proximo passo seguro no DAJ.',
+      'Responda com metadados publicos oficiais quando a fonte permitir, fonte, limites, status da consulta, riscos de sigilo e proximo passo seguro no DAJ.',
+      'Se a busca for por nome ou CPF, trate como dado pessoal processual controlado: nao repita CPF integral, nao salve em memoria permanente e use somente conector autorizado.',
+      'Se a API Publica DataJud nao suportar busca por partes, diga isso claramente e indique o caminho governado por tribunal/conector autorizado, sem inventar resultado.',
       'Se a credencial ou o DataJud estiver indisponivel, diga isso sem inventar dados processuais.'
     ].join('\n');
+    var route = {
+      operation:'consulta_datajud_cnj',
+      tribunal:tribunal,
+      modulo:'DAJ',
+      source:(sourceSelect ? sourceSelect.value : 'datajud'),
+      ...search.route
+    };
     var response = await fetch('https://charlieecho.jus9tecnologia.com.br/api/ia', {
       method: 'POST',
       headers: { 'Content-Type':'application/json' },
       body: JSON.stringify({
         mode: 'jurista',
-        route: { operation:'consulta_datajud_cnj', tribunal:tribunal, numeroProcesso:numero, modulo:'DAJ' },
+        route: route,
         message: prompt,
         room: {
           title: 'Processos DAJ',
@@ -301,21 +391,21 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
   if(form){
     form.addEventListener('submit', async function(event){
       event.preventDefault();
-      var numero = String(numberInput && numberInput.value || '').trim();
-      if(!numero){
-        render('Numero CNJ obrigatorio', 'Informe o numero do processo antes de consultar.', 'error');
+      var search = buildSearchPayload(numberInput && numberInput.value);
+      if(!search.ok){
+        render(search.title, search.message, 'error');
         if(numberInput) numberInput.focus();
         return;
       }
       var tribunal = selectedTribunal();
       var tribunalLabel = selectedTribunalLabel();
       if(submitButton) submitButton.disabled = true;
-      render('Consultando Charlie Echo', 'A consulta esta indo para a API segura. O navegador nao recebe token interno do gateway.', 'info');
+      render('Consultando Charlie Echo', 'A consulta por ' + search.label + ' esta indo para a API segura. O navegador nao recebe token interno do gateway. Exibicao: ' + search.display + '.', 'info');
       try {
-        var answer = await askCharlieForProcess(numero, tribunal, tribunalLabel);
+        var answer = await askCharlieForProcess(search, tribunal, tribunalLabel);
         render('Resposta da Charlie Echo', answer, 'ok');
       } catch (error) {
-        render('Consulta nao concluida', 'Nao consegui concluir a consulta agora. Detalhe: ' + (error && error.message ? error.message : 'falha sem detalhe tecnico.') + ' A orientacao segura e tentar novamente em instantes ou abrir a IA Profissional com o mesmo numero CNJ.', 'error');
+        render('Consulta nao concluida', 'Nao consegui concluir a consulta agora. Detalhe: ' + (error && error.message ? error.message : 'falha sem detalhe tecnico.') + ' A orientacao segura e tentar novamente em instantes ou abrir a IA Profissional com a mesma chave de busca.', 'error');
       } finally {
         if(submitButton) submitButton.disabled = false;
       }
@@ -327,10 +417,18 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
       event.preventDefault();
       if(superiorSelect) superiorSelect.value = '';
       if(stateSelect) stateSelect.value = link.getAttribute('data-tribunal') || 'tjsc';
-      render('Tribunal selecionado', 'Tribunal ativo: ' + link.textContent.trim() + '. Informe o numero CNJ e consulte via Charlie Echo.', 'info');
+      render('Tribunal selecionado', 'Tribunal ativo: ' + link.textContent.trim() + '. Informe numero CNJ, nome ou CPF e consulte via Charlie Echo.', 'info');
     });
   });
 
+  if(searchTypeSelect){
+    searchTypeSelect.addEventListener('change', function(){
+      updateSearchInput();
+      if(numberInput) numberInput.value = '';
+    });
+  }
+
+  updateSearchInput();
   refreshStatus();
 })();
 </script>

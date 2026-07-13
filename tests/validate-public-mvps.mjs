@@ -32,6 +32,7 @@ for (const profile of catalog.profiles) {
 
 const sharedScript = await fs.readFile(new URL("../script.js", import.meta.url), "utf8");
 const teamPage = await fs.readFile(new URL("../app-equipe.html", import.meta.url), "utf8");
+const processPage = await fs.readFile(new URL("../app-processos.html", import.meta.url), "utf8");
 const installPage = await fs.readFile(new URL("../instalar-app.html", import.meta.url), "utf8");
 const pwaInstallScript = await fs.readFile(new URL("../assets/js/pwa-install.js", import.meta.url), "utf8");
 const canonicalServiceWorker = await fs.readFile(new URL("../service-worker.js", import.meta.url), "utf8");
@@ -65,10 +66,15 @@ assert(sharedScript.includes("Detalhe:"), "erro de API sem diagnostico visivel")
 assert(sharedScript.includes("asksActiveLegalCitationResearch"), "pesquisa ativa de citacao/doutrina ausente");
 assert(sharedScript.includes("activeLegalCitationInstruction"), "instrucao de pesquisa ativa ausente");
 assert(sharedScript.includes("pesquisa_citacao_doutrinaria_ativa"), "rota de pesquisa ativa ausente");
+assert(sharedScript.includes("Em pesquisa processual governada, reconheca tres chaves"), "governanca de pesquisa processual nome/CPF ausente");
 assert(sharedScript.includes("jus9MvpTeamMembersV1"), "persistencia local de equipe ausente");
 assert(sharedScript.includes("jus9MvpTeamAuditV1"), "auditoria local de equipe ausente");
 assert(teamPage.includes("data-team-page"), "pagina compartilhada de equipe sem raiz");
 assert(teamPage.includes("data-team-form"), "pagina compartilhada de equipe sem formulario");
+assert(processPage.includes('id="process-search-type"'), "pagina de processos sem seletor de tipo de pesquisa");
+assert(processPage.includes('<option value="nome">Nome da parte</option>'), "pagina de processos sem busca por nome");
+assert(processPage.includes('<option value="cpf">CPF</option>'), "pagina de processos sem busca por CPF");
+assert(processPage.includes("CPF deve aparecer sempre mascarado"), "pagina de processos sem aviso de CPF mascarado");
 assert(installPage.includes("install-app-green-card"), "card da Jus 9 Verde ausente na pagina de instalacao");
 assert(installPage.includes("https://jus9verde.jus9tecnologia.com.br/instalar-app.html"), "link de instalacao da Jus 9 Verde ausente");
 assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de instalacao sem atualizacao imediata do estilo verde");
