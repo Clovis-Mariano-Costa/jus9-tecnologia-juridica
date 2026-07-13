@@ -21,19 +21,24 @@ hash: nao-aplicavel-planejamento
 
 ## Pacote 0 - Consolidacao (dia 1)
 
+- Estado: concluido e publicado em 2026-07-13.
 - Inventario canonico, release, health, bindings e auditoria integrada.
 - Criterio: inventario e bateria local retornam OK.
 
 ## Pacote 1 - Homologacao DAJ (dias 1 a 3)
 
+- Estado tecnico: concluido e publicado em 2026-07-13; aceite humano autenticado permanece como marco separado.
 - Memoria por login, upload temporario, minuta, PDF/Drive, DataJud e vinculo DAJ-processo.
 - Criterio tecnico: ensaio ficticio ponta a ponta automatizado.
 - Criterio humano: login real autorizado confirma salvamento, leitura e exclusao governada.
 
 ## Pacote 2 - Memoria e Drive oficiais (dias 3 a 5)
 
+- Estado: em homologacao final em 2026-07-13.
 - KV dedicado por usuario, configuracao por instrumento, exportacao, limpeza e retencao.
 - Drive como memoria documental, com downloadUrl real e trilha de revogacao/exclusao.
+- Fechamento tecnico: proxy governado, permissao drive:write, revisao de memoria sem exclusao automatica, timeout e idempotencia contra duplicacao.
+- Dependencia de ativacao: publicar o Code.gs idempotente e concluir ensaio com login real autorizado.
 
 ## Pacote 3 - Pesquisa judicial (dias 5 a 8)
 

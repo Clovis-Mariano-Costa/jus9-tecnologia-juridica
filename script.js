@@ -2325,13 +2325,19 @@ window.jus9DemoLogin = function(form){
     ].join('\n');
   }
 
+  function charlieRequestId(){
+    if(window.crypto && typeof window.crypto.randomUUID === 'function') return window.crypto.randomUUID();
+    return 'charlie-' + Date.now() + '-' + Math.random().toString(36).slice(2, 12);
+  }
+
   async function postCharlieApiBody(body, timeoutMs){
     var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
     var timer = controller ? setTimeout(function(){ controller.abort(); }, timeoutMs || 45000) : null;
     try {
-      var response = await fetch('https://charlieecho.jus9tecnologia.com.br/api/ia', {
+      var response = await fetch('/api/charlie/respond', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         signal: controller ? controller.signal : undefined,
         body: JSON.stringify(body)
       });
@@ -2375,7 +2381,9 @@ window.jus9DemoLogin = function(form){
     } : null;
     var identityContext = await loadGovernedIdentityContext(code);
     routeDecision = routeDecision || charlieRouteDecision(question, mode, code, room);
+    var requestId = charlieRequestId();
     var requestBody = {
+      requestId: requestId,
       mode: apiModeFor(mode),
       route: routeDecision,
       message: buildApiMessage(mode, code, focus, question, identityContext, routeDecision),
@@ -2389,6 +2397,7 @@ window.jus9DemoLogin = function(form){
     if(isRetryableCharlieApiFailure(response, data)){
       var compactQuestion = compactApiQuestionForRetry(question, code, focus);
       var retry = await postCharlieApiBody({
+        requestId: requestId,
         mode: apiModeFor(mode),
         route: Object.assign({}, routeDecision, { retryCompacto:true }),
         message: buildApiMessage(mode, code, focus, compactQuestion, identityContext, routeDecision),
@@ -2498,7 +2507,7 @@ window.jus9DemoLogin = function(form){
   function userMemoryKey(){ return 'jus9CharlieUserMemory_' + activeUserMemoryOwnerKey + '_v1'; }
   function instrumentSettingsKey(code){ return 'jus9CharlieInstrument_' + String(code || 'MVP').replace(/[^A-Z0-9_-]/gi, '_') + '_v1'; }
   function defaultChatSettings(){ return { memory:true, detail:'medio', tone:'direto', caution:'normal', format:'auto', maxMessages:96, autoScroll:true }; }
-  function defaultUserMemory(){ return { enabled:true, syncDrive:true, name:'', role:'', preferences:'', avoid:'', standingInstructions:'', updatedAt:'' }; }
+  function defaultUserMemory(){ return { enabled:true, syncDrive:true, name:'', role:'', preferences:'', avoid:'', standingInstructions:'', retentionDays:365, reviewAt:'', updatedAt:'' }; }
   function loadChatSettings(code){
     try{
       var parsed = JSON.parse(localStorage.getItem(chatSettingsKey(code)) || 'null');
@@ -2559,6 +2568,7 @@ window.jus9DemoLogin = function(form){
     if(memory.enabled === false) return '\n\n[MEMORIA DO USUARIO]\nMemoria do usuario desativada pelo proprio usuario.';
     var syncState = memory.syncDrive === false ? 'sem sincronizacao automatica no Drive.' : 'com tentativa de sincronizacao governada no Cartorio Digital quando configurada.';
     var lines = ['\n\n[MEMORIA DO USUARIO CONFIGURAVEL]', 'Status: controlada pelo usuario, com memoria oficial por login quando autenticada e fallback local neste navegador, ' + syncState];
+    lines.push(memory.retentionDays === 0 ? 'Retencao: sem prazo automatico; limpeza continua sob controle do usuario.' : 'Retencao: revisar a memoria apos ' + (memory.retentionDays || 365) + ' dias; nunca apagar automaticamente.');
     if(memory.name) lines.push('Como chamar o usuario: ' + compactMemoryLine(memory.name, 120) + '.');
     if(memory.role) lines.push('Papel/contexto do usuario: ' + compactMemoryLine(memory.role, 220) + '.');
     if(memory.preferences) lines.push('Preferencias de resposta: ' + compactMemoryLine(memory.preferences, 700) + '.');
@@ -2596,10 +2606,12 @@ window.jus9DemoLogin = function(form){
     ].join('\n');
   }
   async function syncUserMemoryToDrive(code, focus){
-    var response = await fetch('https://charlieecho.jus9tecnologia.com.br/api/ia', {
+    var response = await fetch('/api/charlie/respond', {
       method:'POST',
       headers:{ 'Content-Type':'application/json' },
+      credentials:'include',
       body:JSON.stringify({
+        requestId:charlieRequestId(),
         mode:apiModeFor('jurista'),
         message:buildUserMemorySyncMessage(code, focus),
         room:null
@@ -3929,7 +3941,7 @@ window.jus9DemoLogin = function(form){
     settingsPanel.innerHTML = [
       '<div class="charlie-memory-head"><div><strong>Configuracoes</strong><p>Memoria, instrumento, resposta e capacidades.</p></div><button class="mini" type="button" data-settings-close>Fechar</button></div>',
       '<div class="charlie-settings-section"><h3>Memoria da sala</h3><div class="charlie-settings-grid"><label><span>Usar memoria da sala</span><select data-setting-memory><option value="true">Sim</option><option value="false">Nao</option></select></label><label><span>Memoria maxima</span><select data-setting-max><option value="48">48 mensagens</option><option value="96">96 mensagens</option><option value="160">160 mensagens</option></select></label></div></div>',
-      '<div class="charlie-settings-section"><h3>Memoria do usuario</h3><p class="fine-note">Memoria pessoal por login quando autenticada, com fallback local configuravel por voce. Nao coloque senha, token, documento real, processo real ou segredo.</p><p class="fine-note" data-user-memory-status>Memoria oficial: verificacao automatica quando houver login.</p><div class="charlie-settings-grid"><label><span>Usar memoria do usuario</span><select data-user-memory-enabled><option value="true">Sim</option><option value="false">Nao</option></select></label><label><span>Cartorio Digital</span><select data-user-memory-sync><option value="true">Sincronizar quando salvar</option><option value="false">Somente local</option></select></label><label><span>Como devo chamar voce</span><input data-user-memory-name maxlength="120" placeholder="Nome, apelido ou forma de tratamento"></label><label><span>Papel/contexto</span><input data-user-memory-role maxlength="180" placeholder="Ex.: fundador, advogado, professor"></label></div><div class="charlie-settings-grid wide"><label><span>Preferencias de resposta</span><textarea data-user-memory-preferences rows="3" placeholder="Ex.: respostas diretas, cronogramas curtos, fontes oficiais"></textarea></label><label><span>Evitar</span><textarea data-user-memory-avoid rows="3" placeholder="Ex.: repetir protocolo, textos longos, jargao"></textarea></label><label><span>Instrucoes persistentes</span><textarea data-user-memory-standing rows="4" placeholder="O que Charlie deve lembrar entre salas e MVPs neste navegador"></textarea></label></div></div>',
+      '<div class="charlie-settings-section"><h3>Memoria do usuario</h3><p class="fine-note">Memoria pessoal por login quando autenticada, com fallback local configuravel por voce. Nao coloque senha, token, documento real, processo real ou segredo.</p><p class="fine-note" data-user-memory-status>Memoria oficial: verificacao automatica quando houver login.</p><div class="charlie-settings-grid"><label><span>Usar memoria do usuario</span><select data-user-memory-enabled><option value="true">Sim</option><option value="false">Nao</option></select></label><label><span>Cartorio Digital</span><select data-user-memory-sync><option value="true">Sincronizar quando salvar</option><option value="false">Somente local</option></select></label><label><span>Revisar memoria apos</span><select data-user-memory-retention><option value="90">90 dias</option><option value="180">180 dias</option><option value="365">1 ano</option><option value="730">2 anos</option><option value="1825">5 anos</option><option value="0">Sem prazo automatico</option></select></label><label><span>Como devo chamar voce</span><input data-user-memory-name maxlength="120" placeholder="Nome, apelido ou forma de tratamento"></label><label><span>Papel/contexto</span><input data-user-memory-role maxlength="180" placeholder="Ex.: fundador, advogado, professor"></label></div><div class="charlie-settings-grid wide"><label><span>Preferencias de resposta</span><textarea data-user-memory-preferences rows="3" placeholder="Ex.: respostas diretas, cronogramas curtos, fontes oficiais"></textarea></label><label><span>Evitar</span><textarea data-user-memory-avoid rows="3" placeholder="Ex.: repetir protocolo, textos longos, jargao"></textarea></label><label><span>Instrucoes persistentes</span><textarea data-user-memory-standing rows="4" placeholder="O que Charlie deve lembrar entre salas e MVPs neste navegador"></textarea></label></div><p class="fine-note">O prazo agenda revisao; a memoria nao e apagada automaticamente.</p></div>',
       '<div class="charlie-settings-section"><h3>Instrumento do MVP</h3><p class="fine-note">Cada MVP toca como instrumento independente da orquestra da Charlie.</p><div class="charlie-instrument-summary" data-instrument-summary></div><div class="charlie-settings-grid"><label><span>Instrumento ativo</span><select data-instrument-enabled><option value="true">Sim</option><option value="false">Nao</option></select></label><label><span>Autonomia</span><select data-instrument-autonomy><option value="assistida">Assistida</option><option value="proativa">Proativa governada</option><option value="estrita">Estrita</option></select></label><label><span>Drive/memoria</span><select data-instrument-drive><option value="auto_governado">Automatico governado</option><option value="manual">Somente quando eu pedir</option><option value="restrito">Restrito/sigiloso por padrao</option></select></label><label><span>Formato</span><select data-instrument-response><option value="relatorio_e_acao">Relatorio + acao</option><option value="checklist">Checklist</option><option value="parecer">Parecer</option><option value="roteiro">Roteiro</option><option value="aula">Aula</option></select></label><label><span>Fontes</span><select data-instrument-sources><option value="oficiais_academicas">Oficiais + academicas</option><option value="oficiais">Oficiais</option><option value="academicas">Academicas</option><option value="internas">Internas governadas</option></select></label></div><div class="charlie-settings-grid wide"><label><span>Notas para este instrumento</span><textarea data-instrument-notes rows="4" placeholder="Ajuste especifico deste MVP: tom, limite, foco, fontes, Drive, entrega"></textarea></label></div></div>',
       '<div class="charlie-settings-section"><h3>Capacidades</h3><div class="charlie-capability-grid" data-capability-summary></div></div>',
       '<div class="charlie-settings-section"><h3>Resposta</h3><div class="charlie-settings-grid"><label><span>Detalhe</span><select data-setting-detail><option value="curto">Curto</option><option value="medio">Medio</option><option value="completo">Completo</option></select></label><label><span>Tom</span><select data-setting-tone><option value="direto">Direto</option><option value="didatico">Didatico</option><option value="tecnico">Tecnico</option><option value="social">Social</option></select></label><label><span>Cautela</span><select data-setting-caution><option value="normal">Normal</option><option value="cauteloso">Cauteloso</option><option value="estrito">Estrito</option></select></label><label><span>Formato</span><select data-setting-format><option value="auto">Automatico</option><option value="checklist">Checklist</option><option value="parecer">Parecer</option><option value="resumo">Resumo</option><option value="plano">Plano</option></select></label></div></div>',
@@ -4015,6 +4027,7 @@ window.jus9DemoLogin = function(form){
       settingsPanel.querySelector('[data-setting-autoscroll]').value = String(settings.autoScroll !== false);
       settingsPanel.querySelector('[data-user-memory-enabled]').value = String(userMemory.enabled !== false);
       settingsPanel.querySelector('[data-user-memory-sync]').value = String(userMemory.syncDrive !== false);
+      settingsPanel.querySelector('[data-user-memory-retention]').value = String(typeof userMemory.retentionDays === 'number' ? userMemory.retentionDays : 365);
       settingsPanel.querySelector('[data-user-memory-name]').value = userMemory.name || '';
       settingsPanel.querySelector('[data-user-memory-role]').value = userMemory.role || '';
       settingsPanel.querySelector('[data-user-memory-preferences]').value = userMemory.preferences || '';
@@ -4117,6 +4130,7 @@ window.jus9DemoLogin = function(form){
       var savedUserMemory = {
         enabled: settingsPanel.querySelector('[data-user-memory-enabled]').value === 'true',
         syncDrive: settingsPanel.querySelector('[data-user-memory-sync]').value === 'true',
+        retentionDays: Number(settingsPanel.querySelector('[data-user-memory-retention]').value || 365),
         name: settingsPanel.querySelector('[data-user-memory-name]').value.trim().slice(0, 120),
         role: settingsPanel.querySelector('[data-user-memory-role]').value.trim().slice(0, 180),
         preferences: settingsPanel.querySelector('[data-user-memory-preferences]').value.trim().slice(0, 1200),

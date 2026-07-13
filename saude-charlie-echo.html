@@ -48,7 +48,7 @@
 (function(){
   var el = document.getElementById('health-api');
   if(!el) return;
-  fetch('https://charlieecho.jus9tecnologia.com.br/api/ia')
+  fetch('/api/charlie/respond', { credentials:'include', cache:'no-store' })
     .then(function(res){ return res.ok ? res.json() : Promise.reject(new Error('HTTP ' + res.status)); })
     .then(function(data){ el.textContent = data && data.ok ? 'Online' : 'Respondendo com ressalva'; el.className = data && data.ok ? 'charlie-status-ok' : 'charlie-status-warn'; })
     .catch(function(){ el.textContent = 'Não confirmado agora'; el.className = 'charlie-status-warn'; });

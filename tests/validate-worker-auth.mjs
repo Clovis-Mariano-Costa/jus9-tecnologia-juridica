@@ -65,6 +65,7 @@ let response = await request("/api/health");
 let data = await response.json();
 assert(response.status === 200 && data.service === "jus9-tecnologia-juridica", "health explicito deveria responder");
 assert(data.status === "degraded" && data.checks?.assets?.configured === true, "health local deveria informar readiness parcial");
+assert(data.checks?.charlieApiProxy?.configured === true && data.checks.charlieApiProxy.privilegedDriveConfigured === false, "health deveria expor proxy Charlie sem segredo local");
 console.log("AUTH_OK health=200");
 
 response = await request("/api/auth/permissions");
@@ -74,6 +75,7 @@ console.log("AUTH_OK anonymous=401");
 response = await request("/api/auth/permissions", { headers: { cookie: await cookieFor("advogado") } });
 data = await response.json();
 assert(response.status === 200 && data.permissions.includes("dajs:write"), "advogado sem dajs:write");
+assert(data.permissions.includes("drive:write"), "advogado sem drive:write governado");
 console.log("AUTH_OK advogado=dajs:write");
 
 response = await request("/api/auth/permissions", { headers: { cookie: await cookieFor("empresa") } });
@@ -88,8 +90,44 @@ response = await request("/api/auth/permissions", {
 data = await response.json();
 assert(response.status === 200 && data.permissions.includes("auth:read"), "cidadao deveria ter auth:read");
 assert(!data.permissions.includes("calendar:write"), "cidadao nao deve possuir calendar:write");
+assert(!data.permissions.includes("drive:write"), "cidadao publico nao deve possuir drive:write");
 assert(data.accessMode === "public_google" && data.authNucleus === "mvp", "sessao publica deveria preservar modo e nucleo");
 console.log("AUTH_OK public-google-cidadao=governado");
+
+const originalCharlieProxyFetch = globalThis.fetch;
+let proxyAuthorization = "";
+globalThis.fetch = async (url, options = {}) => {
+  assert(String(url) === "https://charlieecho.jus9tecnologia.com.br/api/ia", "proxy Charlie chamou destino inesperado");
+  proxyAuthorization = new Headers(options.headers).get("authorization") || "";
+  return Response.json({ ok: true, answer: "Resposta ficticia da Charlie" });
+};
+try {
+  response = await worker.fetch(new Request("https://jus9.invalid/api/charlie/respond", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ message: "O que e peticao?", mode: "profissional" })
+  }), { ...env, JUS9_CHARLIE_INTERNAL_TOKEN: "token-interno-ficticio" });
+  data = await response.json();
+  assert(response.status === 200 && data.answer === "Resposta ficticia da Charlie", "proxy Charlie anonimo deveria responder");
+  assert(proxyAuthorization === "", "proxy anonimo nao deve autorizar escrita no Drive");
+  assert(response.headers.get("x-jus9-charlie-drive") === "somente-resposta", "proxy anonimo deveria declarar somente resposta");
+  console.log("AUTH_OK charlie-proxy-anonymous=answer-only");
+
+  response = await worker.fetch(new Request("https://jus9.invalid/api/charlie/respond", {
+    method: "POST",
+    headers: {
+      cookie: await cookieFor("advogado"),
+      "content-type": "application/json"
+    },
+    body: JSON.stringify({ message: "Salve uma minuta ficticia no Drive", mode: "profissional" })
+  }), { ...env, JUS9_CHARLIE_INTERNAL_TOKEN: "token-interno-ficticio" });
+  assert(response.status === 200, "proxy Charlie autenticado deveria responder");
+  assert(proxyAuthorization === "Bearer token-interno-ficticio", "proxy advogado deveria autorizar Drive com segredo interno");
+  assert(response.headers.get("x-jus9-charlie-drive") === "governado", "proxy advogado deveria declarar Drive governado");
+  console.log("AUTH_OK charlie-proxy-advogado=drive-governado");
+} finally {
+  globalThis.fetch = originalCharlieProxyFetch;
+}
 
 response = await request("/api/auth/permissions", { headers: { cookie: await cookieFor("admin_sistema") } });
 data = await response.json();
@@ -295,6 +333,8 @@ response = await worker.fetch(
 data = await response.json();
 assert(response.status === 200 && data.exists === true && data.userMemory?.name === "Clovis", "memoria oficial deveria salvar memoria do usuario");
 assert(data.userMemory.avoid === "scriptprotocolo repetitivo/script", "memoria oficial deveria remover tags perigosas sem executar HTML");
+assert(data.userMemory.retentionDays === 365 && data.retention?.automaticDeletion === false, "memoria oficial deveria agendar revisao sem exclusao automatica");
+assert(typeof data.retention?.reviewAt === "string" && data.retention.reviewAt.length > 10, "memoria oficial deveria registrar data de revisao");
 assert(data.instruments?.DAJ?.drive === "auto_governado", "memoria oficial deveria salvar instrumento DAJ");
 console.log("AUTH_OK user-memory-save=200");
 

@@ -983,10 +983,12 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
       } : null,
       ...search.route
     };
-    var response = await fetch('https://charlieecho.jus9tecnologia.com.br/api/ia', {
+    var response = await fetch('/api/charlie/respond', {
       method: 'POST',
       headers: { 'Content-Type':'application/json' },
+      credentials: 'include',
       body: JSON.stringify({
+        requestId: (window.crypto && typeof window.crypto.randomUUID === 'function') ? window.crypto.randomUUID() : 'processos-' + Date.now(),
         mode: 'jurista',
         route: route,
         message: prompt,

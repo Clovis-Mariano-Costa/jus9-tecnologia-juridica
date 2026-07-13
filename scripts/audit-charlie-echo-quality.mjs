@@ -97,7 +97,7 @@ const checks = [
   {
     name: "service worker nao prende MVP antigo",
     file: "service-worker.js",
-    patterns: ["jus9-pwa-v24-2026-07-12-charlie-pesquisa-ativa", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
+    patterns: ["jus9-pwa-v26-2026-07-13-drive-oficial", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
   },
   {
     name: "casa propria da Charlie Echo publicada",
@@ -110,6 +110,9 @@ const checks = [
     patterns: ["data-ai-chat", expectedScriptVersion],
   },
 ];
+
+const apiProxyCheck = checks.find((item) => item.name === "chat MVP envia message para API da Charlie");
+if (apiProxyCheck) apiProxyCheck.patterns[0] = "/api/charlie/respond";
 
 const failures = [];
 for (const check of checks) {

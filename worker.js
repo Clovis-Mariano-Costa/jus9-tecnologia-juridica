@@ -39,6 +39,9 @@ import {
   searchDataJud
 } from "./functions/_shared/datajud.js";
 
+const CHARLIE_API_URL = "https://charlieecho.jus9tecnologia.com.br/api/ia";
+const CHARLIE_PROXY_MAX_BODY_BYTES = 300_000;
+
 export default {
   async fetch(request, env) {
     const originalUrl = new URL(request.url);
@@ -93,6 +96,10 @@ export default {
 
     if (originalUrl.pathname === "/api/charlie/memory") {
       return handleCharlieMemory(request, env);
+    }
+
+    if (originalUrl.pathname === "/api/charlie/respond") {
+      return handleCharlieRespond(request, env);
     }
 
     if (originalUrl.pathname === "/api/health") {
@@ -654,6 +661,66 @@ async function handleCharlieMemory(request, env) {
   return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET, POST, DELETE" });
 }
 
+async function handleCharlieRespond(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  if (request.method !== "GET" && request.method !== "POST") {
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET, POST" });
+  }
+
+  const contentLength = Number(request.headers.get("content-length") || 0);
+  if (contentLength > CHARLIE_PROXY_MAX_BODY_BYTES) {
+    return jsonResponse({ ok: false, error: "payload_muito_grande" }, 413, corsHeaders);
+  }
+
+  const session = await getSession(request, env).catch(() => null);
+  const driveAuthorized = Boolean(session && hasPermission(session, "drive:write"));
+  const headers = new Headers({
+    Accept: "application/json",
+    "X-Jus9-Portal-Proxy": "jus9-tecnologia-juridica"
+  });
+  let body;
+
+  if (request.method === "POST") {
+    const rawBody = await request.text();
+    if (new TextEncoder().encode(rawBody).byteLength > CHARLIE_PROXY_MAX_BODY_BYTES) {
+      return jsonResponse({ ok: false, error: "payload_muito_grande" }, 413, corsHeaders);
+    }
+    const parsed = safeJsonParse(rawBody);
+    if (!parsed || typeof parsed !== "object" || typeof parsed.message !== "string" || !parsed.message.trim()) {
+      return jsonResponse({ ok: false, error: "mensagem_obrigatoria" }, 400, corsHeaders);
+    }
+    headers.set("Content-Type", "application/json");
+    body = JSON.stringify(parsed);
+  }
+
+  const internalToken = String(env.JUS9_CHARLIE_INTERNAL_TOKEN || "").trim();
+  if (driveAuthorized && internalToken) headers.set("Authorization", `Bearer ${internalToken}`);
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 55_000);
+  try {
+    const upstream = await fetch(CHARLIE_API_URL, {
+      method: request.method,
+      headers,
+      body,
+      signal: controller.signal
+    });
+    const responseHeaders = new Headers(corsHeaders);
+    responseHeaders.set("Content-Type", upstream.headers.get("content-type") || "application/json; charset=utf-8");
+    responseHeaders.set("Cache-Control", "no-store");
+    responseHeaders.set("X-Jus9-Charlie-Drive", driveAuthorized && internalToken ? "governado" : "somente-resposta");
+    return new Response(upstream.body, { status: upstream.status, headers: responseHeaders });
+  } catch (error) {
+    const timedOut = error?.name === "AbortError";
+    return jsonResponse({
+      ok: false,
+      error: timedOut ? "charlie_api_timeout" : "charlie_api_indisponivel"
+    }, timedOut ? 504 : 502, corsHeaders);
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 async function handleAttachmentExtract(request, env) {
   const corsHeaders = getAuthCorsHeaders(request);
   if (request.method !== "POST") {
@@ -791,6 +858,10 @@ function handleHealth(request, env) {
         configured: userMemory.configured,
         binding: userMemory.binding || "",
         isolated: userMemory.configured && userMemory.fallback === false
+      },
+      charlieApiProxy: {
+        configured: true,
+        privilegedDriveConfigured: Boolean(env.JUS9_CHARLIE_INTERNAL_TOKEN)
       },
       dataJud: { configured: Boolean(dataJud.configured), mode: dataJud.mode },
       dajProcessLinks: { configured: Boolean(env.JUS9_DAJ_PROCESS_LINKS) }
@@ -941,6 +1012,7 @@ function isAuthCorsPath(pathname) {
     pathname === "/api/profile-requests/audit" ||
     pathname === "/api/governed-profiles" ||
     pathname === "/api/charlie/memory" ||
+    pathname === "/api/charlie/respond" ||
     pathname === "/api/attachments/extract" ||
     pathname === "/api/calendar/status" ||
     pathname === "/api/calendar/events" ||
@@ -972,6 +1044,14 @@ function getAuthCorsHeaders(request) {
 
 function hasPermission(session, permission) {
   return getPermissions(session?.profile).includes(permission);
+}
+
+function safeJsonParse(value) {
+  try {
+    return JSON.parse(String(value || ""));
+  } catch (_) {
+    return null;
+  }
 }
 
 async function secureStringEqual(left, right) {

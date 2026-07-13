@@ -1,8 +1,8 @@
 export const PROFILE_PERMISSIONS = Object.freeze({
-  admin_sistema: ["auth:read", "dajs:read", "dajs:write", "documents:read", "processes:read", "audit:write", "calendar:read", "calendar:write"],
-  advogado_lider: ["auth:read", "dajs:read", "dajs:write", "documents:read", "processes:read", "audit:write", "calendar:read", "calendar:write"],
-  advogado: ["auth:read", "dajs:read", "dajs:write", "documents:read", "processes:read", "audit:write", "calendar:read", "calendar:write"],
-  assessor_chefe: ["auth:read", "dajs:read", "documents:read", "processes:read", "audit:write"],
+  admin_sistema: ["auth:read", "dajs:read", "dajs:write", "documents:read", "drive:write", "processes:read", "audit:write", "calendar:read", "calendar:write"],
+  advogado_lider: ["auth:read", "dajs:read", "dajs:write", "documents:read", "drive:write", "processes:read", "audit:write", "calendar:read", "calendar:write"],
+  advogado: ["auth:read", "dajs:read", "dajs:write", "documents:read", "drive:write", "processes:read", "audit:write", "calendar:read", "calendar:write"],
+  assessor_chefe: ["auth:read", "dajs:read", "documents:read", "drive:write", "processes:read", "audit:write"],
   assessor: ["auth:read", "dajs:read", "documents:read", "processes:read"],
   secretaria: ["auth:read", "dajs:read", "documents:read", "calendar:read", "calendar:write"],
   estagio: ["auth:read", "dajs:read"],

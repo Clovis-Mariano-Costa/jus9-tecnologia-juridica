@@ -1,4 +1,4 @@
-export const USER_MEMORY_VERSION = "user-memory-v1";
+export const USER_MEMORY_VERSION = "user-memory-v2";
 
 const MEMORY_PREFIX = "charlie:user-memory:v1";
 
@@ -88,6 +88,9 @@ export async function saveUserMemoryRecord(env, session, request, payload) {
   const now = new Date().toISOString();
   const moduleCode = normalizeModuleCode(payload.module || payload.code);
   const userMemory = sanitizeUserMemory(payload.userMemory);
+  userMemory.reviewAt = userMemory.retentionDays > 0
+    ? new Date(Date.now() + userMemory.retentionDays * 86_400_000).toISOString()
+    : "";
   const instrument = sanitizeInstrumentSettings(payload.instrument || payload.instrumentSettings);
   const currentInstruments = existing && typeof existing === "object" && existing.instruments && typeof existing.instruments === "object"
     ? existing.instruments
@@ -111,6 +114,12 @@ export async function saveUserMemoryRecord(env, session, request, payload) {
     module: moduleCode,
     focus: sanitizeText(payload.focus, 240),
     userMemory: { ...userMemory, updatedAt: now },
+    retention: {
+      mode: "review_only",
+      days: userMemory.retentionDays,
+      reviewAt: userMemory.reviewAt,
+      automaticDeletion: false
+    },
     instruments,
     createdAt: existing?.createdAt || now,
     updatedAt: now
@@ -154,6 +163,7 @@ export function safeUserMemoryRecord(record) {
     module: sanitizeText(record?.module, 32),
     focus: sanitizeText(record?.focus, 240),
     userMemory: sanitizeUserMemory(record?.userMemory),
+    retention: sanitizeRetention(record?.retention || record?.userMemory),
     instruments: sanitizeInstrumentMap(record?.instruments),
     createdAt: sanitizeText(record?.createdAt, 40),
     updatedAt: sanitizeText(record?.updatedAt, 40)
@@ -169,6 +179,8 @@ export function defaultUserMemory() {
     preferences: "",
     avoid: "",
     standingInstructions: "",
+    retentionDays: 365,
+    reviewAt: "",
     updatedAt: ""
   };
 }
@@ -183,6 +195,8 @@ export function sanitizeUserMemory(value) {
     preferences: sanitizeText(input.preferences, 1200),
     avoid: sanitizeText(input.avoid, 900),
     standingInstructions: sanitizeText(input.standingInstructions, 1600),
+    retentionDays: normalizeRetentionDays(input.retentionDays),
+    reviewAt: sanitizeText(input.reviewAt, 40),
     updatedAt: sanitizeText(input.updatedAt, 40)
   };
 }
@@ -213,6 +227,24 @@ function sanitizeInstrumentMap(value) {
 function allowed(value, values, fallback) {
   const text = sanitizeToken(value, 40);
   return values.includes(text) ? text : fallback;
+}
+
+function normalizeRetentionDays(value) {
+  const days = Number(value);
+  return [0, 90, 180, 365, 730, 1825].includes(days) ? days : 365;
+}
+
+function sanitizeRetention(value) {
+  const input = value && typeof value === "object" ? value : {};
+  const days = normalizeRetentionDays(input.days ?? input.retentionDays);
+  const reviewAt = sanitizeText(input.reviewAt, 40);
+  return {
+    mode: "review_only",
+    days,
+    reviewAt,
+    reviewDue: Boolean(reviewAt && Date.parse(reviewAt) <= Date.now()),
+    automaticDeletion: false
+  };
 }
 
 function normalizeModuleCode(value) {

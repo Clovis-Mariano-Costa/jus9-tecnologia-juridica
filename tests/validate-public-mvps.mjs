@@ -45,7 +45,7 @@ const canonicalServiceWorker = await fs.readFile(new URL("../service-worker.js",
 const legacyServiceWorker = await fs.readFile(new URL("../sw.js", import.meta.url), "utf8");
 const wranglerConfig = await fs.readFile(new URL("../wrangler.jsonc", import.meta.url), "utf8");
 const workerSource = await fs.readFile(new URL("../worker.js", import.meta.url), "utf8");
-assert(sharedScript.includes("https://charlieecho.jus9tecnologia.com.br/api/ia"), "chat compartilhado nao aponta para API publica");
+assert(sharedScript.includes("/api/charlie/respond"), "chat compartilhado nao aponta para proxy governado da API");
 assert(sharedScript.includes("asksAboutCharlieModes"), "roteamento explicito de modos ausente");
 assert(sharedScript.includes("Protocolo Centelha Criativa 5.4"), "protocolo de criatividade governada ausente");
 assert(sharedScript.includes("applyCreativeReasoningFrame"), "superficie de raciocinio aparente ausente");
@@ -104,7 +104,7 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v25-2026-07-13-governanca-daj"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("jus9-pwa-v26-2026-07-13-drive-oficial"), "cache PWA principal desatualizado");
 assert(canonicalServiceWorker.includes("caches.match('/offline.html')"), "fallback de arquivos estaticos do worker principal incorreto");
 
 for (const code of expectedCodes) {
