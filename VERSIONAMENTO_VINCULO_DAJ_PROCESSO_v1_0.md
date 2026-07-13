@@ -27,9 +27,19 @@ Esta versao usa `localStorage` apenas para validacao do fluxo no MVP publico. Em
 ## Arquivos
 
 - `app-processos.html`
+- `worker.js`
 - `tests/validate-public-mvps.mjs`
 - `tests/validate-charlie-response-contracts.mjs`
+- `tests/validate-worker-auth.mjs`
+
+## API preparada
+
+- `GET /api/daj-process-links/readiness`
+- `GET /api/daj-process-links`
+- `POST /api/daj-process-links`
+
+A API exige sessao. Leitura exige `dajs:read` ou `processes:read`. Escrita exige `dajs:write` e `processes:read`. O armazenamento definitivo deve usar KV proprio `JUS9_DAJ_PROCESS_LINKS`; sem esse binding, o Worker responde `501` e nao finge gravacao remota.
 
 ## Proximo passo
 
-Criar endpoint autenticado para vinculo DAJ-processo e replicar o padrao para os modulos judiciais que usam `app-processos.html` como referencia.
+Provisionar `JUS9_DAJ_PROCESS_LINKS`, ligar `app-processos.html` primeiro ao backend autenticado e manter o indice local apenas como fallback demonstrativo.

@@ -114,6 +114,14 @@ export default {
       return handleDataJudSearch(request, env);
     }
 
+    if (originalUrl.pathname === "/api/daj-process-links/readiness") {
+      return handleDajProcessLinksReadiness(request, env);
+    }
+
+    if (originalUrl.pathname === "/api/daj-process-links") {
+      return handleDajProcessLinks(request, env);
+    }
+
     if (originalUrl.pathname === "/auth/logout") {
       return handleLogout(request);
     }
@@ -782,6 +790,58 @@ async function handleDataJudSearch(request, env) {
   return jsonResponse(result.payload, result.status, corsHeaders);
 }
 
+async function handleDajProcessLinksReadiness(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  if (request.method !== "GET") {
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET" });
+  }
+  return jsonResponse({
+    ok: true,
+    service: "daj-process-links",
+    storage: "JUS9_DAJ_PROCESS_LINKS",
+    configured: Boolean(env.JUS9_DAJ_PROCESS_LINKS),
+    authRequired: true,
+    rules: [
+      "cada DAJ corresponde a um unico processo",
+      "nome e CPF podem reunir varios DAJs",
+      "CPF integral nao deve ser persistido",
+      "alteracao exige perfil com dajs:write e processes:read"
+    ]
+  }, 200, corsHeaders);
+}
+
+async function handleDajProcessLinks(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  const session = await getSession(request, env);
+  if (!session) return jsonResponse({ authenticated: false }, 401, corsHeaders);
+  if (!hasPermission(session, "dajs:read") && !hasPermission(session, "processes:read")) {
+    return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "dajs:read|processes:read" }, 403, corsHeaders);
+  }
+  if (!env.JUS9_DAJ_PROCESS_LINKS) {
+    return jsonResponse({
+      ok: false,
+      error: "daj_process_links_configuracao_pendente",
+      missing: ["JUS9_DAJ_PROCESS_LINKS"],
+      fallback: "usar indice local demonstrativo ate provisionar KV proprio"
+    }, 501, corsHeaders);
+  }
+
+  if (request.method === "GET") {
+    const result = await listDajProcessLinks(env, new URL(request.url));
+    return jsonResponse({ authenticated: true, profile: session.profile, ...result.payload }, result.status, corsHeaders);
+  }
+
+  if (request.method === "POST") {
+    if (!hasPermission(session, "dajs:write") || !hasPermission(session, "processes:read")) {
+      return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "dajs:write+processes:read" }, 403, corsHeaders);
+    }
+    const result = await saveDajProcessLink(env, session, request, await request.json().catch(() => null));
+    return jsonResponse({ authenticated: true, profile: session.profile, ...result.payload }, result.status, corsHeaders);
+  }
+
+  return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET, POST" });
+}
+
 function handleLogout(request) {
   const corsHeaders = getAuthCorsHeaders(request);
   const url = new URL(request.url);
@@ -852,6 +912,8 @@ function isAuthCorsPath(pathname) {
     pathname === "/api/calendar/events" ||
     pathname === "/api/tribunais/datajud/status" ||
     pathname === "/api/tribunais/datajud/search" ||
+    pathname === "/api/daj-process-links/readiness" ||
+    pathname === "/api/daj-process-links" ||
     pathname === "/auth/logout";
 }
 
@@ -1377,6 +1439,221 @@ async function governedProfileForEmail(env, email) {
     sourceRequestId: item.sourceRequestId || "",
     approvedAt: item.approvedAt || ""
   };
+}
+
+async function listDajProcessLinks(env, url) {
+  const items = await readDajProcessLinkIndex(env);
+  const searchType = sanitizeToken(url.searchParams.get("searchType"), 32);
+  const dajId = normalizeDajIdForLink(url.searchParams.get("dajId") || url.searchParams.get("daj"));
+  const processDigits = normalizeCnjDigits(url.searchParams.get("numeroProcesso") || url.searchParams.get("processNumber"));
+  const nome = normalizeComparableText(url.searchParams.get("nome") || url.searchParams.get("name"));
+  const cpfMasked = maskCpfForLink(url.searchParams.get("cpf") || url.searchParams.get("cpfMasked"));
+
+  let filtered = items;
+  if (searchType === "daj" && dajId) {
+    filtered = items.filter((item) => item.id === dajId);
+  } else if ((searchType === "numeroprocesso" || searchType === "processo") && processDigits) {
+    filtered = items.filter((item) => item.processDigits === processDigits);
+  } else if (searchType === "nome" && nome) {
+    filtered = items.filter((item) =>
+      normalizeComparableText(item.partyName).includes(nome) ||
+      normalizeComparableText(item.title).includes(nome)
+    );
+  } else if (searchType === "cpf" && cpfMasked) {
+    filtered = items.filter((item) => String(item.cpfMasked || "").slice(-2) === cpfMasked.slice(-2));
+  }
+
+  return {
+    status: 200,
+    payload: {
+      ok: true,
+      configured: true,
+      classification: "JURIDICO_PUBLICO_CONTROLADO",
+      total: filtered.length,
+      items: filtered.map(publicDajProcessLink)
+    }
+  };
+}
+
+async function saveDajProcessLink(env, session, request, payload) {
+  if (!payload || typeof payload !== "object") {
+    return { status: 400, payload: { ok: false, error: "payload_invalido" } };
+  }
+  const dajId = normalizeDajIdForLink(payload.dajId || payload.daj);
+  const processDigits = normalizeCnjDigits(payload.processNumber || payload.numeroProcesso);
+  const processNumber = formatCnjForLink(processDigits);
+  const tribunal = sanitizeToken(payload.tribunal, 16) || "nao_informado";
+  const tribunalLabel = sanitizeText(payload.tribunalLabel, 120);
+  const title = sanitizeText(payload.title, 160) || "DAJ vinculado a processo";
+  const partyName = sanitizeText(payload.partyName || payload.nome, 160);
+  const cpfMasked = maskCpfForLink(payload.cpf || payload.cpfMasked);
+  const origin = normalizeOriginHint(request.headers.get("origin") || request.headers.get("referer") || "");
+
+  if (!dajId || !/^DAJ-\d{4}-\d{4}$/.test(dajId)) {
+    return { status: 400, payload: { ok: false, error: "daj_invalido", expected: "DAJ-2026-0001" } };
+  }
+  if (processDigits.length !== 20) {
+    return { status: 400, payload: { ok: false, error: "numero_cnj_invalido" } };
+  }
+
+  const items = await readDajProcessLinkIndex(env);
+  const current = items.find((item) => item.id === dajId);
+  if (current && current.processDigits && current.processDigits !== processDigits) {
+    await appendDajProcessLinkAudit(env, session, {
+      action: "bloqueio_daj_ja_vinculado",
+      dajId,
+      processNumber,
+      previousProcessNumber: current.processNumber,
+      origin
+    });
+    return {
+      status: 409,
+      payload: {
+        ok: false,
+        error: "daj_ja_vinculado",
+        dajId,
+        current: publicDajProcessLink(current),
+        message: "Um DAJ nao deve receber segundo processo sem revisao humana."
+      }
+    };
+  }
+
+  const processOwner = items.find((item) => item.processDigits === processDigits && item.id !== dajId);
+  if (processOwner) {
+    await appendDajProcessLinkAudit(env, session, {
+      action: "bloqueio_processo_ja_vinculado",
+      dajId,
+      processNumber,
+      currentDajId: processOwner.id,
+      origin
+    });
+    return {
+      status: 409,
+      payload: {
+        ok: false,
+        error: "processo_ja_vinculado",
+        dajId: processOwner.id,
+        current: publicDajProcessLink(processOwner),
+        message: "O processo ja possui DAJ no indice governado."
+      }
+    };
+  }
+
+  const now = new Date().toISOString();
+  const existingIndex = items.findIndex((item) => item.id === dajId);
+  const previous = existingIndex >= 0 ? items[existingIndex] : null;
+  const record = {
+    ...(previous || {}),
+    id: dajId,
+    title,
+    processNumber,
+    processDigits,
+    tribunal,
+    tribunalLabel,
+    partyName: partyName || previous?.partyName || "",
+    cpfMasked: cpfMasked || previous?.cpfMasked || "",
+    status: "vinculado",
+    classification: "JURIDICO_PUBLICO_CONTROLADO",
+    createdAt: previous?.createdAt || now,
+    updatedAt: now,
+    updatedByProfile: session.profile,
+    updatedByEmailHash: session.emailHash || "",
+    origin
+  };
+  if (existingIndex >= 0) {
+    items[existingIndex] = record;
+  } else {
+    items.unshift(record);
+  }
+  await env.JUS9_DAJ_PROCESS_LINKS.put("daj-process-links:index", JSON.stringify(items.slice(0, 500)));
+  await appendDajProcessLinkAudit(env, session, {
+    action: previous ? "atualiza_vinculo_daj_processo" : "cria_vinculo_daj_processo",
+    dajId,
+    processNumber,
+    tribunal,
+    origin
+  });
+
+  return {
+    status: previous ? 200 : 201,
+    payload: {
+      ok: true,
+      item: publicDajProcessLink(record),
+      message: previous ? "Vinculo DAJ-processo atualizado." : "Vinculo DAJ-processo criado."
+    }
+  };
+}
+
+async function readDajProcessLinkIndex(env) {
+  const current = await env.JUS9_DAJ_PROCESS_LINKS.get("daj-process-links:index", "json").catch(() => null);
+  return Array.isArray(current) ? current : [];
+}
+
+async function appendDajProcessLinkAudit(env, session, item) {
+  if (!env.JUS9_DAJ_PROCESS_LINKS) return;
+  const current = await env.JUS9_DAJ_PROCESS_LINKS.get("daj-process-links:audit", "json").catch(() => null);
+  const items = Array.isArray(current) ? current : [];
+  items.unshift({
+    at: new Date().toISOString(),
+    agent: "worker",
+    profile: session?.profile || "nao_autenticado",
+    emailHash: session?.emailHash || "",
+    result: "registrado",
+    ...item
+  });
+  await env.JUS9_DAJ_PROCESS_LINKS.put("daj-process-links:audit", JSON.stringify(items.slice(0, 300)));
+}
+
+function publicDajProcessLink(item) {
+  return {
+    id: item.id || "",
+    title: item.title || "",
+    processNumber: item.processNumber || "",
+    tribunal: item.tribunal || "",
+    tribunalLabel: item.tribunalLabel || "",
+    partyName: item.partyName || "",
+    cpfMasked: item.cpfMasked || "",
+    status: item.status || "em_triagem",
+    classification: item.classification || "JURIDICO_PUBLICO_CONTROLADO",
+    createdAt: item.createdAt || "",
+    updatedAt: item.updatedAt || ""
+  };
+}
+
+function normalizeDajIdForLink(value) {
+  const raw = String(value || "").trim().toUpperCase();
+  if (!raw) return "";
+  if (/^\d{1,4}$/.test(raw)) return `DAJ-2026-${raw.padStart(4, "0")}`;
+  const match = raw.match(/DAJ[\s_-]*(\d{4})[\s_-]*(\d{1,4})/i);
+  if (match) return `DAJ-${match[1]}-${match[2].padStart(4, "0")}`;
+  return raw.replace(/\s+/g, "-").slice(0, 24);
+}
+
+function normalizeCnjDigits(value) {
+  return String(value || "").replace(/\D/g, "").slice(0, 24);
+}
+
+function formatCnjForLink(digits) {
+  const clean = normalizeCnjDigits(digits);
+  if (clean.length !== 20) return "";
+  return clean.replace(/^(\d{7})(\d{2})(\d{4})(\d)(\d{2})(\d{4})$/, "$1-$2.$3.$4.$5.$6");
+}
+
+function maskCpfForLink(value) {
+  const raw = String(value || "").trim();
+  const digits = raw.replace(/\D/g, "");
+  if (digits.length === 11) return `***.***.***-${digits.slice(-2)}`;
+  if (/^\*\*\*\.\*\*\*\.\*\*\*-\d{2}$/.test(raw)) return raw;
+  return "";
+}
+
+function normalizeComparableText(value) {
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function sanitizeText(value, maxLength) {

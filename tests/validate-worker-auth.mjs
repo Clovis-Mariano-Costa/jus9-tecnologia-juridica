@@ -675,6 +675,123 @@ try {
   globalThis.fetch = originalFetch;
 }
 
+response = await request("/api/daj-process-links/readiness");
+data = await response.json();
+assert(response.status === 200 && data.service === "daj-process-links", "readiness DAJ-processo deveria responder");
+assert(data.configured === false && data.storage === "JUS9_DAJ_PROCESS_LINKS", "readiness DAJ-processo deveria indicar KV pendente");
+console.log("AUTH_OK daj-process-links-readiness=200");
+
+response = await request("/api/daj-process-links");
+assert(response.status === 401, "DAJ-processo anonimo deveria exigir sessao");
+console.log("AUTH_OK daj-process-links-anonymous=401");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/daj-process-links", {
+    headers: { cookie: await cookieFor("advogado") }
+  }),
+  env
+);
+data = await response.json();
+assert(response.status === 501 && data.error === "daj_process_links_configuracao_pendente", "DAJ-processo sem KV deve ficar fail-closed");
+console.log("AUTH_OK daj-process-links-kv-pendente=501");
+
+const dajProcessLinksEnv = { ...env, JUS9_DAJ_PROCESS_LINKS: memoryKv() };
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/daj-process-links", {
+    method: "POST",
+    headers: { "content-type": "application/json", cookie: await cookieFor("advogado") },
+    body: JSON.stringify({
+      dajId: "DAJ-2026-0101",
+      processNumber: "2222222-22.2024.8.24.0000",
+      tribunal: "tjsc",
+      tribunalLabel: "Santa Catarina - TJSC",
+      partyName: "Maria Demonstracao",
+      cpf: "111.444.777-35"
+    })
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 201 && data.item.id === "DAJ-2026-0101", "DAJ-processo deveria criar vinculo autenticado");
+assert(data.item.processNumber === "2222222-22.2024.8.24.0000", "DAJ-processo deveria normalizar numero CNJ");
+assert(data.item.cpfMasked === "***.***.***-35", "DAJ-processo deveria mascarar CPF");
+assert(!JSON.stringify(data).includes("11144477735"), "DAJ-processo nao deve devolver CPF integral");
+console.log("AUTH_OK daj-process-links-create=201");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/daj-process-links?searchType=daj&dajId=DAJ-2026-0101", {
+    headers: { cookie: await cookieFor("advogado") }
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.total === 1 && data.items[0].processNumber.includes("2222222"), "pesquisa por DAJ deveria mostrar vinculo");
+console.log("AUTH_OK daj-process-links-search-daj=200");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/daj-process-links?searchType=nome&nome=Maria", {
+    headers: { cookie: await cookieFor("advogado") }
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.total === 1 && data.items[0].id === "DAJ-2026-0101", "pesquisa por nome deveria encontrar DAJ");
+console.log("AUTH_OK daj-process-links-search-nome=200");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/daj-process-links", {
+    method: "POST",
+    headers: { "content-type": "application/json", cookie: await cookieFor("advogado") },
+    body: JSON.stringify({
+      dajId: "DAJ-2026-0101",
+      processNumber: "3333333-33.2024.8.24.0000",
+      tribunal: "tjsc"
+    })
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 409 && data.error === "daj_ja_vinculado", "mesmo DAJ nao deve aceitar segundo processo");
+console.log("AUTH_OK daj-process-links-bloqueia-daj-duplicado=409");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/daj-process-links", {
+    method: "POST",
+    headers: { "content-type": "application/json", cookie: await cookieFor("advogado") },
+    body: JSON.stringify({
+      dajId: "DAJ-2026-0102",
+      processNumber: "2222222-22.2024.8.24.0000",
+      tribunal: "tjsc"
+    })
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 409 && data.error === "processo_ja_vinculado", "mesmo processo nao deve ser duplicado em outro DAJ sem revisao");
+console.log("AUTH_OK daj-process-links-bloqueia-processo-duplicado=409");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/daj-process-links", {
+    method: "POST",
+    headers: { "content-type": "application/json", cookie: await cookieFor("assessor") },
+    body: JSON.stringify({ dajId: "DAJ-2026-0103", processNumber: "4444444-44.2024.8.24.0000" })
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 403 && data.permission === "dajs:write+processes:read", "assessor sem escrita nao deve vincular DAJ-processo");
+console.log("AUTH_OK daj-process-links-write-permission=403");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/daj-process-links", {
+    method: "OPTIONS",
+    headers: { origin: "https://jus9tecnologia.com.br" }
+  }),
+  dajProcessLinksEnv
+);
+assert(response.status === 204 && response.headers.get("access-control-allow-origin") === "https://jus9tecnologia.com.br", "CORS DAJ-processo deveria liberar origem principal");
+console.log("AUTH_OK daj-process-links-cors=204");
+
 response = await request("/auth/logout");
 const logoutHtml = await response.text();
 assert(response.status === 200 && logoutHtml.includes("Sair da Jus 9"), "GET logout deveria mostrar tela segura");
