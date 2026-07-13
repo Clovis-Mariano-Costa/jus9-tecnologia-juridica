@@ -98,9 +98,16 @@ assertIncludes(script, "shouldOfferDocumentDownloads", "download documental");
 assertIncludes(submitBlock, "appendDownloadEchoForForm(buildResponseDownloads", "download documental");
 
 assertIncludes(processPage, 'id="process-search-type"', "pesquisa processual");
+assertIncludes(processPage, '<option value="daj">DAJ</option>', "pesquisa processual");
 assertIncludes(processPage, '<option value="nome">Nome da parte</option>', "pesquisa processual");
 assertIncludes(processPage, '<option value="cpf">CPF</option>', "pesquisa processual");
 assertIncludes(processPage, "CPF deve aparecer sempre mascarado", "pesquisa processual");
+assertIncludes(processPage, "jus9DajProcessLinksV1", "vinculo DAJ-processo");
+assertIncludes(processPage, "data-linked-daj-panel", "vinculo DAJ-processo");
+assertIncludes(processPage, "data-daj-link-list", "vinculo DAJ-processo");
+assertIncludes(processPage, "cada DAJ corresponde a um unico processo", "vinculo DAJ-processo");
+assertIncludes(processPage, "bloqueio_daj_ja_vinculado", "vinculo DAJ-processo");
+assertIncludes(processPage, "bloqueio_processo_ja_vinculado", "vinculo DAJ-processo");
 assertIncludes(datajud, "supportedSearchTypes", "DataJud governado");
 assertIncludes(datajud, "datajud_busca_por_parte_indisponivel_na_api_publica", "DataJud governado");
 assertIncludes(datajud, "requer_conector_autorizado_de_partes", "DataJud governado");

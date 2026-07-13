@@ -72,9 +72,14 @@ assert(sharedScript.includes("jus9MvpTeamAuditV1"), "auditoria local de equipe a
 assert(teamPage.includes("data-team-page"), "pagina compartilhada de equipe sem raiz");
 assert(teamPage.includes("data-team-form"), "pagina compartilhada de equipe sem formulario");
 assert(processPage.includes('id="process-search-type"'), "pagina de processos sem seletor de tipo de pesquisa");
+assert(processPage.includes('<option value="daj">DAJ</option>'), "pagina de processos sem busca por DAJ");
 assert(processPage.includes('<option value="nome">Nome da parte</option>'), "pagina de processos sem busca por nome");
 assert(processPage.includes('<option value="cpf">CPF</option>'), "pagina de processos sem busca por CPF");
 assert(processPage.includes("CPF deve aparecer sempre mascarado"), "pagina de processos sem aviso de CPF mascarado");
+assert(processPage.includes("jus9DajProcessLinksV1"), "pagina de processos sem persistencia local DAJ-processo");
+assert(processPage.includes("data-linked-daj-panel"), "pagina de processos sem painel de DAJ vinculado");
+assert(processPage.includes("data-daj-link-list"), "pagina de processos sem indice DAJ-processo");
+assert(processPage.includes("Cada DAJ pode ficar vinculado a um unico processo"), "pagina de processos sem regra um DAJ um processo");
 assert(installPage.includes("install-app-green-card"), "card da Jus 9 Verde ausente na pagina de instalacao");
 assert(installPage.includes("https://jus9verde.jus9tecnologia.com.br/instalar-app.html"), "link de instalacao da Jus 9 Verde ausente");
 assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de instalacao sem atualizacao imediata do estilo verde");
