@@ -180,8 +180,8 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
     </section>
 
     <section class="process-card">
-      <h2>Indice local DAJ-processo</h2>
-      <p>Modelo demonstrativo para validar a regra: um DAJ, um processo. Em producao, este indice deve sair do backend autenticado com auditoria por usuario.</p>
+      <h2>Indice DAJ-processo</h2>
+      <p>Um DAJ corresponde a um processo. Com login autorizado, a API autenticada e o KV oficial preservam o vinculo e a auditoria; sem sessao, a pagina conserva apenas um exemplo local demonstrativo.</p>
       <div data-daj-link-list>
         <p>Carregando vinculos locais.</p>
       </div>
@@ -507,12 +507,15 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
   function renderDajLinkList(items){
     if(!dajLinkList) return;
     var links = items || loadDajProcessLinks();
+    var loginLink = dajProcessBackend.checked && dajProcessBackend.configured && !dajProcessBackend.authenticated
+      ? ' <a href="/auth/google/start?return_to=%2Fapp-processos.html">Entrar para usar a memoria oficial</a>.'
+      : '';
     if(!links.length){
-      dajLinkList.innerHTML = '<p>Nenhum vinculo local criado.</p>';
+      dajLinkList.innerHTML = '<p>Nenhum vinculo encontrado.</p><p><small>' + escapeHtml(dajProcessLinkSourceLabel()) + loginLink + '</small></p>';
       return;
     }
     dajLinkList.innerHTML = [
-      '<p><small>' + escapeHtml(dajProcessLinkSourceLabel()) + '</small></p>',
+      '<p><small>' + escapeHtml(dajProcessLinkSourceLabel()) + loginLink + '</small></p>',
       '<table class="demo-table">',
       '<thead><tr><th>DAJ</th><th>Processo</th><th>Tribunal</th><th>Pessoa</th><th>Status</th></tr></thead>',
       '<tbody>',

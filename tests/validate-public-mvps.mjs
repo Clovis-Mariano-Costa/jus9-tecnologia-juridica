@@ -92,6 +92,8 @@ assert(processPage.includes("backend autenticado"), "pagina de processos sem rot
 assert(processPage.includes("data-linked-daj-panel"), "pagina de processos sem painel de DAJ vinculado");
 assert(processPage.includes("data-daj-link-list"), "pagina de processos sem indice DAJ-processo");
 assert(processPage.includes("Cada DAJ pode ficar vinculado a um unico processo"), "pagina de processos sem regra um DAJ um processo");
+assert(processPage.includes("Indice DAJ-processo"), "pagina de processos ainda apresenta indice apenas local");
+assert(processPage.includes("Entrar para usar a memoria oficial"), "pagina de processos sem acesso ao login da memoria oficial");
 assert(wranglerConfig.includes('"binding": "JUS9_DAJ_PROCESS_LINKS"'), "wrangler sem KV oficial DAJ-processo");
 assert(wranglerConfig.includes('"binding": "JUS9_USER_MEMORY"'), "wrangler sem KV dedicado de memoria do usuario");
 assert(workerSource.includes('originalUrl.pathname === "/api/health"'), "worker sem health explicito");
@@ -102,7 +104,7 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v24-2026-07-12-charlie-pesquisa-ativa"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("jus9-pwa-v25-2026-07-13-governanca-daj"), "cache PWA principal desatualizado");
 assert(canonicalServiceWorker.includes("caches.match('/offline.html')"), "fallback de arquivos estaticos do worker principal incorreto");
 
 for (const code of expectedCodes) {
