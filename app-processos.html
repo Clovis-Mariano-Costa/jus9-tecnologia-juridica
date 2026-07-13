@@ -246,6 +246,13 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
   var submitButton = form ? form.querySelector('button[type="submit"]') : null;
   var dajProcessLinksKey = 'jus9DajProcessLinksV1';
   var dajProcessAuditKey = 'jus9DajProcessAuditV1';
+  var dajProcessBackend = {
+    checked:false,
+    configured:false,
+    authenticated:false,
+    items:null,
+    reason:'nao_verificado'
+  };
 
   function escapeHtml(value){
     return String(value || '').replace(/[&<>"']/g, function(ch){
@@ -342,7 +349,28 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
     }
   }
 
+  function normalizeDajProcessLink(item){
+    return Object.assign({}, item || {}, {
+      id:normalizeDajId((item && item.id) || ''),
+      processNumber:(item && item.processNumber) || '',
+      processDigits:onlyDigits((item && (item.processDigits || item.processNumber)) || ''),
+      cpfMasked:(item && item.cpfMasked) || ''
+    });
+  }
+
+  function usingBackendDajLinks(){
+    return dajProcessBackend.configured && dajProcessBackend.authenticated && Array.isArray(dajProcessBackend.items);
+  }
+
+  function dajProcessLinkSourceLabel(){
+    if(usingBackendDajLinks()) return 'Fonte: API autenticada DAJ-processo (KV oficial JUS9_DAJ_PROCESS_LINKS).';
+    if(dajProcessBackend.checked && dajProcessBackend.configured && !dajProcessBackend.authenticated) return 'Fonte: fallback local demonstrativo. Faca login para usar a memoria operacional oficial.';
+    if(dajProcessBackend.checked && !dajProcessBackend.configured) return 'Fonte: fallback local demonstrativo. Backend oficial ainda nao configurado.';
+    return 'Fonte: fallback local demonstrativo enquanto a API autenticada e verificada.';
+  }
+
   function loadDajProcessLinks(){
+    if(usingBackendDajLinks()) return dajProcessBackend.items.map(normalizeDajProcessLink);
     var saved = readJsonStorage(dajProcessLinksKey, []);
     var byId = {};
     defaultDajProcessLinks().forEach(function(item){
@@ -355,6 +383,10 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
   }
 
   function saveDajProcessLinks(items){
+    if(usingBackendDajLinks()){
+      dajProcessBackend.items = items.map(normalizeDajProcessLink);
+      return;
+    }
     writeJsonStorage(dajProcessLinksKey, items);
   }
 
@@ -435,7 +467,7 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
     dajSelect.innerHTML = options + '<option value="novo">Criar novo DAJ</option>';
     var normalized = normalizeDajId(current);
     var exists = items.some(function(item){ return item.id === normalized; }) || normalized === 'novo';
-    dajSelect.value = exists ? normalized : 'DAJ-2026-0001';
+    dajSelect.value = exists ? normalized : (items.length ? items[0].id : 'novo');
   }
 
   function renderDajActions(){
@@ -465,6 +497,7 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
       '<p>Tribunal: ' + escapeHtml(item.tribunalLabel || item.tribunal || 'nao informado') + '</p>',
       '<p>Pessoa/parte: ' + escapeHtml(item.partyName || 'nao informada') + (item.cpfMasked ? ' | CPF: ' + escapeHtml(item.cpfMasked) : '') + '</p>',
       '<p>Status: ' + escapeHtml(item.status || 'em triagem') + '. Ultima atualizacao: ' + escapeHtml((item.updatedAt || '').slice(0, 10) || 'local') + '.</p>',
+      '<p><small>' + escapeHtml(dajProcessLinkSourceLabel()) + '</small></p>',
       '<p>Observacao: a consulta externa mostra o processo; o DAJ mostra o caso vivo por dentro.</p>',
       note ? '<p><strong>' + escapeHtml(note) + '</strong></p>' : ''
     ].join('');
@@ -479,6 +512,7 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
       return;
     }
     dajLinkList.innerHTML = [
+      '<p><small>' + escapeHtml(dajProcessLinkSourceLabel()) + '</small></p>',
       '<table class="demo-table">',
       '<thead><tr><th>DAJ</th><th>Processo</th><th>Tribunal</th><th>Pessoa</th><th>Status</th></tr></thead>',
       '<tbody>',
@@ -497,15 +531,224 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
 
   function summarizeDajMatches(matches, search){
     if(!matches || !matches.length){
-      if(search && search.type === 'daj') return 'Nenhum vinculo local encontrado para este DAJ.';
-      return 'Nenhum DAJ local encontrado para esta chave. Para criar vinculo novo, consulte primeiro pelo numero CNJ e escolha "Criar novo DAJ".';
+      if(search && search.type === 'daj') return 'Nenhum vinculo encontrado para este DAJ em ' + (usingBackendDajLinks() ? 'backend autenticado.' : 'fallback local demonstrativo.');
+      return 'Nenhum DAJ encontrado para esta chave em ' + (usingBackendDajLinks() ? 'backend autenticado.' : 'fallback local demonstrativo.') + ' Para criar vinculo novo, consulte primeiro pelo numero CNJ e escolha "Criar novo DAJ".';
     }
     return matches.map(function(item){
       return item.id + ' -> ' + (item.processNumber || 'processo pendente') + ' (' + (item.tribunal || 'tribunal nao informado') + ')';
     }).join('\n');
   }
 
-  function applyDajLinkGovernance(search, tribunal, tribunalLabel){
+  function updateBackendCache(items){
+    dajProcessBackend.items = Array.isArray(items) ? items.map(normalizeDajProcessLink) : [];
+    populateDajSelect(dajSelect && dajSelect.value);
+  }
+
+  async function refreshDajProcessLinksBackend(){
+    try {
+      var readiness = await fetch('/api/daj-process-links/readiness', {
+        credentials:'include',
+        headers:{ 'Accept':'application/json' }
+      });
+      var readinessData = await readiness.json().catch(function(){ return null; });
+      dajProcessBackend.checked = true;
+      dajProcessBackend.configured = Boolean(readiness.ok && readinessData && readinessData.configured);
+      if(!dajProcessBackend.configured){
+        dajProcessBackend.authenticated = false;
+        dajProcessBackend.items = null;
+        dajProcessBackend.reason = 'backend_nao_configurado';
+        renderDajLinkPanel();
+        renderDajLinkList();
+        return false;
+      }
+
+      var response = await fetch('/api/daj-process-links', {
+        credentials:'include',
+        headers:{ 'Accept':'application/json' }
+      });
+      if(response.status === 401){
+        dajProcessBackend.authenticated = false;
+        dajProcessBackend.items = null;
+        dajProcessBackend.reason = 'login_obrigatorio';
+        renderDajLinkPanel();
+        renderDajLinkList();
+        return false;
+      }
+      var data = await response.json().catch(function(){ return null; });
+      if(response.ok && data && Array.isArray(data.items)){
+        dajProcessBackend.authenticated = true;
+        dajProcessBackend.reason = 'backend_autenticado';
+        updateBackendCache(data.items);
+        renderDajLinkPanel();
+        renderDajLinkList();
+        return true;
+      }
+      dajProcessBackend.authenticated = false;
+      dajProcessBackend.items = null;
+      dajProcessBackend.reason = data && data.error ? data.error : 'backend_indisponivel';
+      return false;
+    } catch (error) {
+      dajProcessBackend.checked = true;
+      dajProcessBackend.authenticated = false;
+      dajProcessBackend.items = null;
+      dajProcessBackend.reason = 'falha_rede_backend';
+      return false;
+    }
+  }
+
+  async function ensureDajProcessBackend(){
+    if(dajProcessBackend.checked) return usingBackendDajLinks();
+    return refreshDajProcessLinksBackend();
+  }
+
+  function searchParamsForBackend(search){
+    var params = new URLSearchParams();
+    params.set('searchType', search.type);
+    if(search.type === 'daj') params.set('dajId', search.dajId);
+    if(search.type === 'numeroProcesso') params.set('numeroProcesso', search.processNumber);
+    if(search.type === 'nome') params.set('nome', search.display);
+    if(search.type === 'cpf') params.set('cpf', search.cpfMasked);
+    return params;
+  }
+
+  async function searchDajLinksBackend(search){
+    var response = await fetch('/api/daj-process-links?' + searchParamsForBackend(search).toString(), {
+      credentials:'include',
+      headers:{ 'Accept':'application/json' }
+    });
+    if(response.status === 401 || response.status === 501){
+      dajProcessBackend.authenticated = false;
+      dajProcessBackend.items = null;
+      dajProcessBackend.reason = response.status === 401 ? 'login_obrigatorio' : 'backend_nao_configurado';
+      return null;
+    }
+    var data = await response.json().catch(function(){ return null; });
+    if(response.ok && data && Array.isArray(data.items)) return data.items.map(normalizeDajProcessLink);
+    return null;
+  }
+
+  async function saveDajLinkBackend(payload){
+    var response = await fetch('/api/daj-process-links', {
+      method:'POST',
+      credentials:'include',
+      headers:{ 'Content-Type':'application/json', 'Accept':'application/json' },
+      body:JSON.stringify(payload)
+    });
+    var data = await response.json().catch(function(){ return null; });
+    if(response.status === 401 || response.status === 501){
+      dajProcessBackend.authenticated = false;
+      dajProcessBackend.items = null;
+      dajProcessBackend.reason = response.status === 401 ? 'login_obrigatorio' : 'backend_nao_configurado';
+      return null;
+    }
+    if(response.status === 409 && data){
+      return {
+        ok:false,
+        title:data.error === 'processo_ja_vinculado' ? 'Processo ja vinculado' : 'DAJ ja vinculado',
+        message:data.message || 'Vinculo bloqueado pelo backend autenticado.',
+        current:data.current ? normalizeDajProcessLink(data.current) : null
+      };
+    }
+    if(response.ok && data && data.item){
+      return { ok:true, item:normalizeDajProcessLink(data.item), message:data.message || 'Vinculo gravado no backend autenticado.' };
+    }
+    throw new Error(data && data.error ? data.error : 'backend_daj_processo_sem_resposta_util');
+  }
+
+  function upsertCachedDajLink(item){
+    var items = loadDajProcessLinks();
+    var normalized = normalizeDajProcessLink(item);
+    var index = items.findIndex(function(existing){ return existing.id === normalized.id; });
+    if(index >= 0) items[index] = normalized;
+    else items.unshift(normalized);
+    saveDajProcessLinks(items);
+    return items;
+  }
+
+  async function applyDajLinkGovernance(search, tribunal, tribunalLabel){
+    await ensureDajProcessBackend();
+    if(usingBackendDajLinks()){
+      var backendOutcome = await applyDajLinkGovernanceBackend(search, tribunal, tribunalLabel);
+      if(backendOutcome) return backendOutcome;
+    }
+    return applyDajLinkGovernanceLocal(search, tribunal, tribunalLabel);
+  }
+
+  async function applyDajLinkGovernanceBackend(search, tribunal, tribunalLabel){
+    if(search.type === 'daj'){
+      var matchesByDaj = await searchDajLinksBackend(search);
+      if(!matchesByDaj) return null;
+      var daj = matchesByDaj[0] || null;
+      if(dajSelect && daj) dajSelect.value = daj.id;
+      renderDajLinkPanel(daj, daj ? 'Pesquisa por DAJ: vinculo carregado da API autenticada.' : 'DAJ ainda sem vinculo no backend autenticado.');
+      renderDajLinkList(daj ? [daj] : loadDajProcessLinks());
+      return {
+        ok:true,
+        source:'backend-auth',
+        focus:daj,
+        matches:daj ? [daj] : [],
+        message:summarizeDajMatches(daj ? [daj] : [], search)
+      };
+    }
+
+    if(search.type !== 'numeroProcesso'){
+      var personMatches = await searchDajLinksBackend(search);
+      if(!personMatches) return null;
+      var selected = dajSelect ? findDajLink(loadDajProcessLinks(), dajSelect.value) : null;
+      renderDajLinkPanel(selected || personMatches[0], personMatches.length ? 'Pesquisa por pessoa encontrou DAJ(s) no backend autenticado.' : 'Pesquisa por pessoa sem DAJ correspondente no backend autenticado.');
+      renderDajLinkList(personMatches.length ? personMatches : loadDajProcessLinks());
+      return {
+        ok:true,
+        source:'backend-auth',
+        focus:selected || personMatches[0] || null,
+        matches:personMatches,
+        message:summarizeDajMatches(personMatches, search)
+      };
+    }
+
+    var items = loadDajProcessLinks();
+    var selectedId = dajSelect ? normalizeDajId(dajSelect.value) : 'DAJ-2026-0001';
+    var created = false;
+    if(selectedId === 'novo'){
+      selectedId = nextDajId(items);
+      created = true;
+    }
+    var current = findDajLink(items, selectedId);
+    var saveResult = await saveDajLinkBackend({
+      dajId:selectedId,
+      processNumber:search.processNumber,
+      tribunal:tribunal,
+      tribunalLabel:tribunalLabel,
+      title:(current && current.title) || 'DAJ criado pela pesquisa processual',
+      partyName:(current && current.partyName) || '',
+      cpfMasked:(current && current.cpfMasked) || ''
+    });
+    if(!saveResult) return null;
+    if(!saveResult.ok){
+      if(saveResult.current){
+        renderDajLinkPanel(saveResult.current, 'Bloqueado pelo backend autenticado.');
+        renderDajLinkList([saveResult.current]);
+      }
+      return {
+        ok:false,
+        title:saveResult.title,
+        message:saveResult.message
+      };
+    }
+    var cache = upsertCachedDajLink(saveResult.item);
+    populateDajSelect(saveResult.item.id);
+    renderDajLinkPanel(saveResult.item, created ? 'Novo DAJ criado e vinculado no backend autenticado.' : 'DAJ vinculado no backend autenticado.');
+    renderDajLinkList(cache);
+    return {
+      ok:true,
+      source:'backend-auth',
+      focus:saveResult.item,
+      matches:[saveResult.item],
+      message:(created ? 'Criado ' : 'Vinculado ') + saveResult.item.id + ' -> ' + saveResult.item.processNumber + ' (' + tribunal + ') no backend autenticado.'
+    };
+  }
+
+  function applyDajLinkGovernanceLocal(search, tribunal, tribunalLabel){
     var items = loadDajProcessLinks();
     if(search.type === 'daj'){
       var daj = findDajLink(items, search.dajId);
@@ -716,10 +959,10 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
       'Consulte no gateway seguro de pesquisa processual por ' + searchTypeLabel(search.type) + ': ' + search.display + ' no tribunal ' + tribunal + ' (' + tribunalLabel + ').',
       'Contexto: pagina modelo Processos do DAJ Advogados.',
       'Fonte selecionada: ' + (sourceSelect ? sourceSelect.value : 'datajud') + '. DAJ selecionado: ' + (dajSelect ? dajSelect.value : 'sem vinculo') + '.',
-      'Vinculo DAJ-processo no indice local: ' + linkContext,
+      'Vinculo DAJ-processo em ' + (linkOutcome && linkOutcome.source === 'backend-auth' ? 'API autenticada oficial' : 'fallback local demonstrativo') + ': ' + linkContext,
       'Regra operacional: cada DAJ corresponde a um unico processo. Nome e CPF podem reunir varios DAJs. Pesquisa por DAJ deve mostrar o processo ja vinculado.',
       'Responda com metadados publicos oficiais quando a fonte permitir, fonte, limites, status da consulta, riscos de sigilo e proximo passo seguro no DAJ.',
-      'Se a busca for por DAJ, explique o vinculo encontrado no indice local e indique se ainda falta consulta oficial do processo.',
+      'Se a busca for por DAJ, explique o vinculo encontrado no indice carregado e indique se ainda falta consulta oficial do processo.',
       'Se a busca for por nome ou CPF, trate como dado pessoal processual controlado: nao repita CPF integral, nao salve em memoria permanente e use somente conector autorizado.',
       'Se a API Publica DataJud nao suportar busca por partes, diga isso claramente e indique o caminho governado por tribunal/conector autorizado, sem inventar resultado.',
       'Se a credencial ou o DataJud estiver indisponivel, diga isso sem inventar dados processuais.'
@@ -770,12 +1013,14 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
       }
       var tribunal = selectedTribunal();
       var tribunalLabel = selectedTribunalLabel();
-      var linkOutcome = applyDajLinkGovernance(search, tribunal, tribunalLabel);
+      if(submitButton) submitButton.disabled = true;
+      render('Vinculando DAJ-processo', 'Estou verificando a API autenticada DAJ-processo. Sem sessao, sigo no fallback local demonstrativo.', 'info');
+      var linkOutcome = await applyDajLinkGovernance(search, tribunal, tribunalLabel);
       if(!linkOutcome.ok){
         render(linkOutcome.title || 'Vinculo bloqueado', linkOutcome.message || 'Revise o DAJ antes de continuar.', 'error');
+        if(submitButton) submitButton.disabled = false;
         return;
       }
-      if(submitButton) submitButton.disabled = true;
       render('Consultando Charlie Echo', 'A consulta por ' + search.label + ' esta indo para a API segura. O navegador nao recebe token interno do gateway. Exibicao: ' + search.display + '.\n\nVinculo DAJ-processo:\n' + linkOutcome.message, 'info');
       try {
         var answer = await askCharlieForProcess(search, tribunal, tribunalLabel, linkOutcome);
@@ -793,7 +1038,7 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
       event.preventDefault();
       if(superiorSelect) superiorSelect.value = '';
       if(stateSelect) stateSelect.value = link.getAttribute('data-tribunal') || 'tjsc';
-      render('Tribunal selecionado', 'Tribunal ativo: ' + link.textContent.trim() + '. Informe numero CNJ, nome ou CPF e consulte via Charlie Echo.', 'info');
+      render('Tribunal selecionado', 'Tribunal ativo: ' + link.textContent.trim() + '. Informe numero CNJ, DAJ, nome ou CPF e consulte via Charlie Echo.', 'info');
     });
   });
 
@@ -817,6 +1062,7 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
   renderDajLinkList();
   updateSearchInput();
   refreshStatus();
+  refreshDajProcessLinksBackend();
 })();
 </script>
 <script src="script.js?v=20260712-charlie-pesquisa-ativa-v1"></script>

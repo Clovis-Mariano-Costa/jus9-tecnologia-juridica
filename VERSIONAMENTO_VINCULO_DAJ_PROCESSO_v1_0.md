@@ -40,6 +40,6 @@ Esta versao usa `localStorage` apenas para validacao do fluxo no MVP publico. Em
 
 A API exige sessao. Leitura exige `dajs:read` ou `processes:read`. Escrita exige `dajs:write` e `processes:read`. O armazenamento definitivo deve usar KV proprio `JUS9_DAJ_PROCESS_LINKS`; sem esse binding, o Worker responde `501` e nao finge gravacao remota.
 
-## Proximo passo
+## Evolucao
 
-Provisionar `JUS9_DAJ_PROCESS_LINKS`, ligar `app-processos.html` primeiro ao backend autenticado e manter o indice local apenas como fallback demonstrativo.
+O pacote posterior `VERSIONAMENTO_VINCULO_DAJ_PROCESSO_BACKEND_v1_1.md` provisiona o KV `JUS9_DAJ_PROCESS_LINKS` e liga `app-processos.html` ao backend autenticado, mantendo o indice local apenas como fallback demonstrativo.

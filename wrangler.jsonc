@@ -22,6 +22,10 @@
     {
       "binding": "JUS9_PROFILE_REQUESTS",
       "id": "016bf81fce5242c7aacc42e5a1a50bf3"
+    },
+    {
+      "binding": "JUS9_DAJ_PROCESS_LINKS",
+      "id": "6e1aba2a1bc149da8e9839b9e2e8ad60"
     }
   ]
 }

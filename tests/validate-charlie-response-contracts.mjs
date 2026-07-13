@@ -103,6 +103,10 @@ assertIncludes(processPage, '<option value="nome">Nome da parte</option>', "pesq
 assertIncludes(processPage, '<option value="cpf">CPF</option>', "pesquisa processual");
 assertIncludes(processPage, "CPF deve aparecer sempre mascarado", "pesquisa processual");
 assertIncludes(processPage, "jus9DajProcessLinksV1", "vinculo DAJ-processo");
+assertIncludes(processPage, "/api/daj-process-links", "vinculo DAJ-processo");
+assertIncludes(processPage, "credentials:'include'", "vinculo DAJ-processo");
+assertIncludes(processPage, "API autenticada oficial", "vinculo DAJ-processo");
+assertIncludes(processPage, "fallback local demonstrativo", "vinculo DAJ-processo");
 assertIncludes(processPage, "data-linked-daj-panel", "vinculo DAJ-processo");
 assertIncludes(processPage, "data-daj-link-list", "vinculo DAJ-processo");
 assertIncludes(processPage, "cada DAJ corresponde a um unico processo", "vinculo DAJ-processo");

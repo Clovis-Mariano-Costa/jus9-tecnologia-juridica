@@ -37,6 +37,7 @@ const installPage = await fs.readFile(new URL("../instalar-app.html", import.met
 const pwaInstallScript = await fs.readFile(new URL("../assets/js/pwa-install.js", import.meta.url), "utf8");
 const canonicalServiceWorker = await fs.readFile(new URL("../service-worker.js", import.meta.url), "utf8");
 const legacyServiceWorker = await fs.readFile(new URL("../sw.js", import.meta.url), "utf8");
+const wranglerConfig = await fs.readFile(new URL("../wrangler.jsonc", import.meta.url), "utf8");
 assert(sharedScript.includes("https://charlieecho.jus9tecnologia.com.br/api/ia"), "chat compartilhado nao aponta para API publica");
 assert(sharedScript.includes("asksAboutCharlieModes"), "roteamento explicito de modos ausente");
 assert(sharedScript.includes("Protocolo Centelha Criativa 5.4"), "protocolo de criatividade governada ausente");
@@ -77,9 +78,14 @@ assert(processPage.includes('<option value="nome">Nome da parte</option>'), "pag
 assert(processPage.includes('<option value="cpf">CPF</option>'), "pagina de processos sem busca por CPF");
 assert(processPage.includes("CPF deve aparecer sempre mascarado"), "pagina de processos sem aviso de CPF mascarado");
 assert(processPage.includes("jus9DajProcessLinksV1"), "pagina de processos sem persistencia local DAJ-processo");
+assert(processPage.includes("/api/daj-process-links"), "pagina de processos sem API autenticada DAJ-processo");
+assert(processPage.includes("credentials:'include'"), "pagina de processos sem credenciais na API DAJ-processo");
+assert(processPage.includes("fallback local demonstrativo"), "pagina de processos sem fallback local demonstrativo");
+assert(processPage.includes("backend autenticado"), "pagina de processos sem rotulo de backend autenticado");
 assert(processPage.includes("data-linked-daj-panel"), "pagina de processos sem painel de DAJ vinculado");
 assert(processPage.includes("data-daj-link-list"), "pagina de processos sem indice DAJ-processo");
 assert(processPage.includes("Cada DAJ pode ficar vinculado a um unico processo"), "pagina de processos sem regra um DAJ um processo");
+assert(wranglerConfig.includes('"binding": "JUS9_DAJ_PROCESS_LINKS"'), "wrangler sem KV oficial DAJ-processo");
 assert(installPage.includes("install-app-green-card"), "card da Jus 9 Verde ausente na pagina de instalacao");
 assert(installPage.includes("https://jus9verde.jus9tecnologia.com.br/instalar-app.html"), "link de instalacao da Jus 9 Verde ausente");
 assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de instalacao sem atualizacao imediata do estilo verde");
