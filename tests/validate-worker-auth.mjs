@@ -540,6 +540,88 @@ assert(response.status === 204, "preflight CORS da Agenda deveria retornar 204")
 assert(response.headers.get("access-control-allow-origin") === "https://universidadedofuturo.jus9tecnologia.com.br", "CORS da Agenda nao liberou subdominio autorizado");
 console.log("AUTH_OK calendar-cors=204");
 
+response = await request("/api/tribunais/datajud/status");
+data = await response.json();
+assert(response.status === 200 && data.gateway === "tribunais-datajud", "status DataJud deveria responder");
+assert(data.configured === false && data.gatewayTokenConfigured === false, "status DataJud deveria ocultar segredos e indicar pendencias");
+assert(data.supportedAliases.some((item) => item.code === "tjsc" && item.alias === "api_publica_tjsc"), "aliases DataJud deveriam incluir TJSC");
+console.log("AUTH_OK datajud-status=200");
+
+response = await request("/api/tribunais/datajud/search", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ tribunal: "tjsc", numeroProcesso: "0000000-00.2024.8.24.0000" })
+});
+data = await response.json();
+assert(response.status === 501 && data.error === "gateway_tribunais_token_pendente", "DataJud sem token interno deveria ficar bloqueado");
+console.log("AUTH_OK datajud-token-pendente=501");
+
+const dataJudEnvWithoutKey = { ...env, JUS9_TRIBUNAIS_GATEWAY_TOKEN: "token-interno" };
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/tribunais/datajud/search", {
+    method: "POST",
+    headers: { "content-type": "application/json", "x-jus9-internal-token": "token-interno" },
+    body: JSON.stringify({ tribunal: "tjsc", numeroProcesso: "0000000-00.2024.8.24.0000" })
+  }),
+  dataJudEnvWithoutKey
+);
+data = await response.json();
+assert(response.status === 501 && data.error === "datajud_configuracao_pendente", "DataJud sem credencial deveria declarar configuracao pendente");
+console.log("AUTH_OK datajud-credencial-pendente=501");
+
+const originalFetch = globalThis.fetch;
+globalThis.fetch = async (url, options = {}) => {
+  assert(String(url) === "https://api-publica.datajud.cnj.jus.br/api_publica_tjsc/_search", "endpoint DataJud incorreto");
+  assert(options.method === "POST", "DataJud deve usar POST com corpo JSON");
+  assert(options.headers.Authorization === "APIKey chave-publica-ficticia", "DataJud deve usar APIKey sem expor ao cliente");
+  const payload = JSON.parse(String(options.body || "{}"));
+  assert(payload.query.match.numeroProcesso === "00000000020248240000", "numero CNJ deveria ser normalizado");
+  return Response.json({
+    hits: {
+      total: { value: 1 },
+      hits: [
+        {
+          _id: "TJSC_TESTE",
+          _source: {
+            id: "origem-teste",
+            tribunal: "TJSC",
+            numeroProcesso: "00000000020248240000",
+            dataAjuizamento: "2024-01-02T00:00:00",
+            grau: "G1",
+            nivelSigilo: 0,
+            classe: { codigo: 7, nome: "Procedimento Comum Civel" },
+            assuntos: [{ codigo: 10433, nome: "Alimentos" }],
+            orgaoJulgador: { codigo: 123, nome: "1a Vara Civel" },
+            movimentos: [
+              { codigo: 1, nome: "Distribuicao", dataHora: "2024-01-02T10:00:00" },
+              { codigo: 2, nome: "Conclusos", dataHora: "2024-01-03T10:00:00", orgaoJulgador: { nomeOrgao: "1a Vara Civel" } }
+            ],
+            partes: [{ nome: "NAO DEVE SAIR" }]
+          }
+        }
+      ]
+    }
+  });
+};
+try {
+  response = await worker.fetch(
+    new Request("https://jus9.invalid/api/tribunais/datajud/search", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-jus9-internal-token": "token-interno" },
+      body: JSON.stringify({ tribunal: "TJSC", numeroProcesso: "0000000-00.2024.8.24.0000", size: 50 })
+    }),
+    { ...dataJudEnvWithoutKey, DATAJUD_API_KEY: "chave-publica-ficticia" }
+  );
+  data = await response.json();
+  assert(response.status === 200 && data.ok === true, "DataJud configurado deveria responder");
+  assert(data.alias === "api_publica_tjsc" && data.results[0].classe.nome.includes("Procedimento"), "DataJud deveria normalizar metadados");
+  assert(data.governance.noPetitioning === true && data.governance.noSensitiveDisclosure === true, "DataJud deveria declarar limites governados");
+  assert(!JSON.stringify(data).includes("NAO DEVE SAIR"), "DataJud nao deve repassar partes brutas");
+  console.log("AUTH_OK datajud-search-normalizado=200");
+} finally {
+  globalThis.fetch = originalFetch;
+}
+
 response = await request("/auth/logout");
 const logoutHtml = await response.text();
 assert(response.status === 200 && logoutHtml.includes("Sair da Jus 9"), "GET logout deveria mostrar tela segura");

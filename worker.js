@@ -33,6 +33,10 @@ import {
   readUserMemoryRecord,
   saveUserMemoryRecord
 } from "./functions/_shared/user-memory.js";
+import {
+  publicDataJudStatus,
+  searchDataJud
+} from "./functions/_shared/datajud.js";
 
 export default {
   async fetch(request, env) {
@@ -100,6 +104,14 @@ export default {
 
     if (originalUrl.pathname === "/api/calendar/events") {
       return handleCalendarEvents(request, env);
+    }
+
+    if (originalUrl.pathname === "/api/tribunais/datajud/status") {
+      return handleDataJudStatus(request, env);
+    }
+
+    if (originalUrl.pathname === "/api/tribunais/datajud/search") {
+      return handleDataJudSearch(request, env);
     }
 
     if (originalUrl.pathname === "/auth/logout") {
@@ -733,6 +745,43 @@ async function handleCalendarEvents(request, env) {
   return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET, POST" });
 }
 
+async function handleDataJudStatus(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  if (request.method !== "GET") {
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET" });
+  }
+  return jsonResponse({
+    ok: true,
+    gateway: "tribunais-datajud",
+    ...publicDataJudStatus(env),
+  }, 200, corsHeaders);
+}
+
+async function handleDataJudSearch(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  if (request.method !== "POST") {
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "POST" });
+  }
+  const expectedToken = String(env.JUS9_TRIBUNAIS_GATEWAY_TOKEN || "").trim();
+  if (!expectedToken) {
+    return jsonResponse({
+      ok: false,
+      error: "gateway_tribunais_token_pendente",
+      missing: ["JUS9_TRIBUNAIS_GATEWAY_TOKEN"],
+    }, 501, corsHeaders);
+  }
+  const providedToken = String(request.headers.get("x-jus9-internal-token") || "").trim();
+  if (providedToken !== expectedToken) {
+    return jsonResponse({ ok: false, error: "gateway_tribunais_nao_autorizado" }, 401, corsHeaders);
+  }
+  const body = await request.json().catch(() => null);
+  if (!body || typeof body !== "object") {
+    return jsonResponse({ ok: false, error: "json_obrigatorio" }, 400, corsHeaders);
+  }
+  const result = await searchDataJud(env, body);
+  return jsonResponse(result.payload, result.status, corsHeaders);
+}
+
 function handleLogout(request) {
   const corsHeaders = getAuthCorsHeaders(request);
   const url = new URL(request.url);
@@ -801,6 +850,8 @@ function isAuthCorsPath(pathname) {
     pathname === "/api/attachments/extract" ||
     pathname === "/api/calendar/status" ||
     pathname === "/api/calendar/events" ||
+    pathname === "/api/tribunais/datajud/status" ||
+    pathname === "/api/tribunais/datajud/search" ||
     pathname === "/auth/logout";
 }
 
@@ -818,7 +869,7 @@ function getAuthCorsHeaders(request) {
     "Access-Control-Allow-Origin": origin,
     "Access-Control-Allow-Credentials": "true",
     "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Headers": "Content-Type, X-Jus9-Internal-Token",
     "Vary": "Origin"
   };
 }
