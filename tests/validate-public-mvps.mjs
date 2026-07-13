@@ -38,6 +38,7 @@ const pwaInstallScript = await fs.readFile(new URL("../assets/js/pwa-install.js"
 const canonicalServiceWorker = await fs.readFile(new URL("../service-worker.js", import.meta.url), "utf8");
 const legacyServiceWorker = await fs.readFile(new URL("../sw.js", import.meta.url), "utf8");
 const wranglerConfig = await fs.readFile(new URL("../wrangler.jsonc", import.meta.url), "utf8");
+const workerSource = await fs.readFile(new URL("../worker.js", import.meta.url), "utf8");
 assert(sharedScript.includes("https://charlieecho.jus9tecnologia.com.br/api/ia"), "chat compartilhado nao aponta para API publica");
 assert(sharedScript.includes("asksAboutCharlieModes"), "roteamento explicito de modos ausente");
 assert(sharedScript.includes("Protocolo Centelha Criativa 5.4"), "protocolo de criatividade governada ausente");
@@ -86,6 +87,9 @@ assert(processPage.includes("data-linked-daj-panel"), "pagina de processos sem p
 assert(processPage.includes("data-daj-link-list"), "pagina de processos sem indice DAJ-processo");
 assert(processPage.includes("Cada DAJ pode ficar vinculado a um unico processo"), "pagina de processos sem regra um DAJ um processo");
 assert(wranglerConfig.includes('"binding": "JUS9_DAJ_PROCESS_LINKS"'), "wrangler sem KV oficial DAJ-processo");
+assert(wranglerConfig.includes('"binding": "JUS9_USER_MEMORY"'), "wrangler sem KV dedicado de memoria do usuario");
+assert(workerSource.includes('originalUrl.pathname === "/api/health"'), "worker sem health explicito");
+assert(workerSource.includes('DED: ["Autor / Editor"'), "worker sem contexto canonico DED");
 assert(installPage.includes("install-app-green-card"), "card da Jus 9 Verde ausente na pagina de instalacao");
 assert(installPage.includes("https://jus9verde.jus9tecnologia.com.br/instalar-app.html"), "link de instalacao da Jus 9 Verde ausente");
 assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de instalacao sem atualizacao imediata do estilo verde");
@@ -161,7 +165,7 @@ console.log("STATIC_OK chat-compartilhado-14-mvps");
 console.log("STATIC_OK fluxos-aprofundados-14-mvps");
 console.log("STATIC_OK equipe-local-14-mvps");
 console.log("STATIC_OK cache-bust-equipe-14-mvps");
-console.log("STATIC_OK redes-sociais-workspace-13-mvps");
+console.log("STATIC_OK redes-sociais-workspace-13-paginas-ia");
 console.log("STATIC_OK card-instalacao-jus9-verde");
 console.log("STATIC_OK service-worker-principal-canonico");
 console.log("PUBLIC_MVPS_REGRESSION_OK");

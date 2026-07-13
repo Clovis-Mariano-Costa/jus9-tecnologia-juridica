@@ -5,7 +5,7 @@ const root = path.resolve(new URL("..", import.meta.url).pathname.replace(/^\/([
 const script = fs.readFileSync(path.join(root, "script.js"), "utf8");
 const catalog = JSON.parse(fs.readFileSync(path.join(root, "data-publica", "mvp-perfis.json"), "utf8"));
 
-const requiredCodes = ["DAJ", "DAA", "DEJ", "DIC", "DPJ", "DIP", "DEE", "DEJI", "DOI", "DGE", "DMG", "DMP", "DAP"];
+const requiredCodes = ["DAJ", "DAA", "DEJ", "DIC", "DPJ", "DIP", "DEE", "DEJI", "DOI", "DGE", "DMG", "DMP", "DAP", "DED"];
 const failures = [];
 
 function assert(condition, message) {
@@ -40,6 +40,7 @@ const mustMention = [
   ["DOI", "nao simular ato administrativo real"],
   ["DEE", "segredo profissional"],
   ["DAJ", "nao assinar"],
+  ["DED", "nao prometer publicacao"],
 ];
 
 for (const [code, phrase] of mustMention) {
@@ -48,6 +49,7 @@ for (const [code, phrase] of mustMention) {
 
 const appIaFiles = fs.readdirSync(root).filter((name) => /^app-ia-.*\.html$/.test(name));
 assert(appIaFiles.length === 13, `esperados 13 app-ia-*.html, encontrados ${appIaFiles.length}`);
+assert(script.includes("DED: 'app-ia-profissional.html'"), "DED: rota compartilhada de IA profissional ausente");
 
 for (const file of appIaFiles) {
   const html = fs.readFileSync(path.join(root, file), "utf8");
@@ -64,4 +66,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("AUDITORIA_PERSONAS_MVP_OK 13 personas, assinaturas criativas e limites duros verificados.");
+console.log("AUDITORIA_PERSONAS_MVP_OK 14 personas e 13 paginas de IA dedicadas verificadas.");

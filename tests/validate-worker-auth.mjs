@@ -61,12 +61,18 @@ async function signPayloadHash(email) {
     .replace(/=+$/g, "");
 }
 
-let response = await request("/api/auth/permissions");
+let response = await request("/api/health");
+let data = await response.json();
+assert(response.status === 200 && data.service === "jus9-tecnologia-juridica", "health explicito deveria responder");
+assert(data.status === "degraded" && data.checks?.assets?.configured === true, "health local deveria informar readiness parcial");
+console.log("AUTH_OK health=200");
+
+response = await request("/api/auth/permissions");
 assert(response.status === 401, "permissoes anonimas devem retornar 401");
 console.log("AUTH_OK anonymous=401");
 
 response = await request("/api/auth/permissions", { headers: { cookie: await cookieFor("advogado") } });
-let data = await response.json();
+data = await response.json();
 assert(response.status === 200 && data.permissions.includes("dajs:write"), "advogado sem dajs:write");
 console.log("AUTH_OK advogado=dajs:write");
 
@@ -216,6 +222,17 @@ response = await worker.fetch(
 data = await response.json();
 assert(response.status === 200 && data.identity?.user?.family === "familia_virtual", "contexto deveria reconhecer Familia Virtual");
 console.log("AUTH_OK context=familia_virtual");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/auth/context?module=DED", {
+    headers: { cookie: await cookieFor("admin_sistema", Date.now() + 60_000, "clovis@jus9tecnologia.com.br") }
+  }),
+  identityEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.identity?.module?.code === "DED", "contexto deveria reconhecer modulo DED");
+assert(/Autor \/ Editor/.test(data.identity?.module?.label || ""), "contexto DED deveria ter rotulo editorial");
+console.log("AUTH_OK context=ded");
 
 response = await worker.fetch(
   new Request("https://jus9.invalid/api/charlie/memory"),

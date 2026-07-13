@@ -2,7 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "jus9-tecnologia-juridica",
   "main": "worker.js",
-  "compatibility_date": "2026-07-12",
+  "compatibility_date": "2026-07-13",
   "assets": {
     "directory": "dist",
     "binding": "ASSETS",
@@ -12,7 +12,12 @@
   "vars": {
     "AUTH_PUBLIC_GOOGLE_ENABLED": "true",
     "AUTH_PUBLIC_GOOGLE_PROFILE": "cidadao",
-    "GOOGLE_CALENDAR_OAUTH_ENABLED": "false"
+    "GOOGLE_CALENDAR_OAUTH_ENABLED": "false",
+    "JUS9_RELEASE": "governanca-1.4.0-daj-homologacao-1.0"
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
   },
   "kv_namespaces": [
     {
@@ -26,6 +31,10 @@
     {
       "binding": "JUS9_DAJ_PROCESS_LINKS",
       "id": "6e1aba2a1bc149da8e9839b9e2e8ad60"
+    },
+    {
+      "binding": "JUS9_USER_MEMORY",
+      "id": "776bbb6137b34e10acaad81864c2267b"
     }
   ]
 }

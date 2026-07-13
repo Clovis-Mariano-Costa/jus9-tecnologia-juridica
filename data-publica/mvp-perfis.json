@@ -1,11 +1,12 @@
 {
   "schema": "jus9.mvp.profiles.public.v1",
-  "updated_at": "2026-07-01",
+  "updated_at": "2026-07-13",
   "classification": "PUBLICO / MVP DEMONSTRATIVO / SEM DADOS REAIS",
   "notes": [
     "Os perfis organizam ambientes demonstrativos e nao concedem permissao real.",
     "Autenticacao, autorizacao, titularidade, RLS, logs e revisao humana continuam obrigatorios antes de dados reais.",
-    "INV e ORG sao aliases legados aceitos para compatibilidade; os codigos canonicos sao DIP e DOI."
+    "INV e ORG sao aliases legados aceitos para compatibilidade; os codigos canonicos sao DIP e DOI.",
+    "O inventario canonico possui 14 MVPs. Treze possuem pagina de IA dedicada; o DED usa transitoriamente a IA profissional compartilhada."
   ],
   "profiles": [
     {

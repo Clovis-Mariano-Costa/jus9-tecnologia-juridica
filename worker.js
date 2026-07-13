@@ -31,7 +31,8 @@ import { getPermissions } from "./functions/_shared/permissions.js";
 import {
   deleteUserMemoryRecord,
   readUserMemoryRecord,
-  saveUserMemoryRecord
+  saveUserMemoryRecord,
+  userMemoryStorageStatus
 } from "./functions/_shared/user-memory.js";
 import {
   publicDataJudStatus,
@@ -92,6 +93,10 @@ export default {
 
     if (originalUrl.pathname === "/api/charlie/memory") {
       return handleCharlieMemory(request, env);
+    }
+
+    if (originalUrl.pathname === "/api/health") {
+      return handleHealth(request, env);
     }
 
     if (originalUrl.pathname === "/api/attachments/extract") {
@@ -765,6 +770,34 @@ async function handleDataJudStatus(request, env) {
   }, 200, corsHeaders);
 }
 
+function handleHealth(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  if (request.method !== "GET") {
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET" });
+  }
+  const dataJud = publicDataJudStatus(env);
+  const userMemory = userMemoryStorageStatus(env);
+  const criticalReady = Boolean(env.ASSETS && env.JUS9_DAJ_PROCESS_LINKS && userMemory.configured);
+  return jsonResponse({
+    ok: true,
+    service: "jus9-tecnologia-juridica",
+    release: String(env.JUS9_RELEASE || "development").slice(0, 120),
+    status: criticalReady ? "ready" : "degraded",
+    checkedAt: new Date().toISOString(),
+    checks: {
+      assets: { configured: Boolean(env.ASSETS) },
+      authentication: { configured: missingGoogleConfig(env).length === 0 },
+      userMemory: {
+        configured: userMemory.configured,
+        binding: userMemory.binding || "",
+        isolated: userMemory.configured && userMemory.fallback === false
+      },
+      dataJud: { configured: Boolean(dataJud.configured), mode: dataJud.mode },
+      dajProcessLinks: { configured: Boolean(env.JUS9_DAJ_PROCESS_LINKS) }
+    }
+  }, 200, corsHeaders);
+}
+
 async function handleDataJudSearch(request, env) {
   const corsHeaders = getAuthCorsHeaders(request);
   if (request.method !== "POST") {
@@ -779,7 +812,7 @@ async function handleDataJudSearch(request, env) {
     }, 501, corsHeaders);
   }
   const providedToken = String(request.headers.get("x-jus9-internal-token") || "").trim();
-  if (providedToken !== expectedToken) {
+  if (!(await secureStringEqual(providedToken, expectedToken))) {
     return jsonResponse({ ok: false, error: "gateway_tribunais_nao_autorizado" }, 401, corsHeaders);
   }
   const body = await request.json().catch(() => null);
@@ -899,7 +932,8 @@ function logoutPage(done = false) {
 }
 
 function isAuthCorsPath(pathname) {
-  return pathname === "/api/auth/me" ||
+  return pathname === "/api/health" ||
+    pathname === "/api/auth/me" ||
     pathname === "/api/auth/permissions" ||
     pathname === "/api/auth/context" ||
     pathname === "/api/profile-requests" ||
@@ -938,6 +972,21 @@ function getAuthCorsHeaders(request) {
 
 function hasPermission(session, permission) {
   return getPermissions(session?.profile).includes(permission);
+}
+
+async function secureStringEqual(left, right) {
+  const encoder = new TextEncoder();
+  const [leftDigest, rightDigest] = await Promise.all([
+    crypto.subtle.digest("SHA-256", encoder.encode(String(left || ""))),
+    crypto.subtle.digest("SHA-256", encoder.encode(String(right || "")))
+  ]);
+  const leftBytes = new Uint8Array(leftDigest);
+  const rightBytes = new Uint8Array(rightDigest);
+  let difference = 0;
+  for (let index = 0; index < leftBytes.length; index += 1) {
+    difference |= leftBytes[index] ^ rightBytes[index];
+  }
+  return difference === 0;
 }
 
 const ATTACHMENT_MAX_FILES = 3;
@@ -1751,7 +1800,8 @@ function moduleContext(code) {
     DGE: ["Administrador Jus 9", "governanca, auditoria, versionamento e seguranca"],
     DMG: ["Magistrado", "gabinete demonstrativo, filas e minutas estruturais"],
     DMP: ["Ministerio Publico", "apoio demonstrativo institucional"],
-    DAP: ["Autoridade Policial", "fluxos ficticios e cautela maxima"]
+    DAP: ["Autoridade Policial", "fluxos ficticios e cautela maxima"],
+    DED: ["Autor / Editor", "obra, autoria, titularidade, revisao e publicacao demonstrativa"]
   };
   const item = modules[code] || ["Modulo Jus 9", "ambiente generico; diferenciar pelo pedido e pela pagina"];
   return { code: code || "", label: item[0], scope: item[1] };

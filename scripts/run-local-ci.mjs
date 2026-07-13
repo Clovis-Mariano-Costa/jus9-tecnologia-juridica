@@ -7,7 +7,7 @@ const githubRoot = path.resolve(portalRoot, "..");
 
 const checks = [
   {
-    label: "Portal publico e 13 MVPs",
+    label: "Portal publico e 14 MVPs",
     cwd: portalRoot,
     command: process.execPath,
     args: ["tests/validate-public-mvps.mjs"]
@@ -29,6 +29,12 @@ const checks = [
     cwd: portalRoot,
     command: process.execPath,
     args: ["scripts/audit-charlie-echo-routing.mjs"]
+  },
+  {
+    label: "Inventario canonico dos MVPs",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-charlie-mvp-inventory.mjs"]
   },
   {
     label: "Contratos anti-travamento da Charlie Echo",
@@ -59,6 +65,12 @@ const checks = [
     cwd: portalRoot,
     command: process.execPath,
     args: ["tests/validate-worker-auth.mjs"]
+  },
+  {
+    label: "Homologacao tecnica DAJ ponta a ponta",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["tests/validate-daj-homologation.mjs"]
   },
   {
     label: "Backend local fail closed",
