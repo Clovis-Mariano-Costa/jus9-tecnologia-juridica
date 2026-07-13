@@ -1,41 +1,127 @@
 <!--
-Jus 9 Tecnologia Jurídica
-Repositório: jus9-tecnologia-juridica
+Jus 9 Tecnologia Juridica
+Repositorio: jus9-tecnologia-juridica
 Software livre com autoria preservada.
-Direitos autorais reservados para Jus 9 Tecnologia Jurídica.
-Produção do site: © Jus 9 Tecnologia Jurídica. Direitos autorais da produção reservados.
-A licença livre não remove autoria, origem, assinatura institucional nem direitos autorais.
-Referência oficial: https://www.jus9tecnologia.com.br/
+Direitos autorais reservados para Jus 9 Tecnologia Juridica.
+Producao do site: (c) Jus 9 Tecnologia Juridica. Direitos autorais da producao reservados.
+A licenca livre nao remove autoria, origem, assinatura institucional nem direitos autorais.
+Referencia oficial: https://www.jus9tecnologia.com.br/
 E-mail de contato: Contato@jus9tecnologia.com.br
-DNA de referência de <a href="https://charlieecho.jus9tecnologia.com.br/ia-profissional">Charlie Echo</a> da Costa: charlieecho-jus9-tecnologia-juridica
+DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
 -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Prazos - Jus 9 Demo</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
+  <meta name="theme-color" content="#07111f">
+  <link rel="manifest" href="manifest.webmanifest">
+</head>
+<body class="demo-shell">
+<div class="jus9-autoria-topo" role="note" aria-label="Autoria e licenca da producao do site" style="font-size:0.82rem;line-height:1.4;text-align:center;padding:0.45rem 0.75rem;background:rgba(15,23,42,0.94);color:#f8fafc;letter-spacing:0.01em;">Jus 9 Tecnologia Juridica - software livre, autoria preservada.</div>
+<div class="demo-layout">
+  <aside class="demo-sidebar">
+    <img src="assets/jus9-logo.svg" alt="Jus 9">
+    <nav>
+      <a href="app-demo-advogar.html">Painel</a>
+      <a href="app-atendimento-inicial.html">Atendimento</a>
+      <a href="app-clientes.html">Clientes</a>
+      <a href="app-daj.html">DAJ</a>
+      <a href="app-documentos.html">Documentos</a>
+      <a href="app-processos.html">Processos</a>
+      <a class="active" href="app-prazos.html">Prazos</a>
+      <a href="app-agenda.html">Agenda</a>
+      <a href="app-workspace.html">Workspace</a>
+      <a href="app-cofre.html">Cofre Juridico</a>
+      <a href="app-ia-profissional.html">IA Profissional</a>
+      <a href="app-perfis.html">Perfis</a>
+      <a href="mvp.html">Sair do demo</a>
+    </nav>
+  </aside>
 
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><title>Prazos — Jus 9 Demo</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css"><meta name="theme-color" content="#07111f"><link rel="manifest" href="manifest.webmanifest"></head><body class="demo-shell">
-<div class="jus9-autoria-topo" role="note" aria-label="Autoria e licença da produção do site" style="font-size: 0.82rem; line-height: 1.4; text-align: center; padding: 0.45rem 0.75rem; background: rgba(15, 23, 42, 0.94); color: #f8fafc; letter-spacing: 0.01em;">Jus 9 Tecnologia Jurídica — software livre, autoria preservada.</div>
-<div class="demo-layout"><aside class="demo-sidebar"><img src="assets/jus9-logo.svg" alt="Jus 9"><nav>
-<a href="app-demo-advogar.html">Painel</a>
-<a href="app-clientes.html">Clientes</a>
-<a href="app-daj.html">DAJ</a>
-<a href="app-processos.html">Processos</a>
-<a href="app-agenda.html">Agenda</a><a class="active" href="app-prazos.html">Prazos</a>
-<a href="app-documentos.html">Documentos</a>
-<a href="app-cofre.html">Cofre Jurídico</a>
-<a href="app-workspace.html">Workspace</a>
-<a href="app-ia-profissional.html">IA Profissional</a><a href="mvp.html">Sair do demo</a>
-</nav></aside><main class="demo-main"><section class="demo-topbar"><div><div class="eyebrow">Prazos</div><h1 style="font-size:42px;color:#0b1728;margin-top:8px">Alertas configuráveis.</h1><p style="color:#51627a;margin:8px 0 0">Prazos jurídicos com níveis de alerta e canais independentes, em lógica semelhante à agenda.</p></div><span class="badge secret">Prazo fatal exige prudência</span></section><section class="daj-card"><h2>Novo prazo</h2><form class="form-grid" onsubmit="event.preventDefault(); alert('Demonstração: prazo salvo com alertas independentes.');"><div class="form-field"><label>Tipo</label><select><option>Prazo fatal</option><option>Prazo interno</option><option>Retorno ao cliente</option><option>Audiência</option></select></div><div class="form-field"><label>Data e hora</label><input type="datetime-local"></div><div class="form-field"><label>Nível</label><select><option>Informativo</option><option>Importante</option><option>Urgente</option><option>Fatal</option><option>Secreto / sensível</option></select></div><div class="form-field"><label>Vincular</label><select><option>DAJ-2026-0001</option><option>Processo 0001234</option></select></div><button class="mvp-button" type="submit">Salvar prazo</button></form></section><section class="alert-config"><div class="alert-row"><strong>Notificação interna</strong><span>24 horas antes</span></div><div class="alert-row"><strong>E-mail</strong><span>7 dias e 48 horas antes</span></div><div class="alert-row"><strong>WhatsApp</strong><span>48 horas e 2 horas antes</span></div></section>
+  <main class="demo-main">
+    <section class="demo-topbar">
+      <div>
+        <div class="eyebrow">Prazos do DAJ</div>
+        <h1 style="font-size:42px;color:#0b1728;margin-top:8px">Prazo e alerta sem improviso.</h1>
+        <p style="color:#51627a;margin:8px 0 0">Prazo fatal, audiencia, retorno e tarefa interna entram no DAJ com classificacao, responsavel, canal e revisao humana.</p>
+      </div>
+      <span class="badge secret">Conferencia obrigatoria</span>
+    </section>
 
-<section class="links-semanticos-jus9-v1-5" aria-label="Links institucionais Jus 9" style="margin:2rem auto;max-width:1100px;padding:1rem;border:1px solid rgba(212,180,99,.35);border-radius:18px;background:rgba(15,23,42,.04);font-size:.95rem;line-height:1.6">
-  <strong>Links Jus 9:</strong>
-  <a href="https://equipe.jus9tecnologia.com.br/">Equipe</a> ·
-  <a href="https://investimentos.jus9tecnologia.com.br/">Investimentos</a> ·
-  <a href="https://jus9tecnologia.com.br/mvp#demos-jus9">MVP</a> ·
-  <a href="https://charlieecho.jus9tecnologia.com.br/ia-profissional">Charlie Echo</a> ·
-  <a href="https://jus9verde.jus9tecnologia.com.br/charlie-echo-social">Charlie Echo Social</a> ·
-  <a href="mailto:Contato@jus9tecnologia.com.br">Contato</a>
-</section>
+    <section class="process-layout">
+      <article class="process-card">
+        <h2>Novo prazo</h2>
+        <form class="form-grid" data-deadline-form>
+          <div class="form-field"><label for="deadline-type">Tipo</label><select id="deadline-type"><option>Prazo fatal</option><option>Prazo interno</option><option>Retorno ao cliente</option><option>Audiencia</option></select></div>
+          <div class="form-field"><label for="deadline-date">Data e hora</label><input id="deadline-date" type="datetime-local" required></div>
+          <div class="form-field"><label for="deadline-level">Nivel</label><select id="deadline-level"><option>Informativo</option><option>Importante</option><option>Urgente</option><option>Fatal</option><option>Secreto / sensivel</option></select></div>
+          <div class="form-field"><label for="deadline-link">Vincular</label><select id="deadline-link"><option>DAJ-2026-0001</option><option>Processo demonstrativo</option><option>Documento pendente</option></select></div>
+          <button class="mvp-button" type="submit">Preparar alerta</button>
+        </form>
+        <div id="deadline-result" aria-live="polite" style="margin-top:18px;background:#f8fafc;border:1px dashed #c58b2f;border-radius:16px;padding:16px">
+          <h3>Alerta preparado</h3>
+          <p>Preencha o prazo. A gravacao real deve passar por perfil autorizado e revisao humana.</p>
+        </div>
+      </article>
 
-</main></div><script src="script.js?v=20260712-charlie-pesquisa-ativa-v1"></script>
-<footer class="jus9-autoria-rodape" role="contentinfo" aria-label="Direitos autorais e origem da produção do site" style="font-size: 0.85rem; line-height: 1.5; text-align: center; padding: 1rem 0.75rem; margin-top: 2rem; background: rgba(15, 23, 42, 0.96); color: #f8fafc;">Produção do site: © Jus 9 Tecnologia Jurídica. Software livre com autoria, origem e direitos autorais preservados.</footer>
-<script src="assets/js/pwa-install.js"></script></body></html>
+      <article class="process-card">
+        <h2>Charlie no prazo</h2>
+        <p>Quando houver duvida sobre contagem, fonte legal, expediente, feriado ou risco, leve para Charlie com exigencia de pesquisa e conferencia.</p>
+        <div class="quick-links">
+          <a href="app-ia-profissional.html?prompt=Analise%20o%20prazo%20do%20DAJ-2026-0001%20com%20prudencia%3A%20tipo%2C%20data%2C%20risco%2C%20fonte%20a%20conferir%2C%20feriado%2C%20responsavel%20e%20revisao%20humana.#chat-ia">Analisar prazo</a>
+          <a href="app-agenda.html">Agenda</a>
+        </div>
+      </article>
+    </section>
 
+    <section class="alert-config">
+      <div class="alert-row"><strong>Interno</strong><span>24 horas antes e no dia.</span></div>
+      <div class="alert-row"><strong>E-mail</strong><span>7 dias e 48 horas antes, quando autorizado.</span></div>
+      <div class="alert-row"><strong>WhatsApp</strong><span>Somente com consentimento e registro.</span></div>
+    </section>
 
+    <section class="daj-card">
+      <h2>Regra de seguranca</h2>
+      <p>Charlie pode sugerir, organizar e pesquisar; prazo juridico real precisa de conferencia humana, fonte aplicavel e registro do responsavel.</p>
+    </section>
+
+    <section class="links-semanticos-jus9-v1-5" aria-label="Links institucionais Jus 9" style="margin:2rem auto;max-width:1100px;padding:1rem;border:1px solid rgba(212,180,99,.35);border-radius:18px;background:rgba(15,23,42,.04);font-size:.95rem;line-height:1.6">
+      <strong>Links Jus 9:</strong>
+      <a href="https://equipe.jus9tecnologia.com.br/">Equipe</a> &middot;
+      <a href="https://investimentos.jus9tecnologia.com.br/">Investimentos</a> &middot;
+      <a href="https://jus9tecnologia.com.br/mvp#demos-jus9">MVP</a> &middot;
+      <a href="https://charlieecho.jus9tecnologia.com.br/ia-profissional">Charlie Echo</a> &middot;
+      <a href="https://jus9verde.jus9tecnologia.com.br/charlie-echo-social">Charlie Echo Social</a> &middot;
+      <a href="mailto:Contato@jus9tecnologia.com.br">Contato</a>
+    </section>
+  </main>
+</div>
+<script>
+(function(){
+  var form = document.querySelector('[data-deadline-form]');
+  var result = document.getElementById('deadline-result');
+  function escapeHtml(value){ return String(value || '').replace(/[&<>"']/g, function(ch){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]); }); }
+  if(form && result){
+    form.addEventListener('submit', function(event){
+      event.preventDefault();
+      var type = document.getElementById('deadline-type').value;
+      var date = document.getElementById('deadline-date').value;
+      var level = document.getElementById('deadline-level').value;
+      var link = document.getElementById('deadline-link').value;
+      result.style.borderColor = level === 'Fatal' ? '#b91c1c' : '#c58b2f';
+      result.innerHTML = '<h3>Rascunho de prazo preparado</h3><p><strong>' + escapeHtml(type) + '</strong> vinculado a ' + escapeHtml(link) + ' para ' + escapeHtml(date || 'data nao informada') + '. Nivel: ' + escapeHtml(level) + '. Revise fonte, feriado, expediente e responsavel antes de gravar em ambiente real.</p>';
+    });
+  }
+})();
+</script>
+<script src="script.js?v=20260712-charlie-pesquisa-ativa-v1"></script>
+<footer class="jus9-autoria-rodape" role="contentinfo" aria-label="Direitos autorais e origem da producao do site" style="font-size:0.85rem;line-height:1.5;text-align:center;padding:1rem 0.75rem;margin-top:2rem;background:rgba(15,23,42,0.96);color:#f8fafc;">Producao do site: (c) Jus 9 Tecnologia Juridica. Software livre com autoria, origem e direitos autorais preservados.</footer>
+<script src="assets/js/pwa-install.js"></script>
+</body>
+</html>

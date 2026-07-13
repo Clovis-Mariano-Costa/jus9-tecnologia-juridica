@@ -1,13 +1,13 @@
 <!--
-Jus 9 Tecnologia Jurídica
-Repositório: jus9-tecnologia-juridica
+Jus 9 Tecnologia Juridica
+Repositorio: jus9-tecnologia-juridica
 Software livre com autoria preservada.
-Direitos autorais reservados para Jus 9 Tecnologia Jurídica.
-Produção do site: © Jus 9 Tecnologia Jurídica. Direitos autorais da produção reservados.
-A licença livre não remove autoria, origem, assinatura institucional nem direitos autorais.
-Referência oficial: https://www.jus9tecnologia.com.br/
+Direitos autorais reservados para Jus 9 Tecnologia Juridica.
+Producao do site: (c) Jus 9 Tecnologia Juridica. Direitos autorais da producao reservados.
+A licenca livre nao remove autoria, origem, assinatura institucional nem direitos autorais.
+Referencia oficial: https://www.jus9tecnologia.com.br/
 E-mail de contato: Contato@jus9tecnologia.com.br
-DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
+DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
 -->
 <!doctype html>
 <html lang="pt-BR">
@@ -23,23 +23,23 @@ DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridic
   <link rel="manifest" href="manifest.webmanifest">
 </head>
 <body class="demo-shell">
-<div class="jus9-autoria-topo" role="note" aria-label="Autoria e licença da produção do site" style="font-size: 0.82rem; line-height: 1.4; text-align: center; padding: 0.45rem 0.75rem; background: rgba(15, 23, 42, 0.94); color: #f8fafc; letter-spacing: 0.01em;">Jus 9 Tecnologia Jurídica — software livre, autoria preservada.</div>
+<div class="jus9-autoria-topo" role="note" aria-label="Autoria e licenca da producao do site" style="font-size:0.82rem;line-height:1.4;text-align:center;padding:0.45rem 0.75rem;background:rgba(15,23,42,0.94);color:#f8fafc;letter-spacing:0.01em;">Jus 9 Tecnologia Juridica - software livre, autoria preservada.</div>
 <div class="demo-layout">
   <aside class="demo-sidebar">
     <img src="assets/jus9-logo.svg" alt="Jus 9">
     <nav>
       <a href="app-demo-advogar.html">Painel</a>
+      <a href="app-atendimento-inicial.html">Atendimento</a>
       <a href="app-clientes.html">Clientes</a>
-      <a href="app-atendimento-inicial.html">Atendimento inicial</a>
-      <a href="app-retorno.html">Retorno</a>
       <a href="app-daj.html">DAJ</a>
-      <a href="app-processos.html">Processos</a>
-      <a class="active" href="app-agenda.html">Agenda</a>
-      <a href="app-prazos.html">Prazos</a>
       <a href="app-documentos.html">Documentos</a>
-      <a href="app-cofre.html">Cofre Jurídico</a>
+      <a href="app-processos.html">Processos</a>
+      <a href="app-prazos.html">Prazos</a>
+      <a class="active" href="app-agenda.html">Agenda</a>
       <a href="app-workspace.html">Workspace</a>
+      <a href="app-cofre.html">Cofre Juridico</a>
       <a href="app-ia-profissional.html">IA Profissional</a>
+      <a href="app-perfis.html">Perfis</a>
       <a href="mvp.html">Sair do demo</a>
     </nav>
   </aside>
@@ -47,76 +47,57 @@ DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridic
   <main class="demo-main">
     <section class="demo-topbar">
       <div>
-        <div class="eyebrow">Agenda Jus 9</div>
-        <h1 style="font-size:42px;color:#0b1728;margin-top:8px">Agenda híbrida para o evento.</h1>
-        <p style="color:#51627a;margin:8px 0 0">A Jus 9 mantém agenda própria para prazos, DAJ, processo, cliente, equipe e auditoria. Google Calendar entra como lembrete e convite sem dados sensíveis.</p>
-        <div class="warning-note" style="margin-top:14px"><strong>Google Agenda em homologacao:</strong> o modo local segue ativo. A conexao real usa login Google, permissao especifica de Agenda e backend governado. <a href="documentos/google-calendar.html">Ver governanca da Agenda</a>.</div>
+        <div class="eyebrow">Agenda DAJ</div>
+        <h1 style="font-size:42px;color:#0b1728;margin-top:8px">Agenda propria, espelho externo governado.</h1>
+        <p style="color:#51627a;margin:8px 0 0">A agenda do DAJ e a fonte de verdade. Google Agenda entra como lembrete/convite quando o usuario autoriza e sem expor dados sensiveis.</p>
       </div>
-      <span class="badge secret">Demo sem dados reais</span>
+      <span class="badge secret">Sem dados reais</span>
     </section>
-    <section class="event-quick-nav" aria-label="Navegação rápida do evento"><div><strong>Modo evento Rio.</strong> <span>Agenda real conectada com permissão específica e demonstração sem dados sensíveis.</span></div><div class="event-links"><a class="primary" href="#googleCalendarPanel">Google Agenda</a><a href="documentos/google-calendar.html">Governança</a><a href="app-chat-charlie-echo.html#chat-ia">Chat Charlie</a><a href="mvp.html#demos-jus9">MVPs</a><a href="/auth/google/start?return_to=%2Fapp-agenda.html">Entrar com Google</a></div></section>
 
     <section class="daj-card">
-      <h2>Modo atual da Agenda</h2>
-      <div class="timeline-list">
-        <div class="timeline-entry"><strong>Funciona agora</strong><p>Salvar no navegador, listar compromissos demonstrativos, baixar ICS e abrir link manual do Google Calendar.</p></div>
-          <div class="timeline-entry"><strong>Google Cloud governado</strong><p>OAuth de Agenda separado do login basico, com consentimento especifico e token guardado no backend.</p></div>
-          <div class="timeline-entry"><strong>Contrato seguro</strong><p>A agenda propria continua sendo fonte de verdade. Google Calendar funciona como espelho operacional e lembrete.</p></div>
+      <div class="daj-actions-fixed">
+        <a href="#googleCalendarPanel">Google Agenda</a>
+        <a href="app-ia-profissional.html?prompt=Organize%20a%20agenda%20do%20DAJ-2026-0001%20com%20prazos%2C%20retornos%2C%20responsaveis%2C%20riscos%20e%20alertas%20seguros.#chat-ia">Enviar para Charlie</a>
+        <a href="documentos/google-calendar.html">Governanca</a>
       </div>
     </section>
 
-    <section class="daj-card" id="googleCalendarPanel">
-      <h2>Google Agenda real</h2>
-      <div class="timeline-list">
-        <div class="timeline-entry"><strong>Status</strong><p id="portalCalendarStatus">Verificando sessao e permissao de Agenda...</p></div>
-      </div>
-      <div class="link-actions">
-        <button class="mvp-button" type="button" id="portalCalendarConnectButton">Conectar Google Agenda</button>
-        <button class="mvp-button" type="button" id="portalCalendarReloadButton">Listar proximos eventos</button>
-      </div>
-      <div class="timeline-list" id="portalCalendarEvents" style="margin-top:1rem"></div>
-    </section>
-
-    <section class="agenda-grid">
-      <article class="daj-card">
+    <section class="process-layout">
+      <article class="process-card">
         <h2>Novo compromisso</h2>
         <form class="agenda-form" id="portalAgendaForm">
-          <div class="form-field full"><label>MVP / area da agenda</label><select id="portalAgendaMvp"><option value="demo-01-advogado-defensor">Demo 1 - Advogado / Defensor Publico</option><option value="demo-02-professor">Demo 2 - Professor</option><option value="demo-03-estudante">Demo 3 - Estudante</option><option value="demo-04-cidadao">Demo 4 - Cidadao / Interessado</option><option value="demo-05-empresa">Demo 5 - Empresa / Juridico interno</option><option value="demo-06-investidor">Demo 6 - Investidor / Parceiro</option><option value="demo-07-delegado">Demo 7 - Delegado / Policia Judiciaria</option><option value="demo-08-juiz">Demo 8 - Juiz / Gabinete</option><option value="demo-09-estagiario">Demo 9 - Estagiario / Aprendiz</option><option value="demo-10-cartorio">Demo 10 - Cartorio / Secretaria</option><option value="demo-11-administrador">Demo 11 - Administrador / Gestao</option><option value="demo-12-promotor">Demo 12 - Promotor / Ministerio Publico</option><option value="demo-13-orgao-publico">Demo 13 - Orgao Publico</option><option value="demo-14-autor-editor">Demo 14 - Autor / Editora / Autor-Editor</option></select></div>
-          <div class="form-field"><label>Título</label><input id="portalAgendaTitle" value="Reunião Jus 9 - Web Summit" required></div>
-          <div class="form-field"><label>Tipo</label><select id="portalAgendaType"><option>Reunião com investidor</option><option>Audiência</option><option>Prazo interno</option><option>Retorno ao cliente</option><option>Aula / laboratório</option><option>Tarefa de equipe</option></select></div>
-          <div class="form-field"><label>Data e hora</label><input id="portalAgendaStart" type="datetime-local" required></div>
-          <div class="form-field"><label>Duração</label><select id="portalAgendaDuration"><option value="30">30 min</option><option value="45" selected>45 min</option><option value="60">1 hora</option><option value="90">1h30</option></select></div>
-          <div class="form-field"><label>Responsável</label><select><option>Fundador</option><option>Advogado titular</option><option>Secretaria</option><option>Assessoria</option><option>Grupo / equipe</option></select></div>
-          <div class="form-field"><label>Vincular</label><select><option>Web Summit Rio 2026</option><option>DAJ-2026-0001</option><option>Processo 0001234</option><option>Cliente demonstração</option><option>Sem vínculo jurídico</option></select></div>
-          <div class="form-field full"><label>Descrição</label><textarea id="portalAgendaDescription">Compromisso demonstrativo da Agenda Jus 9. Não usar dados reais no MVP público.</textarea></div>
+          <div class="form-field full"><label for="portalAgendaTitle">Titulo</label><input id="portalAgendaTitle" value="Reuniao Jus 9 - DAJ demonstrativo" required></div>
+          <div class="form-field"><label for="portalAgendaType">Tipo</label><select id="portalAgendaType"><option>Retorno ao cliente</option><option>Prazo interno</option><option>Audiencia</option><option>Reuniao com equipe</option><option>Reuniao com parceiro</option></select></div>
+          <div class="form-field"><label for="portalAgendaStart">Data e hora</label><input id="portalAgendaStart" type="datetime-local" required></div>
+          <div class="form-field"><label for="portalAgendaDuration">Duracao</label><select id="portalAgendaDuration"><option value="30">30 min</option><option value="45" selected>45 min</option><option value="60">1 hora</option><option value="90">1h30</option></select></div>
+          <div class="form-field"><label for="portalAgendaMvp">Vinculo</label><select id="portalAgendaMvp"><option value="DAJ-2026-0001">DAJ-2026-0001</option><option value="Processo demonstrativo">Processo demonstrativo</option><option value="Equipe Jus 9">Equipe Jus 9</option><option value="Web Summit Rio">Web Summit Rio</option></select></div>
+          <div class="form-field full"><label for="portalAgendaDescription">Descricao</label><textarea id="portalAgendaDescription">Compromisso demonstrativo da Agenda Jus 9. Nao usar dados reais no MVP publico.</textarea></div>
           <div class="link-actions full">
-            <button class="mvp-button" type="submit">Salvar no navegador</button>
-            <button class="mvp-button" type="button" id="portalGoogleButton">Abrir Google Agenda (modo contrato)</button>
+            <button class="mvp-button" type="submit">Salvar local</button>
             <button class="mvp-button" type="button" id="portalCalendarCreateButton">Salvar na Google Agenda</button>
             <button class="mvp-button" type="button" id="portalIcsButton">Baixar ICS</button>
           </div>
-          <div class="warning-note full" id="portalAgendaFeedback">Modo demonstrativo: salve primeiro com dados ficticios. A Google Agenda real exige conexao e revisao humana.</div>
+          <div class="warning-note full" id="portalAgendaFeedback">Modo demonstrativo: salve primeiro com dados ficticios. Agenda real exige conexao e revisao humana.</div>
         </form>
       </article>
-      <article class="daj-card">
-        <h2>Integração recomendada</h2>
+
+      <article class="process-card" id="googleCalendarPanel">
+        <h2>Google Agenda real</h2>
         <div class="timeline-list">
-          <div class="timeline-entry"><strong>Agenda própria</strong><p>Fonte da verdade com vínculo jurídico, permissões e logs.</p></div>
-          <div class="timeline-entry"><strong>Google Calendar</strong><p>Saída rápida por link/ICS agora; OAuth seguro no backend depois.</p></div>
-          <div class="timeline-entry"><strong>WhatsApp/e-mail</strong><p>Notificações futuras só com consentimento, opt-in e registro.</p></div>
+          <div class="timeline-entry"><strong>Status</strong><p id="portalCalendarStatus">Verificando sessao e permissao de Agenda...</p></div>
         </div>
+        <div class="link-actions">
+          <button class="mvp-button" type="button" id="portalCalendarConnectButton">Conectar Google Agenda</button>
+          <button class="mvp-button" type="button" id="portalCalendarReloadButton">Listar eventos</button>
+        </div>
+        <div class="timeline-list" id="portalCalendarEvents" style="margin-top:1rem"></div>
       </article>
     </section>
 
-    <section class="daj-card">
-      <h2>Semana demonstrativa Web Summit Rio</h2>
-      <div class="agenda-board" aria-label="Semana demonstrativa da Agenda Jus 9">
-        <div class="agenda-day"><strong>08/06</strong><span>Check-in, reconhecimento do Riocentro e primeiras conversas.</span></div>
-        <div class="agenda-day"><strong>09/06</strong><span>Reuniões com banco, investidores, parceiros e universidades.</span></div>
-        <div class="agenda-day"><strong>10/06</strong><span>Demonstração dos MVPs: Agenda, Advogados, IA e Investidores.</span></div>
-        <div class="agenda-day"><strong>11/06</strong><span>Follow-up quente, classificação de leads e próximos passos.</span></div>
-        <div class="agenda-day"><strong>Pós-evento</strong><span>Propostas de piloto, cartas de intenção e reunião de decisão.</span></div>
-      </div>
+    <section class="alert-config">
+      <div class="alert-row"><strong>Fonte de verdade</strong><span>Agenda Jus 9 vinculada ao DAJ.</span></div>
+      <div class="alert-row"><strong>Espelho externo</strong><span>Google Calendar apenas com consentimento.</span></div>
+      <div class="alert-row"><strong>Charlie</strong><span>Organiza e sugere, mas prazo real exige revisao.</span></div>
     </section>
 
     <section class="daj-card">
@@ -126,183 +107,145 @@ DNA de referência de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridic
 
     <section class="links-semanticos-jus9-v1-5" aria-label="Links institucionais Jus 9" style="margin:2rem auto;max-width:1100px;padding:1rem;border:1px solid rgba(212,180,99,.35);border-radius:18px;background:rgba(15,23,42,.04);font-size:.95rem;line-height:1.6">
       <strong>Links Jus 9:</strong>
-      <a href="https://equipe.jus9tecnologia.com.br/">Equipe</a> ·
-      <a href="https://investimentos.jus9tecnologia.com.br/">Investimentos</a> ·
-      <a href="https://jus9tecnologia.com.br/mvp#demos-jus9">MVP</a> ·
-      <a href="https://charlieecho.jus9tecnologia.com.br/ia-profissional">Charlie Echo</a> ·
-      <a href="https://jus9verde.jus9tecnologia.com.br/charlie-echo-social">Charlie Echo Social</a> ·
+      <a href="https://equipe.jus9tecnologia.com.br/">Equipe</a> &middot;
+      <a href="https://investimentos.jus9tecnologia.com.br/">Investimentos</a> &middot;
+      <a href="https://jus9tecnologia.com.br/mvp#demos-jus9">MVP</a> &middot;
+      <a href="https://charlieecho.jus9tecnologia.com.br/ia-profissional">Charlie Echo</a> &middot;
+      <a href="https://jus9verde.jus9tecnologia.com.br/charlie-echo-social">Charlie Echo Social</a> &middot;
       <a href="mailto:Contato@jus9tecnologia.com.br">Contato</a>
     </section>
   </main>
 </div>
 <script src="script.js?v=20260712-charlie-pesquisa-ativa-v1"></script>
 <script>
-const portalAgendaKey = "jus9_portal_agenda_demo_v1";
-let portalCalendarConnected = false;
-const portalPad = (n) => String(n).padStart(2, "0");
-const portalStamp = (date) => `${date.getFullYear()}${portalPad(date.getMonth()+1)}${portalPad(date.getDate())}T${portalPad(date.getHours())}${portalPad(date.getMinutes())}00`;
-function portalEvent() {
-  const start = new Date(document.getElementById("portalAgendaStart").value);
-  const end = new Date(start.getTime() + Number(document.getElementById("portalAgendaDuration").value || 45) * 60000);
-  return {
-    title: document.getElementById("portalAgendaTitle").value,
-    mvp: document.getElementById("portalAgendaMvp").value,
-    type: document.getElementById("portalAgendaType").value,
-    start: start.toISOString(),
-    end: end.toISOString(),
-    description: document.getElementById("portalAgendaDescription").value,
-    location: "Jus 9 Tecnologia Jurídica / Web Summit Rio"
-  };
-}
-function portalEvents() {
-  try { return JSON.parse(localStorage.getItem(portalAgendaKey) || "[]"); } catch { return []; }
-}
-function portalSave(events) { localStorage.setItem(portalAgendaKey, JSON.stringify(events)); }
-function portalGoogleUrl(event) {
-  const start = new Date(event.start);
-  const end = new Date(event.end);
-  const params = new URLSearchParams({ action: "TEMPLATE", text: event.title, dates: `${portalStamp(start)}/${portalStamp(end)}`, details: `MVP: ${event.mvp}. ${event.type}. ${event.description}`, location: event.location });
-  return `https://calendar.google.com/calendar/render?${params.toString()}`;
-}
-function portalRender() {
-  const box = document.getElementById("portalAgendaSaved");
-  const events = portalEvents();
-  box.innerHTML = events.length ? events.map((event) => {
-    const start = new Date(event.start);
-    return `<div class="timeline-entry"><strong>${portalPad(start.getDate())}/${portalPad(start.getMonth()+1)} ${portalPad(start.getHours())}:${portalPad(start.getMinutes())} - ${event.title}</strong><p>${event.mvp || "MVP geral"} - ${event.type} - ${event.location}</p></div>`;
-  }).join("") : '<div class="timeline-entry"><strong>Nenhum compromisso salvo</strong><p>Crie um compromisso acima para testar a Agenda Jus 9.</p></div>';
-}
-function portalDownloadIcs(event) {
-  const start = new Date(event.start);
-  const end = new Date(event.end);
-  const ics = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Jus 9 Tecnologia Juridica//Portal Agenda//PT-BR","BEGIN:VEVENT",`UID:${Date.now()}@jus9tecnologia.com.br`,`DTSTAMP:${portalStamp(new Date())}`,`DTSTART:${portalStamp(start)}`,`DTEND:${portalStamp(end)}`,`SUMMARY:${event.title}`,`LOCATION:${event.location}`,`DESCRIPTION:MVP: ${event.mvp} - ${event.type} - ${event.description}`,"END:VEVENT","END:VCALENDAR"].join("\r\n");
-  const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "agenda-jus9.ics";
-  a.click();
-  URL.revokeObjectURL(url);
-}
-async function portalCalendarJson(url, options = {}) {
-  const response = await fetch(url, {
-    credentials: "include",
-    headers: { "Content-Type": "application/json", ...(options.headers || {}) },
-    ...options
-  });
-  let data = {};
-  try { data = await response.json(); } catch {}
-  return { response, data };
-}
-async function portalCalendarStatus() {
-  const status = document.getElementById("portalCalendarStatus");
-  const eventsBox = document.getElementById("portalCalendarEvents");
-  const connectButton = document.getElementById("portalCalendarConnectButton");
-  try {
-    const { response, data } = await portalCalendarJson("/api/calendar/status");
-    if (response.status === 401) {
-      status.textContent = "Entre com Google antes de conectar a Agenda.";
-      portalCalendarConnected = false;
-      connectButton.textContent = "Entrar e conectar Google Agenda";
-      return false;
-    }
-    if (!response.ok) {
-      status.textContent = "Agenda real indisponivel para este perfil ou ambiente.";
-      portalCalendarConnected = false;
-      connectButton.textContent = "Conectar Google Agenda";
-      return false;
-    }
-    if (data.calendar?.enabled === false) {
-      status.textContent = "Google Agenda preparada, mas ainda nao ativada para esta fase.";
-      portalCalendarConnected = false;
-      connectButton.textContent = "Agenda em preparacao";
-      eventsBox.innerHTML = '<div class="timeline-entry"><strong>Calendar Producao 1B</strong><p>A conexao real sera aberta somente apos verificacao sensivel e confirmacao operacional.</p></div>';
-      return false;
-    }
-    if (!data.calendar?.connected) {
-      status.textContent = "Sessao ativa, mas Google Agenda ainda nao conectada.";
-      portalCalendarConnected = false;
-      connectButton.textContent = "Conectar Google Agenda";
-      eventsBox.innerHTML = "";
-      return false;
-    }
-    status.textContent = "Google Agenda conectada com permissao governada.";
-    portalCalendarConnected = true;
-    connectButton.textContent = "Reconectar Google Agenda";
-    return true;
-  } catch (_) {
-    status.textContent = "Nao foi possivel verificar a Agenda agora.";
-    portalCalendarConnected = false;
-    return false;
+(function(){
+  var agendaKey = 'jus9_portal_agenda_demo_v1';
+  var calendarConnected = false;
+  function pad(n){ return String(n).padStart(2, '0'); }
+  function stamp(date){ return '' + date.getFullYear() + pad(date.getMonth()+1) + pad(date.getDate()) + 'T' + pad(date.getHours()) + pad(date.getMinutes()) + '00'; }
+  function escapeHtml(value){ return String(value || '').replace(/[&<>"']/g, function(ch){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]); }); }
+  function eventPayload(){
+    var start = new Date(document.getElementById('portalAgendaStart').value);
+    var end = new Date(start.getTime() + Number(document.getElementById('portalAgendaDuration').value || 45) * 60000);
+    return {
+      title: document.getElementById('portalAgendaTitle').value,
+      mvp: document.getElementById('portalAgendaMvp').value,
+      type: document.getElementById('portalAgendaType').value,
+      start: start.toISOString(),
+      end: end.toISOString(),
+      description: document.getElementById('portalAgendaDescription').value,
+      location: 'Jus 9 Tecnologia Juridica / DAJ'
+    };
   }
-}
-async function portalCalendarLoadEvents() {
-  const eventsBox = document.getElementById("portalCalendarEvents");
-  eventsBox.innerHTML = '<div class="timeline-entry"><strong>Carregando</strong><p>Consultando Google Agenda...</p></div>';
-  const connected = portalCalendarConnected || await portalCalendarStatus();
-  const { response, data } = await portalCalendarJson("/api/calendar/events");
-  if (!response.ok) {
-    if (response.status === 401) {
-      eventsBox.innerHTML = '<div class="timeline-entry"><strong>Login necessario</strong><p>Entre com Google antes de listar eventos reais.</p></div>';
+  function events(){ try { return JSON.parse(localStorage.getItem(agendaKey) || '[]'); } catch (error) { return []; } }
+  function save(eventsList){ localStorage.setItem(agendaKey, JSON.stringify(eventsList)); }
+  function renderSaved(){
+    var box = document.getElementById('portalAgendaSaved');
+    var list = events();
+    box.innerHTML = list.length ? list.map(function(item){
+      var start = new Date(item.start);
+      return '<div class="timeline-entry"><strong>' + pad(start.getDate()) + '/' + pad(start.getMonth()+1) + ' ' + pad(start.getHours()) + ':' + pad(start.getMinutes()) + ' - ' + escapeHtml(item.title) + '</strong><p>' + escapeHtml(item.mvp || 'DAJ') + ' - ' + escapeHtml(item.type || 'compromisso') + '</p></div>';
+    }).join('') : '<div class="timeline-entry"><strong>Nenhum compromisso salvo</strong><p>Crie um compromisso acima para testar a Agenda Jus 9.</p></div>';
+  }
+  function downloadIcs(item){
+    var start = new Date(item.start);
+    var end = new Date(item.end);
+    var ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Jus 9 Tecnologia Juridica//Portal Agenda//PT-BR','BEGIN:VEVENT','UID:' + Date.now() + '@jus9tecnologia.com.br','DTSTAMP:' + stamp(new Date()),'DTSTART:' + stamp(start),'DTEND:' + stamp(end),'SUMMARY:' + item.title,'LOCATION:' + item.location,'DESCRIPTION:MVP: ' + item.mvp + ' - ' + item.type + ' - ' + item.description,'END:VEVENT','END:VCALENDAR'].join('\r\n');
+    var blob = new Blob([ics], { type:'text/calendar;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'agenda-jus9.ics';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+  async function calendarJson(url, options){
+    var response = await fetch(url, Object.assign({ credentials:'include', headers:{ 'Content-Type':'application/json' } }, options || {}));
+    var data = {};
+    try { data = await response.json(); } catch (error) {}
+    return { response:response, data:data };
+  }
+  async function calendarStatus(){
+    var status = document.getElementById('portalCalendarStatus');
+    var eventsBox = document.getElementById('portalCalendarEvents');
+    var connect = document.getElementById('portalCalendarConnectButton');
+    try {
+      var result = await calendarJson('/api/calendar/status');
+      if(result.response.status === 401){
+        status.textContent = 'Entre com Google antes de conectar a Agenda.';
+        calendarConnected = false;
+        connect.textContent = 'Entrar e conectar Google Agenda';
+        return false;
+      }
+      if(!result.response.ok){
+        status.textContent = 'Agenda real indisponivel para este perfil ou ambiente.';
+        calendarConnected = false;
+        return false;
+      }
+      if(result.data.calendar && result.data.calendar.enabled === false){
+        status.textContent = 'Google Agenda preparada, mas ainda nao ativada para esta fase.';
+        eventsBox.innerHTML = '<div class="timeline-entry"><strong>Calendar Producao 1B</strong><p>A conexao real sera aberta somente apos confirmacao operacional.</p></div>';
+        calendarConnected = false;
+        return false;
+      }
+      if(!result.data.calendar || !result.data.calendar.connected){
+        status.textContent = 'Sessao ativa, mas Google Agenda ainda nao conectada.';
+        calendarConnected = false;
+        return false;
+      }
+      status.textContent = 'Google Agenda conectada com permissao governada.';
+      calendarConnected = true;
+      connect.textContent = 'Reconectar Google Agenda';
+      return true;
+    } catch (error) {
+      status.textContent = 'Nao foi possivel verificar a Agenda agora.';
+      calendarConnected = false;
+      return false;
+    }
+  }
+  async function loadCalendarEvents(){
+    var box = document.getElementById('portalCalendarEvents');
+    box.innerHTML = '<div class="timeline-entry"><strong>Carregando</strong><p>Consultando Google Agenda...</p></div>';
+    await calendarStatus();
+    var result = await calendarJson('/api/calendar/events');
+    if(!result.response.ok){
+      box.innerHTML = '<div class="timeline-entry"><strong>Listagem pendente</strong><p>Conecte a conta, revise permissao ou aguarde a ativacao da API Google Calendar.</p></div>';
       return;
     }
-    if (data.error === "agenda_google_nao_conectada" || !connected) {
-      eventsBox.innerHTML = '<div class="timeline-entry"><strong>Agenda nao conectada</strong><p>Conecte a Google Agenda antes de listar eventos reais.</p></div>';
-      return;
-    }
-    const hint = data.reason === "accessNotConfigured" || data.reason === "SERVICE_DISABLED"
-      ? "A conexao foi salva, mas a API Google Calendar pode ainda nao estar ativada no projeto Google Cloud."
-      : "A conexao foi salva, mas o Google nao devolveu a lista agora. Pode ser propagacao de escopo, permissao ou API.";
-    eventsBox.innerHTML = `<div class="timeline-entry"><strong>Conexao salva; listagem pendente</strong><p>${hint}</p></div>`;
-    return;
+    box.innerHTML = result.data.events && result.data.events.length ? result.data.events.map(function(item){
+      return '<div class="timeline-entry"><strong>' + escapeHtml(item.summary || 'Evento') + '</strong><p>' + escapeHtml(item.start || 'sem data') + (item.htmlLink ? ' - <a href="' + item.htmlLink + '" target="_blank" rel="noopener">abrir</a>' : '') + '</p></div>';
+    }).join('') : '<div class="timeline-entry"><strong>Nenhum evento futuro</strong><p>A conta conectada nao retornou eventos proximos.</p></div>';
   }
-  eventsBox.innerHTML = data.events?.length ? data.events.map((event) => `<div class="timeline-entry"><strong>${event.summary}</strong><p>${event.start || "sem data"}${event.htmlLink ? ` - <a href="${event.htmlLink}" target="_blank" rel="noopener">abrir</a>` : ""}</p></div>`).join("") : '<div class="timeline-entry"><strong>Nenhum evento futuro</strong><p>A conta conectada nao retornou eventos proximos.</p></div>';
-}
-document.addEventListener("DOMContentLoaded", () => {
-  const now = new Date();
-  now.setDate(now.getDate() + 1);
-  now.setHours(10, 0, 0, 0);
-  document.getElementById("portalAgendaStart").value = `${now.getFullYear()}-${portalPad(now.getMonth()+1)}-${portalPad(now.getDate())}T${portalPad(now.getHours())}:${portalPad(now.getMinutes())}`;
-  portalRender();
-  document.getElementById("portalAgendaForm").addEventListener("submit", (event) => {
-    event.preventDefault();
-    const item = portalEvent();
-    const events = portalEvents();
-    events.unshift(item);
-    portalSave(events.slice(0, 12));
-    portalRender();
-    document.getElementById("portalAgendaFeedback").textContent = "Compromisso salvo neste navegador. Use somente dados ficticios; nenhum dado foi enviado a Google Cloud ou backend real.";
-  });
-  document.getElementById("portalGoogleButton").addEventListener("click", () => {
-    document.getElementById("portalAgendaFeedback").textContent = "Abrindo rascunho manual no Google Agenda. Revise antes de salvar; ainda nao ha conexao OAuth real.";
-    window.open(portalGoogleUrl(portalEvent()), "_blank", "noopener");
-  });
-  document.getElementById("portalIcsButton").addEventListener("click", () => {
-    document.getElementById("portalAgendaFeedback").textContent = "Arquivo ICS gerado localmente. Revise antes de importar em qualquer agenda externa.";
-    portalDownloadIcs(portalEvent());
-  });
-  document.getElementById("portalCalendarConnectButton").addEventListener("click", () => {
-    window.location.href = `/auth/google/calendar/start?return_to=${encodeURIComponent("/app-agenda.html")}`;
-  });
-  document.getElementById("portalCalendarReloadButton").addEventListener("click", portalCalendarLoadEvents);
-  document.getElementById("portalCalendarCreateButton").addEventListener("click", async () => {
-    const item = portalEvent();
-    document.getElementById("portalAgendaFeedback").textContent = "Enviando compromisso para Google Agenda governada...";
-    const { response, data } = await portalCalendarJson("/api/calendar/events", {
-      method: "POST",
-      body: JSON.stringify(item)
+  document.addEventListener('DOMContentLoaded', function(){
+    var now = new Date();
+    now.setDate(now.getDate() + 1);
+    now.setHours(10, 0, 0, 0);
+    document.getElementById('portalAgendaStart').value = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate()) + 'T' + pad(now.getHours()) + ':' + pad(now.getMinutes());
+    renderSaved();
+    document.getElementById('portalAgendaForm').addEventListener('submit', function(event){
+      event.preventDefault();
+      var item = eventPayload();
+      var list = events();
+      list.unshift(item);
+      save(list.slice(0, 12));
+      renderSaved();
+      document.getElementById('portalAgendaFeedback').textContent = 'Compromisso salvo neste navegador. Nenhum dado foi enviado a Google Cloud.';
     });
-    document.getElementById("portalAgendaFeedback").textContent = response.ok
-      ? `Evento salvo na Google Agenda: ${data.summary || item.title}`
-      : "Nao foi possivel salvar na Google Agenda. Conecte a conta e revise permissao.";
-    if (response.ok) portalCalendarLoadEvents();
+    document.getElementById('portalIcsButton').addEventListener('click', function(){ downloadIcs(eventPayload()); });
+    document.getElementById('portalCalendarConnectButton').addEventListener('click', function(){ window.location.href = '/auth/google/calendar/start?return_to=' + encodeURIComponent('/app-agenda.html'); });
+    document.getElementById('portalCalendarReloadButton').addEventListener('click', loadCalendarEvents);
+    document.getElementById('portalCalendarCreateButton').addEventListener('click', async function(){
+      var item = eventPayload();
+      document.getElementById('portalAgendaFeedback').textContent = 'Enviando compromisso para Google Agenda governada...';
+      var result = await calendarJson('/api/calendar/events', { method:'POST', body:JSON.stringify(item) });
+      document.getElementById('portalAgendaFeedback').textContent = result.response.ok ? 'Evento salvo na Google Agenda: ' + (result.data.summary || item.title) : 'Nao foi possivel salvar na Google Agenda. Conecte a conta e revise permissao.';
+      if(result.response.ok) loadCalendarEvents();
+    });
+    calendarStatus();
   });
-  portalCalendarStatus();
-});
+})();
 </script>
-<footer class="jus9-autoria-rodape" role="contentinfo" aria-label="Direitos autorais e origem da produção do site" style="font-size: 0.85rem; line-height: 1.5; text-align: center; padding: 1rem 0.75rem; margin-top: 2rem; background: rgba(15, 23, 42, 0.96); color: #f8fafc;">Produção do site: © Jus 9 Tecnologia Jurídica. Software livre com autoria, origem e direitos autorais preservados.</footer>
+<footer class="jus9-autoria-rodape" role="contentinfo" aria-label="Direitos autorais e origem da producao do site" style="font-size:0.85rem;line-height:1.5;text-align:center;padding:1rem 0.75rem;margin-top:2rem;background:rgba(15,23,42,0.96);color:#f8fafc;">Producao do site: (c) Jus 9 Tecnologia Juridica. Software livre com autoria, origem e direitos autorais preservados.</footer>
 <script src="assets/js/pwa-install.js"></script>
 </body>
 </html>
-
-
