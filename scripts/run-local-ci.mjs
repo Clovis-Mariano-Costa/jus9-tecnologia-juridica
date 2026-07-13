@@ -37,6 +37,24 @@ const checks = [
     args: ["scripts/audit-charlie-mvp-inventory.mjs"]
   },
   {
+    label: "Estrutura versionada de governanca",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-charlie-governance-structure.mjs"]
+  },
+  {
+    label: "Contratos backend da governanca",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-charlie-governance-backend-contracts.mjs"]
+  },
+  {
+    label: "Qualidade da interface Charlie Echo",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-charlie-echo-quality.mjs"]
+  },
+  {
     label: "Contratos anti-travamento da Charlie Echo",
     cwd: portalRoot,
     command: process.execPath,

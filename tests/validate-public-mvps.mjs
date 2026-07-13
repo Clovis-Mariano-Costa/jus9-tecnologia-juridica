@@ -96,7 +96,10 @@ assert(processPage.includes("Indice DAJ-processo"), "pagina de processos ainda a
 assert(processPage.includes("Entrar para usar a memoria oficial"), "pagina de processos sem acesso ao login da memoria oficial");
 assert(wranglerConfig.includes('"binding": "JUS9_DAJ_PROCESS_LINKS"'), "wrangler sem KV oficial DAJ-processo");
 assert(wranglerConfig.includes('"binding": "JUS9_USER_MEMORY"'), "wrangler sem KV dedicado de memoria do usuario");
+assert(wranglerConfig.includes('"binding": "JUS9_DATAJUD_CACHE"'), "wrangler sem KV dedicado do DataJud");
 assert(workerSource.includes('originalUrl.pathname === "/api/health"'), "worker sem health explicito");
+assert(workerSource.includes('originalUrl.pathname === "/api/judicial/datajud/readiness"'), "worker sem readiness canonico DataJud");
+assert(workerSource.includes('originalUrl.pathname === "/api/judicial/pdpj/readiness"'), "worker sem readiness PDPJ");
 assert(workerSource.includes('DED: ["Autor / Editor"'), "worker sem contexto canonico DED");
 assert(installPage.includes("install-app-green-card"), "card da Jus 9 Verde ausente na pagina de instalacao");
 assert(installPage.includes("https://jus9verde.jus9tecnologia.com.br/instalar-app.html"), "link de instalacao da Jus 9 Verde ausente");

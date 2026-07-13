@@ -42,6 +42,7 @@ hash: nao-aplicavel-planejamento
 
 ## Pacote 3 - Pesquisa judicial (dias 5 a 8)
 
+- Estado tecnico: concluido em 2026-07-13; credenciais externas PDPJ e conector de partes permanecem fora do codigo.
 - DataJud estabilizado, cache, auditoria e limites.
 - Nome/CPF somente por conector autorizado de partes.
 - PDPJ em readiness; nenhum ato transacional sem perfil e confirmacao apropriados.

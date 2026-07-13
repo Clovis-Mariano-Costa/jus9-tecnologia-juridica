@@ -13,7 +13,7 @@
     "AUTH_PUBLIC_GOOGLE_ENABLED": "true",
     "AUTH_PUBLIC_GOOGLE_PROFILE": "cidadao",
     "GOOGLE_CALENDAR_OAUTH_ENABLED": "false",
-    "JUS9_RELEASE": "governanca-1.5.0-drive-oficial-1.0"
+    "JUS9_RELEASE": "governanca-1.6.0-datajud-pdpj-readiness-1.0"
   },
   "observability": {
     "enabled": true,
@@ -35,6 +35,10 @@
     {
       "binding": "JUS9_USER_MEMORY",
       "id": "776bbb6137b34e10acaad81864c2267b"
+    },
+    {
+      "binding": "JUS9_DATAJUD_CACHE",
+      "id": "1153ae8e0f1c4fad897d4c1eea79846a"
     }
   ]
 }

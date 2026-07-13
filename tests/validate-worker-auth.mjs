@@ -15,6 +15,7 @@ const env = {
 const memoryKv = () => {
   const store = new Map();
   return {
+    _store: store,
     get: async (key, type) => {
       const value = store.get(key) || null;
       if (type === "json" && value) return JSON.parse(value);
@@ -607,6 +608,23 @@ assert(data.supportedSearchTypes.some((item) => item.type === "nome" && item.sup
 assert(data.supportedSearchTypes.some((item) => item.type === "cpf" && item.support === "requer_conector_autorizado_de_partes"), "DataJud deveria governar busca por CPF");
 console.log("AUTH_OK datajud-status=200");
 
+response = await request("/api/judicial/datajud/readiness");
+data = await response.json();
+assert(response.status === 200 && data.status === "missing-credentials", "readiness canonico DataJud deveria declarar credencial pendente");
+assert(data.aliases >= 60 && data.cache.configured === false, "readiness DataJud deveria expor aliases e cache sem segredo");
+console.log("AUTH_OK datajud-readiness=200");
+
+response = await request("/api/judicial/datajud/tribunais");
+data = await response.json();
+assert(response.status === 200 && data.total >= 60 && data.tribunais.some((item) => item.code === "tjsc"), "rota canonica de tribunais deveria listar aliases");
+console.log("AUTH_OK datajud-tribunais=200");
+
+response = await request("/api/judicial/pdpj/readiness");
+data = await response.json();
+assert(response.status === 200 && data.status === "missing-credentials", "PDPJ readiness deveria declarar credenciais pendentes");
+assert(data.capabilities.petitioning === false && data.capabilities.proceduralNotice === false, "PDPJ readiness nao deve habilitar atos transacionais");
+console.log("AUTH_OK pdpj-readiness=200");
+
 response = await request("/api/tribunais/datajud/search", {
   method: "POST",
   headers: { "content-type": "application/json" },
@@ -642,7 +660,10 @@ assert(response.status === 400 && data.error === "cpf_invalido", "CPF invalido d
 console.log("AUTH_OK datajud-cpf-invalido=400");
 
 const originalFetch = globalThis.fetch;
+const dataJudCache = memoryKv();
+let dataJudFetchCalls = 0;
 globalThis.fetch = async (url, options = {}) => {
+  dataJudFetchCalls += 1;
   assert(String(url) === "https://api-publica.datajud.cnj.jus.br/api_publica_tjsc/_search", "endpoint DataJud incorreto");
   assert(options.method === "POST", "DataJud deve usar POST com corpo JSON");
   assert(options.headers.Authorization === "APIKey chave-publica-ficticia", "DataJud deve usar APIKey sem expor ao cliente");
@@ -682,14 +703,71 @@ try {
       headers: { "content-type": "application/json", "x-jus9-internal-token": "token-interno" },
       body: JSON.stringify({ tribunal: "TJSC", numeroProcesso: "0000000-00.2024.8.24.0000", size: 50 })
     }),
-    { ...dataJudEnvWithoutKey, DATAJUD_API_KEY: "chave-publica-ficticia" }
+    { ...dataJudEnvWithoutKey, DATAJUD_API_KEY: "chave-publica-ficticia", JUS9_DATAJUD_CACHE: dataJudCache }
   );
   data = await response.json();
   assert(response.status === 200 && data.ok === true, "DataJud configurado deveria responder");
   assert(data.alias === "api_publica_tjsc" && data.results[0].classe.nome.includes("Procedimento"), "DataJud deveria normalizar metadados");
+  assert(data.evidenceStatus === "official-public-metadata" && data.rawAvailable === false, "DataJud deveria declarar DTO de evidencia oficial sem raw");
+  assert(data.cache?.hit === false && dataJudFetchCalls === 1, "primeira consulta DataJud deveria preencher cache");
   assert(data.governance.noPetitioning === true && data.governance.noSensitiveDisclosure === true, "DataJud deveria declarar limites governados");
   assert(!JSON.stringify(data).includes("NAO DEVE SAIR"), "DataJud nao deve repassar partes brutas");
   console.log("AUTH_OK datajud-search-normalizado=200");
+
+  response = await worker.fetch(
+    new Request("https://jus9.invalid/api/judicial/datajud/processos/0000000-00.2024.8.24.0000?tribunal=tjsc", {
+      headers: { "x-jus9-internal-token": "token-interno" }
+    }),
+    { ...dataJudEnvWithoutKey, DATAJUD_API_KEY: "chave-publica-ficticia", JUS9_DATAJUD_CACHE: dataJudCache }
+  );
+  data = await response.json();
+  assert(response.status === 200 && data.cache?.hit === true, "rota canonica por numero deveria reutilizar cache");
+  assert(dataJudFetchCalls === 1, "cache DataJud deveria evitar segunda chamada ao CNJ");
+  assert([...dataJudCache._store.keys()].some((key) => key.startsWith("datajud:audit:v1:")), "DataJud deveria registrar auditoria sem conteudo bruto");
+  console.log("AUTH_OK datajud-processo-cache=200");
+} finally {
+  globalThis.fetch = originalFetch;
+}
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/judicial/pdpj/token/test", {
+    method: "POST",
+    headers: { "x-jus9-internal-token": "token-interno" }
+  }),
+  dataJudEnvWithoutKey
+);
+data = await response.json();
+assert(response.status === 501 && data.error === "pdpj_configuracao_pendente", "PDPJ token test sem credenciais deveria falhar fechado");
+console.log("AUTH_OK pdpj-token-pendente=501");
+
+let pdpjFetchCalls = 0;
+globalThis.fetch = async (url, options = {}) => {
+  pdpjFetchCalls += 1;
+  assert(String(url) === "https://pdpj.invalid/realms/test/protocol/openid-connect/token", "PDPJ chamou token URL inesperada");
+  const form = new URLSearchParams(String(options.body || ""));
+  assert(form.get("grant_type") === "client_credentials", "PDPJ deveria usar client_credentials");
+  assert(form.get("client_id") === "client-ficticio" && form.get("client_secret") === "secret-ficticio", "PDPJ deveria enviar credenciais somente ao token endpoint");
+  return Response.json({ access_token: "token-que-nao-pode-sair", token_type: "Bearer", expires_in: 300, scope: "openid" });
+};
+try {
+  response = await worker.fetch(
+    new Request("https://jus9.invalid/api/judicial/pdpj/token/test", {
+      method: "POST",
+      headers: { "x-jus9-internal-token": "token-interno" }
+    }),
+    {
+      ...dataJudEnvWithoutKey,
+      PDPJ_TOKEN_URL: "https://pdpj.invalid/realms/test/protocol/openid-connect/token",
+      PDPJ_CLIENT_ID: "client-ficticio",
+      PDPJ_CLIENT_SECRET: "secret-ficticio",
+      PDPJ_ENVIRONMENT: "homologacao"
+    }
+  );
+  data = await response.json();
+  assert(response.status === 200 && data.tokenReceived === true && data.tokenExposed === false, "PDPJ deveria confirmar token sem expo-lo");
+  assert(data.transactionalCapabilitiesEnabled === false && pdpjFetchCalls === 1, "PDPJ token test nao deve habilitar atos transacionais");
+  assert(!JSON.stringify(data).includes("token-que-nao-pode-sair"), "PDPJ nao deve devolver access token");
+  console.log("AUTH_OK pdpj-token-test=200");
 } finally {
   globalThis.fetch = originalFetch;
 }

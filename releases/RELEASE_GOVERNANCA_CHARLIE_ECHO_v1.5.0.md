@@ -1,12 +1,15 @@
-# Release Governanca Charlie Echo v1.5.0
+---
+id: JUS9-RELEASE-CHARLIE-GOV-1.5.0
+versao: 1.5.0
+autor: Codex / Charlie Fox
+revisor_responsavel: Clovis Mariano da Costa
+data: 2026-07-13
+status: homologacao-tecnica
+classificacao: INTERNO
+hash: pendente-apos-commit
+---
 
-- ID: JUS9-RELEASE-CHARLIE-GOV-1.5.0
-- Versao: 1.5.0
-- Autor: Codex / Charlie Fox, sob direcao do Fundador
-- Responsavel pela revisao: Fundador da Jus 9 Tecnologia Juridica
-- Data: 2026-07-13
-- Status: homologacao tecnica concluida
-- Classificacao: INTERNO
+# Release Governanca Charlie Echo v1.5.0
 
 ## Entrega
 

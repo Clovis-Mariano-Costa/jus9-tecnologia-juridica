@@ -35,9 +35,14 @@ import {
   userMemoryStorageStatus
 } from "./functions/_shared/user-memory.js";
 import {
+  dataJudReadiness,
   publicDataJudStatus,
   searchDataJud
 } from "./functions/_shared/datajud.js";
+import {
+  publicPdpjReadiness,
+  testPdpjToken
+} from "./functions/_shared/pdpj.js";
 
 const CHARLIE_API_URL = "https://charlieecho.jus9tecnologia.com.br/api/ia";
 const CHARLIE_PROXY_MAX_BODY_BYTES = 300_000;
@@ -124,6 +129,30 @@ export default {
 
     if (originalUrl.pathname === "/api/tribunais/datajud/search") {
       return handleDataJudSearch(request, env);
+    }
+
+    if (originalUrl.pathname === "/api/judicial/datajud/readiness") {
+      return handleDataJudReadiness(request, env);
+    }
+
+    if (originalUrl.pathname === "/api/judicial/datajud/tribunais") {
+      return handleDataJudTribunals(request, env);
+    }
+
+    if (originalUrl.pathname === "/api/judicial/datajud/search") {
+      return handleDataJudSearch(request, env);
+    }
+
+    if (originalUrl.pathname.startsWith("/api/judicial/datajud/processos/")) {
+      return handleDataJudProcessByNumber(request, env, originalUrl);
+    }
+
+    if (originalUrl.pathname === "/api/judicial/pdpj/readiness") {
+      return handlePdpjReadiness(request, env);
+    }
+
+    if (originalUrl.pathname === "/api/judicial/pdpj/token/test") {
+      return handlePdpjTokenTest(request, env);
     }
 
     if (originalUrl.pathname === "/api/daj-process-links/readiness") {
@@ -837,14 +866,82 @@ async function handleDataJudStatus(request, env) {
   }, 200, corsHeaders);
 }
 
+async function handleDataJudReadiness(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  if (request.method !== "GET") {
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET" });
+  }
+  return jsonResponse(dataJudReadiness(env), 200, corsHeaders);
+}
+
+async function handleDataJudTribunals(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  if (request.method !== "GET") {
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET" });
+  }
+  const status = publicDataJudStatus(env);
+  return jsonResponse({
+    ok: true,
+    provider: status.provider,
+    total: status.supportedAliases.length,
+    tribunais: status.supportedAliases
+  }, 200, corsHeaders);
+}
+
+async function handleDataJudProcessByNumber(request, env, url) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  if (request.method !== "GET") {
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET" });
+  }
+  if (!(await isJudicialGatewayAuthorized(request, env))) {
+    return jsonResponse({ ok: false, error: "gateway_tribunais_nao_autorizado" }, 401, corsHeaders);
+  }
+  const numeroProcesso = decodeURIComponent(url.pathname.slice("/api/judicial/datajud/processos/".length));
+  const result = await searchDataJud(env, {
+    tipoPesquisa: "numeroProcesso",
+    numeroProcesso,
+    tribunal: url.searchParams.get("tribunal") || "",
+    size: url.searchParams.get("size") || "1"
+  });
+  return jsonResponse(result.payload, result.status, { ...corsHeaders, "Cache-Control": "no-store" });
+}
+
+async function handlePdpjReadiness(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  if (request.method !== "GET") {
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET" });
+  }
+  return jsonResponse(publicPdpjReadiness(env), 200, corsHeaders);
+}
+
+async function handlePdpjTokenTest(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  if (request.method !== "POST") {
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "POST" });
+  }
+  if (!(await isJudicialGatewayAuthorized(request, env))) {
+    return jsonResponse({ ok: false, error: "gateway_tribunais_nao_autorizado" }, 401, corsHeaders);
+  }
+  const result = await testPdpjToken(env);
+  return jsonResponse(result.payload, result.status, { ...corsHeaders, "Cache-Control": "no-store" });
+}
+
 function handleHealth(request, env) {
   const corsHeaders = getAuthCorsHeaders(request);
   if (request.method !== "GET") {
     return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET" });
   }
   const dataJud = publicDataJudStatus(env);
+  const pdpj = publicPdpjReadiness(env);
   const userMemory = userMemoryStorageStatus(env);
-  const criticalReady = Boolean(env.ASSETS && env.JUS9_DAJ_PROCESS_LINKS && userMemory.configured);
+  const criticalReady = Boolean(
+    env.ASSETS &&
+    env.JUS9_DAJ_PROCESS_LINKS &&
+    env.JUS9_CHARLIE_INTERNAL_TOKEN &&
+    userMemory.configured &&
+    dataJud.configured &&
+    dataJud.cacheConfigured
+  );
   return jsonResponse({
     ok: true,
     service: "jus9-tecnologia-juridica",
@@ -863,7 +960,8 @@ function handleHealth(request, env) {
         configured: true,
         privilegedDriveConfigured: Boolean(env.JUS9_CHARLIE_INTERNAL_TOKEN)
       },
-      dataJud: { configured: Boolean(dataJud.configured), mode: dataJud.mode },
+      dataJud: { configured: Boolean(dataJud.configured), mode: dataJud.mode, cacheConfigured: Boolean(dataJud.cacheConfigured) },
+      pdpj: { configured: Boolean(pdpj.configured), mode: "readiness_only" },
       dajProcessLinks: { configured: Boolean(env.JUS9_DAJ_PROCESS_LINKS) }
     }
   }, 200, corsHeaders);
@@ -882,8 +980,7 @@ async function handleDataJudSearch(request, env) {
       missing: ["JUS9_TRIBUNAIS_GATEWAY_TOKEN"],
     }, 501, corsHeaders);
   }
-  const providedToken = String(request.headers.get("x-jus9-internal-token") || "").trim();
-  if (!(await secureStringEqual(providedToken, expectedToken))) {
+  if (!(await isJudicialGatewayAuthorized(request, env))) {
     return jsonResponse({ ok: false, error: "gateway_tribunais_nao_autorizado" }, 401, corsHeaders);
   }
   const body = await request.json().catch(() => null);
@@ -892,6 +989,13 @@ async function handleDataJudSearch(request, env) {
   }
   const result = await searchDataJud(env, body);
   return jsonResponse(result.payload, result.status, corsHeaders);
+}
+
+async function isJudicialGatewayAuthorized(request, env) {
+  const expectedToken = String(env.JUS9_TRIBUNAIS_GATEWAY_TOKEN || "").trim();
+  if (!expectedToken) return false;
+  const providedToken = String(request.headers.get("x-jus9-internal-token") || "").trim();
+  return secureStringEqual(providedToken, expectedToken);
 }
 
 async function handleDajProcessLinksReadiness(request, env) {
@@ -1003,7 +1107,9 @@ function logoutPage(done = false) {
 }
 
 function isAuthCorsPath(pathname) {
-  return pathname === "/api/health" ||
+  return pathname.startsWith("/api/judicial/datajud/") ||
+    pathname.startsWith("/api/judicial/pdpj/") ||
+    pathname === "/api/health" ||
     pathname === "/api/auth/me" ||
     pathname === "/api/auth/permissions" ||
     pathname === "/api/auth/context" ||

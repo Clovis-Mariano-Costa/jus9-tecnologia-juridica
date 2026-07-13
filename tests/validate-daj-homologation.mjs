@@ -28,6 +28,8 @@ const env = {
   JUS9_RELEASE: "homologacao-daj-local",
   DATAJUD_API_KEY: "datajud-ficticia",
   JUS9_TRIBUNAIS_GATEWAY_TOKEN: "gateway-ficticio",
+  JUS9_CHARLIE_INTERNAL_TOKEN: "charlie-interno-ficticio",
+  JUS9_DATAJUD_CACHE: memoryKv(),
   JUS9_USER_MEMORY: userMemoryKv,
   JUS9_DAJ_PROCESS_LINKS: dajProcessKv,
   JUS9_PROFILE_REQUESTS: memoryKv(),

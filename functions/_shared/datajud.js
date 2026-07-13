@@ -1,4 +1,8 @@
 const DATAJUD_BASE_URL = "https://api-publica.datajud.cnj.jus.br";
+const DATAJUD_CACHE_TTL_SECONDS = 300;
+const DATAJUD_AUDIT_TTL_SECONDS = 30 * 24 * 60 * 60;
+const DATAJUD_DEFAULT_TIMEOUT_MS = 12_000;
+const DATAJUD_DEFAULT_RATE_PER_MINUTE = 120;
 
 export const DATAJUD_ALIASES = {
   stj: { alias: "api_publica_stj", name: "Superior Tribunal de Justica" },
@@ -93,6 +97,7 @@ export function publicDataJudStatus(env) {
     endpointBase: DATAJUD_BASE_URL,
     configured: missingDataJudConfig(env).length === 0,
     gatewayTokenConfigured: Boolean(String(env.JUS9_TRIBUNAIS_GATEWAY_TOKEN || "").trim()),
+    cacheConfigured: Boolean(env.JUS9_DATAJUD_CACHE),
     supportedSearchTypes: [
       { type: "numeroProcesso", label: "Numero CNJ", support: "datajud_publico" },
       { type: "nome", label: "Nome da parte", support: "requer_conector_autorizado_de_partes" },
@@ -109,6 +114,27 @@ export function publicDataJudStatus(env) {
       "Busca por nome ou CPF nao e exposta pela API Publica DataJud; exige conector autorizado do tribunal/parceiro e finalidade legitima.",
       "Uso real exige revisao humana e conferencia no tribunal competente.",
     ],
+  };
+}
+
+export function dataJudReadiness(env) {
+  const missing = missingDataJudConfig(env);
+  return {
+    ok: true,
+    provider: "CNJ/DataJud",
+    status: missing.length ? "missing-credentials" : "configured",
+    configured: missing.length === 0,
+    missing,
+    aliases: Object.keys(DATAJUD_ALIASES).length,
+    cache: {
+      configured: Boolean(env.JUS9_DATAJUD_CACHE),
+      ttlSeconds: DATAJUD_CACHE_TTL_SECONDS
+    },
+    timeoutMs: dataJudTimeoutMs(env),
+    maxResultsPerQuery: 20,
+    rateLimitPerMinute: dataJudRateLimit(env),
+    evidenceStatus: "official-public-metadata",
+    rawAvailable: false
   };
 }
 
@@ -281,33 +307,187 @@ export async function searchDataJud(env, body) {
   if (missing.length) {
     return { ok: false, status: 501, payload: { ok: false, error: "datajud_configuracao_pendente", missing } };
   }
-  const response = await fetch(search.url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...dataJudAuthHeaders(env),
-    },
-    body: JSON.stringify(search.payload),
-  });
-  const data = await response.json().catch(() => null);
-  if (!response.ok) {
+
+  const queryId = crypto.randomUUID();
+  const queryHash = await sha256Hex(`${search.tribunal}:${search.numeroProcesso}`);
+  const cacheKey = `datajud:cache:v1:${queryHash}`;
+  const cached = await readDataJudCache(env, cacheKey);
+  if (cached) {
+    await auditDataJud(env, {
+      queryId,
+      queryHash: queryHash.slice(0, 16),
+      tribunal: search.tribunal,
+      result: "cache_hit",
+      total: cached.total || 0,
+      durationMs: 0
+    });
+    return {
+      ok: true,
+      status: 200,
+      payload: {
+        ...cached,
+        queryId,
+        cache: { hit: true, ttlSeconds: DATAJUD_CACHE_TTL_SECONDS }
+      }
+    };
+  }
+
+  if (!(await consumeDataJudRateLimit(env, search.tribunal))) {
+    await auditDataJud(env, { queryId, queryHash: queryHash.slice(0, 16), tribunal: search.tribunal, result: "rate_limited", total: 0, durationMs: 0 });
     return {
       ok: false,
-      status: 502,
+      status: 429,
       payload: {
         ok: false,
-        error: "falha_datajud",
-        upstreamStatus: response.status,
+        error: "datajud_limite_temporario",
         tribunal: search.tribunal,
         alias: search.alias,
       },
     };
   }
-  return {
-    ok: true,
-    status: 200,
-    payload: normalizeDataJudResponse(search, data),
+
+  const startedAt = Date.now();
+  try {
+    const response = await fetchDataJudWithRetry(env, search);
+    const data = await response.json().catch(() => null);
+    if (!response.ok) {
+      await auditDataJud(env, {
+        queryId,
+        queryHash: queryHash.slice(0, 16),
+        tribunal: search.tribunal,
+        result: "upstream_error",
+        upstreamStatus: response.status,
+        total: 0,
+        durationMs: Date.now() - startedAt
+      });
+      return {
+        ok: false,
+        status: 502,
+        payload: {
+          ok: false,
+          error: "falha_datajud",
+          upstreamStatus: response.status,
+          tribunal: search.tribunal,
+          alias: search.alias,
+        },
+      };
+    }
+
+    const normalized = {
+      ...normalizeDataJudResponse(search, data),
+      queryId,
+      fetchedAt: new Date().toISOString(),
+      cache: { hit: false, ttlSeconds: DATAJUD_CACHE_TTL_SECONDS }
+    };
+    await writeDataJudCache(env, cacheKey, normalized);
+    await auditDataJud(env, {
+      queryId,
+      queryHash: queryHash.slice(0, 16),
+      tribunal: search.tribunal,
+      result: "success",
+      total: normalized.total,
+      durationMs: Date.now() - startedAt
+    });
+    return { ok: true, status: 200, payload: normalized };
+  } catch (error) {
+    const timedOut = error?.name === "AbortError";
+    await auditDataJud(env, {
+      queryId,
+      queryHash: queryHash.slice(0, 16),
+      tribunal: search.tribunal,
+      result: timedOut ? "timeout" : "request_failed",
+      total: 0,
+      durationMs: Date.now() - startedAt
+    });
+    return {
+      ok: false,
+      status: timedOut ? 504 : 502,
+      payload: {
+        ok: false,
+        error: timedOut ? "datajud_timeout" : "falha_datajud",
+        tribunal: search.tribunal,
+        alias: search.alias
+      }
+    };
+  }
+}
+
+async function fetchDataJudWithRetry(env, search) {
+  let lastResponse;
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), dataJudTimeoutMs(env));
+    try {
+      lastResponse = await fetch(search.url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...dataJudAuthHeaders(env),
+        },
+        body: JSON.stringify(search.payload),
+        signal: controller.signal
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
+    if (![429, 500, 502, 503, 504].includes(lastResponse.status) || attempt === 1) return lastResponse;
+    await new Promise((resolve) => setTimeout(resolve, 200));
+  }
+  return lastResponse;
+}
+
+function dataJudTimeoutMs(env) {
+  const configured = Number(env?.DATAJUD_TIMEOUT_MS);
+  return Number.isFinite(configured) ? Math.max(3_000, Math.min(configured, 30_000)) : DATAJUD_DEFAULT_TIMEOUT_MS;
+}
+
+function dataJudRateLimit(env) {
+  const configured = Number(env?.DATAJUD_RATE_PER_MINUTE);
+  return Number.isFinite(configured) ? Math.max(10, Math.min(configured, 600)) : DATAJUD_DEFAULT_RATE_PER_MINUTE;
+}
+
+async function consumeDataJudRateLimit(env, tribunal) {
+  if (!env?.JUS9_DATAJUD_CACHE) return true;
+  const minute = Math.floor(Date.now() / 60_000);
+  const key = `datajud:rate:v1:${tribunal}:${minute}`;
+  const current = Number(await env.JUS9_DATAJUD_CACHE.get(key).catch(() => 0)) || 0;
+  if (current >= dataJudRateLimit(env)) return false;
+  await env.JUS9_DATAJUD_CACHE.put(key, String(current + 1), { expirationTtl: 120 }).catch(() => null);
+  return true;
+}
+
+async function readDataJudCache(env, key) {
+  if (!env?.JUS9_DATAJUD_CACHE) return null;
+  return env.JUS9_DATAJUD_CACHE.get(key, "json").catch(() => null);
+}
+
+async function writeDataJudCache(env, key, payload) {
+  if (!env?.JUS9_DATAJUD_CACHE) return;
+  await env.JUS9_DATAJUD_CACHE.put(key, JSON.stringify(payload), { expirationTtl: DATAJUD_CACHE_TTL_SECONDS }).catch(() => null);
+}
+
+async function auditDataJud(env, event) {
+  const safeEvent = {
+    eventType: "datajud_query",
+    occurredAt: new Date().toISOString(),
+    queryId: String(event.queryId || "").slice(0, 80),
+    queryHash: String(event.queryHash || "").slice(0, 20),
+    tribunal: normalizeDataJudTribunal(event.tribunal),
+    result: safeString(event.result),
+    upstreamStatus: Number(event.upstreamStatus || 0) || null,
+    total: Math.max(0, Number(event.total || 0)),
+    durationMs: Math.max(0, Number(event.durationMs || 0)),
+    rawStored: false
   };
+  console.log(JSON.stringify(safeEvent));
+  if (!env?.JUS9_DATAJUD_CACHE) return;
+  const key = `datajud:audit:v1:${Date.now()}:${safeEvent.queryId}`;
+  await env.JUS9_DATAJUD_CACHE.put(key, JSON.stringify(safeEvent), { expirationTtl: DATAJUD_AUDIT_TTL_SECONDS }).catch(() => null);
+}
+
+async function sha256Hex(value) {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(String(value || "")));
+  return Array.from(new Uint8Array(digest)).map((byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
 function buildUnsupportedPartySearchResponse(search) {
@@ -363,6 +543,8 @@ function normalizeDataJudResponse(search, data) {
     },
     total,
     results: hits.map(normalizeDataJudHit),
+    rawAvailable: false,
+    evidenceStatus: "official-public-metadata",
     governance: {
       classification: "METADADOS_PROCESSUAIS_PUBLICOS",
       access: "leitura",
