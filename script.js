@@ -2451,8 +2451,17 @@ window.jus9DemoLogin = function(form){
 
   function cleanPublicAnswer(answer){
     var text = String(answer || '').trim();
+    var internalHeadings = '(?:Escuta|Sentire|Leitura do pedido|Caminho escolhido)';
+    text = text.split(/\n/).map(function(line){
+      var value = String(line || '');
+      var hasInternalHeading = new RegExp('\\b' + internalHeadings + '\\s*:', 'i').test(value);
+      if(hasInternalHeading && /\bResposta\s*:/i.test(value)){
+        return value.replace(/^[\s\S]*?\bResposta\s*:\s*/i, '').trim();
+      }
+      if(new RegExp('^\\s*' + internalHeadings + '\\s*:', 'i').test(value)) return '';
+      return value.replace(/^\s*Resposta\s*:\s*/i, '').replace(/\bResposta\s*:\s*/gi, '');
+    }).join('\n');
     text = text
-      .replace(/^\s*(Escuta|Sentire|Leitura do pedido|Caminho escolhido|Resposta)\s*:\s*/gim, '')
       .replace(/^\s*[-–—]*\s*$/gm, '')
       .replace(/\n{3,}/g, '\n\n')
       .trim();
