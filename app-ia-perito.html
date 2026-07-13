@@ -1,13 +1,83 @@
-<!--
-Jus 9 Tecnologia Juridica
-Repositorio: jus9-tecnologia-juridica
-IA por MVP conectada a API segura da Charlie Echo. Sem tokens no frontend e sem dados reais.
--->
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><title>IA Perito Judicial - Charlie Echo da Costa</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css"><meta name="theme-color" content="#07111f"><link rel="manifest" href="manifest.webmanifest"></head><body class="demo-shell charlie-workbench-page charlie-mvp-shell">
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Charlie Perito - DPJ | Jus 9 Tecnologia Juridica</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
+  <meta name="theme-color" content="#07111f">
+  <link rel="manifest" href="manifest.webmanifest">
+</head>
+<body class="demo-shell charlie-workbench-page charlie-mvp-shell">
 <div class="jus9-autoria-topo" role="note" style="font-size:.82rem;line-height:1.4;text-align:center;padding:.45rem .75rem;background:rgba(15,23,42,.94);color:#f8fafc;letter-spacing:.01em;">Jus 9 Tecnologia Juridica - software livre, autoria preservada.</div>
-<div class="demo-layout"><aside class="demo-sidebar"><img src="assets/jus9-logo.svg" alt="Jus 9"><nav><a href="app-demo-perito.html">Painel Demo 5</a><a class="active" href="app-ia-perito.html">IA Profissional</a><a href="app-agenda.html">Agenda</a><a href="app-documentos-perito.html">Documentos</a><a href="mvp.html#demos-jus9">Sair do demo</a></nav></aside><main class="demo-main">
-<section class="demo-topbar"><div><div class="eyebrow">Charlie Echo da Costa - especialista pericial</div><h1 style="font-size:42px;color:#0b1728;margin-top:8px">IA Perito Judicial</h1><p style="color:#51627a;margin:8px 0 0">IA generativa multimodal jurista com governanca humana, ajustada ao DPJ: nomeacoes, quesitos, diligencias, laudos, anexos e cadeia tecnica ficticia.</p><div class="daj-actions-fixed"><a href="#chat-ia">Abrir chat</a><a href="app-demo-perito.html">Voltar ao painel</a><a href="app-ia-profissional.html">Modo jurista geral</a><a href="https://jus9verde.jus9tecnologia.com.br/charlie-echo-social#chat-social">Charlie Echo Social</a></div></div><span class="badge secret">Demo 5 - sem dados reais</span></section>
-<section class="demo-grid"><article class="mvp-card"><h3>Modo jurista</h3><p>Modo jurista: observa contraditorio, imparcialidade, metodo e deveres processuais.</p></article><article class="mvp-card"><h3>Modo especialista</h3><p>Modo especialista: foca no DPJ, quesitos, diligencias, laudo e anexos.</p></article><article class="mvp-card"><h3>Modo publico/social</h3><p>Modo publico/social: explica a pericia de modo simples e responsavel.</p></article><article class="mvp-card"><h3>Governanca humana</h3><p>Nao decide, nao assina, nao protocola, nao substitui profissional habilitado e exige revisao humana.</p></article></section>
-<section id="chat-ia" class="demo-card ai-chat-card" data-ai-chat data-ai-layout="medio" data-ai-title="IA Perito Judicial" data-ai-code="DPJ" data-ai-focus="nomeacoes, quesitos, diligencias, laudos, anexos e cadeia tecnica ficticia"><div class="eyebrow">Chat demonstrativo</div><h2 style="color:#0b1728">Falar com Charlie Echo</h2><p style="color:#51627a">Digite uma pergunta ficticia. A consulta usa a API segura da Charlie Echo quando disponivel e mantem fallback local sem dados reais.</p><div class="ai-mode-row" role="radiogroup" aria-label="Modo de resposta"><label><input type="radio" name="mode-DPJ" value="jurista" checked> Jurista</label><label><input type="radio" name="mode-DPJ" value="especialista"> Especialista DPJ</label><label><input type="radio" name="mode-DPJ" value="social"> Publico/social</label></div><div class="ai-chat-window" data-ai-chat-window><div class="ai-message ai-message-echo"><strong>Charlie Echo:</strong> Ola. Estou em modo demonstrativo do DPJ. Use dados ficticios e me diga o que deseja organizar.</div></div><form class="ai-chat-form" data-ai-chat-form><textarea data-ai-chat-input rows="4" placeholder="Quais campos devo conferir antes de iniciar um DPJ demonstrativo?"></textarea><button class="mvp-button" type="submit">Enviar para Charlie Echo</button></form><div class="fine-note"><strong>Limite:</strong> nao informe dados reais, nomes reais, processos reais, WhatsApp, tokens, senhas, arquivos internos ou documentos sigilosos.</div></section>
-</main></div><footer class="jus9-autoria-rodape" role="contentinfo" style="font-size:.85rem;line-height:1.5;text-align:center;padding:1rem .75rem;margin-top:2rem;background:rgba(15,23,42,.96);color:#f8fafc;">Producao do site: Jus 9 Tecnologia Juridica. Software livre com autoria, origem e direitos autorais preservados.</footer><script src="script.js?v=20260712-charlie-pesquisa-ativa-v1"></script><script src="assets/js/pwa-install.js"></script></body></html>
+<div class="demo-layout">
+  <aside class="demo-sidebar">
+    <img src="assets/jus9-logo.svg" alt="Jus 9">
+    <nav>
+      <a href="app-demo-perito.html">Painel DPJ</a>
+      <a href="demo-05-perito-judicial.html">Pagina Demo 5</a>
+      <a class="active" href="app-ia-perito.html">Charlie Perito</a>
+      <a href="app-documentos-perito.html">Documentos</a>
+      <a href="app-workspace-perito.html">Workspace</a>
+      <a href="app-perfis-perito.html">Perfis</a>
+      <a href="app-agenda.html">Agenda</a>
+      <a href="mvp.html#demos-jus9">Sair do demo</a>
+    </nav>
+  </aside>
+  <main class="demo-main">
+    <section class="demo-topbar">
+      <div>
+        <div class="eyebrow">Charlie Echo - modulo pericial</div>
+        <h1 style="font-size:42px;color:#0b1728;margin-top:8px">Charlie Perito</h1>
+        <p style="color:#51627a;margin:8px 0 0">Instrumento DPJ para organizar quesitos, metodo, evidencias, diligencias e laudo demonstrativo. Ela estrutura tecnica e limites; nao inventa achado nem substitui perito habilitado.</p>
+        <div class="daj-actions-fixed">
+          <a href="#chat-ia">Chat</a>
+          <a href="app-documentos-perito.html">Documentos</a>
+          <a href="app-workspace-perito.html">Workspace</a>
+          <a href="https://jus9verde.jus9tecnologia.com.br/charlie-echo-social#chat-social">Modulo social</a>
+        </div>
+      </div>
+      <span class="badge secret">DPJ - SEM DADOS REAIS</span>
+    </section>
 
+    <section class="demo-grid">
+      <article class="mvp-card"><h3>Quesitos</h3><p>Separa pergunta tecnica, dado necessario, metodo, resposta possivel e limite.</p></article>
+      <article class="mvp-card"><h3>Metodo</h3><p>Define roteiro de analise, diligencia, documentos e criterios de verificacao.</p></article>
+      <article class="mvp-card"><h3>Cadeia tecnica</h3><p>Organiza anexos ficticios, origem, integridade, versao e pendencias.</p></article>
+      <article class="mvp-card"><h3>Laudo</h3><p>Estrutura objeto, metodologia, achados, respostas e limitacoes para revisao.</p></article>
+    </section>
+
+    <section id="chat-ia" class="demo-card ai-chat-card" data-ai-chat data-ai-layout="medio" data-ai-title="Charlie Perito - DPJ" data-ai-code="DPJ" data-ai-focus="pericia judicial, quesitos, metodo, diligencias, evidencias, laudo, cadeia tecnica e revisao humana">
+      <div class="eyebrow">Chat demonstrativo</div>
+      <h2 style="color:#0b1728">Falar com Charlie Perito</h2>
+      <p style="color:#51627a">Use um pedido ficticio. A Charlie deve consultar a API quando necessario, estruturar produto pericial e deixar claro o que depende de evidencia ou revisao humana.</p>
+      <div class="ai-mode-row" role="radiogroup" aria-label="Modo de resposta">
+        <label><input type="radio" name="mode-DPJ" value="jurista"> Jurista</label>
+        <label><input type="radio" name="mode-DPJ" value="especialista" checked> Especialista DPJ</label>
+        <label><input type="radio" name="mode-DPJ" value="social"> Publico/social</label>
+      </div>
+      <div class="link-actions ia-actions" aria-label="Atalhos de prompt">
+        <button class="mvp-button" type="button" data-charlie-prompt="No DPJ, organize quesitos periciais ficticios sobre responsabilidade civil, separando objetivo, documentos necessarios, metodo, resposta possivel e limites.">Quesitos</button>
+        <button class="mvp-button" type="button" data-charlie-prompt="No DPJ, monte roteiro de laudo demonstrativo com objeto, metodologia, documentos, achados, limitacoes e revisao humana.">Roteiro de laudo</button>
+        <button class="mvp-button" type="button" data-charlie-prompt="No DPJ, crie checklist de cadeia tecnica de anexos ficticios, preservando origem, integridade, descricao, versao e pendencias.">Cadeia tecnica</button>
+        <button class="mvp-button" type="button" data-charlie-prompt="No DPJ, planeje uma diligencia demonstrativa com objetivo, registros necessarios, cuidados de sigilo e proximo ato humano.">Diligencia</button>
+      </div>
+      <div class="ai-chat-window" data-ai-chat-window>
+        <div class="ai-message ai-message-echo"><strong>Charlie Echo:</strong> Ola. Estou no DPJ. Posso organizar quesitos, metodo, anexos, diligencias e laudo demonstrativo com rastreabilidade e revisao humana.</div>
+      </div>
+      <form class="ai-chat-form" data-ai-chat-form>
+        <textarea data-ai-chat-input rows="4" placeholder="No DPJ, crie um checklist pericial demonstrativo com quesitos, metodo, evidencias e limites."></textarea>
+        <button class="mvp-button" type="submit">Enviar para Charlie Echo</button>
+      </form>
+      <div class="fine-note"><strong>Limite:</strong> nao informe dados reais, processos reais, documentos sigilosos, pericia real, WhatsApp, tokens, senhas, arquivos internos ou evidencias verdadeiras.</div>
+    </section>
+  </main>
+</div>
+<footer class="jus9-autoria-rodape" role="contentinfo" style="font-size:.85rem;line-height:1.5;text-align:center;padding:1rem .75rem;margin-top:2rem;background:rgba(15,23,42,.96);color:#f8fafc;">Producao do site: Jus 9 Tecnologia Juridica. Software livre com autoria, origem e direitos autorais preservados.</footer>
+<script src="script.js?v=20260712-charlie-pesquisa-ativa-v1"></script>
+<script src="assets/js/pwa-install.js"></script>
+</body>
+</html>
