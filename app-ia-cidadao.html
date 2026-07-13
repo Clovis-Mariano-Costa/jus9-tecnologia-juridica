@@ -1,13 +1,91 @@
 <!--
 Jus 9 Tecnologia Juridica
 Repositorio: jus9-tecnologia-juridica
-IA por MVP conectada a API segura da Charlie Echo. Sem tokens no frontend e sem dados reais.
+IA DIC conectada a API segura da Charlie Echo. Sem tokens no frontend e sem dados reais.
 -->
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><title>IA Cidadao / Interessado - Charlie Echo da Costa</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css"><meta name="theme-color" content="#07111f"><link rel="manifest" href="manifest.webmanifest"></head><body class="demo-shell charlie-workbench-page charlie-mvp-shell">
-<div class="jus9-autoria-topo" role="note" style="font-size:.82rem;line-height:1.4;text-align:center;padding:.45rem .75rem;background:rgba(15,23,42,.94);color:#f8fafc;letter-spacing:.01em;">Jus 9 Tecnologia Juridica - software livre, autoria preservada.</div>
-<div class="demo-layout"><aside class="demo-sidebar"><img src="assets/jus9-logo.svg" alt="Jus 9"><nav><a href="app-demo-cidadao.html">Painel Demo 4</a><a class="active" href="app-ia-cidadao.html">IA Profissional</a><a href="app-agenda.html">Agenda</a><a href="app-documentos-cidadao.html">Documentos</a><a href="mvp.html#demos-jus9">Sair do demo</a></nav></aside><main class="demo-main">
-<section class="demo-topbar"><div><div class="eyebrow">Charlie Echo da Costa - orientacao publica</div><h1 style="font-size:42px;color:#0b1728;margin-top:8px">IA Cidadao / Interessado</h1><p style="color:#51627a;margin:8px 0 0">IA generativa multimodal jurista com governanca humana, ajustada ao DIC: perguntas gerais, documentos ficticios, encaminhamentos e alerta para buscar profissional habilitado.</p><div class="daj-actions-fixed"><a href="#chat-ia">Abrir chat</a><a href="app-demo-cidadao.html">Voltar ao painel</a><a href="app-ia-profissional.html">Modo jurista geral</a><a href="https://jus9verde.jus9tecnologia.com.br/charlie-echo-social#chat-social">Charlie Echo Social</a></div></div><span class="badge secret">Demo 4 - sem dados reais</span></section>
-<section class="demo-grid"><article class="mvp-card"><h3>Modo jurista</h3><p>Modo jurista: traduz direitos em orientacao geral, sem consultoria real personalizada.</p></article><article class="mvp-card"><h3>Modo especialista</h3><p>Modo especialista: foca no DIC, pergunta, documentos e encaminhamentos.</p></article><article class="mvp-card"><h3>Modo publico/social</h3><p>Modo publico/social: usa linguagem coloquial, curta e acolhedora.</p></article><article class="mvp-card"><h3>Governanca humana</h3><p>Nao decide, nao assina, nao protocola, nao substitui profissional habilitado e exige revisao humana.</p></article></section>
-<section id="chat-ia" class="demo-card ai-chat-card" data-ai-chat data-ai-layout="medio" data-ai-title="IA Cidadao / Interessado" data-ai-code="DIC" data-ai-focus="perguntas gerais, documentos ficticios, encaminhamentos e alerta para buscar profissional habilitado"><div class="eyebrow">Chat demonstrativo</div><h2 style="color:#0b1728">Falar com Charlie Echo</h2><p style="color:#51627a">Digite uma pergunta ficticia. A consulta usa a API segura da Charlie Echo quando disponivel e mantem fallback local sem dados reais.</p><div class="ai-mode-row" role="radiogroup" aria-label="Modo de resposta"><label><input type="radio" name="mode-DIC" value="jurista" checked> Jurista</label><label><input type="radio" name="mode-DIC" value="especialista"> Especialista DIC</label><label><input type="radio" name="mode-DIC" value="social"> Publico/social</label></div><div class="ai-chat-window" data-ai-chat-window><div class="ai-message ai-message-echo"><strong>Charlie Echo:</strong> Ola. Estou em modo demonstrativo do DIC. Use dados ficticios e me diga o que deseja organizar.</div></div><form class="ai-chat-form" data-ai-chat-form><textarea data-ai-chat-input rows="4" placeholder="Tenho uma duvida geral. Quando devo procurar advogado ou defensoria?"></textarea><button class="mvp-button" type="submit">Enviar para Charlie Echo</button></form><div class="fine-note"><strong>Limite:</strong> nao informe dados reais, nomes reais, processos reais, WhatsApp, tokens, senhas, arquivos internos ou documentos sigilosos.</div></section>
-</main></div><footer class="jus9-autoria-rodape" role="contentinfo" style="font-size:.85rem;line-height:1.5;text-align:center;padding:1rem .75rem;margin-top:2rem;background:rgba(15,23,42,.96);color:#f8fafc;">Producao do site: Jus 9 Tecnologia Juridica. Software livre com autoria, origem e direitos autorais preservados.</footer><script src="script.js?v=20260712-charlie-pesquisa-ativa-v1"></script><script src="assets/js/pwa-install.js"></script></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Charlie Social - Cidadao / Interessado</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
+  <meta name="theme-color" content="#07111f">
+  <link rel="manifest" href="manifest.webmanifest">
+</head>
+<body class="demo-shell charlie-workbench-page charlie-mvp-shell">
+<div class="jus9-autoria-topo" role="note" style="font-size:0.82rem;line-height:1.4;text-align:center;padding:0.45rem 0.75rem;background:rgba(15,23,42,0.94);color:#f8fafc;letter-spacing:0.01em;">Jus 9 Tecnologia Juridica - software livre, autoria preservada.</div>
+<div class="demo-layout">
+  <aside class="demo-sidebar">
+    <img src="assets/jus9-logo.svg" alt="Jus 9">
+    <nav>
+      <a href="app-demo-cidadao.html">Painel DIC</a>
+      <a class="active" href="app-ia-cidadao.html">Charlie Social</a>
+      <a href="app-documentos-cidadao.html">Documentos</a>
+      <a href="app-workspace-cidadao.html">Workspace</a>
+      <a href="app-perfis-cidadao.html">Perfis</a>
+      <a href="app-agenda.html">Agenda</a>
+      <a href="app-ia-profissional.html">Modo DAJ</a>
+      <a href="mvp.html#demos-jus9">Sair do demo</a>
+    </nav>
+  </aside>
 
+  <main class="demo-main">
+    <section class="demo-topbar">
+      <div>
+        <div class="eyebrow">Charlie Echo da Costa - modulo social/cidadao</div>
+        <h1 style="font-size:42px;color:#0b1728;margin-top:8px">Orientacao simples, acolhedora e verificavel.</h1>
+        <p style="color:#51627a;margin:8px 0 0">No DIC, Charlie fala com clareza, nao pede dados pessoais, busca fontes oficiais quando precisa e encaminha para ajuda humana quando houver risco.</p>
+      </div>
+      <span class="badge secret">Publico-controlado</span>
+    </section>
+
+    <section class="process-layout">
+      <article class="process-card">
+        <h2>Contrato social da Charlie</h2>
+        <p>Responder primeiro em linguagem simples. Depois separar fonte, limite e proximo passo. Se houver urgencia, prazo, violencia, saude, crianca/adolescente, dinheiro ou documento real, orientar atendimento humano.</p>
+        <div class="quick-links">
+          <a href="app-demo-cidadao.html">DIC</a>
+          <a href="app-documentos-cidadao.html">Documentos</a>
+          <a href="app-workspace-cidadao.html">Workspace</a>
+          <a href="https://www.gov.br/" target="_blank" rel="noopener">gov.br</a>
+        </div>
+      </article>
+      <article class="process-card">
+        <h2>Acoes guiadas</h2>
+        <p>Poucos comandos, todos seguros para ambiente publico.</p>
+        <div class="link-actions">
+          <button type="button" data-charlie-prompt="No DIC, explique em linguagem simples quando uma pessoa deve procurar advogado, defensoria ou orgao publico, sem pedir dados pessoais.">Quando procurar ajuda</button>
+          <button type="button" data-charlie-prompt="No DIC, organize uma duvida ficticia em passos: resumo, documentos que talvez sejam necessarios, fonte oficial e encaminhamento humano.">Organizar duvida</button>
+          <button type="button" data-charlie-prompt="No DIC, explique direito de propriedade em linguagem cidada, citando fontes oficiais e deixando claro que nao substitui profissional.">Direito em linguagem simples</button>
+          <button type="button" data-charlie-prompt="No DIC, monte um checklist de fontes oficiais para conferir uma duvida juridica comum, sem inventar link, orgao ou prazo.">Fontes oficiais</button>
+        </div>
+      </article>
+    </section>
+
+    <section id="chat-ia" class="demo-card ai-chat-card" data-ai-chat data-ai-layout="medio" data-ai-title="Charlie Social - Cidadao / Interessado" data-ai-code="DIC" data-ai-focus="orientacao inicial simples, documentos ficticios, fontes oficiais, encaminhamento humano e limites sociais">
+      <div class="eyebrow">Chat social demonstrativo</div>
+      <h2 style="color:#0b1728">Falar com Charlie Social</h2>
+      <p style="color:#51627a">Digite uma pergunta ficticia. A consulta usa a API segura da Charlie Echo e deve priorizar linguagem simples, fontes oficiais e encaminhamento humano.</p>
+      <div class="ai-mode-row" role="radiogroup" aria-label="Modo de resposta">
+        <label><input type="radio" name="mode-DIC" value="social" checked> Publico/social</label>
+        <label><input type="radio" name="mode-DIC" value="especialista"> Especialista DIC</label>
+        <label><input type="radio" name="mode-DIC" value="jurista"> Jurista</label>
+      </div>
+      <div class="ai-chat-window" data-ai-chat-window><div class="ai-message ai-message-echo"><strong>Charlie Echo:</strong> Ola. Estou no modo social do DIC. Conte o tema de forma geral e sem dados pessoais; eu organizo caminhos seguros e fontes para conferencia.</div></div>
+      <form class="ai-chat-form" data-ai-chat-form>
+        <textarea data-ai-chat-input rows="4" placeholder="Ex.: Tenho uma duvida geral sobre moradia. Que fontes oficiais posso consultar e quando devo procurar ajuda humana?"></textarea>
+        <button class="mvp-button" type="submit">Enviar para Charlie</button>
+      </form>
+      <div class="fine-note"><strong>Limite:</strong> nao informe nomes reais, CPF, endereco, telefone, processo real, imagens de documento, WhatsApp, senha, token ou caso urgente.</div>
+    </section>
+  </main>
+</div>
+<script src="script.js?v=20260712-charlie-pesquisa-ativa-v1"></script>
+<footer class="jus9-autoria-rodape" role="contentinfo" style="font-size:0.85rem;line-height:1.5;text-align:center;padding:1rem 0.75rem;margin-top:2rem;background:rgba(15,23,42,0.96);color:#f8fafc;">Producao do site: Jus 9 Tecnologia Juridica. Software livre com autoria, origem e direitos autorais preservados.</footer>
+<script src="assets/js/pwa-install.js"></script>
+</body>
+</html>
