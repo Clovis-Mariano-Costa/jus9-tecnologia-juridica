@@ -11,6 +11,12 @@ function assert(condition, message) {
 assert(catalog.schema === "jus9.mvp.profiles.public.v1", "schema publico inesperado");
 assert(Array.isArray(catalog.profiles) && catalog.profiles.length === 14, "catalogo deve conter 14 MVPs");
 
+const remoteCatalogResponse = await fetch(`${portalUrl}/data-publica/mvp-perfis.json`, { cache: "no-store" });
+assert(remoteCatalogResponse.ok, "catalogo publico remoto indisponivel");
+const remoteCatalog = await remoteCatalogResponse.json();
+assert(Array.isArray(remoteCatalog.profiles) && remoteCatalog.profiles.length === 14, "catalogo remoto deve conter 14 MVPs");
+assert(remoteCatalog.updated_at === catalog.updated_at, "catalogo remoto esta defasado em relacao ao repositorio");
+
 const expectedCodes = ["DAJ", "DAA", "DEJ", "DIC", "DPJ", "DIP", "DEE", "DEJI", "DOI", "DGE", "DMG", "DMP", "DAP", "DED"];
 const actualCodes = catalog.profiles.map((profile) => profile.dossier_code);
 assert(expectedCodes.every((code) => actualCodes.includes(code)), "catalogo nao contem todos os dossies canonicos");

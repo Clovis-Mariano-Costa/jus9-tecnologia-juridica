@@ -24,6 +24,7 @@ $files = @(
   'app-ia-profissional.html',
   'app-agenda.html',
   'service-worker.js',
+  'data-publica\mvp-perfis.json',
   'assets\clovis-founder-portrait.png',
   'assets\clovis-founder-context.png'
 )
