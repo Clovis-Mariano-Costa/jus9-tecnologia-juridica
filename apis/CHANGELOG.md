@@ -11,6 +11,11 @@ hash: nao-aplicavel-changelog
 
 # Changelog - APIs
 
+## 1.10.1 - 2026-07-14
+
+- Frontend do DAJ consulta `/api/auth/permissions` antes de habilitar a criacao.
+- Falha, sessao ausente ou perfil sem `dajs:write` mantem a gravacao bloqueada.
+
 ## 1.10.0 - 2026-07-13
 
 - Adicionada `DELETE /api/dajs?dajId=...` exclusivamente para DAJ ficticio de homologacao.

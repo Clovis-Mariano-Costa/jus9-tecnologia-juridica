@@ -104,10 +104,12 @@ assert(intakePage.includes("data-daj-intake-form"), "atendimento inicial sem for
 assert(intakePage.includes("/auth/google/start?return_to=%2Fapp-atendimento-inicial.html"), "atendimento inicial sem login com retorno seguro");
 assert(intakePage.includes('name="cpf"') && intakePage.includes('data-sensitive-field="cpf"'), "atendimento inicial sem CPF marcado como sensivel");
 assert(intakePage.includes("data-charlie-exclude"), "atendimento inicial nao exclui dados sensiveis do prompt da Charlie");
-assert(intakePage.includes("assets/js/daj-intake.js?v=20260713-daj-homologation-v1"), "atendimento inicial sem cliente versionado da homologacao reversivel");
+assert(intakePage.includes("assets/js/daj-intake.js?v=20260714-daj-auth-status-v1"), "atendimento inicial sem cliente versionado do estado autenticado");
 assert(intakePage.includes("data-delete-test-daj"), "atendimento inicial sem limpeza governada do registro ficticio");
 assert(intakePage.includes('data-delete-test-daj hidden style="display:none"'), "botao de limpeza deve nascer visualmente oculto");
 assert(intakePage.includes("data-daj-login-link"), "atendimento inicial sem retorno autenticado ao DAJ consultado");
+assert(intakePage.includes("data-daj-auth-status"), "atendimento inicial sem estado visivel da sessao");
+assert(intakePage.includes("data-save-daj disabled"), "gravacao DAJ deve nascer bloqueada ate confirmar a sessao");
 assert(!intakePage.includes("Demonstração: atendimento inicial salvo"), "atendimento inicial ainda finge salvamento por alerta");
 assert(intakeScript.includes("fetch('/api/dajs'"), "cliente do atendimento nao chama cadastro DAJ");
 assert(intakeScript.includes("credentials: 'include'"), "cadastro DAJ no frontend sem sessao autenticada");
@@ -117,6 +119,8 @@ assert(intakeScript.includes("testMode: true") && intakeScript.includes("environ
 assert(intakeScript.includes("method: 'DELETE'") && intakeScript.includes("EXCLUIR TESTE"), "frontend sem exclusao confirmada do DAJ ficticio");
 assert(intakeScript.includes("setDeleteButtonVisible") && intakeScript.includes("deleteButton.style.display"), "frontend nao governa a visibilidade real da limpeza");
 assert(intakeScript.includes("resumeDajFromUrl") && intakeScript.includes("searchParams.get('dajId')"), "frontend sem retomada do DAJ por URL");
+assert(intakeScript.includes("checkAuthenticatedSession") && intakeScript.includes("/api/auth/permissions"), "frontend nao confirma permissoes antes de liberar gravacao");
+assert(intakeScript.includes("permissions.indexOf('dajs:write')"), "frontend nao exige dajs:write para liberar o formulario");
 assert(!intakeScript.includes("localStorage"), "cliente do cadastro DAJ nao deve persistir atendimento no navegador");
 assert(wranglerConfig.includes('"binding": "JUS9_DAJ_PROCESS_LINKS"'), "wrangler sem KV oficial DAJ-processo");
 assert(wranglerConfig.includes('"binding": "JUS9_USER_MEMORY"'), "wrangler sem KV dedicado de memoria do usuario");
@@ -139,7 +143,7 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v30-2026-07-13-daj-homologation-cleanup"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("jus9-pwa-v31-2026-07-14-daj-auth-status"), "cache PWA principal desatualizado");
 assert(canonicalServiceWorker.includes("/assets/js/daj-intake.js"), "cache PWA sem cliente do cadastro DAJ");
 assert(distSyncScript.includes("assets\\js\\daj-intake.js"), "sincronizacao de deploy nao inclui cliente do cadastro DAJ");
 assert(canonicalServiceWorker.includes("caches.match('/offline.html')"), "fallback de arquivos estaticos do worker principal incorreto");

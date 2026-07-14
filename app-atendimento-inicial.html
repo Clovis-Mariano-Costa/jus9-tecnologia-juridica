@@ -61,6 +61,7 @@ DNA de referencia: charlieecho-jus9-tecnologia-juridica
         </p>
         <div class="link-actions">
           <a href="/auth/google/start?return_to=%2Fapp-atendimento-inicial.html" data-daj-login-link>Entrar com Google</a>
+          <span class="badge" data-daj-auth-status role="status" aria-live="polite">Verificando sessao...</span>
           <a href="app-clientes.html">Voltar para lista de DAJs</a>
           <a href="app-daj.html">Ver DAJ exemplo</a>
         </div>
@@ -195,7 +196,7 @@ DNA de referencia: charlieecho-jus9-tecnologia-juridica
           </div>
 
           <div class="form-actions">
-            <button class="mvp-button" type="submit" data-save-daj>Salvar atendimento e criar DAJ</button>
+            <button class="mvp-button" type="submit" data-save-daj disabled>Salvar atendimento e criar DAJ</button>
             <button class="ghost-button" type="button" data-send-daj-analysis disabled>Enviar DAJ para análise da Charlie Echo</button>
             <button class="ghost-button" type="button" data-delete-test-daj hidden style="display:none">Remover DAJ ficticio</button>
           </div>
@@ -216,7 +217,7 @@ DNA de referencia: charlieecho-jus9-tecnologia-juridica
   </div>
 
   <script src="script.js?v=20260712-charlie-pesquisa-ativa-v1"></script>
-  <script src="assets/js/daj-intake.js?v=20260713-daj-homologation-v1"></script>
+  <script src="assets/js/daj-intake.js?v=20260714-daj-auth-status-v1"></script>
   <footer class="jus9-autoria-rodape" role="contentinfo" aria-label="Direitos autorais e origem da producao do site" style="font-size:.85rem;line-height:1.5;text-align:center;padding:1rem .75rem;margin-top:2rem;background:rgba(15,23,42,.96);color:#f8fafc">
     Producao do site: Jus 9 Tecnologia Juridica. Software livre com autoria, origem e direitos autorais preservados.
   </footer>

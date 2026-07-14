@@ -11,6 +11,7 @@
   var dajNumber = document.querySelector('[data-daj-number]');
   var dajState = document.querySelector('[data-daj-state]');
   var loginLink = document.querySelector('[data-daj-login-link]');
+  var authStatus = document.querySelector('[data-daj-auth-status]');
   var cpfInput = form.elements.cpf;
   var pendingIdempotencyKey = '';
 
@@ -68,6 +69,47 @@
     if (!loginLink) return;
     var returnTo = window.location.pathname + window.location.search;
     loginLink.href = '/auth/google/start?return_to=' + encodeURIComponent(returnTo);
+  }
+
+  function setLoginVisible(visible) {
+    if (!loginLink) return;
+    loginLink.hidden = !visible;
+    loginLink.style.display = visible ? '' : 'none';
+  }
+
+  function profileLabel(profile) {
+    return String(profile || 'perfil autorizado').replace(/_/g, ' ');
+  }
+
+  async function checkAuthenticatedSession() {
+    if (saveButton) saveButton.disabled = true;
+    if (authStatus) authStatus.textContent = 'Verificando sessao...';
+    try {
+      var response = await fetch('/api/auth/permissions', {
+        credentials: 'include',
+        cache: 'no-store'
+      });
+      var data = await response.json().catch(function () { return {}; });
+      var permissions = Array.isArray(data.permissions) ? data.permissions : [];
+      var canWriteDaj = response.ok && permissions.indexOf('dajs:write') >= 0;
+      if (!response.ok) {
+        setLoginVisible(true);
+        if (authStatus) authStatus.textContent = 'Sessao nao iniciada';
+        return false;
+      }
+      setLoginVisible(false);
+      if (!canWriteDaj) {
+        if (authStatus) authStatus.textContent = 'Sessao sem permissao para gravar DAJ';
+        return false;
+      }
+      if (authStatus) authStatus.textContent = 'Sessao autorizada: ' + profileLabel(data.profile);
+      if (saveButton) saveButton.disabled = false;
+      return true;
+    } catch (_) {
+      setLoginVisible(true);
+      if (authStatus) authStatus.textContent = 'Nao foi possivel confirmar a sessao';
+      return false;
+    }
   }
 
   function setResumeUrl(dajId) {
@@ -238,7 +280,12 @@
     });
   }
 
-  updateLoginLink();
-  setDeleteButtonVisible(false);
-  resumeDajFromUrl();
+  async function initializeAuthenticatedIntake() {
+    updateLoginLink();
+    setLoginVisible(true);
+    setDeleteButtonVisible(false);
+    if (await checkAuthenticatedSession()) await resumeDajFromUrl();
+  }
+
+  initializeAuthenticatedIntake();
 })();

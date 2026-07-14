@@ -11,6 +11,11 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.10.1 - 2026-07-14
+
+- Pagina de atendimento mostra o resultado do login e o perfil autorizado.
+- Botao de salvar nasce bloqueado e so e liberado depois da verificacao de permissao.
+
 ## 1.10.0 - 2026-07-13
 
 - Pacote 1C tecnico recebe criacao marcada, retomada por `dajId` e limpeza governada do DAJ ficticio.

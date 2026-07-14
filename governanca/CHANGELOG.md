@@ -11,6 +11,11 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.10.1 - 2026-07-14
+
+- Atendimento DAJ passa a confirmar sessao e `dajs:write` antes de liberar gravacao.
+- Estado autenticado fica visivel sem expor e-mail e o link de login some quando autorizado.
+
 ## 1.10.0 - 2026-07-13
 
 - Homologacao do DAJ passa a ser reversivel somente para registros explicitamente ficticios.
