@@ -6,7 +6,7 @@ revisor_responsavel: Clovis Mariano da Costa
 data: 2026-07-14
 status: homologacao
 classificacao: INTERNO
-hash: calcular-no-release
+hash: commit-7f0344c
 ---
 
 # Persistencia e analise backend do DAJ
