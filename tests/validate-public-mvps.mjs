@@ -83,7 +83,10 @@ assert(processPage.includes('id="process-search-type"'), "pagina de processos se
 assert(processPage.includes('<option value="daj">DAJ</option>'), "pagina de processos sem busca por DAJ");
 assert(processPage.includes('<option value="nome">Nome da parte</option>'), "pagina de processos sem busca por nome");
 assert(processPage.includes('<option value="cpf">CPF</option>'), "pagina de processos sem busca por CPF");
-assert(processPage.includes("CPF deve aparecer sempre mascarado"), "pagina de processos sem aviso de CPF mascarado");
+assert(processPage.includes("CPF sempre mascarado"), "pagina de processos sem aviso de CPF mascarado");
+assert(processPage.includes("/api/judicial/parties/search"), "pagina de processos sem pesquisa estruturada de partes");
+assert(processPage.includes("nenhum modelo generativo foi chamado"), "pagina de processos sem garantia contra resposta inventada");
+assert(!processPage.includes("String(item.cpfMasked || '').slice(-2) ==="), "pagina de processos ainda compara apenas finais do CPF");
 assert(processPage.includes("jus9DajProcessLinksV1"), "pagina de processos sem persistencia local DAJ-processo");
 assert(processPage.includes("/api/daj-process-links"), "pagina de processos sem API autenticada DAJ-processo");
 assert(processPage.includes("credentials:'include'"), "pagina de processos sem credenciais na API DAJ-processo");
@@ -100,6 +103,8 @@ assert(wranglerConfig.includes('"binding": "JUS9_DATAJUD_CACHE"'), "wrangler sem
 assert(workerSource.includes('originalUrl.pathname === "/api/health"'), "worker sem health explicito");
 assert(workerSource.includes('originalUrl.pathname === "/api/judicial/datajud/readiness"'), "worker sem readiness canonico DataJud");
 assert(workerSource.includes('originalUrl.pathname === "/api/judicial/pdpj/readiness"'), "worker sem readiness PDPJ");
+assert(workerSource.includes('originalUrl.pathname === "/api/judicial/parties/search"'), "worker sem pesquisa estruturada de partes");
+assert(workerSource.includes("cpfLookupHash"), "worker sem indice HMAC exato de CPF");
 assert(workerSource.includes('DED: ["Autor / Editor"'), "worker sem contexto canonico DED");
 assert(installPage.includes("install-app-green-card"), "card da Jus 9 Verde ausente na pagina de instalacao");
 assert(installPage.includes("https://jus9verde.jus9tecnologia.com.br/instalar-app.html"), "link de instalacao da Jus 9 Verde ausente");
@@ -107,7 +112,7 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v27-2026-07-13-ded-independente"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("jus9-pwa-v28-2026-07-13-pesquisa-partes-fail-closed"), "cache PWA principal desatualizado");
 assert(canonicalServiceWorker.includes("caches.match('/offline.html')"), "fallback de arquivos estaticos do worker principal incorreto");
 
 for (const code of expectedCodes) {

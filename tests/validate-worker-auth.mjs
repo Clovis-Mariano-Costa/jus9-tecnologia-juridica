@@ -816,6 +816,32 @@ assert(response.status === 200 && data.service === "daj-process-links", "readine
 assert(data.configured === false && data.storage === "JUS9_DAJ_PROCESS_LINKS", "readiness DAJ-processo deveria indicar KV pendente");
 console.log("AUTH_OK daj-process-links-readiness=200");
 
+response = await request("/api/judicial/parties/readiness");
+data = await response.json();
+assert(response.status === 200 && data.policy === "no_llm_no_invented_results", "readiness de partes deveria declarar politica sem invencao");
+assert(data.externalConnector.status === "awaiting_official_guidance" && data.externalConnector.dataJudPublicPartySearch === false, "readiness deveria manter conector externo em espera");
+console.log("AUTH_OK judicial-parties-readiness=200");
+
+response = await request("/api/judicial/parties/search", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ searchType: "nome", nome: "Maria" })
+});
+assert(response.status === 401, "pesquisa de partes anonima deveria exigir sessao");
+console.log("AUTH_OK judicial-parties-anonymous=401");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/judicial/parties/search", {
+    method: "POST",
+    headers: { "content-type": "application/json", cookie: await cookieFor("orgao_publico") },
+    body: JSON.stringify({ searchType: "nome", nome: "Maria" })
+  }),
+  { ...env, JUS9_DAJ_PROCESS_LINKS: memoryKv() }
+);
+data = await response.json();
+assert(response.status === 403 && data.permission === "dajs:read", "processes:read isolado nao deve abrir indice interno de partes do DAJ");
+console.log("AUTH_OK judicial-parties-requires-dajs-read=403");
+
 response = await request("/api/daj-process-links");
 assert(response.status === 401, "DAJ-processo anonimo deveria exigir sessao");
 console.log("AUTH_OK daj-process-links-anonymous=401");
@@ -830,7 +856,11 @@ data = await response.json();
 assert(response.status === 501 && data.error === "daj_process_links_configuracao_pendente", "DAJ-processo sem KV deve ficar fail-closed");
 console.log("AUTH_OK daj-process-links-kv-pendente=501");
 
-const dajProcessLinksEnv = { ...env, JUS9_DAJ_PROCESS_LINKS: memoryKv() };
+const dajProcessLinksEnv = {
+  ...env,
+  JUS9_DAJ_PROCESS_LINKS: memoryKv(),
+  JUS9_DAJ_PII_INDEX_KEY: "chave-hmac-ficticia-longa-para-testes"
+};
 response = await worker.fetch(
   new Request("https://jus9.invalid/api/daj-process-links", {
     method: "POST",
@@ -870,8 +900,65 @@ response = await worker.fetch(
   dajProcessLinksEnv
 );
 data = await response.json();
-assert(response.status === 200 && data.total === 1 && data.items[0].id === "DAJ-2026-0101", "pesquisa por nome deveria encontrar DAJ");
-console.log("AUTH_OK daj-process-links-search-nome=200");
+assert(response.status === 422 && data.endpoint === "/api/judicial/parties/search", "pesquisa de partes em query string deveria ser recusada");
+console.log("AUTH_OK daj-process-links-person-query-deprecated=422");
+
+const indexBeforePartySearch = await dajProcessLinksEnv.JUS9_DAJ_PROCESS_LINKS.get("daj-process-links:index");
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/judicial/parties/search", {
+    method: "POST",
+    headers: { "content-type": "application/json", cookie: await cookieFor("advogado") },
+    body: JSON.stringify({ searchType: "nome", nome: "Maria" })
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.total === 1 && data.items[0].id === "DAJ-2026-0101", "pesquisa estruturada por nome deveria encontrar DAJ");
+assert(data.mutated === false && data.policy === "no_llm_no_invented_results", "pesquisa por nome deveria ser somente leitura e sem LLM");
+assert(data.externalConnector.status === "awaiting_official_guidance" && data.externalConnector.searched === false, "pesquisa externa deveria permanecer em espera");
+assert(await dajProcessLinksEnv.JUS9_DAJ_PROCESS_LINKS.get("daj-process-links:index") === indexBeforePartySearch, "pesquisa por nome nao deve alterar indice DAJ");
+console.log("AUTH_OK judicial-parties-search-nome=200");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/daj-process-links", {
+    method: "POST",
+    headers: { "content-type": "application/json", cookie: await cookieFor("advogado") },
+    body: JSON.stringify({
+      dajId: "DAJ-2026-0104",
+      processNumber: "5555555-55.2024.8.24.0000",
+      tribunal: "tjsc",
+      partyName: "Outra Parte Ficticia",
+      cpf: "100.000.058-35"
+    })
+  }),
+  dajProcessLinksEnv
+);
+assert(response.status === 201, "segundo CPF ficticio com mesmos dois digitos finais deveria ser indexado");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/judicial/parties/search", {
+    method: "POST",
+    headers: { "content-type": "application/json", cookie: await cookieFor("advogado") },
+    body: JSON.stringify({ searchType: "cpf", cpf: "111.444.777-35" })
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.total === 1 && data.items[0].id === "DAJ-2026-0101", "CPF HMAC deveria corresponder apenas ao documento exato");
+assert(!JSON.stringify(data).includes("11144477735") && !JSON.stringify(data).includes("cpfLookupHash"), "resposta nao deve expor CPF integral nem hash");
+console.log("AUTH_OK judicial-parties-search-cpf-exact-no-collision=200");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/judicial/parties/search", {
+    method: "POST",
+    headers: { "content-type": "application/json", cookie: await cookieFor("advogado") },
+    body: JSON.stringify({ searchType: "cpf", cpf: "111.444.777-35" })
+  }),
+  { ...dajProcessLinksEnv, JUS9_DAJ_PII_INDEX_KEY: "" }
+);
+data = await response.json();
+assert(response.status === 503 && data.policy === "fail_closed_no_last_digits_fallback", "CPF sem HMAC deveria falhar fechado");
+console.log("AUTH_OK judicial-parties-cpf-missing-key=503");
 
 response = await worker.fetch(
   new Request("https://jus9.invalid/api/daj-process-links", {
@@ -926,6 +1013,16 @@ response = await worker.fetch(
 );
 assert(response.status === 204 && response.headers.get("access-control-allow-origin") === "https://jus9tecnologia.com.br", "CORS DAJ-processo deveria liberar origem principal");
 console.log("AUTH_OK daj-process-links-cors=204");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/judicial/parties/search", {
+    method: "OPTIONS",
+    headers: { origin: "https://jus9tecnologia.com.br" }
+  }),
+  dajProcessLinksEnv
+);
+assert(response.status === 204 && response.headers.get("access-control-allow-origin") === "https://jus9tecnologia.com.br", "CORS de pesquisa de partes deveria liberar origem principal");
+console.log("AUTH_OK judicial-parties-cors=204");
 
 response = await request("/auth/logout");
 const logoutHtml = await response.text();

@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.8.0 - 2026-07-13
+
+- Pesquisa por nome/CPF separada da IA generativa e movida para endpoint autenticado somente leitura.
+- CPF indexado por HMAC exato, sem persistencia do valor integral e sem fallback por finais iguais.
+- Pesquisa externa por partes registrada como aguardando orientacao oficial, sem resultado presumido.
+
 ## 1.7.0 - 2026-07-13
 
 - DED promovido a instrumento independente com IA, perfis, documentos e workspace proprios.

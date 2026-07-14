@@ -46,7 +46,7 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
       <div>
         <div class="eyebrow">Processos</div>
         <h1 style="font-size:42px;color:#0b1728;margin-top:8px">Pesquisa processual governada.</h1>
-        <p style="color:#51627a;margin:8px 0 0">Modelo DAJ: Charlie Echo consulta o gateway seguro por numero CNJ, nome ou CPF, organiza metadados oficiais quando houver fonte autorizada e orienta o proximo passo sem expor segredo no navegador.</p>
+        <p style="color:#51627a;margin:8px 0 0">Modelo DAJ: numero CNJ segue ao gateway oficial; nome e CPF consultam somente o indice interno autenticado. A pesquisa externa por partes permanece aguardando orientacao oficial, sem resposta inventada.</p>
       </div>
       <span class="badge" id="datajud-status-badge">Verificando DataJud</span>
     </section>
@@ -147,7 +147,7 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
 
         <div id="process-result" aria-live="polite" style="margin-top:18px;background:#f8fafc;border:1px dashed #c58b2f;border-radius:16px;padding:16px">
           <h3>Resultado governado</h3>
-          <p>Informe numero CNJ, DAJ, nome ou CPF e consulte. A Charlie deve responder com fonte, limites, metadados publicos quando disponiveis e proximo passo no DAJ. CPF deve aparecer sempre mascarado na resposta.</p>
+          <p>Informe numero CNJ, DAJ, nome ou CPF. Consultas estruturadas mostram apenas resultados efetivamente encontrados e CPF sempre mascarado.</p>
         </div>
 
         <h3 style="margin-top:20px">Tribunais estaduais</h3>
@@ -450,9 +450,7 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
       });
     }
     if(search.type === 'cpf'){
-      return items.filter(function(item){
-        return String(item.cpfMasked || '').slice(-2) === String(search.cpfMasked || '').slice(-2);
-      });
+      return [];
     }
     return [];
   }
@@ -501,6 +499,12 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
       '<p>Observacao: a consulta externa mostra o processo; o DAJ mostra o caso vivo por dentro.</p>',
       note ? '<p><strong>' + escapeHtml(note) + '</strong></p>' : ''
     ].join('');
+    renderDajActions();
+  }
+
+  function renderEmptyDajLinkPanel(note){
+    if(!linkedDajSummary) return;
+    linkedDajSummary.innerHTML = '<p>Nenhum DAJ correspondeu a chave consultada.</p>' + (note ? '<p><strong>' + escapeHtml(note) + '</strong></p>' : '');
     renderDajActions();
   }
 
@@ -609,8 +613,6 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
     params.set('searchType', search.type);
     if(search.type === 'daj') params.set('dajId', search.dajId);
     if(search.type === 'numeroProcesso') params.set('numeroProcesso', search.processNumber);
-    if(search.type === 'nome') params.set('nome', search.display);
-    if(search.type === 'cpf') params.set('cpf', search.cpfMasked);
     return params;
   }
 
@@ -628,6 +630,39 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
     var data = await response.json().catch(function(){ return null; });
     if(response.ok && data && Array.isArray(data.items)) return data.items.map(normalizeDajProcessLink);
     return null;
+  }
+
+  async function searchPartiesBackend(search){
+    var payload = { searchType:search.type };
+    if(search.type === 'nome') payload.nome = search.display;
+    if(search.type === 'cpf') payload.cpf = search.cpf;
+    var response = await fetch('/api/judicial/parties/search', {
+      method:'POST',
+      credentials:'include',
+      headers:{ 'Content-Type':'application/json', 'Accept':'application/json' },
+      body:JSON.stringify(payload)
+    });
+    var data = await response.json().catch(function(){ return null; });
+    if(response.status === 401){
+      dajProcessBackend.authenticated = false;
+      dajProcessBackend.items = null;
+      dajProcessBackend.reason = 'login_obrigatorio';
+      return null;
+    }
+    if(response.status === 501 || response.status === 503){
+      return {
+        ok:false,
+        title:'Indice seguro pendente',
+        message:data && data.error === 'indice_cpf_exato_configuracao_pendente'
+          ? 'A pesquisa por CPF foi interrompida porque o indice HMAC exato ainda nao esta configurado. Nao usei os ultimos digitos e nao presumi resultado.'
+          : 'O indice interno governado ainda nao esta configurado. Nenhum resultado foi presumido.'
+      };
+    }
+    if(!response.ok || !data || !Array.isArray(data.items)){
+      throw new Error(data && data.error ? data.error : 'pesquisa_estruturada_sem_resposta_util');
+    }
+    data.items = data.items.map(normalizeDajProcessLink);
+    return data;
   }
 
   async function saveDajLinkBackend(payload){
@@ -694,18 +729,22 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
       };
     }
 
-    if(search.type !== 'numeroProcesso'){
-      var personMatches = await searchDajLinksBackend(search);
-      if(!personMatches) return null;
-      var selected = dajSelect ? findDajLink(loadDajProcessLinks(), dajSelect.value) : null;
-      renderDajLinkPanel(selected || personMatches[0], personMatches.length ? 'Pesquisa por pessoa encontrou DAJ(s) no backend autenticado.' : 'Pesquisa por pessoa sem DAJ correspondente no backend autenticado.');
-      renderDajLinkList(personMatches.length ? personMatches : loadDajProcessLinks());
+    if(search.type === 'nome' || search.type === 'cpf'){
+      var partyResult = await searchPartiesBackend(search);
+      if(!partyResult) return null;
+      if(!partyResult.ok) return partyResult;
+      var personMatches = partyResult.items;
+      if(personMatches.length) renderDajLinkPanel(personMatches[0], 'Pesquisa por pessoa encontrou DAJ(s) no backend autenticado.');
+      else renderEmptyDajLinkPanel('Pesquisa por pessoa sem DAJ correspondente no backend autenticado.');
+      renderDajLinkList(personMatches);
       return {
         ok:true,
         source:'backend-auth',
-        focus:selected || personMatches[0] || null,
+        focus:personMatches[0] || null,
         matches:personMatches,
-        message:summarizeDajMatches(personMatches, search)
+        message:summarizeDajMatches(personMatches, search),
+        external:partyResult.externalConnector || null,
+        indexCoverage:partyResult.indexCoverage || ''
       };
     }
 
@@ -767,23 +806,28 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
       };
     }
 
-    if(search.type !== 'numeroProcesso'){
+    if(search.type === 'nome'){
       var personMatches = matchingDajLinks(search, items);
-      var selected = dajSelect ? findDajLink(items, dajSelect.value) : null;
-      if(selected && dajSelect.value !== 'novo'){
-        if(search.type === 'nome') selected.partyName = search.display;
-        if(search.type === 'cpf') selected.cpfMasked = search.cpfMasked;
-        selected.updatedAt = new Date().toISOString();
-        saveDajProcessLinks(items);
-        auditDajProcessLink('atualiza_chave_pessoa', { dajId:selected.id, searchType:search.type });
-      }
-      renderDajLinkPanel(selected || personMatches[0], personMatches.length ? 'Pesquisa por pessoa encontrou DAJ(s) local(is).' : 'Pesquisa por pessoa sem DAJ local correspondente.');
-      renderDajLinkList(personMatches.length ? personMatches : items);
+      if(personMatches.length) renderDajLinkPanel(personMatches[0], 'Pesquisa por pessoa encontrou DAJ(s) local(is).');
+      else renderEmptyDajLinkPanel('Pesquisa por pessoa sem DAJ local correspondente.');
+      renderDajLinkList(personMatches);
+      auditDajProcessLink('pesquisa_nome_somente_leitura', { found:personMatches.length, mutated:false });
       return {
         ok:true,
-        focus:selected || personMatches[0] || null,
+        source:'local-demo',
+        focus:personMatches[0] || null,
         matches:personMatches,
-        message:summarizeDajMatches(personMatches, search)
+        message:summarizeDajMatches(personMatches, search),
+        external:{ status:'awaiting_official_guidance', searched:false }
+      };
+    }
+
+    if(search.type === 'cpf'){
+      auditDajProcessLink('bloqueio_cpf_sem_indice_autenticado', { mutated:false });
+      return {
+        ok:false,
+        title:'Login e indice exato obrigatorios',
+        message:'A pesquisa local por CPF foi bloqueada. Entre com perfil autorizado para usar o indice HMAC exato; os dois ultimos digitos nunca serao usados como correspondencia.'
       };
     }
 
@@ -863,6 +907,18 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
     return digits.length === 11 ? '***.***.***-' + digits.slice(-2) : '***.***.***-**';
   }
 
+  function isValidCpf(value){
+    var cpf = onlyDigits(value);
+    if(cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+    function digit(size){
+      var sum = 0;
+      for(var i = 0; i < size; i += 1) sum += Number(cpf[i]) * (size + 1 - i);
+      var calculated = (sum * 10) % 11;
+      return calculated === 10 ? 0 : calculated;
+    }
+    return digit(9) === Number(cpf[9]) && digit(10) === Number(cpf[10]);
+  }
+
   function searchTypeLabel(type){
     if(type === 'daj') return 'DAJ';
     if(type === 'nome') return 'nome da parte';
@@ -923,11 +979,11 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
     }
     if(type === 'cpf'){
       var cpf = onlyDigits(value);
-      if(cpf.length !== 11){
-        return { ok:false, title:'CPF invalido', message:'Informe CPF com 11 digitos. A resposta deve mascarar o documento.' };
+      if(!isValidCpf(cpf)){
+        return { ok:false, title:'CPF invalido', message:'Informe um CPF valido. O valor integral sera usado apenas na comparacao HMAC e nao sera exibido nem persistido.' };
       }
       var cpfMasked = maskCpf(cpf);
-      return { ok:true, type:type, label:'CPF', display:cpfMasked, cpfMasked:cpfMasked, route:{ searchType:type, cpf:cpf, queryMasked:cpfMasked } };
+      return { ok:true, type:type, label:'CPF', display:cpfMasked, cpf:cpf, cpfMasked:cpfMasked, route:{ searchType:type, cpf:cpf, queryMasked:cpfMasked } };
     }
     var numero = onlyDigits(value);
     if(numero.length !== 20){
@@ -960,14 +1016,11 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
     var linkContext = linkOutcome && linkOutcome.message ? linkOutcome.message : 'Sem vinculo local informado.';
     var prompt = [
       'Consulte no gateway seguro de pesquisa processual por ' + searchTypeLabel(search.type) + ': ' + search.display + ' no tribunal ' + tribunal + ' (' + tribunalLabel + ').',
-      'Contexto: pagina modelo Processos do DAJ Advogados.',
+      'Contexto operacional: Processos do DAJ Advogados.',
       'Fonte selecionada: ' + (sourceSelect ? sourceSelect.value : 'datajud') + '. DAJ selecionado: ' + (dajSelect ? dajSelect.value : 'sem vinculo') + '.',
       'Vinculo DAJ-processo em ' + (linkOutcome && linkOutcome.source === 'backend-auth' ? 'API autenticada oficial' : 'fallback local demonstrativo') + ': ' + linkContext,
-      'Regra operacional: cada DAJ corresponde a um unico processo. Nome e CPF podem reunir varios DAJs. Pesquisa por DAJ deve mostrar o processo ja vinculado.',
+      'Regra operacional: cada DAJ corresponde a um unico processo.',
       'Responda com metadados publicos oficiais quando a fonte permitir, fonte, limites, status da consulta, riscos de sigilo e proximo passo seguro no DAJ.',
-      'Se a busca for por DAJ, explique o vinculo encontrado no indice carregado e indique se ainda falta consulta oficial do processo.',
-      'Se a busca for por nome ou CPF, trate como dado pessoal processual controlado: nao repita CPF integral, nao salve em memoria permanente e use somente conector autorizado.',
-      'Se a API Publica DataJud nao suportar busca por partes, diga isso claramente e indique o caminho governado por tribunal/conector autorizado, sem inventar resultado.',
       'Se a credencial ou o DataJud estiver indisponivel, diga isso sem inventar dados processuais.'
     ].join('\n');
     var route = {
@@ -989,7 +1042,7 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
       credentials: 'include',
       body: JSON.stringify({
         requestId: (window.crypto && typeof window.crypto.randomUUID === 'function') ? window.crypto.randomUUID() : 'processos-' + Date.now(),
-        mode: 'jurista',
+        mode: 'profissional',
         route: route,
         message: prompt,
         room: {
@@ -1007,6 +1060,30 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
     throw new Error(data && data.error ? data.error : 'API da Charlie nao retornou resposta utilizavel.');
   }
 
+  function structuredSearchAnswer(search, linkOutcome){
+    var lines = [
+      'Pesquisa estruturada concluida em modo somente leitura.',
+      'Chave consultada: ' + search.label + ' - ' + search.display + '.',
+      'Fonte interna: ' + (linkOutcome.source === 'backend-auth' ? 'indice DAJ autenticado.' : 'dados demonstrativos locais, sem valor de consulta externa.')
+    ];
+    if(linkOutcome.matches && linkOutcome.matches.length){
+      lines.push('Vinculos efetivamente encontrados:');
+      linkOutcome.matches.forEach(function(item){
+        lines.push('- ' + item.id + ' -> ' + (item.processNumber || 'processo pendente') + ' (' + (item.tribunal || 'tribunal nao informado') + ').');
+      });
+    } else {
+      lines.push('Nenhum vinculo foi encontrado no indice consultado. Isso nao prova inexistencia de processo.');
+    }
+    if(search.type === 'nome' || search.type === 'cpf'){
+      lines.push('Consulta externa: aguardando orientacao oficial e credenciais para conector autorizado de partes. A API Publica DataJud nao foi usada para pesquisar nome ou CPF.');
+      if(linkOutcome.indexCoverage === 'partial_reindex_required'){
+        lines.push('Cobertura do CPF: parcial; registros antigos precisam ser reindexados com HMAC exato antes de serem pesquisaveis.');
+      }
+    }
+    lines.push('Garantia desta resposta: nenhum modelo generativo foi chamado e nenhum resultado foi inventado.');
+    return lines.join('\n');
+  }
+
   if(form){
     form.addEventListener('submit', async function(event){
       event.preventDefault();
@@ -1019,14 +1096,23 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
       var tribunal = selectedTribunal();
       var tribunalLabel = selectedTribunalLabel();
       if(submitButton) submitButton.disabled = true;
-      render('Vinculando DAJ-processo', 'Estou verificando a API autenticada DAJ-processo. Sem sessao, sigo no fallback local demonstrativo.', 'info');
+      if(search.type === 'numeroProcesso'){
+        render('Verificando vinculo DAJ-processo', 'Estou verificando a API autenticada antes da consulta CNJ. Sem sessao, o vinculo fica apenas no fallback demonstrativo.', 'info');
+      } else {
+        render('Consultando indice em modo somente leitura', 'A pesquisa nao cria nem altera DAJ. Nome e CPF usam apenas o indice autenticado quando a sessao permitir.', 'info');
+      }
       var linkOutcome = await applyDajLinkGovernance(search, tribunal, tribunalLabel);
       if(!linkOutcome.ok){
         render(linkOutcome.title || 'Vinculo bloqueado', linkOutcome.message || 'Revise o DAJ antes de continuar.', 'error');
         if(submitButton) submitButton.disabled = false;
         return;
       }
-      render('Consultando Charlie Echo', 'A consulta por ' + search.label + ' esta indo para a API segura. O navegador nao recebe token interno do gateway. Exibicao: ' + search.display + '.\n\nVinculo DAJ-processo:\n' + linkOutcome.message, 'info');
+      if(search.type !== 'numeroProcesso'){
+        render('Resultado estruturado', structuredSearchAnswer(search, linkOutcome), linkOutcome.matches && linkOutcome.matches.length ? 'ok' : 'info');
+        if(submitButton) submitButton.disabled = false;
+        return;
+      }
+      render('Consultando Charlie Echo', 'A consulta por numero CNJ esta indo para a API segura. O navegador nao recebe token interno do gateway. Exibicao: ' + search.display + '.\n\nVinculo DAJ-processo:\n' + linkOutcome.message, 'info');
       try {
         var answer = await askCharlieForProcess(search, tribunal, tribunalLabel, linkOutcome);
         render('Resposta da Charlie Echo', answer + '\n\nVinculo DAJ-processo:\n' + linkOutcome.message, 'ok');

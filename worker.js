@@ -36,6 +36,8 @@ import {
 } from "./functions/_shared/user-memory.js";
 import {
   dataJudReadiness,
+  isValidCpf,
+  normalizeCpf,
   publicDataJudStatus,
   searchDataJud
 } from "./functions/_shared/datajud.js";
@@ -153,6 +155,14 @@ export default {
 
     if (originalUrl.pathname === "/api/judicial/pdpj/token/test") {
       return handlePdpjTokenTest(request, env);
+    }
+
+    if (originalUrl.pathname === "/api/judicial/parties/readiness") {
+      return handleJudicialPartiesReadiness(request, env);
+    }
+
+    if (originalUrl.pathname === "/api/judicial/parties/search") {
+      return handleJudicialPartiesSearch(request, env);
     }
 
     if (originalUrl.pathname === "/api/daj-process-links/readiness") {
@@ -937,6 +947,7 @@ function handleHealth(request, env) {
   const criticalReady = Boolean(
     env.ASSETS &&
     env.JUS9_DAJ_PROCESS_LINKS &&
+    env.JUS9_DAJ_PII_INDEX_KEY &&
     env.JUS9_CHARLIE_INTERNAL_TOKEN &&
     userMemory.configured &&
     dataJud.configured &&
@@ -962,7 +973,12 @@ function handleHealth(request, env) {
       },
       dataJud: { configured: Boolean(dataJud.configured), mode: dataJud.mode, cacheConfigured: Boolean(dataJud.cacheConfigured) },
       pdpj: { configured: Boolean(pdpj.configured), mode: "readiness_only" },
-      dajProcessLinks: { configured: Boolean(env.JUS9_DAJ_PROCESS_LINKS) }
+      dajProcessLinks: { configured: Boolean(env.JUS9_DAJ_PROCESS_LINKS) },
+      judicialPartySearch: {
+        internalNameIndexConfigured: Boolean(env.JUS9_DAJ_PROCESS_LINKS),
+        internalCpfExactIndexConfigured: Boolean(env.JUS9_DAJ_PROCESS_LINKS && env.JUS9_DAJ_PII_INDEX_KEY),
+        externalStatus: "awaiting_official_guidance"
+      }
     }
   }, 200, corsHeaders);
 }
@@ -1008,6 +1024,7 @@ async function handleDajProcessLinksReadiness(request, env) {
     service: "daj-process-links",
     storage: "JUS9_DAJ_PROCESS_LINKS",
     configured: Boolean(env.JUS9_DAJ_PROCESS_LINKS),
+    cpfExactIndexConfigured: Boolean(env.JUS9_DAJ_PROCESS_LINKS && env.JUS9_DAJ_PII_INDEX_KEY),
     authRequired: true,
     rules: [
       "cada DAJ corresponde a um unico processo",
@@ -1016,6 +1033,128 @@ async function handleDajProcessLinksReadiness(request, env) {
       "alteracao exige perfil com dajs:write e processes:read"
     ]
   }, 200, corsHeaders);
+}
+
+async function handleJudicialPartiesReadiness(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  if (request.method !== "GET") {
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET" });
+  }
+  return jsonResponse({
+    ok: true,
+    service: "judicial-party-search",
+    authRequired: true,
+    policy: "no_llm_no_invented_results",
+    internalIndex: {
+      source: "DAJ governado",
+      nameConfigured: Boolean(env.JUS9_DAJ_PROCESS_LINKS),
+      cpfExactConfigured: Boolean(env.JUS9_DAJ_PROCESS_LINKS && env.JUS9_DAJ_PII_INDEX_KEY),
+      cpfStorage: "HMAC-SHA-256; CPF integral nao persistido"
+    },
+    externalConnector: {
+      status: "awaiting_official_guidance",
+      dataJudPublicPartySearch: false,
+      pdpjMode: "readiness_only",
+      message: "Aguardando orientacao oficial e credenciais para pesquisa externa por nome ou CPF."
+    }
+  }, 200, { ...corsHeaders, "Cache-Control": "no-store" });
+}
+
+async function handleJudicialPartiesSearch(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  if (request.method !== "POST") {
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "POST" });
+  }
+  const session = await getSession(request, env);
+  if (!session) return jsonResponse({ authenticated: false }, 401, corsHeaders);
+  if (!hasPermission(session, "dajs:read")) {
+    return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "dajs:read" }, 403, corsHeaders);
+  }
+  if (!env.JUS9_DAJ_PROCESS_LINKS) {
+    return jsonResponse({
+      ok: false,
+      error: "indice_daj_configuracao_pendente",
+      missing: ["JUS9_DAJ_PROCESS_LINKS"]
+    }, 501, corsHeaders);
+  }
+
+  const rateLimit = await enforcePartySearchRateLimit(env, session);
+  if (!rateLimit.allowed) {
+    return jsonResponse({
+      ok: false,
+      error: "limite_pesquisa_partes_excedido",
+      retryAfterSeconds: rateLimit.retryAfterSeconds
+    }, 429, { ...corsHeaders, "Retry-After": String(rateLimit.retryAfterSeconds) });
+  }
+
+  const body = await request.json().catch(() => null);
+  const searchType = sanitizeToken(body?.searchType || body?.tipoPesquisa, 32);
+  if (searchType !== "nome" && searchType !== "cpf") {
+    return jsonResponse({ ok: false, error: "tipo_pesquisa_invalido", allowed: ["nome", "cpf"] }, 400, corsHeaders);
+  }
+
+  const items = await readDajProcessLinkIndex(env);
+  let filtered = [];
+  let queryMasked = "";
+  let coverage = "complete_for_indexed_records";
+
+  if (searchType === "nome") {
+    const nome = normalizeComparableText(body?.nome || body?.name || body?.query);
+    if (nome.length < 3) {
+      return jsonResponse({ ok: false, error: "nome_parte_obrigatorio" }, 400, corsHeaders);
+    }
+    queryMasked = `nome informado (${nome.length} caracteres)`;
+    filtered = items.filter((item) =>
+      normalizeComparableText(item.partyName).includes(nome) ||
+      normalizeComparableText(item.title).includes(nome)
+    );
+  } else {
+    const cpf = normalizeCpf(body?.cpf || body?.query);
+    if (!isValidCpf(cpf)) {
+      return jsonResponse({ ok: false, error: "cpf_invalido" }, 400, corsHeaders);
+    }
+    if (!String(env.JUS9_DAJ_PII_INDEX_KEY || "").trim()) {
+      return jsonResponse({
+        ok: false,
+        error: "indice_cpf_exato_configuracao_pendente",
+        missing: ["JUS9_DAJ_PII_INDEX_KEY"],
+        policy: "fail_closed_no_last_digits_fallback"
+      }, 503, corsHeaders);
+    }
+    queryMasked = maskCpfForLink(cpf);
+    const wantedHash = await cpfLookupHash(env, cpf);
+    filtered = items.filter((item) => item.cpfLookupHash && item.cpfLookupHash === wantedHash);
+    const indexedCount = items.filter((item) => Boolean(item.cpfLookupHash)).length;
+    coverage = indexedCount === items.length ? "complete_for_indexed_records" : "partial_reindex_required";
+  }
+
+  await appendDajProcessLinkAudit(env, session, {
+    action: "pesquisa_partes_indice_interno",
+    searchType,
+    resultCount: filtered.length,
+    mutated: false,
+    externalConnectorStatus: "awaiting_official_guidance"
+  });
+
+  return jsonResponse({
+    ok: true,
+    authenticated: true,
+    profile: session.profile,
+    source: "daj-internal-governed-index",
+    policy: "no_llm_no_invented_results",
+    classification: "DADO_PESSOAL_PROCESSUAL_CONTROLADO",
+    search: { type: searchType, valueMasked: queryMasked },
+    total: filtered.length,
+    items: filtered.map(publicDajProcessLink),
+    indexCoverage: coverage,
+    mutated: false,
+    externalConnector: {
+      status: "awaiting_official_guidance",
+      searched: false,
+      dataJudPublicPartySearch: false,
+      message: "A pesquisa externa por nome ou CPF aguarda orientacao oficial e credenciais. Nenhum resultado externo foi presumido."
+    }
+  }, 200, { ...corsHeaders, "Cache-Control": "no-store" });
 }
 
 async function handleDajProcessLinks(request, env) {
@@ -1109,6 +1248,7 @@ function logoutPage(done = false) {
 function isAuthCorsPath(pathname) {
   return pathname.startsWith("/api/judicial/datajud/") ||
     pathname.startsWith("/api/judicial/pdpj/") ||
+    pathname.startsWith("/api/judicial/parties/") ||
     pathname === "/api/health" ||
     pathname === "/api/auth/me" ||
     pathname === "/api/auth/permissions" ||
@@ -1681,21 +1821,24 @@ async function listDajProcessLinks(env, url) {
   const searchType = sanitizeToken(url.searchParams.get("searchType"), 32);
   const dajId = normalizeDajIdForLink(url.searchParams.get("dajId") || url.searchParams.get("daj"));
   const processDigits = normalizeCnjDigits(url.searchParams.get("numeroProcesso") || url.searchParams.get("processNumber"));
-  const nome = normalizeComparableText(url.searchParams.get("nome") || url.searchParams.get("name"));
-  const cpfMasked = maskCpfForLink(url.searchParams.get("cpf") || url.searchParams.get("cpfMasked"));
+
+  if (searchType === "nome" || searchType === "cpf") {
+    return {
+      status: 422,
+      payload: {
+        ok: false,
+        error: "pesquisa_partes_requer_post_governado",
+        endpoint: "/api/judicial/parties/search",
+        policy: "no_pii_in_query_string"
+      }
+    };
+  }
 
   let filtered = items;
   if (searchType === "daj" && dajId) {
     filtered = items.filter((item) => item.id === dajId);
   } else if ((searchType === "numeroprocesso" || searchType === "processo") && processDigits) {
     filtered = items.filter((item) => item.processDigits === processDigits);
-  } else if (searchType === "nome" && nome) {
-    filtered = items.filter((item) =>
-      normalizeComparableText(item.partyName).includes(nome) ||
-      normalizeComparableText(item.title).includes(nome)
-    );
-  } else if (searchType === "cpf" && cpfMasked) {
-    filtered = items.filter((item) => String(item.cpfMasked || "").slice(-2) === cpfMasked.slice(-2));
   }
 
   return {
@@ -1721,7 +1864,21 @@ async function saveDajProcessLink(env, session, request, payload) {
   const tribunalLabel = sanitizeText(payload.tribunalLabel, 120);
   const title = sanitizeText(payload.title, 160) || "DAJ vinculado a processo";
   const partyName = sanitizeText(payload.partyName || payload.nome, 160);
-  const cpfMasked = maskCpfForLink(payload.cpf || payload.cpfMasked);
+  const cpfInput = String(payload.cpf || "").trim();
+  if (cpfInput && !isValidCpf(cpfInput)) {
+    return { status: 400, payload: { ok: false, error: "cpf_invalido" } };
+  }
+  if (cpfInput && !String(env.JUS9_DAJ_PII_INDEX_KEY || "").trim()) {
+    return {
+      status: 503,
+      payload: {
+        ok: false,
+        error: "indice_cpf_exato_configuracao_pendente",
+        missing: ["JUS9_DAJ_PII_INDEX_KEY"]
+      }
+    };
+  }
+  const cpfMasked = cpfInput ? maskCpfForLink(cpfInput) : maskCpfForLink(payload.cpfMasked);
   const origin = normalizeOriginHint(request.headers.get("origin") || request.headers.get("referer") || "");
 
   if (!dajId || !/^DAJ-\d{4}-\d{4}$/.test(dajId)) {
@@ -1777,6 +1934,9 @@ async function saveDajProcessLink(env, session, request, payload) {
   const now = new Date().toISOString();
   const existingIndex = items.findIndex((item) => item.id === dajId);
   const previous = existingIndex >= 0 ? items[existingIndex] : null;
+  const cpfLookupHashValue = cpfInput
+    ? await cpfLookupHash(env, cpfInput)
+    : (previous?.cpfLookupHash || "");
   const record = {
     ...(previous || {}),
     id: dajId,
@@ -1787,6 +1947,7 @@ async function saveDajProcessLink(env, session, request, payload) {
     tribunalLabel,
     partyName: partyName || previous?.partyName || "",
     cpfMasked: cpfMasked || previous?.cpfMasked || "",
+    cpfLookupHash: cpfLookupHashValue,
     status: "vinculado",
     classification: "JURIDICO_PUBLICO_CONTROLADO",
     createdAt: previous?.createdAt || now,
@@ -1839,6 +2000,19 @@ async function appendDajProcessLinkAudit(env, session, item) {
   await env.JUS9_DAJ_PROCESS_LINKS.put("daj-process-links:audit", JSON.stringify(items.slice(0, 300)));
 }
 
+async function enforcePartySearchRateLimit(env, session) {
+  if (!env.JUS9_DAJ_PROCESS_LINKS) return { allowed: false, retryAfterSeconds: 60 };
+  const now = Date.now();
+  const minute = Math.floor(now / 60_000);
+  const key = `party-search-rate:v1:${session?.emailHash || "sem-email"}:${minute}`;
+  const current = Number(await env.JUS9_DAJ_PROCESS_LINKS.get(key).catch(() => 0)) || 0;
+  if (current >= 30) {
+    return { allowed: false, retryAfterSeconds: 60 - Math.floor((now % 60_000) / 1000) };
+  }
+  await env.JUS9_DAJ_PROCESS_LINKS.put(key, String(current + 1), { expirationTtl: 120 });
+  return { allowed: true, retryAfterSeconds: 0 };
+}
+
 function publicDajProcessLink(item) {
   return {
     id: item.id || "",
@@ -1880,6 +2054,26 @@ function maskCpfForLink(value) {
   if (digits.length === 11) return `***.***.***-${digits.slice(-2)}`;
   if (/^\*\*\*\.\*\*\*\.\*\*\*-\d{2}$/.test(raw)) return raw;
   return "";
+}
+
+async function cpfLookupHash(env, value) {
+  const cpf = normalizeCpf(value);
+  const secret = String(env.JUS9_DAJ_PII_INDEX_KEY || "").trim();
+  if (!secret || !isValidCpf(cpf)) return "";
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  const signature = await crypto.subtle.sign("HMAC", key, encoder.encode(`cpf:v1:${cpf}`));
+  const encoded = btoa(String.fromCharCode(...new Uint8Array(signature)))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/g, "");
+  return `v1:${encoded}`;
 }
 
 function normalizeComparableText(value) {

@@ -1,0 +1,72 @@
+---
+metadata:
+  id: API-JUDICIAL-JUS9-001
+  versao: 1.1.0
+  autor: Codex / Charlie Fox
+  revisor_responsavel: Clovis Mariano da Costa
+  data: 2026-07-13
+  status: homologacao-tecnica
+  classificacao: INTERNO
+  hash: calcular-na-release-aprovada
+seguranca:
+  gateway_header: X-Jus9-Internal-Token
+  segredo_no_frontend: false
+  cpf_em_url: false
+  cpf_integral_persistido: false
+  cpf_indice: HMAC-SHA-256-v1
+  resposta_por_llm_em_consulta_estruturada: false
+  atos_transacionais_habilitados: false
+datajud:
+  fonte: CNJ/DataJud API Publica
+  evidence_status: official-public-metadata
+  raw_available: false
+  busca_partes_publica:
+    nome: false
+    cpf: false
+  rotas:
+    - path: /api/judicial/datajud/processos/:numeroCnj
+      metodo: GET
+      autenticacao: gateway-interno
+    - path: /api/judicial/datajud/search
+      metodo: POST
+      autenticacao: gateway-interno
+    - path: /api/judicial/datajud/tribunais
+      metodo: GET
+      autenticacao: publica-sem-segredos
+    - path: /api/judicial/datajud/readiness
+      metodo: GET
+      autenticacao: publica-sem-segredos
+pesquisa_partes:
+  politica: no_llm_no_invented_results
+  fonte_interna: indice-governado-DAJ
+  conector_externo: awaiting_official_guidance
+  rotas:
+    - path: /api/judicial/parties/readiness
+      metodo: GET
+      autenticacao: publica-sem-segredos
+    - path: /api/judicial/parties/search
+      metodo: POST
+      autenticacao: sessao-com-dajs-read
+      efeitos_colaterais: nenhum
+      limite: 30-consultas-por-minuto-por-usuario
+  nome:
+    suporte: indice-interno
+    minimo_caracteres: 3
+  cpf:
+    suporte: indice-interno-exato
+    segredo: JUS9_DAJ_PII_INDEX_KEY
+    fallback_ultimos_digitos: proibido
+    registros_antigos: requerem-reindexacao
+pdpj:
+  rotas:
+    - path: /api/judicial/pdpj/readiness
+      metodo: GET
+      autenticacao: publica-sem-segredos
+    - path: /api/judicial/pdpj/token/test
+      metodo: POST
+      autenticacao: gateway-interno
+  token_exposto: false
+  mni_habilitado: false
+  domicilio_habilitado: false
+  peticionamento_habilitado: false
+  ciencia_habilitada: false

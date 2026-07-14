@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.8.0 - 2026-07-13
+
+- Consultas processuais estruturadas passam a obedecer a politica `no_llm_no_invented_results`.
+- Nome usa indice DAJ autenticado e CPF usa HMAC-SHA-256 exato.
+- Cronograma 2.1.0 separa indice interno pronto, reindexacao e conector externo aguardando orientacao.
+
 ## 1.7.0 - 2026-07-13
 
 - Inventario atualizado para quatorze MVPs com IA dedicada.

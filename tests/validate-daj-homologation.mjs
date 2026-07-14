@@ -32,6 +32,7 @@ const env = {
   JUS9_DATAJUD_CACHE: memoryKv(),
   JUS9_USER_MEMORY: userMemoryKv,
   JUS9_DAJ_PROCESS_LINKS: dajProcessKv,
+  JUS9_DAJ_PII_INDEX_KEY: "chave-hmac-ficticia-homologacao-daj",
   JUS9_PROFILE_REQUESTS: memoryKv(),
   ASSETS: { fetch: async () => new Response("asset", { status: 200 }) }
 };
@@ -121,12 +122,20 @@ response = await call("/api/daj-process-links", {
 });
 assert(response.status === 201, "segundo DAJ da mesma parte deveria ser permitido");
 
-response = await call("/api/daj-process-links?searchType=nome&nome=Parte%20Alfa", { headers: { cookie } });
+response = await call("/api/judicial/parties/search", {
+  method: "POST",
+  headers: { cookie, "content-type": "application/json" },
+  body: JSON.stringify({ searchType: "nome", nome: "Parte Alfa" })
+});
 data = await response.json();
 assert(response.status === 200 && data.total === 2, "nome deveria reunir varios DAJs");
 assert(data.items.every((item) => item.cpfMasked === "***.***.***-09"), "CPF deveria permanecer mascarado");
 
-response = await call("/api/daj-process-links?searchType=cpf&cpf=123.456.789-09", { headers: { cookie } });
+response = await call("/api/judicial/parties/search", {
+  method: "POST",
+  headers: { cookie, "content-type": "application/json" },
+  body: JSON.stringify({ searchType: "cpf", cpf: "123.456.789-09" })
+});
 data = await response.json();
 assert(response.status === 200 && data.total === 2, "CPF governado deveria reunir varios DAJs");
 
@@ -141,6 +150,7 @@ assert(response.status === 409 && data.error === "processo_ja_vinculado", "proce
 const indexRaw = await dajProcessKv.get("daj-process-links:index");
 const auditRaw = await dajProcessKv.get("daj-process-links:audit");
 assert(!String(indexRaw).includes("12345678909"), "indice nao deve persistir CPF integral");
+assert(String(indexRaw).includes("cpfLookupHash"), "indice deveria persistir somente hash HMAC para pesquisa exata");
 assert(!String(auditRaw).includes("12345678909"), "auditoria nao deve persistir CPF integral");
 assert(Array.isArray(JSON.parse(auditRaw)) && JSON.parse(auditRaw).length >= 3, "auditoria DAJ-processo deveria registrar criacoes e bloqueio");
 
