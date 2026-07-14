@@ -109,7 +109,9 @@ const baseIntake = {
   attentionReason: "documento faltante",
   secrecyLevel: "Restrito",
   caseSummary: "Atendimento inteiramente ficticio para homologacao do modelo-mae.",
-  documentsMentioned: "Documento ficticio A."
+  documentsMentioned: "Documento ficticio A.",
+  testMode: true,
+  environment: "homologacao"
 };
 const baseLink = {
   tribunal: "tjsc",
@@ -189,8 +191,25 @@ assert(String(indexRaw).includes("cpfLookupHash"), "indice deveria persistir som
 assert(!String(auditRaw).includes("12345678909"), "auditoria nao deve persistir CPF integral");
 assert(Array.isArray(JSON.parse(auditRaw)) && JSON.parse(auditRaw).length >= 5, "auditoria DAJ deveria registrar cadastros, vinculos e bloqueio");
 
+for (const dajId of [firstDajId, secondDajId]) {
+  response = await call(`/api/dajs?dajId=${encodeURIComponent(dajId)}`, {
+    method: "DELETE",
+    headers: { cookie, "content-type": "application/json", origin: "https://jus9tecnologia.com.br" },
+    body: JSON.stringify({
+      reason: "Limpeza final da homologacao tecnica automatizada.",
+      confirmation: `EXCLUIR TESTE ${dajId}`
+    })
+  });
+  data = await response.json();
+  assert(response.status === 200 && data.tombstone === true, `${dajId}: limpeza governada falhou`);
+  const tombstoneRaw = await dajProcessKv.get(`daj-record:tombstone:v1:${dajId}`);
+  assert(!String(tombstoneRaw).includes("Parte Alfa") && !String(tombstoneRaw).includes("parte.alfa@example.invalid"), `${dajId}: tombstone preservou dados da parte`);
+  assert(!String(tombstoneRaw).includes("Limpeza final da homologacao") && String(tombstoneRaw).includes("reasonHash"), `${dajId}: justificativa livre nao foi minimizada`);
+}
+assert(JSON.parse(await dajProcessKv.get("daj-process-links:index")).length === 0, "homologacao deveria terminar sem DAJ ficticio ativo");
+
 response = await call("/api/charlie/memory", { method: "DELETE", headers: { cookie } });
 data = await response.json();
 assert(response.status === 200 && data.deleted === true, "usuario deveria conseguir limpar memoria oficial");
 
-console.log("DAJ_HOMOLOGATION_TECHNICAL_OK memory,upload,intake-index,links,multi-daj,cpf-mask,audit,delete");
+console.log("DAJ_HOMOLOGATION_TECHNICAL_OK memory,upload,intake-index,links,multi-daj,cpf-mask,audit,cleanup,tombstones");

@@ -856,6 +856,10 @@ response = await request("/api/dajs", { method: "POST" });
 assert(response.status === 401, "cadastro DAJ anonimo deveria exigir sessao");
 console.log("AUTH_OK daj-registry-anonymous=401");
 
+response = await request("/api/dajs?dajId=DAJ-2026-0001", { method: "DELETE" });
+assert(response.status === 401, "exclusao DAJ anonima deveria exigir sessao");
+console.log("AUTH_OK daj-registry-delete-anonymous=401");
+
 response = await worker.fetch(
   new Request("https://jus9.invalid/api/dajs", {
     method: "POST",
@@ -956,7 +960,9 @@ const intakePayload = {
   secrecyLevel: "Restrito",
   caseSummary: "Relato inteiramente ficticio para homologacao do cadastro DAJ.",
   documentsMentioned: "Documento ficticio A.",
-  attachmentsPendingCount: 2
+  attachmentsPendingCount: 2,
+  testMode: true,
+  environment: "homologacao"
 };
 const intakeIdempotencyKey = "daj-intake-auth-test-0001";
 response = await worker.fetch(
@@ -976,15 +982,18 @@ assert(response.status === 201 && /^DAJ-\d{4}-\d{4}$/.test(data.item?.id), "cada
 assert(data.item.cpfMasked === "***.***.***-09" && data.cpfIndexed === true, "cadastro deveria indexar CPF exato e devolver apenas mascara");
 assert(data.item.processLinked === false && data.item.status === "em_triagem", "DAJ deveria nascer antes do vinculo processual");
 assert(data.item.classification === "JURIDICO_SIGILOSO", "sigilo restrito deveria classificar cadastro como sigiloso");
+assert(data.item.testMode === true && data.item.environment === "homologacao", "cadastro ficticio deveria ficar marcado como homologacao");
 assert(!JSON.stringify(data).includes("12345678909"), "cadastro DAJ nao deve devolver CPF integral");
 const intakeDajId = data.item.id;
 console.log("AUTH_OK daj-registry-create-indexed=201");
 
 const intakeIndexRaw = await dajProcessLinksEnv.JUS9_DAJ_PROCESS_LINKS.get("daj-process-links:index");
 const intakeDetailRaw = await dajProcessLinksEnv.JUS9_DAJ_PROCESS_LINKS.get(`daj-record:v1:${intakeDajId}`);
+const intakeDetail = JSON.parse(intakeDetailRaw);
 assert(!String(intakeIndexRaw).includes("12345678909") && !String(intakeDetailRaw).includes("12345678909"), "CPF integral nao deve ser persistido no indice nem no detalhe");
 assert(!String(intakeIndexRaw).includes("ana@example.invalid") && String(intakeDetailRaw).includes("ana@example.invalid"), "contato deve ficar fora do indice pesquisavel");
 assert(String(intakeIndexRaw).includes("cpfLookupHash"), "indice DAJ deveria conter HMAC do CPF");
+assert(/^daj-intake:idempotency:v1:/.test(intakeDetail.creationIdempotencyStorageKey), "detalhe deveria preservar somente referencia derivada da idempotencia");
 
 response = await worker.fetch(
   new Request("https://jus9.invalid/api/dajs", {
@@ -1028,6 +1037,7 @@ response = await worker.fetch(
 data = await response.json();
 assert(response.status === 200 && data.item.operational?.area === "Familia", "leitura autorizada deveria devolver detalhe operacional");
 assert(data.item.operational?.contact === "ana@example.invalid" && !JSON.stringify(data).includes("12345678909"), "detalhe deve preservar contato sem expor CPF integral");
+assert(data.item.testMode === true && data.item.environment === "homologacao", "retomada deveria preservar marca de homologacao");
 console.log("AUTH_OK daj-registry-detail=200");
 
 response = await worker.fetch(
@@ -1092,6 +1102,136 @@ assert(data.item.partyName === intakePayload.partyName && data.item.classificati
 console.log("AUTH_OK daj-registry-link-later=200");
 
 response = await worker.fetch(
+  new Request(`https://jus9.invalid/api/dajs?dajId=${encodeURIComponent(intakeDajId)}`, {
+    method: "DELETE",
+    headers: { "content-type": "application/json", cookie: await cookieFor("assessor") },
+    body: JSON.stringify({
+      reason: "Homologacao ficticia encerrada com seguranca.",
+      confirmation: `EXCLUIR TESTE ${intakeDajId}`
+    })
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 403 && data.permission === "dajs:write+audit:write", "perfil sem escrita e auditoria nao deve excluir DAJ ficticio");
+console.log("AUTH_OK daj-registry-delete-permission=403");
+
+response = await worker.fetch(
+  new Request(`https://jus9.invalid/api/dajs?dajId=${encodeURIComponent(intakeDajId)}`, {
+    method: "DELETE",
+    headers: { "content-type": "application/json", cookie: await cookieFor("advogado") },
+    body: JSON.stringify({ reason: "Homologacao ficticia encerrada com seguranca.", confirmation: "CONFIRMACAO ERRADA" })
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 400 && data.error === "confirmacao_exclusao_invalida", "exclusao deveria exigir confirmacao vinculada ao DAJ");
+assert((await dajProcessLinksEnv.JUS9_DAJ_PROCESS_LINKS.get("daj-process-links:index")).includes(intakeDajId), "confirmacao invalida nao deve alterar indice");
+console.log("AUTH_OK daj-registry-delete-confirmation=400");
+
+response = await worker.fetch(
+  new Request(`https://jus9.invalid/api/dajs?dajId=${encodeURIComponent(intakeDajId)}`, {
+    method: "DELETE",
+    headers: { "content-type": "application/json", cookie: await cookieFor("advogado") },
+    body: JSON.stringify({
+      reason: "Homologacao ficticia encerrada com seguranca.",
+      confirmation: `EXCLUIR TESTE ${intakeDajId}`
+    })
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.ok === true && data.tombstone === true && data.alreadyDeleted === false, "DAJ ficticio deveria admitir limpeza governada");
+assert(!(await dajProcessLinksEnv.JUS9_DAJ_PROCESS_LINKS.get("daj-process-links:index")).includes(intakeDajId), "indice nao deve manter DAJ ficticio removido");
+assert(await dajProcessLinksEnv.JUS9_DAJ_PROCESS_LINKS.get(`daj-record:v1:${intakeDajId}`) === null, "detalhe operacional deveria ser removido");
+const intakeTombstoneRaw = await dajProcessLinksEnv.JUS9_DAJ_PROCESS_LINKS.get(`daj-record:tombstone:v1:${intakeDajId}`);
+assert(String(intakeTombstoneRaw).includes("daj-homologation-tombstone"), "limpeza deveria preservar tombstone minimo");
+assert(!String(intakeTombstoneRaw).includes("Ana Cadastro") && !String(intakeTombstoneRaw).includes("ana@example.invalid"), "tombstone nao deve preservar nome ou contato");
+assert(!String(intakeTombstoneRaw).includes("12345678909") && !String(intakeTombstoneRaw).includes("6666666"), "tombstone nao deve preservar CPF ou processo");
+assert(!String(intakeTombstoneRaw).includes("Homologacao ficticia encerrada") && String(intakeTombstoneRaw).includes("reasonHash"), "tombstone deve preservar justificativa somente como hash");
+const intakeAuditRaw = await dajProcessLinksEnv.JUS9_DAJ_PROCESS_LINKS.get("daj-process-links:audit");
+assert(String(intakeAuditRaw).includes("exclui_cadastro_daj_homologacao"), "limpeza deveria registrar acao de auditoria");
+assert(!String(intakeAuditRaw).includes("12345678909") && !String(intakeAuditRaw).includes("ana@example.invalid"), "auditoria nao deve conter CPF integral ou contato");
+console.log("AUTH_OK daj-registry-delete-test=200");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/judicial/parties/search", {
+    method: "POST",
+    headers: { "content-type": "application/json", cookie: await cookieFor("advogado") },
+    body: JSON.stringify({ searchType: "cpf", cpf: "123.456.789-09" })
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.total === 0, "indice de CPF nao deve encontrar DAJ removido");
+console.log("AUTH_OK daj-registry-delete-removes-party-index=200");
+
+response = await worker.fetch(
+  new Request(`https://jus9.invalid/api/dajs?dajId=${encodeURIComponent(intakeDajId)}`, {
+    method: "DELETE",
+    headers: { "content-type": "application/json", cookie: await cookieFor("advogado") },
+    body: JSON.stringify({
+      reason: "Repeticao governada da limpeza ficticia.",
+      confirmation: `EXCLUIR TESTE ${intakeDajId}`
+    })
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.alreadyDeleted === true, "limpeza repetida deveria ser idempotente");
+console.log("AUTH_OK daj-registry-delete-idempotent=200");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/dajs", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      cookie: await cookieFor("advogado"),
+      "idempotency-key": intakeIdempotencyKey
+    },
+    body: JSON.stringify(intakePayload)
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 410 && data.error === "operacao_daj_removida", "operacao removida nao deve recriar DAJ pela mesma chave");
+console.log("AUTH_OK daj-registry-deleted-operation=410");
+
+const sequentialPayload = {
+  partyName: "Nova Parte Sequencial Ficticia",
+  testMode: true,
+  environment: "homologacao"
+};
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/dajs", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      cookie: await cookieFor("advogado"),
+      "idempotency-key": "daj-intake-sequence-after-delete-01"
+    },
+    body: JSON.stringify(sequentialPayload)
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 201 && data.item.id !== intakeDajId, "sequencia nao deve reutilizar dajId removido");
+const sequentialDajId = data.item.id;
+response = await worker.fetch(
+  new Request(`https://jus9.invalid/api/dajs?dajId=${encodeURIComponent(sequentialDajId)}`, {
+    method: "DELETE",
+    headers: { "content-type": "application/json", cookie: await cookieFor("advogado") },
+    body: JSON.stringify({
+      reason: "Limpeza do teste de sequencia monotonicamente crescente.",
+      confirmation: `EXCLUIR TESTE ${sequentialDajId}`
+    })
+  }),
+  dajProcessLinksEnv
+);
+assert(response.status === 200, "DAJ do teste de sequencia deveria ser removido");
+console.log("AUTH_OK daj-registry-sequence-no-reuse=201/200");
+
+response = await worker.fetch(
   new Request("https://jus9.invalid/api/daj-process-links", {
     method: "POST",
     headers: { "content-type": "application/json", cookie: await cookieFor("advogado") },
@@ -1112,6 +1252,21 @@ assert(data.item.processNumber === "2222222-22.2024.8.24.0000", "DAJ-processo de
 assert(data.item.cpfMasked === "***.***.***-35", "DAJ-processo deveria mascarar CPF");
 assert(!JSON.stringify(data).includes("11144477735"), "DAJ-processo nao deve devolver CPF integral");
 console.log("AUTH_OK daj-process-links-create=201");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/dajs?dajId=DAJ-2026-0101", {
+    method: "DELETE",
+    headers: { "content-type": "application/json", cookie: await cookieFor("advogado") },
+    body: JSON.stringify({
+      reason: "Tentativa controlada sobre registro nao homologado.",
+      confirmation: "EXCLUIR TESTE DAJ-2026-0101"
+    })
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 409 && data.error === "exclusao_restrita_a_daj_de_homologacao", "rota de limpeza nunca deve excluir DAJ comum");
+console.log("AUTH_OK daj-registry-delete-production-blocked=409");
 
 response = await worker.fetch(
   new Request("https://jus9.invalid/api/daj-process-links?searchType=daj&dajId=DAJ-2026-0101", {

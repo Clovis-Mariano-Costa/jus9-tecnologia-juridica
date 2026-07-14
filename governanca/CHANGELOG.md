@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.10.0 - 2026-07-13
+
+- Homologacao do DAJ passa a ser reversivel somente para registros explicitamente ficticios.
+- Exclusao exige sessao, escrita, auditoria, justificativa e confirmacao vinculada ao identificador.
+- Tombstone minimo bloqueia recriacao idempotente sem preservar dados da parte.
+- DAJs comuns permanecem imutaveis pela rota de limpeza de homologacao.
+
 ## 1.9.0 - 2026-07-13
 
 - DAJ passa a ser a fonte operacional do indice interno de partes.

@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.10.0 - 2026-07-13
+
+- Pacote 1C tecnico recebe criacao marcada, retomada por `dajId` e limpeza governada do DAJ ficticio.
+- A limpeza remove indice e detalhe, preserva tombstone minimo e nao pode atingir DAJ comum.
+- Aceite humano autenticado continua como porta obrigatoria antes da reindexacao ou replicacao.
+
 ## 1.9.0 - 2026-07-13
 
 - Atendimento inicial deixa de simular salvamento e cria DAJ autenticado no backend.

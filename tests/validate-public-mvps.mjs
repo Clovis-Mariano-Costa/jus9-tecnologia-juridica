@@ -104,12 +104,17 @@ assert(intakePage.includes("data-daj-intake-form"), "atendimento inicial sem for
 assert(intakePage.includes("/auth/google/start?return_to=%2Fapp-atendimento-inicial.html"), "atendimento inicial sem login com retorno seguro");
 assert(intakePage.includes('name="cpf"') && intakePage.includes('data-sensitive-field="cpf"'), "atendimento inicial sem CPF marcado como sensivel");
 assert(intakePage.includes("data-charlie-exclude"), "atendimento inicial nao exclui dados sensiveis do prompt da Charlie");
-assert(intakePage.includes("assets/js/daj-intake.js?v=20260713-daj-index-v1"), "atendimento inicial sem cliente versionado do cadastro DAJ");
+assert(intakePage.includes("assets/js/daj-intake.js?v=20260713-daj-homologation-v1"), "atendimento inicial sem cliente versionado da homologacao reversivel");
+assert(intakePage.includes("data-delete-test-daj"), "atendimento inicial sem limpeza governada do registro ficticio");
+assert(intakePage.includes("data-daj-login-link"), "atendimento inicial sem retorno autenticado ao DAJ consultado");
 assert(!intakePage.includes("Demonstração: atendimento inicial salvo"), "atendimento inicial ainda finge salvamento por alerta");
 assert(intakeScript.includes("fetch('/api/dajs'"), "cliente do atendimento nao chama cadastro DAJ");
 assert(intakeScript.includes("credentials: 'include'"), "cadastro DAJ no frontend sem sessao autenticada");
 assert(intakeScript.includes("'Idempotency-Key'"), "cadastro DAJ no frontend sem idempotencia");
 assert(intakeScript.includes("cpfInput.value = ''"), "frontend nao limpa CPF integral depois de indexar");
+assert(intakeScript.includes("testMode: true") && intakeScript.includes("environment: 'homologacao'"), "frontend nao marca registros ficticios de homologacao");
+assert(intakeScript.includes("method: 'DELETE'") && intakeScript.includes("EXCLUIR TESTE"), "frontend sem exclusao confirmada do DAJ ficticio");
+assert(intakeScript.includes("resumeDajFromUrl") && intakeScript.includes("searchParams.get('dajId')"), "frontend sem retomada do DAJ por URL");
 assert(!intakeScript.includes("localStorage"), "cliente do cadastro DAJ nao deve persistir atendimento no navegador");
 assert(wranglerConfig.includes('"binding": "JUS9_DAJ_PROCESS_LINKS"'), "wrangler sem KV oficial DAJ-processo");
 assert(wranglerConfig.includes('"binding": "JUS9_USER_MEMORY"'), "wrangler sem KV dedicado de memoria do usuario");
@@ -120,6 +125,9 @@ assert(workerSource.includes('originalUrl.pathname === "/api/judicial/pdpj/readi
 assert(workerSource.includes('originalUrl.pathname === "/api/judicial/parties/search"'), "worker sem pesquisa estruturada de partes");
 assert(workerSource.includes('originalUrl.pathname === "/api/dajs"'), "worker sem cadastro DAJ autenticado");
 assert(workerSource.includes("idempotency_key_reutilizada_com_payload_diferente"), "worker sem protecao idempotente do cadastro DAJ");
+assert(workerSource.includes("exclui_cadastro_daj_homologacao"), "worker sem auditoria da limpeza de homologacao");
+assert(workerSource.includes("daj-record:tombstone:v1:"), "worker sem tombstone do DAJ ficticio removido");
+assert(workerSource.includes("production_records_are_immutable_here"), "worker nao protege DAJ comum da rota de limpeza");
 assert(workerSource.includes("daj-record:v1:"), "worker sem detalhe DAJ separado do indice pesquisavel");
 assert(workerSource.includes("cpfLookupHash"), "worker sem indice HMAC exato de CPF");
 assert(workerSource.includes('DED: ["Autor / Editor"'), "worker sem contexto canonico DED");
@@ -129,7 +137,7 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v29-2026-07-13-daj-intake-index"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("jus9-pwa-v30-2026-07-13-daj-homologation-cleanup"), "cache PWA principal desatualizado");
 assert(canonicalServiceWorker.includes("/assets/js/daj-intake.js"), "cache PWA sem cliente do cadastro DAJ");
 assert(distSyncScript.includes("assets\\js\\daj-intake.js"), "sincronizacao de deploy nao inclui cliente do cadastro DAJ");
 assert(canonicalServiceWorker.includes("caches.match('/offline.html')"), "fallback de arquivos estaticos do worker principal incorreto");

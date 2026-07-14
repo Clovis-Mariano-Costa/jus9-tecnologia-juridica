@@ -1063,7 +1063,13 @@ async function handleDajsReadiness(request, env) {
     readPermission: "dajs:read",
     writePermission: "dajs:write",
     policy: "cpf_request_only_hmac_at_rest",
-    processRequiredAtIntake: false
+    processRequiredAtIntake: false,
+    homologationCleanup: {
+      enabled: true,
+      testRecordsOnly: true,
+      auditPermission: "audit:write",
+      tombstoneWithoutPartyData: true
+    }
   }, 200, { ...corsHeaders, "Cache-Control": "no-store" });
 }
 
@@ -1263,7 +1269,26 @@ async function handleDajs(request, env) {
     });
   }
 
-  return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET, POST" });
+  if (request.method === "DELETE") {
+    if (!hasPermission(session, "dajs:write") || !hasPermission(session, "audit:write")) {
+      return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "dajs:write+audit:write" }, 403, corsHeaders);
+    }
+    const contentLength = Number(request.headers.get("content-length") || 0);
+    if (contentLength > 8_000) {
+      return jsonResponse({ ok: false, error: "payload_muito_grande" }, 413, corsHeaders);
+    }
+    const payload = await request.json().catch(() => null);
+    if (payload && new TextEncoder().encode(JSON.stringify(payload)).byteLength > 8_000) {
+      return jsonResponse({ ok: false, error: "payload_muito_grande" }, 413, corsHeaders);
+    }
+    const result = await deleteDajTestRecord(env, session, request, new URL(request.url), payload);
+    return jsonResponse({ authenticated: true, profile: session.profile, ...result.payload }, result.status, {
+      ...corsHeaders,
+      "Cache-Control": "no-store"
+    });
+  }
+
+  return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET, POST, DELETE" });
 }
 
 function handleLogout(request) {
@@ -1981,6 +2006,8 @@ async function saveDajRecord(env, session, request, payload) {
     ? clampNumber(payload.attachmentsPendingCount, 0, 50, 0)
     : clampNumber(previousDetail?.attachmentsPendingCount, 0, 50, 0);
   const classification = classifyDajRecord(secrecyLevel, previous?.classification);
+  const testMode = previous ? previous.testMode === true : payload.testMode === true;
+  const environment = previous?.environment || (testMode ? "homologacao" : "producao");
   const fingerprint = await sha256Base64url(JSON.stringify({
     partyName: normalizeComparableText(partyName),
     cpfLookupHash: cpfLookupHashValue,
@@ -1991,7 +2018,9 @@ async function saveDajRecord(env, session, request, payload) {
     contact,
     caseSummary,
     documentsMentioned,
-    attachmentsPendingCount
+    attachmentsPendingCount,
+    testMode,
+    environment
   }));
 
   let dajId = requestedDajId;
@@ -2007,6 +2036,17 @@ async function saveDajRecord(env, session, request, payload) {
     }
     idempotencyStorageKey = await dajIdempotencyStorageKey(session, idempotencyKey);
     idempotencyMarker = await env.JUS9_DAJ_PROCESS_LINKS.get(idempotencyStorageKey, "json").catch(() => null);
+    if (idempotencyMarker?.state === "deleted") {
+      return {
+        status: 410,
+        payload: {
+          ok: false,
+          error: "operacao_daj_removida",
+          dajId: normalizeDajIdForLink(idempotencyMarker.dajId),
+          policy: "deleted_idempotency_key_cannot_recreate"
+        }
+      };
+    }
     if (idempotencyMarker && idempotencyMarker.fingerprint !== fingerprint) {
       return {
         status: 409,
@@ -2028,7 +2068,7 @@ async function saveDajRecord(env, session, request, payload) {
         };
       }
     } else {
-      dajId = nextDajId(items, new Date());
+      dajId = await nextDajId(env, items, new Date());
       if (!dajId) {
         return { status: 507, payload: { ok: false, error: "sequencia_daj_esgotada" } };
       }
@@ -2059,6 +2099,8 @@ async function saveDajRecord(env, session, request, payload) {
     status: previous?.processDigits ? "vinculado" : "em_triagem",
     classification,
     source: previous?.source || "atendimento_inicial",
+    testMode,
+    environment,
     createdAt: previous?.createdAt || now,
     updatedAt: now,
     updatedByProfile: session.profile,
@@ -2078,6 +2120,9 @@ async function saveDajRecord(env, session, request, payload) {
     documentsMentioned,
     attachmentsPendingCount,
     classification,
+    testMode,
+    environment,
+    creationIdempotencyStorageKey: previousDetail?.creationIdempotencyStorageKey || idempotencyStorageKey,
     createdAt: previousDetail?.createdAt || now,
     updatedAt: now,
     updatedByProfile: session.profile,
@@ -2120,6 +2165,115 @@ async function saveDajRecord(env, session, request, payload) {
   };
 }
 
+async function deleteDajTestRecord(env, session, request, url, payload) {
+  const dajId = normalizeDajIdForLink(url.searchParams.get("dajId") || url.searchParams.get("daj"));
+  if (!/^DAJ-\d{4}-\d{4}$/.test(dajId)) {
+    return { status: 400, payload: { ok: false, error: "daj_id_invalido" } };
+  }
+
+  const tombstoneKey = dajRecordTombstoneKey(dajId);
+  const tombstone = await env.JUS9_DAJ_PROCESS_LINKS.get(tombstoneKey, "json").catch(() => null);
+  const items = await readDajProcessLinkIndex(env);
+  const item = items.find((entry) => entry.id === dajId);
+  if (!item) {
+    if (!tombstone) {
+      return { status: 404, payload: { ok: false, error: "daj_nao_encontrado", dajId } };
+    }
+    if (tombstone.markerKey) {
+      await markDajIdempotencyDeleted(env, tombstone.markerKey, dajId, tombstone.deletedAt);
+    }
+    await env.JUS9_DAJ_PROCESS_LINKS.delete(dajRecordDetailKey(dajId));
+    return {
+      status: 200,
+      payload: {
+        ok: true,
+        dajId,
+        alreadyDeleted: true,
+        message: "DAJ ficticio ja havia sido removido da homologacao."
+      }
+    };
+  }
+  if (item.testMode !== true || item.environment !== "homologacao") {
+    return {
+      status: 409,
+      payload: {
+        ok: false,
+        error: "exclusao_restrita_a_daj_de_homologacao",
+        dajId,
+        policy: "production_records_are_immutable_here"
+      }
+    };
+  }
+
+  const reason = sanitizeText(payload?.reason, 300);
+  const expectedConfirmation = `EXCLUIR TESTE ${dajId}`;
+  if (reason.length < 10) {
+    return { status: 400, payload: { ok: false, error: "justificativa_exclusao_obrigatoria", minLength: 10 } };
+  }
+  if (String(payload?.confirmation || "").trim() !== expectedConfirmation) {
+    return {
+      status: 400,
+      payload: { ok: false, error: "confirmacao_exclusao_invalida", expectedConfirmation }
+    };
+  }
+
+  const detail = await readDajRecordDetail(env, dajId);
+  const markerKey = String(detail?.creationIdempotencyStorageKey || "");
+  const now = new Date().toISOString();
+  const reasonHash = await sha256Base64url(`daj-homologation-delete:v1:${reason}`);
+  const minimalTombstone = {
+    id: dajId,
+    kind: "daj-homologation-tombstone",
+    environment: "homologacao",
+    deletedAt: now,
+    deletedByProfile: session.profile,
+    deletedByEmailHash: session.emailHash || "",
+    reasonCode: "homologation_cleanup",
+    reasonHash,
+    wasProcessLinked: Boolean(item.processDigits),
+    markerKey,
+    origin: normalizeOriginHint(request.headers.get("origin") || request.headers.get("referer") || "")
+  };
+
+  await env.JUS9_DAJ_PROCESS_LINKS.put(tombstoneKey, JSON.stringify(minimalTombstone));
+  await preserveDajSequence(env, dajId);
+  if (markerKey) await markDajIdempotencyDeleted(env, markerKey, dajId, now);
+  await env.JUS9_DAJ_PROCESS_LINKS.put(
+    "daj-process-links:index",
+    JSON.stringify(items.filter((entry) => entry.id !== dajId).slice(0, 500))
+  );
+  await env.JUS9_DAJ_PROCESS_LINKS.delete(dajRecordDetailKey(dajId));
+  await appendDajProcessLinkAudit(env, session, {
+    action: "exclui_cadastro_daj_homologacao",
+    dajId,
+    testMode: true,
+    processLinked: Boolean(item.processDigits),
+    reasonCode: minimalTombstone.reasonCode,
+    reasonHash,
+    origin: minimalTombstone.origin
+  });
+
+  return {
+    status: 200,
+    payload: {
+      ok: true,
+      dajId,
+      alreadyDeleted: false,
+      tombstone: true,
+      message: "DAJ ficticio removido; tombstone e auditoria preservados sem dados da parte."
+    }
+  };
+}
+
+async function markDajIdempotencyDeleted(env, markerKey, dajId, deletedAt) {
+  if (!/^daj-intake:idempotency:v1:[A-Za-z0-9_-]+$/.test(String(markerKey || ""))) return;
+  await env.JUS9_DAJ_PROCESS_LINKS.put(markerKey, JSON.stringify({
+    state: "deleted",
+    dajId,
+    deletedAt: deletedAt || new Date().toISOString()
+  }));
+}
+
 function pickDajText(payload, key, previousValue, maxLength) {
   if (!Object.prototype.hasOwnProperty.call(payload, key)) return sanitizeText(previousValue, maxLength);
   return sanitizeText(payload[key], maxLength);
@@ -2141,19 +2295,37 @@ async function dajIdempotencyStorageKey(session, idempotencyKey) {
   return `daj-intake:idempotency:v1:${digest}`;
 }
 
-function nextDajId(items, date) {
+async function nextDajId(env, items, date) {
   const year = date.getUTCFullYear();
   let highest = 0;
   for (const item of items) {
     const match = String(item?.id || "").match(/^DAJ-(\d{4})-(\d{4})$/);
     if (match && Number(match[1]) === year) highest = Math.max(highest, Number(match[2]));
   }
+  const sequenceKey = `daj-sequence:v1:${year}`;
+  const storedHighest = Number(await env.JUS9_DAJ_PROCESS_LINKS.get(sequenceKey).catch(() => 0)) || 0;
+  highest = Math.max(highest, storedHighest);
   if (highest >= 9999) return "";
-  return `DAJ-${year}-${String(highest + 1).padStart(4, "0")}`;
+  const nextValue = highest + 1;
+  await env.JUS9_DAJ_PROCESS_LINKS.put(sequenceKey, String(nextValue));
+  return `DAJ-${year}-${String(nextValue).padStart(4, "0")}`;
+}
+
+async function preserveDajSequence(env, dajId) {
+  const match = String(dajId || "").match(/^DAJ-(\d{4})-(\d{4})$/);
+  if (!match) return;
+  const sequenceKey = `daj-sequence:v1:${match[1]}`;
+  const current = Number(await env.JUS9_DAJ_PROCESS_LINKS.get(sequenceKey).catch(() => 0)) || 0;
+  const candidate = Number(match[2]);
+  if (candidate > current) await env.JUS9_DAJ_PROCESS_LINKS.put(sequenceKey, String(candidate));
 }
 
 function dajRecordDetailKey(dajId) {
   return `daj-record:v1:${dajId}`;
+}
+
+function dajRecordTombstoneKey(dajId) {
+  return `daj-record:tombstone:v1:${dajId}`;
 }
 
 async function readDajRecordDetail(env, dajId) {
@@ -2166,7 +2338,9 @@ function publicDajRegistryItem(item, detail = null) {
     ...base,
     source: item.source || "",
     cpfIndexed: Boolean(item.cpfLookupHash),
-    processLinked: Boolean(item.processDigits)
+    processLinked: Boolean(item.processDigits),
+    testMode: item.testMode === true,
+    environment: item.environment || (item.testMode === true ? "homologacao" : "producao")
   };
   if (!detail) return publicItem;
   return {

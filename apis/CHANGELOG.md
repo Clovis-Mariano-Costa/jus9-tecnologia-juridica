@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - APIs
 
+## 1.10.0 - 2026-07-13
+
+- Adicionada `DELETE /api/dajs?dajId=...` exclusivamente para DAJ ficticio de homologacao.
+- Incluidos tombstone sem dados da parte, auditoria e bloqueio de replay da chave idempotente apagada.
+- `GET /api/dajs?dajId=...` sustenta retomada segura depois do login sem recarregar CPF integral.
+
 ## 1.9.0 - 2026-07-13
 
 - Adicionadas rotas autenticadas `GET/POST /api/dajs` e `GET /api/dajs/readiness`.

@@ -1,0 +1,153 @@
+---
+id: API-JUDICIAL-JUS9-001
+versao: 1.3.0
+autor: Codex / Charlie Fox
+revisor_responsavel: Clovis Mariano da Costa
+data: 2026-07-13
+status: homologacao-tecnica
+classificacao: INTERNO
+hash: calcular-na-release-aprovada
+---
+
+metadata:
+  id: API-JUDICIAL-JUS9-001
+  versao: 1.3.0
+  autor: Codex / Charlie Fox
+  revisor_responsavel: Clovis Mariano da Costa
+  data: 2026-07-13
+  status: homologacao-tecnica
+  classificacao: INTERNO
+  substitui_planejamento: 1.2.0
+  preserva_historico: true
+  hash: calcular-na-release-aprovada
+seguranca:
+  gateway_header: X-Jus9-Internal-Token
+  segredo_no_frontend: false
+  cpf_em_url: false
+  cpf_integral_persistido: false
+  cpf_indice: HMAC-SHA-256-v1
+  resposta_por_llm_em_consulta_estruturada: false
+  atos_transacionais_habilitados: false
+cadastro_daj:
+  fonte: atendimento-autenticado
+  armazenamento: JUS9_DAJ_PROCESS_LINKS
+  processo_obrigatorio_na_criacao: false
+  detalhe_separado_do_indice: true
+  cpf_no_detalhe: false
+  idempotencia:
+    obrigatoria_na_criacao: true
+    header: Idempotency-Key
+    retencao_segundos: 604800
+    replay_de_operacao_excluida: bloqueado-com-410
+    marcador_de_operacao_excluida: persistente-sem-dados-da-parte
+  rotas:
+    - path: /api/dajs/readiness
+      metodo: GET
+      autenticacao: publica-sem-segredos
+    - path: /api/dajs
+      metodo: GET
+      autenticacao: sessao-com-dajs-read
+      cpf_em_query: proibido
+    - path: /api/dajs
+      metodo: POST
+      autenticacao: sessao-com-dajs-write
+      limite_payload_bytes: 32000
+      efeito: cria-ou-atualiza-daj-e-indice
+    - path: /api/dajs?dajId={dajId}
+      metodo: DELETE
+      autenticacao: sessao-com-dajs-write-e-audit-write
+      limite_payload_bytes: 8000
+      efeito: remove-somente-daj-ficticio-de-homologacao
+  homologacao_reversivel:
+    marca_obrigatoria:
+      testMode: true
+      environment: homologacao
+    confirmacao: EXCLUIR TESTE {dajId}
+    justificativa_minima_caracteres: 10
+    daj_comum: imutavel-por-esta-rota
+    remove:
+      - indice-pesquisavel
+      - detalhe-operacional
+    preserva:
+      - tombstone-sem-dados-da-parte
+      - justificativa-somente-como-hash
+      - auditoria-sem-cpf-integral
+      - bloqueio-idempotente-da-operacao
+      - sequencia-monotonica-sem-reuso-do-dajId
+  campos_indice:
+    - dajId
+    - nome
+    - cpfMascarado
+    - cpfHmac
+    - processoVinculado
+    - classificacao
+    - testMode
+    - environment
+  campos_detalhe:
+    - contato
+    - area
+    - urgencia
+    - razaoAtencao
+    - nivelSigilo
+    - relato
+    - documentosMencionados
+  regras:
+    - cpf-invalido-nao-e-completado-nem-deduzido
+    - pesquisa-nao-altera-daj
+    - vinculo-processual-posterior-preserva-identidade-e-sigilo
+    - classificacao-sigilosa-nao-e-rebaixada-automaticamente
+    - limpeza-de-homologacao-nao-alcanca-daj-comum
+datajud:
+  fonte: CNJ/DataJud API Publica
+  evidence_status: official-public-metadata
+  raw_available: false
+  busca_partes_publica:
+    nome: false
+    cpf: false
+  rotas:
+    - path: /api/judicial/datajud/processos/:numeroCnj
+      metodo: GET
+      autenticacao: gateway-interno
+    - path: /api/judicial/datajud/search
+      metodo: POST
+      autenticacao: gateway-interno
+    - path: /api/judicial/datajud/tribunais
+      metodo: GET
+      autenticacao: publica-sem-segredos
+    - path: /api/judicial/datajud/readiness
+      metodo: GET
+      autenticacao: publica-sem-segredos
+pesquisa_partes:
+  politica: no_llm_no_invented_results
+  fonte_interna: indice-governado-DAJ
+  conector_externo: awaiting_official_guidance
+  rotas:
+    - path: /api/judicial/parties/readiness
+      metodo: GET
+      autenticacao: publica-sem-segredos
+    - path: /api/judicial/parties/search
+      metodo: POST
+      autenticacao: sessao-com-dajs-read
+      efeitos_colaterais: nenhum
+      limite: 30-consultas-por-minuto-por-usuario
+  nome:
+    suporte: indice-interno
+    minimo_caracteres: 3
+  cpf:
+    suporte: indice-interno-exato
+    segredo: JUS9_DAJ_PII_INDEX_KEY
+    fallback_ultimos_digitos: proibido
+    registros_antigos: requerem-reindexacao
+pdpj:
+  rotas:
+    - path: /api/judicial/pdpj/readiness
+      metodo: GET
+      autenticacao: publica-sem-segredos
+    - path: /api/judicial/pdpj/token/test
+      metodo: POST
+      autenticacao: gateway-interno
+  token_exposto: false
+  mni_habilitado: false
+  domicilio_habilitado: false
+  peticionamento_habilitado: false
+  ciencia_habilitada: false
