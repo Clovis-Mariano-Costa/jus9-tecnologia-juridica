@@ -94,10 +94,17 @@ assert(!sharedScript.includes("jus9DajInitialAttendanceDraftV1") && !sharedScrip
 assert(teamPage.includes("data-governed-team-directory"), "diretorio governado de equipe sem raiz");
 assert(teamPage.includes("data-team-request-form"), "diretorio de equipe sem formulario de solicitacao");
 assert(teamPage.includes("data-team-members") && teamPage.includes("data-team-requests") && teamPage.includes("data-team-audit"), "diretorio de equipe sem paineis operacionais");
-assert(teamPage.includes("governed-team-directory.js?v=20260714-team-directory-v1"), "diretorio de equipe sem cliente versionado");
+assert(teamPage.includes("governed-team-directory.js?v=20260714-team-directory-v2"), "diretorio de equipe sem cliente versionado");
 assert(teamDirectoryScript.includes("/api/governed-profiles") && teamDirectoryScript.includes("/api/profile-requests"), "diretorio nao usa APIs governadas");
 assert(teamDirectoryScript.includes("/api/profile-requests/action") && teamDirectoryScript.includes("/api/profile-requests/audit"), "diretorio sem revisao e auditoria governadas");
 assert(teamDirectoryScript.includes("textContent") && !teamDirectoryScript.includes("innerHTML"), "diretorio deve renderizar dados sem HTML dinamico");
+assert(!teamPage.includes(" data-team-page>") && !teamPage.includes(" data-team-page ") && !teamDirectoryScript.includes("localStorage"), "diretorio modular nao deve reativar o cadastro local legado");
+for (const code of expectedCodes) {
+  assert(teamDirectoryScript.includes(`${code}: {`), `diretorio compartilhado sem configuracao do modulo ${code}`);
+}
+assert(teamDirectoryScript.includes('aliases = { INV: "DIP", ORG: "DOI" }'), "diretorio sem aliases legados governados");
+assert(teamDirectoryScript.includes('social: true') && teamPage.includes("data-team-social-note"), "diretorio nao preserva a restricao do modulo social DIC");
+assert(teamPage.includes("data-team-panel-link") && teamPage.includes("data-team-ai-link") && teamPage.includes("data-team-documents-link") && teamPage.includes("data-team-workspace-link") && teamPage.includes("data-team-profiles-link"), "diretorio sem navegacao modular");
 assert(processPage.includes('id="process-search-type"'), "pagina de processos sem seletor de tipo de pesquisa");
 assert(processPage.includes('<option value="daj">DAJ</option>'), "pagina de processos sem busca por DAJ");
 assert(processPage.includes('<option value="nome">Nome da parte</option>'), "pagina de processos sem busca por nome");
@@ -152,12 +159,16 @@ for (const profile of ["admin_sistema", "advogado_lider", "advogado", "assessor_
 }
 assert(dajProfilesPage.includes("O perfil vem do login governado") && dajProfilesPage.includes("nao pode ser escolhido livremente"), "pagina de perfis nao explica a governanca do login");
 assert(dajDashboardPage.includes("Painel de trabalho") && !dajDashboardPage.includes("processos ativos"), "painel DAJ ainda usa metricas demonstrativas como dados operacionais");
-for (const page of [dajDashboardPage, intakePage, dajRegistryPage, processPage, dajProfilesPage, dajAiPage, teamPage]) {
+for (const page of [dajDashboardPage, intakePage, dajRegistryPage, processPage, dajProfilesPage, dajAiPage]) {
   assert(page.includes("daj-workspace-shell") && page.includes("daj-clean-ui.css?v=20260714-team-directory-v1"), "pagina do modelo DAJ sem layout clean isolado");
   assert(!page.includes("links-semanticos-jus9") && !page.includes("font-size:42px"), "pagina do modelo DAJ ainda contem faixa ou titulo visual redundante");
   for (const target of ["app-demo-advogar.html", "app-atendimento-inicial.html", "app-clientes.html", "app-processos.html", "app-agenda.html", "app-prazos.html", "app-documentos.html", "app-cofre.html", "app-workspace.html", "app-ia-profissional.html", "app-equipe.html", "mvp.html"]) {
     assert(page.includes(`href="${target}"`), `menu DAJ incompleto: ${target}`);
   }
+}
+assert(teamPage.includes("daj-workspace-shell") && teamPage.includes("daj-clean-ui.css?v=20260714-team-directory-v2"), "diretorio modular sem layout clean versionado");
+for (const target of ["app-demo-advogar.html", "app-atendimento-inicial.html", "app-clientes.html", "app-processos.html", "app-agenda.html", "app-prazos.html", "app-documentos.html", "app-cofre.html", "app-workspace.html", "app-ia-profissional.html", "app-equipe.html?mvp=DAJ", "mvp.html"]) {
+  assert(teamPage.includes(`href="${target}"`), `menu inicial do diretorio DAJ incompleto: ${target}`);
 }
 assert(dajCleanStyle.includes(".daj-workspace-shell") && dajCleanStyle.includes(".daj-role-grid") && dajCleanStyle.includes(".team-directory-grid"), "estilo clean DAJ incompleto");
 assert(!processPage.includes("data-tribunal=") && processPage.includes("DataJud Wiki"), "pagina de processos ainda duplica a selecao de tribunais em botoes");
@@ -187,7 +198,7 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v35-2026-07-14-team-directory"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("jus9-pwa-v36-2026-07-14-modular-team-directory"), "cache PWA principal desatualizado");
 assert(canonicalServiceWorker.includes("/assets/js/daj-intake.js"), "cache PWA sem cliente do cadastro DAJ");
 assert(canonicalServiceWorker.includes("/assets/js/daj-registry-list.js"), "cache PWA sem lista oficial de DAJs");
 assert(canonicalServiceWorker.includes("/assets/js/governed-team-directory.js"), "cache PWA sem diretorio governado da equipe");

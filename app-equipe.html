@@ -10,11 +10,11 @@ Software livre com autoria preservada.
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <title>Equipe e acessos - Jus 9</title>
-  <meta name="description" content="Diretorio governado de usuarios, perfis e solicitacoes do DAJ.">
+  <meta name="description" content="Diretorio governado de usuarios, perfis e solicitacoes por modulo da Jus 9.">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
-  <link rel="stylesheet" href="assets/css/daj-clean-ui.css?v=20260714-team-directory-v1">
+  <link rel="stylesheet" href="assets/css/daj-clean-ui.css?v=20260714-team-directory-v2">
   <meta name="theme-color" content="#07111f">
   <link rel="manifest" href="manifest.webmanifest">
 </head>
@@ -26,18 +26,18 @@ Software livre com autoria preservada.
   <div class="demo-layout">
     <aside class="demo-sidebar">
       <img src="assets/jus9-logo.svg" alt="Jus 9">
-      <nav aria-label="Navegacao do DAJ">
-        <a href="app-demo-advogar.html">Painel</a>
-        <a href="app-atendimento-inicial.html">Atendimento</a>
-        <a href="app-clientes.html">DAJs</a>
-        <a href="app-processos.html">Processos</a>
+      <nav aria-label="Navegacao do modulo">
+        <a data-team-panel-link href="app-demo-advogar.html">Painel</a>
+        <a data-team-daj-only href="app-atendimento-inicial.html">Atendimento</a>
+        <a data-team-daj-only href="app-clientes.html">DAJs</a>
+        <a data-team-daj-only href="app-processos.html">Processos</a>
         <a href="app-agenda.html">Agenda</a>
-        <a href="app-prazos.html">Prazos</a>
-        <a href="app-documentos.html">Documentos</a>
-        <a href="app-cofre.html">Cofre Juridico</a>
-        <a href="app-workspace.html">Workspace</a>
-        <a href="app-ia-profissional.html">Charlie Echo</a>
-        <a class="active" href="app-equipe.html">Equipe e acessos</a>
+        <a data-team-daj-only href="app-prazos.html">Prazos</a>
+        <a data-team-documents-link href="app-documentos.html">Documentos</a>
+        <a data-team-daj-only href="app-cofre.html">Cofre Juridico</a>
+        <a data-team-workspace-link href="app-workspace.html">Workspace</a>
+        <a data-team-ai-link href="app-ia-profissional.html">Charlie Echo</a>
+        <a data-team-self-link class="active" href="app-equipe.html?mvp=DAJ">Equipe e acessos</a>
         <a href="mvp.html">Sair do demo</a>
       </nav>
     </aside>
@@ -46,8 +46,8 @@ Software livre com autoria preservada.
       <section class="demo-topbar">
         <div>
           <div class="eyebrow">Diretorio governado <span data-team-module-code>DAJ</span></div>
-          <h1>Equipe, perfis e solicitacoes</h1>
-          <p>Pessoas, papeis e revisoes ficam separados. Nenhum perfil sensivel e concedido apenas pelo preenchimento deste formulario.</p>
+          <h1 data-team-page-title>Equipe e acessos do DAJ Advogados</h1>
+          <p data-team-page-description>Pessoas, papeis e revisoes ficam separados por modulo. O formulario nao concede privilegio automaticamente.</p>
         </div>
         <span class="badge secret">Acesso por login</span>
       </section>
@@ -59,7 +59,7 @@ Software livre com autoria preservada.
         </div>
         <div class="link-actions">
           <a data-team-login href="/auth/google/start?return_to=%2Fapp-equipe.html">Entrar com Google</a>
-          <a href="app-perfis.html">Ver papeis possiveis</a>
+          <a data-team-profiles-link href="app-perfis.html">Ver papeis possiveis</a>
         </div>
       </section>
 
@@ -74,8 +74,14 @@ Software livre com autoria preservada.
         </article>
         <article class="daj-card">
           <span class="eyebrow">Modulo</span>
-          <strong>DAJ Advogados</strong>
+          <strong data-team-module-label>DAJ Advogados</strong>
         </article>
+      </section>
+
+      <section class="daj-card" data-team-social-note hidden>
+        <div class="eyebrow">Protecao do modulo social</div>
+        <h2>Solicitacao pessoal sem exposicao do diretorio interno</h2>
+        <p>O cidadao pode consultar os proprios pedidos. Nomes e contatos da equipe interna aparecem somente para perfis administrativos autorizados.</p>
       </section>
 
       <section class="process-layout">
@@ -149,7 +155,7 @@ Software livre com autoria preservada.
   </div>
 
   <script src="script.js?v=20260714-daj-isolated-review-v1"></script>
-  <script src="assets/js/governed-team-directory.js?v=20260714-team-directory-v1"></script>
+  <script src="assets/js/governed-team-directory.js?v=20260714-team-directory-v2"></script>
   <footer class="jus9-autoria-rodape" role="contentinfo" aria-label="Direitos autorais" style="font-size:.85rem;line-height:1.5;text-align:center;padding:1rem .75rem;background:rgba(15,23,42,.96);color:#f8fafc">
     Producao do site: Jus 9 Tecnologia Juridica. Software livre com autoria, origem e direitos autorais preservados.
   </footer>

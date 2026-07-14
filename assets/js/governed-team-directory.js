@@ -4,7 +4,6 @@
   var root = document.querySelector("[data-governed-team-directory]");
   if (!root) return;
 
-  var moduleCode = String(root.getAttribute("data-team-module") || "DAJ").toUpperCase();
   var profileLabels = {
     admin_sistema: "Administrador do sistema",
     advogado_lider: "Advogado lider",
@@ -26,9 +25,140 @@
     autoridade_policial: "Autoridade policial",
     autor_editor: "Autor / editor"
   };
-  var moduleProfiles = {
-    DAJ: ["admin_sistema", "advogado_lider", "advogado", "assessor_chefe", "assessor", "secretaria", "estagio", "escritorio"]
+  var moduleConfigs = {
+    DAJ: {
+      label: "DAJ Advogados",
+      entry: "app-demo-advogar.html",
+      ai: "app-ia-profissional.html",
+      documents: "app-documentos.html",
+      workspace: "app-workspace.html",
+      profilesPage: "app-perfis.html",
+      profiles: ["admin_sistema", "advogado_lider", "advogado", "assessor_chefe", "assessor", "secretaria", "estagio", "escritorio"]
+    },
+    DAA: {
+      label: "Professor / Academia",
+      entry: "app-demo-professor.html",
+      ai: "app-ia-professor.html",
+      documents: "app-documentos-professor.html",
+      workspace: "app-workspace-professor.html",
+      profilesPage: "app-perfis-professor.html",
+      profiles: ["admin_sistema", "academia"]
+    },
+    DEJ: {
+      label: "Estudante",
+      entry: "app-demo-estudante.html",
+      ai: "app-ia-estudante.html",
+      documents: "app-documentos-estudante.html",
+      workspace: "app-workspace-estudante.html",
+      profilesPage: "app-perfis-estudante.html",
+      profiles: ["admin_sistema", "estudante", "academia"]
+    },
+    DIC: {
+      label: "Modulo Social / Cidadao",
+      entry: "app-demo-cidadao.html",
+      ai: "app-ia-cidadao.html",
+      documents: "app-documentos-cidadao.html",
+      workspace: "app-workspace-cidadao.html",
+      profilesPage: "app-perfis-cidadao.html",
+      profiles: ["admin_sistema", "cidadao"],
+      social: true
+    },
+    DPJ: {
+      label: "Perito Judicial",
+      entry: "app-demo-perito.html",
+      ai: "app-ia-perito.html",
+      documents: "app-documentos-perito.html",
+      workspace: "app-workspace-perito.html",
+      profilesPage: "app-perfis-perito.html",
+      profiles: ["admin_sistema", "perito"]
+    },
+    DIP: {
+      label: "Investidor / Parceiro",
+      entry: "app-demo-investidor.html",
+      ai: "app-ia-investidor.html",
+      documents: "app-documentos-investidor.html",
+      workspace: "app-workspace-investidor.html",
+      profilesPage: "app-perfis-investidor.html",
+      profiles: ["admin_sistema", "parceiro"]
+    },
+    DEE: {
+      label: "Escritorio Juridico",
+      entry: "app-demo-escritorio.html",
+      ai: "app-ia-escritorio.html",
+      documents: "app-documentos-escritorio.html",
+      workspace: "app-workspace-escritorio.html",
+      profilesPage: "app-perfis-escritorio.html",
+      profiles: ["admin_sistema", "escritorio", "advogado_lider", "advogado", "assessor_chefe", "assessor", "secretaria", "estagio"]
+    },
+    DEJI: {
+      label: "Empresa / Juridico Interno",
+      entry: "app-demo-empresa.html",
+      ai: "app-ia-empresa.html",
+      documents: "app-documentos-empresa.html",
+      workspace: "app-workspace-empresa.html",
+      profilesPage: "app-perfis-empresa.html",
+      profiles: ["admin_sistema", "empresa"]
+    },
+    DOI: {
+      label: "Orgao Publico / Instituicao",
+      entry: "app-demo-orgao-publico.html",
+      ai: "app-ia-orgao-publico.html",
+      documents: "app-documentos-orgao-publico.html",
+      workspace: "app-workspace-orgao-publico.html",
+      profilesPage: "app-perfis-orgao-publico.html",
+      profiles: ["admin_sistema", "orgao_publico"]
+    },
+    DGE: {
+      label: "Governanca do Ecossistema",
+      entry: "app-demo-administrador.html",
+      ai: "app-ia-administrador.html",
+      documents: "app-documentos-administrador.html",
+      workspace: "app-workspace-administrador.html",
+      profilesPage: "app-perfis-administrador.html",
+      profiles: ["admin_sistema"]
+    },
+    DMG: {
+      label: "Magistratura",
+      entry: "app-demo-juiz.html",
+      ai: "app-ia-juiz.html",
+      documents: "app-documentos-juiz.html",
+      workspace: "app-workspace-juiz.html",
+      profilesPage: "app-perfis-juiz.html",
+      profiles: ["admin_sistema", "magistrado", "assessor_chefe", "assessor", "secretaria", "estagio"]
+    },
+    DMP: {
+      label: "Ministerio Publico",
+      entry: "app-demo-promotor.html",
+      ai: "app-ia-promotor.html",
+      documents: "app-documentos-promotor.html",
+      workspace: "app-workspace-promotor.html",
+      profilesPage: "app-perfis-promotor.html",
+      profiles: ["admin_sistema", "ministerio_publico", "assessor_chefe", "assessor", "secretaria", "estagio"]
+    },
+    DAP: {
+      label: "Autoridade Policial",
+      entry: "app-demo-delegado.html",
+      ai: "app-ia-delegado.html",
+      documents: "app-documentos-delegado.html",
+      workspace: "app-workspace-delegado.html",
+      profilesPage: "app-perfis-delegado.html",
+      profiles: ["admin_sistema", "autoridade_policial", "assessor", "secretaria", "estagio"]
+    },
+    DED: {
+      label: "Autor / Editor",
+      entry: "app-demo-autor-editor.html",
+      ai: "app-ia-autor-editor.html",
+      documents: "app-documentos-autor-editor.html",
+      workspace: "app-workspace-autor-editor.html",
+      profilesPage: "app-perfis-autor-editor.html",
+      profiles: ["admin_sistema", "autor_editor"]
+    }
   };
+  var aliases = { INV: "DIP", ORG: "DOI" };
+  var requestedModule = String(new URLSearchParams(location.search).get("mvp") || root.getAttribute("data-team-module") || "DAJ").toUpperCase();
+  var moduleCode = aliases[requestedModule] || requestedModule;
+  if (!moduleConfigs[moduleCode]) moduleCode = "DAJ";
+  var moduleConfig = moduleConfigs[moduleCode];
   var statusLabels = {
     pendente_revisao_humana: "Pendente de revisao",
     aprovada_revisao_humana: "Aprovada",
@@ -257,11 +387,42 @@
     }
   }
 
+  function configureModuleUi() {
+    root.setAttribute("data-team-module", moduleCode);
+    setText("[data-team-module-code]", moduleCode);
+    setText("[data-team-module-label]", moduleConfig.label);
+    setText("[data-team-page-title]", "Equipe e acessos do " + moduleConfig.label);
+    setText("[data-team-page-description]", moduleConfig.social
+      ? "No modulo social, solicitacoes pessoais permanecem separadas do diretorio interno e a exposicao de identidades e reduzida."
+      : "Pessoas, papeis e revisoes ficam separados por modulo. O formulario nao concede privilegio automaticamente.");
+    var links = [
+      ["[data-team-panel-link]", moduleConfig.entry],
+      ["[data-team-ai-link]", moduleConfig.ai],
+      ["[data-team-documents-link]", moduleConfig.documents],
+      ["[data-team-workspace-link]", moduleConfig.workspace],
+      ["[data-team-profiles-link]", moduleConfig.profilesPage],
+      ["[data-team-self-link]", "app-equipe.html?mvp=" + encodeURIComponent(moduleCode)]
+    ];
+    links.forEach(function (entry) {
+      var link = select(entry[0]);
+      if (link) link.href = entry[1];
+    });
+    root.querySelectorAll("[data-team-daj-only]").forEach(function (element) {
+      element.hidden = moduleCode !== "DAJ";
+    });
+    setHidden("[data-team-social-note]", !moduleConfig.social);
+    var loginLink = select("[data-team-login]");
+    if (loginLink) {
+      var returnTo = "/app-equipe.html?mvp=" + encodeURIComponent(moduleCode);
+      loginLink.href = "/auth/google/start?return_to=" + encodeURIComponent(returnTo);
+    }
+  }
+
   function populateProfiles() {
     var selectElement = select('[name="profile"]');
     if (!selectElement) return;
     selectElement.textContent = "";
-    (moduleProfiles[moduleCode] || []).forEach(function (profile) {
+    moduleConfig.profiles.forEach(function (profile) {
       if (profile === "admin_sistema" && state.profile !== "admin_sistema") return;
       var option = document.createElement("option");
       option.value = profile;
@@ -300,7 +461,7 @@
   }
 
   async function init() {
-    setText("[data-team-module-code]", moduleCode);
+    configureModuleUi();
     bindForm();
     try {
       var context = await api("/api/auth/context?module=" + encodeURIComponent(moduleCode) + "&origin=" + encodeURIComponent(location.origin));

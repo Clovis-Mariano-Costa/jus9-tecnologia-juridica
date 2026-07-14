@@ -12,6 +12,9 @@
 .daj-workspace-shell *{
   letter-spacing:0!important;
 }
+.daj-workspace-shell [hidden]{
+  display:none!important;
+}
 .daj-workspace-shell .demo-layout{
   grid-template-columns:224px minmax(0,1fr);
   gap:0;

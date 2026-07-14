@@ -568,6 +568,33 @@ response = await worker.fetch(
 assert(response.status === 403, "gestor do DAJ nao deve administrar outro modulo");
 console.log("AUTH_OK profile-manager-cross-module=403");
 
+const governedDirectoryMatrix = [
+  ["admin_sistema", "DGE", 200],
+  ["advogado_lider", "DAJ", 200],
+  ["academia", "DAA", 200],
+  ["estudante", "DEJ", 200],
+  ["cidadao", "DIC", 403],
+  ["perito", "DPJ", 200],
+  ["parceiro", "DIP", 200],
+  ["escritorio", "DEE", 200],
+  ["empresa", "DEJI", 200],
+  ["orgao_publico", "DOI", 200],
+  ["magistrado", "DMG", 200],
+  ["ministerio_publico", "DMP", 200],
+  ["autoridade_policial", "DAP", 200],
+  ["autor_editor", "DED", 200]
+];
+for (const [profile, moduleCode, expectedStatus] of governedDirectoryMatrix) {
+  response = await worker.fetch(
+    new Request(`https://jus9.invalid/api/governed-profiles?module=${moduleCode}`, {
+      headers: { cookie: await cookieFor(profile, Date.now() + 60_000, `${profile}@jus9tecnologia.com.br`) }
+    }),
+    calendarEnv
+  );
+  assert(response.status === expectedStatus, `${profile} deveria receber ${expectedStatus} no diretorio ${moduleCode}`);
+}
+console.log("AUTH_OK governed-directory-matrix=14-modules");
+
 const governedContextEnv = {
   ...calendarEnv,
   AUTH_ALLOWED_EMAILS: "pessoa@jus9tecnologia.com.br:assessor,clovis@jus9tecnologia.com.br:admin_sistema"
@@ -604,6 +631,36 @@ data = await response.json();
 assert(response.status === 200 && Array.isArray(data.items) && data.items.length === 1, "admin deveria listar solicitacoes de perfil");
 assert(data.items[0].status === "aprovada_revisao_humana", "listagem deveria refletir status aprovado");
 console.log("AUTH_OK profile-request-list-admin=200");
+
+const socialDirectoryEnv = { ...configuredEnv, JUS9_PROFILE_REQUESTS: memoryKv() };
+const socialCookie = await cookieFor("cidadao", Date.now() + 60_000, "social@jus9tecnologia.com.br");
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/profile-requests", {
+    method: "POST",
+    headers: { cookie: socialCookie, "content-type": "application/json" },
+    body: JSON.stringify({
+      scope: "equipe",
+      name: "Pessoa Social",
+      email: "social@jus9tecnologia.com.br",
+      profile: "cidadao",
+      module: "DIC"
+    })
+  }),
+  socialDirectoryEnv
+);
+assert(response.status === 201, "cidadao deveria poder registrar a propria solicitacao social");
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/profile-requests?module=DIC", { headers: { cookie: socialCookie } }),
+  socialDirectoryEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.items.length === 1 && data.canManage === false, "cidadao deveria consultar apenas a propria solicitacao social");
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/governed-profiles?module=DIC", { headers: { cookie: socialCookie } }),
+  socialDirectoryEnv
+);
+assert(response.status === 403, "cidadao nao deve listar identidades do diretorio social interno");
+console.log("AUTH_OK social-directory-self-request-private=201/200/403");
 
 response = await worker.fetch(
   new Request("https://jus9.invalid/auth/google/calendar/start?return_to=%2Fapp-agenda.html"),
