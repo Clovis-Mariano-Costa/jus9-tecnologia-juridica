@@ -101,6 +101,7 @@ assert(processPage.includes("Cada DAJ pode ficar vinculado a um unico processo")
 assert(processPage.includes("Indice DAJ-processo"), "pagina de processos ainda apresenta indice apenas local");
 assert(processPage.includes("Entrar para usar a memoria oficial"), "pagina de processos sem acesso ao login da memoria oficial");
 assert(intakePage.includes("data-daj-intake-form"), "atendimento inicial sem formulario DAJ governado");
+assert(intakePage.includes("/auth/google/start?return_to=%2Fapp-atendimento-inicial.html"), "atendimento inicial sem login com retorno seguro");
 assert(intakePage.includes('name="cpf"') && intakePage.includes('data-sensitive-field="cpf"'), "atendimento inicial sem CPF marcado como sensivel");
 assert(intakePage.includes("data-charlie-exclude"), "atendimento inicial nao exclui dados sensiveis do prompt da Charlie");
 assert(intakePage.includes("assets/js/daj-intake.js?v=20260713-daj-index-v1"), "atendimento inicial sem cliente versionado do cadastro DAJ");
