@@ -82,6 +82,9 @@ assert(sharedScript.includes("pesquisa_citacao_doutrinaria_ativa"), "rota de pes
 assert(sharedScript.includes("Em pesquisa processual governada, reconheca tres chaves"), "governanca de pesquisa processual nome/CPF ausente");
 assert(sharedScript.includes("loadGovernedDajAnalysisPrompt"), "Charlie nao rele o DAJ governado antes da analise");
 assert(sharedScript.includes("/api/dajs?dajId="), "Charlie sem leitura autenticada do DAJ por identificador");
+assert(sharedScript.includes("createGovernedDajAnalysisRoom") && sharedScript.includes("daj_analise_governada"), "handoff DAJ nao cria sala isolada com rota fixa");
+assert(sharedScript.includes("registerDajAnalysisWorkflow") && sharedScript.includes("/api/dajs/review"), "analise DAJ sem feedback e encaminhamento backend");
+assert(sharedScript.includes("isMisdirectedDajAnalysis") && sharedScript.includes("resposta_daj_incompativel_com_a_rota"), "analise DAJ sem guarda contra desvio para pesquisa de partes");
 assert(!sharedScript.includes("jus9DajInitialAttendanceDraftV1") && !sharedScript.includes("dajDraft"), "handoff para Charlie ainda transporta rascunho local");
 assert(sharedScript.includes("jus9MvpTeamMembersV1"), "persistencia local de equipe ausente");
 assert(sharedScript.includes("jus9MvpTeamAuditV1"), "auditoria local de equipe ausente");
@@ -131,8 +134,10 @@ assert(intakeScript.includes("hasPersistenceReceipt") && intakeScript.includes("
 assert(intakeScript.includes("app-ia-profissional.html?dajId=") && intakeScript.includes("data.detailAvailable !== true"), "envio para Charlie nao confirma detalhe oficial do DAJ");
 assert(!intakeScript.includes("localStorage"), "cliente do cadastro DAJ nao deve persistir atendimento no navegador");
 assert(dajRegistryPage.includes("data-daj-registry-list") && dajRegistryPage.includes("assets/js/daj-registry-list.js"), "cadastro de DAJs nao usa lista oficial dinamica");
+assert(dajRegistryPage.includes("data-daj-workflow-inbox") && dajRegistryPage.includes("Encaminhamentos para meu perfil"), "cadastro sem caixa de feedback por perfil");
 assert(!dajRegistryPage.includes("Cliente demonstra") && !dajRegistryPage.includes("Familia Almeida"), "cadastro de DAJs ainda exibe exemplos fixos como registros");
 assert(dajRegistryScript.includes("fetch('/api/dajs'") && dajRegistryScript.includes("credentials: 'include'"), "lista de DAJs nao consulta backend autenticado");
+assert(dajRegistryScript.includes("fetch('/api/dajs/inbox'") && dajRegistryScript.includes("renderInboxItem"), "lista de DAJs nao exibe encaminhamentos autenticados");
 assert(dajRegistryScript.includes("textContent") && !dajRegistryScript.includes("item.partyName + '</"), "lista de DAJs nao minimiza risco de injecao ao renderizar dados");
 assert(wranglerConfig.includes('"binding": "JUS9_DAJ_PROCESS_LINKS"'), "wrangler sem KV oficial DAJ-processo");
 assert(wranglerConfig.includes('"binding": "JUS9_USER_MEMORY"'), "wrangler sem KV dedicado de memoria do usuario");
@@ -142,6 +147,9 @@ assert(workerSource.includes('originalUrl.pathname === "/api/judicial/datajud/re
 assert(workerSource.includes('originalUrl.pathname === "/api/judicial/pdpj/readiness"'), "worker sem readiness PDPJ");
 assert(workerSource.includes('originalUrl.pathname === "/api/judicial/parties/search"'), "worker sem pesquisa estruturada de partes");
 assert(workerSource.includes('originalUrl.pathname === "/api/dajs"'), "worker sem cadastro DAJ autenticado");
+assert(workerSource.includes('originalUrl.pathname === "/api/dajs/review"'), "worker sem registro da analise DAJ");
+assert(workerSource.includes('originalUrl.pathname === "/api/dajs/inbox"'), "worker sem caixa de encaminhamentos DAJ");
+assert(workerSource.includes("registra_analise_e_encaminhamento_daj") && workerSource.includes("automaticSupervisionForIntern"), "worker sem auditoria e supervisao do fluxo DAJ");
 assert(workerSource.includes("dajPersistenceReceipt") && workerSource.includes('storage: "JUS9_DAJ_PROCESS_LINKS"'), "worker sem comprovante explicito de persistencia DAJ");
 assert(workerSource.includes("idempotency_key_reutilizada_com_payload_diferente"), "worker sem protecao idempotente do cadastro DAJ");
 assert(workerSource.includes("exclui_cadastro_daj_homologacao"), "worker sem auditoria da limpeza de homologacao");
@@ -156,7 +164,7 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v32-2026-07-14-daj-backend-handoff"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("jus9-pwa-v33-2026-07-14-daj-isolated-review"), "cache PWA principal desatualizado");
 assert(canonicalServiceWorker.includes("/assets/js/daj-intake.js"), "cache PWA sem cliente do cadastro DAJ");
 assert(canonicalServiceWorker.includes("/assets/js/daj-registry-list.js"), "cache PWA sem lista oficial de DAJs");
 assert(distSyncScript.includes("assets\\js\\daj-intake.js"), "sincronizacao de deploy nao inclui cliente do cadastro DAJ");
@@ -189,7 +197,10 @@ for (const [code, page] of Object.entries(priorityAiPages)) {
   const html = await fs.readFile(new URL(`../${page}`, import.meta.url), "utf8");
   assert(html.includes("data-ai-chat"), `${code}: chat ausente em ${page}`);
   assert(html.includes(`data-ai-code="${code}"`), `${code}: codigo incorreto em ${page}`);
-  assert(html.includes('script.js?v=20260712-charlie-pesquisa-ativa-v1'), `${code}: script sem versao em ${page}`);
+  const expectedAiScript = code === "DAJ"
+    ? 'script.js?v=20260714-daj-isolated-review-v1'
+    : 'script.js?v=20260712-charlie-pesquisa-ativa-v1';
+  assert(html.includes(expectedAiScript), `${code}: script sem versao em ${page}`);
   assert(html.includes('charlie-mvp-shell'), `${code}: pagina da Charlie sem shell visual em ${page}`);
   console.log(`AI_PAGE_OK ${code} page=${page}`);
 }

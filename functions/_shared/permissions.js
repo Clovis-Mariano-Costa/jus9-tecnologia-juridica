@@ -5,7 +5,7 @@ export const PROFILE_PERMISSIONS = Object.freeze({
   assessor_chefe: ["auth:read", "dajs:read", "documents:read", "drive:write", "processes:read", "audit:write"],
   assessor: ["auth:read", "dajs:read", "documents:read", "processes:read"],
   secretaria: ["auth:read", "dajs:read", "documents:read", "calendar:read", "calendar:write"],
-  estagio: ["auth:read", "dajs:read"],
+  estagio: ["auth:read", "dajs:read", "dajs:write"],
   academia: ["auth:read"],
   estudante: ["auth:read"],
   cidadao: ["auth:read"],

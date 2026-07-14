@@ -2169,7 +2169,7 @@ window.jus9DemoLogin = function(form){
     var isDaj = String(code || '').toUpperCase() === 'DAJ';
     var hasUpload = /\[ANEXOS DO USUARIO - UPLOAD LOCAL GOVERNADO\]/i.test(String(question || ''));
     var isDraft = routeId === 'peca_juridica_completa' || asksCompleteLegalDraft(question);
-    var isDajAnalysis = routeId === 'daj_analise_upload' || asksDajAnalysisWithUpload(question);
+    var isDajAnalysis = routeId === 'daj_analise_governada' || routeId === 'daj_analise_upload' || asksDajAnalysisWithUpload(question);
     if(!isDaj && !isDraft && !hasUpload) return '';
     var lines = [
       '[ORDEM DE ENTREGA DAJ - MAO NA MASSA]',
@@ -2729,6 +2729,24 @@ window.jus9DemoLogin = function(form){
     saveChatRooms(code, data);
     return room;
   }
+  function saveDajAnalysisRoomResult(code, roomId, requestLabel, answer, feedbackText, workflow){
+    var data = loadChatRooms(code);
+    var room = data.rooms.find(function(item){ return item.id === roomId; });
+    if(!room) return null;
+    var now = new Date().toISOString();
+    room.messages = [];
+    room.messages.push({ role:'user', content:requestLabel, createdAt:now, tags:['daj','analise'] });
+    if(answer) room.messages.push({ role:'assistant', content:answer, createdAt:now, tags:['daj','analise','resultado'] });
+    if(feedbackText) room.messages.push({ role:'assistant', content:feedbackText, createdAt:now, tags:['daj','feedback','encaminhamento'] });
+    room.workflow = workflow || null;
+    room.currentTopic = requestLabel;
+    room.lastUserIntent = requestLabel;
+    updateRoomLists(room, requestLabel, answer + '\n' + feedbackText);
+    summarizeChatRoom(room, requestLabel, answer + '\n' + feedbackText);
+    room.updatedAt = now;
+    saveChatRooms(code, data);
+    return room;
+  }
   function renderChatWindow(card, code, focus){
     var windowEl = card.querySelector('[data-ai-chat-window]');
     if(!windowEl) return;
@@ -2773,6 +2791,7 @@ window.jus9DemoLogin = function(form){
     panel.innerHTML = '<div><strong>Salas da Charlie Echo</strong><p>Memoria local ampliada, visivel e controlada por voce.</p></div><div class="chat-room-actions"><button class="mini primary" type="button" data-room-new>Nova sala</button><button class="mini" type="button" data-room-rename>Renomear</button><details class="chat-room-more"><summary>Mais</summary><button class="mini" type="button" data-room-archive>Arquivar</button><button class="mini danger" type="button" data-room-delete>Excluir</button></details></div><div class="chat-room-list" data-room-list></div>';
     var target = card.querySelector('[data-ai-chat-window]'); if(target && target.parentNode) target.parentNode.insertBefore(panel, target);
     function changed(){ render(); if(typeof onChange === 'function') onChange(); }
+    card.jus9RefreshRooms = changed;
     function render(){ var data = loadChatRooms(code), list = panel.querySelector('[data-room-list]'); list.innerHTML = data.rooms.filter(function(r){ return r.status !== 'deleted'; }).map(function(r){ return '<button class="chat-room-pill' + (r.id===data.activeId?' active':'') + (r.status==='archived'?' archived':'') + '" type="button" data-id="' + r.id + '"><span>' + escapeHtml(r.status==='archived' ? r.title + ' (arquivada)' : r.title) + '</span></button>'; }).join(''); list.querySelectorAll('[data-id]').forEach(function(btn){ btn.addEventListener('click', function(){ var current = loadChatRooms(code); current.activeId = btn.getAttribute('data-id'); saveChatRooms(code, current); changed(); }); }); }
     panel.querySelector('[data-room-new]').addEventListener('click', function(){ var data = loadChatRooms(code), room = createChatRoom(code, 'Sala ' + code + ' ' + (data.rooms.length + 1)); data.rooms.unshift(room); data.activeId = room.id; saveChatRooms(code, data); changed(); });
     panel.querySelector('[data-room-rename]').addEventListener('click', function(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); if(!room) return; var title = prompt('Novo nome da sala:', room.title || 'Sala ' + code); if(!title) return; room.title = title.trim().slice(0, 80) || room.title; room.updatedAt = new Date().toISOString(); saveChatRooms(code, data); changed(); });
@@ -4388,8 +4407,10 @@ window.jus9DemoLogin = function(form){
   function buildGovernedDajPrompt(item){
     var operational = item.operational || {};
     var lines = [
+      '[ANALISE DAJ GOVERNADA]',
       'Analise o DAJ abaixo, lido agora do cadastro oficial governado da Jus 9.',
       'Nao trate este conteudo como rascunho local e nao invente fatos, documentos, prazos, fontes ou providencias.',
+      'Esta e uma rota fixa de analise DAJ. Nao redirecione para pesquisa de partes ou consulta processual por causa de palavras incidentais no relato.',
       '',
       'Identificador: ' + item.id,
       'Status: ' + conciseDajValue(item.status, 80),
@@ -4402,7 +4423,7 @@ window.jus9DemoLogin = function(form){
       'Resumo do caso: ' + (conciseDajValue(operational.caseSummary, 2600) || 'nao informado'),
       'Documentos mencionados: ' + (conciseDajValue(operational.documentsMentioned, 1400) || 'nenhum informado'),
       'Anexos ainda pendentes: ' + Number(operational.attachmentsPendingCount || 0),
-      'Identidade, CPF e contato da parte foram omitidos deste prompt por minimizacao.',
+      'Dados de identificacao e contato da parte foram omitidos deste contexto por minimizacao.',
       '',
       'Entregue:',
       '1. sintese fiel dos fatos informados;',
@@ -4429,7 +4450,145 @@ window.jus9DemoLogin = function(form){
       throw error;
     }
     setActiveDajPresentation(data.item);
-    return buildGovernedDajPrompt(data.item);
+    return { item:data.item, prompt:buildGovernedDajPrompt(data.item) };
+  }
+
+  function createGovernedDajAnalysisRoom(card, item){
+    var code = card.getAttribute('data-ai-code') || 'DAJ';
+    var stamp = new Date().toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
+    var room = createChatRoom(code, ('Analise ' + item.id + ' - ' + stamp).slice(0, 80));
+    room.id = 'daj-analysis-' + String(item.id || '').toLowerCase() + '-' + Date.now();
+    room.kind = 'daj_analysis';
+    room.dajId = item.id;
+    room.source = 'daj-governed-registry';
+    room.routeId = 'daj_analise_governada';
+    room.governanceClass = item.classification || 'JURIDICO_SIGILOSO';
+    var data = loadChatRooms(code);
+    data.rooms.unshift(room);
+    data.activeId = room.id;
+    saveChatRooms(code, data);
+    if(typeof card.jus9RefreshRooms === 'function') card.jus9RefreshRooms();
+    else renderChatWindow(card, code, card.getAttribute('data-ai-focus') || 'DAJ');
+    return room;
+  }
+
+  function governedDajAnalysisRoute(item){
+    return {
+      id:'daj_analise_governada',
+      label:'DAJ - analise oficial isolada',
+      apiFirst:true,
+      useRoomMemory:false,
+      allowLocalFallback:false,
+      localFallback:'',
+      dajId:item.id,
+      reason:'handoff governado do DAJ exige sala nova, contexto oficial e resposta especifica'
+    };
+  }
+
+  function markDajHandoffConsumed(){
+    var url = new URL(window.location.href);
+    url.searchParams.delete('autorun');
+    window.history.replaceState({}, '', url.pathname + url.search + url.hash);
+  }
+
+  function renderDajAnalysisLoading(card, dajId){
+    var windowEl = card.querySelector('[data-ai-chat-window]');
+    if(!windowEl) return;
+    windowEl.innerHTML = '';
+    var request = document.createElement('div');
+    request.className = 'ai-message ai-message-user';
+    request.innerHTML = '<strong>Voce:</strong> Solicitei uma nova analise governada de ' + escapeHtml(dajId) + '.';
+    var loading = document.createElement('div');
+    loading.className = 'ai-message ai-message-echo';
+    loading.innerHTML = '<strong>Charlie Echo:</strong> Lendo o DAJ oficial em uma sala nova e consultando a API segura...';
+    windowEl.appendChild(request);
+    windowEl.appendChild(loading);
+    keepChatInView(card, loading);
+  }
+
+  function isMisdirectedDajAnalysis(answer){
+    return /consulta processual por CPF foi interrompida|api publica datajud nao oferece pesquisa nacional de partes|endpoint autenticado \/api\/judicial\/parties\/search|nenhum modelo generativo foi chamado/i.test(String(answer || ''));
+  }
+
+  function inferDajAnalysisRisk(answer){
+    return /risco (?:alto|grave|critico)|urgencia (?:alta|critica)|prazo fatal|perigo imediato|violencia|prisao iminente/i.test(String(answer || '')) ? 'high' : 'normal';
+  }
+
+  async function registerDajAnalysisWorkflow(item, room, answer){
+    var response = await fetch('/api/dajs/review', {
+      method:'POST',
+      credentials:'include',
+      cache:'no-store',
+      headers:{ 'Content-Type':'application/json' },
+      body:JSON.stringify({
+        dajId:item.id,
+        analysisRoomId:room.id,
+        analysisResult:String(answer || '').slice(0, 12000),
+        riskLevel:inferDajAnalysisRisk(answer)
+      })
+    });
+    var data = await response.json().catch(function(){ return {}; });
+    if(!response.ok || !data.ok || !data.feedback){
+      var error = new Error(data.error || 'feedback_daj_nao_registrado');
+      error.status = response.status;
+      throw error;
+    }
+    return data.feedback;
+  }
+
+  function formatDajWorkflowFeedback(feedback){
+    var action = feedback.action === 'reencaminhar'
+      ? 'Reencaminhado para ' + feedback.destinationLabel + '.'
+      : 'Devolvido ao perfil de autoria: ' + feedback.destinationLabel + '.';
+    return [
+      'Feedback do fluxo DAJ',
+      'Resultado registrado: ' + conciseDajValue(feedback.resultSummary, 700),
+      'Providencia: ' + action,
+      'Situacao: ' + String(feedback.status || '').replace(/_/g, ' ') + '.',
+      'Motivo: ' + feedback.reason,
+      'Registro: ' + feedback.eventId + '.'
+    ].join('\n');
+  }
+
+  async function runGovernedDajAnalysis(card, loaded){
+    var code = card.getAttribute('data-ai-code') || 'DAJ';
+    var focus = card.getAttribute('data-ai-focus') || 'DAJ governado';
+    var requestLabel = 'Solicitada analise governada de ' + loaded.item.id + '.';
+    var room = createGovernedDajAnalysisRoom(card, loaded.item);
+    var route = governedDajAnalysisRoute(loaded.item);
+    markDajHandoffConsumed();
+    renderDajAnalysisLoading(card, loaded.item.id);
+    try {
+      var apiPayload = await askCharlieApiPayload('jurista', code, focus, loaded.prompt, room, route);
+      var answer = enforceCriticalAnswerGuards(apiPayload.answer, loaded.prompt, route);
+      if(isMisdirectedDajAnalysis(answer)){
+        var correctionRoute = Object.assign({}, route, { retryCorrection:true });
+        var corrected = await askCharlieApiPayload(
+          'jurista',
+          code,
+          focus,
+          loaded.prompt + '\n\nA resposta anterior foi descartada porque desviou para pesquisa de partes. Analise exclusivamente os fatos e documentos deste DAJ.',
+          null,
+          correctionRoute
+        );
+        answer = enforceCriticalAnswerGuards(corrected.answer, loaded.prompt, correctionRoute);
+      }
+      if(!answer || isMisdirectedDajAnalysis(answer)) throw new Error('resposta_daj_incompativel_com_a_rota');
+      var feedbackText = '';
+      var workflow = null;
+      try {
+        workflow = await registerDajAnalysisWorkflow(loaded.item, room, answer);
+        feedbackText = formatDajWorkflowFeedback(workflow);
+      } catch(workflowError) {
+        feedbackText = 'Feedback do fluxo DAJ\nA analise foi concluida, mas o registro e o encaminhamento nao puderam ser confirmados no backend. Nenhum envio foi presumido. Tente reenviar este DAJ para uma nova analise.';
+      }
+      saveDajAnalysisRoomResult(code, room.id, requestLabel, answer, feedbackText, workflow);
+      renderChatWindow(card, code, focus);
+    } catch(error) {
+      var failure = 'Nao conclui a analise de ' + loaded.item.id + ' porque a API nao entregou uma resposta compativel com a rota DAJ. Nenhum resultado ou encaminhamento foi registrado. Detalhe: ' + (error && error.message ? String(error.message).slice(0, 180) : 'falha sem detalhe') + '.';
+      saveDajAnalysisRoomResult(code, room.id, requestLabel, failure, 'Feedback do fluxo DAJ\nSituacao: analise nao concluida; DAJ nao reencaminhado.', null);
+      renderChatWindow(card, code, focus);
+    }
   }
 
   function showDajLoadFailure(card, message){
@@ -4453,9 +4612,10 @@ window.jus9DemoLogin = function(form){
     var input = card.querySelector('[data-ai-chat-input]');
     var form = card.querySelector('[data-ai-chat-form]');
     if(!input || !form) return;
+    var loadedDaj = null;
     if(dajId){
       try {
-        prompt = await loadGovernedDajAnalysisPrompt(dajId);
+        loadedDaj = await loadGovernedDajAnalysisPrompt(dajId);
       } catch(err) {
         var loginHint = err && err.status === 401
           ? ' Entre com Google e abra novamente o DAJ pela lista oficial.'
@@ -4464,10 +4624,15 @@ window.jus9DemoLogin = function(form){
         return;
       }
     }
-    input.value = String(prompt || '').slice(0, 6000);
     if(location.hash === '#chat-ia') {
       try { card.scrollIntoView({ behavior:'smooth', block:'start' }); } catch(err) {}
     }
+    if(loadedDaj && params.get('autorun') === '1') {
+      await runGovernedDajAnalysis(card, loadedDaj);
+      return;
+    }
+    if(loadedDaj) return;
+    input.value = String(prompt || '').slice(0, 6000);
     if(params.get('autorun') === '1') {
       form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
     }

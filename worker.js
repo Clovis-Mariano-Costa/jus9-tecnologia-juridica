@@ -169,6 +169,14 @@ export default {
       return handleDajsReadiness(request, env);
     }
 
+    if (originalUrl.pathname === "/api/dajs/review") {
+      return handleDajReview(request, env);
+    }
+
+    if (originalUrl.pathname === "/api/dajs/inbox") {
+      return handleDajWorkflowInbox(request, env);
+    }
+
     if (originalUrl.pathname === "/api/dajs") {
       return handleDajs(request, env);
     }
@@ -1065,6 +1073,12 @@ async function handleDajsReadiness(request, env) {
     policy: "cpf_request_only_hmac_at_rest",
     processRequiredAtIntake: false,
     persistenceReceipt: true,
+    analysisWorkflow: {
+      isolatedRoomRequired: true,
+      feedbackRequired: true,
+      profileInbox: true,
+      automaticSupervisionForIntern: true
+    },
     homologationCleanup: {
       enabled: true,
       testRecordsOnly: true,
@@ -1292,6 +1306,58 @@ async function handleDajs(request, env) {
   return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET, POST, DELETE" });
 }
 
+async function handleDajReview(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  const session = await getSession(request, env);
+  if (!session) return jsonResponse({ authenticated: false }, 401, corsHeaders);
+  if (!hasPermission(session, "dajs:read")) {
+    return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "dajs:read" }, 403, corsHeaders);
+  }
+  if (!env.JUS9_DAJ_PROCESS_LINKS) {
+    return jsonResponse({ ok: false, error: "daj_registry_configuracao_pendente" }, 501, corsHeaders);
+  }
+  if (request.method !== "POST") {
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "POST" });
+  }
+  const contentLength = Number(request.headers.get("content-length") || 0);
+  if (contentLength > 40_000) {
+    return jsonResponse({ ok: false, error: "payload_muito_grande" }, 413, corsHeaders);
+  }
+  const payload = await request.json().catch(() => null);
+  if (payload && new TextEncoder().encode(JSON.stringify(payload)).byteLength > 40_000) {
+    return jsonResponse({ ok: false, error: "payload_muito_grande" }, 413, corsHeaders);
+  }
+  const result = await registerDajAnalysisFeedback(env, session, payload);
+  return jsonResponse({ authenticated: true, profile: session.profile, ...result.payload }, result.status, {
+    ...corsHeaders,
+    "Cache-Control": "no-store"
+  });
+}
+
+async function handleDajWorkflowInbox(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  const session = await getSession(request, env);
+  if (!session) return jsonResponse({ authenticated: false }, 401, corsHeaders);
+  if (!hasPermission(session, "dajs:read")) {
+    return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "dajs:read" }, 403, corsHeaders);
+  }
+  if (!env.JUS9_DAJ_PROCESS_LINKS) {
+    return jsonResponse({ ok: false, error: "daj_registry_configuracao_pendente" }, 501, corsHeaders);
+  }
+  if (request.method !== "GET") {
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET" });
+  }
+  const items = await readDajWorkflowInbox(env, session.profile);
+  return jsonResponse({
+    ok: true,
+    authenticated: true,
+    profile: session.profile,
+    source: "daj-workflow-profile-inbox",
+    total: items.length,
+    items
+  }, 200, { ...corsHeaders, "Cache-Control": "no-store" });
+}
+
 function handleLogout(request) {
   const corsHeaders = getAuthCorsHeaders(request);
   const url = new URL(request.url);
@@ -1368,6 +1434,8 @@ function isAuthCorsPath(pathname) {
     pathname === "/api/tribunais/datajud/status" ||
     pathname === "/api/tribunais/datajud/search" ||
     pathname === "/api/dajs/readiness" ||
+    pathname === "/api/dajs/review" ||
+    pathname === "/api/dajs/inbox" ||
     pathname === "/api/dajs" ||
     pathname === "/api/daj-process-links/readiness" ||
     pathname === "/api/daj-process-links" ||
@@ -2106,6 +2174,7 @@ async function saveDajRecord(env, session, request, payload) {
     environment,
     createdAt: previous?.createdAt || now,
     updatedAt: now,
+    createdByProfile: previous?.createdByProfile || previousDetail?.createdByProfile || previous?.updatedByProfile || session.profile,
     updatedByProfile: session.profile,
     updatedByEmailHash: session.emailHash || "",
     origin: normalizeOriginHint(request.headers.get("origin") || request.headers.get("referer") || "")
@@ -2128,6 +2197,7 @@ async function saveDajRecord(env, session, request, payload) {
     creationIdempotencyStorageKey: previousDetail?.creationIdempotencyStorageKey || idempotencyStorageKey,
     createdAt: previousDetail?.createdAt || now,
     updatedAt: now,
+    createdByProfile: previousDetail?.createdByProfile || previous?.createdByProfile || previous?.updatedByProfile || session.profile,
     updatedByProfile: session.profile,
     updatedByEmailHash: session.emailHash || ""
   };
@@ -2179,6 +2249,237 @@ function dajPersistenceReceipt(record, idempotentReplay, detailWritten) {
     verifiedAt: record?.updatedAt || new Date().toISOString(),
     idempotentReplay: Boolean(idempotentReplay)
   };
+}
+
+async function registerDajAnalysisFeedback(env, session, payload) {
+  if (!payload || typeof payload !== "object") {
+    return { status: 400, payload: { ok: false, error: "payload_invalido" } };
+  }
+  const dajId = normalizeDajIdForLink(payload.dajId || payload.daj);
+  if (!/^DAJ-\d{4}-\d{4}$/.test(dajId)) {
+    return { status: 400, payload: { ok: false, error: "daj_invalido" } };
+  }
+  const items = await readDajProcessLinkIndex(env);
+  const index = items.findIndex((item) => item.id === dajId);
+  if (index < 0) {
+    return { status: 404, payload: { ok: false, error: "daj_nao_encontrado", dajId } };
+  }
+  const record = items[index];
+  const detail = await readDajRecordDetail(env, dajId);
+  if (!detail) {
+    return { status: 409, payload: { ok: false, error: "detalhe_daj_indisponivel", dajId } };
+  }
+  const analysisResult = sanitizeDajAnalysisResult(payload.analysisResult || payload.result, 12_000);
+  if (analysisResult.length < 40) {
+    return { status: 400, payload: { ok: false, error: "resultado_analise_obrigatorio" } };
+  }
+  const roomId = sanitizeToken(payload.analysisRoomId || payload.roomId, 120);
+  if (!roomId) {
+    return { status: 400, payload: { ok: false, error: "sala_analise_obrigatoria" } };
+  }
+  const now = new Date().toISOString();
+  const eventId = crypto.randomUUID();
+  const authorProfile = normalizeDajWorkflowProfile(
+    detail.createdByProfile || record.createdByProfile || record.updatedByProfile || "advogado"
+  );
+  const riskLevel = sanitizeToken(payload.riskLevel, 20) === "high" ? "high" : "normal";
+  const decision = decideDajReviewDestination(authorProfile, detail, record, riskLevel);
+  const resultSummary = summarizeDajAnalysisResult(analysisResult);
+  const event = {
+    eventId,
+    dajId,
+    kind: decision.action === "reencaminhar" ? "review_assignment" : "review_feedback",
+    analysisRoomId: roomId,
+    analysisRoute: "daj_analise_governada",
+    authorProfile,
+    reviewedByProfile: session.profile,
+    destinationProfile: decision.destinationProfile,
+    action: decision.action,
+    status: decision.status,
+    reason: decision.reason,
+    resultSummary,
+    createdAt: now
+  };
+  const previousHistory = Array.isArray(detail.analysisHistory) ? detail.analysisHistory : [];
+  const updatedDetail = {
+    ...detail,
+    createdByProfile: authorProfile,
+    updatedAt: now,
+    analysisHistory: [{ ...event, analysisResult }, ...previousHistory].slice(0, 20),
+    workflow: {
+      status: decision.status,
+      lastAction: decision.action,
+      destinationProfile: decision.destinationProfile,
+      reason: decision.reason,
+      lastEventId: eventId,
+      lastAnalysisRoomId: roomId,
+      lastAnalysisAt: now
+    }
+  };
+  record.createdByProfile = record.createdByProfile || authorProfile;
+  record.updatedAt = now;
+  items[index] = record;
+  await env.JUS9_DAJ_PROCESS_LINKS.put(dajRecordDetailKey(dajId), JSON.stringify(updatedDetail));
+  await env.JUS9_DAJ_PROCESS_LINKS.put("daj-process-links:index", JSON.stringify(items.slice(0, 500)));
+  await appendDajWorkflowInbox(env, decision.destinationProfile, event);
+  if (authorProfile !== decision.destinationProfile) {
+    await appendDajWorkflowInbox(env, authorProfile, { ...event, kind: "review_feedback" });
+  }
+  await appendDajProcessLinkAudit(env, session, {
+    action: "registra_analise_e_encaminhamento_daj",
+    eventId,
+    dajId,
+    analysisRoomId: roomId,
+    authorProfile,
+    destinationProfile: decision.destinationProfile,
+    workflowAction: decision.action,
+    workflowStatus: decision.status,
+    riskLevel
+  });
+  return {
+    status: 201,
+    payload: {
+      ok: true,
+      dajId,
+      feedback: {
+        eventId,
+        resultSummary,
+        action: decision.action,
+        status: decision.status,
+        destinationProfile: decision.destinationProfile,
+        destinationLabel: dajWorkflowProfileLabel(decision.destinationProfile),
+        reason: decision.reason,
+        recordedAt: now
+      }
+    }
+  };
+}
+
+function normalizeDajWorkflowProfile(value) {
+  const profile = sanitizeToken(value, 48);
+  const allowed = new Set([
+    "admin_sistema", "advogado_lider", "advogado", "assessor_chefe", "assessor",
+    "secretaria", "estagio", "escritorio"
+  ]);
+  return allowed.has(profile) ? profile : "advogado";
+}
+
+function decideDajReviewDestination(authorProfile, detail, record, riskLevel) {
+  const urgency = normalizeComparableText(detail.urgency || "");
+  const attention = normalizeComparableText(detail.attentionReason || "");
+  const secrecy = normalizeComparableText(detail.secrecyLevel || "");
+  const highRisk = riskLevel === "high" || /urgente|critica|imediata|prazo fatal/.test(`${urgency} ${attention}`);
+  const strictSecrecy = /maximo|segredo de justica|ultrassecreto/.test(secrecy);
+  if (highRisk) {
+    return {
+      action: authorProfile === "advogado_lider" ? "devolver" : "reencaminhar",
+      status: authorProfile === "advogado_lider" ? "analise_devolvida" : "aguardando_revisao_prioritaria",
+      destinationProfile: "advogado_lider",
+      reason: "Urgencia ou risco elevado exige revisao juridica prioritaria."
+    };
+  }
+  if (authorProfile === "estagio") {
+    return {
+      action: "reencaminhar",
+      status: "aguardando_revisao_supervisionada",
+      destinationProfile: strictSecrecy || record.classification === "JURIDICO_SIGILOSO" ? "advogado" : "assessor",
+      reason: "DAJ de estagio exige supervisao antes de qualquer uso juridico."
+    };
+  }
+  if (authorProfile === "assessor" || authorProfile === "assessor_chefe") {
+    return {
+      action: "reencaminhar",
+      status: "aguardando_revisao_juridica",
+      destinationProfile: authorProfile === "assessor_chefe" ? "advogado_lider" : "advogado",
+      reason: "Analise preparada pela assessoria requer retorno ao advogado responsavel."
+    };
+  }
+  if (authorProfile === "secretaria" || authorProfile === "escritorio") {
+    return {
+      action: "reencaminhar",
+      status: "aguardando_triagem_juridica",
+      destinationProfile: authorProfile === "secretaria" ? "assessor" : "advogado",
+      reason: "Origem administrativa requer triagem por perfil juridico."
+    };
+  }
+  return {
+    action: "devolver",
+    status: "analise_devolvida",
+    destinationProfile: authorProfile,
+    reason: "Analise concluida e devolvida ao perfil de autoria com resultado registrado."
+  };
+}
+
+function summarizeDajAnalysisResult(value) {
+  return String(value || "").replace(/\s+/g, " ").trim().slice(0, 1_200);
+}
+
+function sanitizeDajAnalysisResult(value, maxLength) {
+  return String(value || "")
+    .replace(/\r\n?/g, "\n")
+    .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, " ")
+    .replace(/[<>]/g, "")
+    .trim()
+    .slice(0, maxLength);
+}
+
+function dajWorkflowProfileLabel(profile) {
+  const labels = {
+    admin_sistema: "administrador do sistema",
+    advogado_lider: "advogado lider",
+    advogado: "advogado",
+    assessor_chefe: "assessor chefe",
+    assessor: "assessor",
+    secretaria: "secretaria",
+    estagio: "estagio",
+    escritorio: "escritorio juridico"
+  };
+  return labels[profile] || "advogado";
+}
+
+function dajWorkflowInboxKey(profile) {
+  return `daj-workflow:inbox:v1:${normalizeDajWorkflowProfile(profile)}`;
+}
+
+async function readDajWorkflowInbox(env, profile) {
+  const current = await env.JUS9_DAJ_PROCESS_LINKS.get(dajWorkflowInboxKey(profile), "json").catch(() => null);
+  return Array.isArray(current) ? current.slice(0, 200) : [];
+}
+
+async function appendDajWorkflowInbox(env, profile, event) {
+  const items = await readDajWorkflowInbox(env, profile);
+  const publicEvent = {
+    eventId: event.eventId,
+    dajId: event.dajId,
+    kind: event.kind,
+    analysisRoomId: event.analysisRoomId,
+    authorProfile: event.authorProfile,
+    reviewedByProfile: event.reviewedByProfile,
+    destinationProfile: event.destinationProfile,
+    action: event.action,
+    status: event.status,
+    reason: event.reason,
+    resultSummary: event.resultSummary,
+    createdAt: event.createdAt
+  };
+  await env.JUS9_DAJ_PROCESS_LINKS.put(
+    dajWorkflowInboxKey(profile),
+    JSON.stringify([publicEvent, ...items.filter((item) => item.eventId !== publicEvent.eventId)].slice(0, 200))
+  );
+}
+
+async function removeDajFromWorkflowInboxes(env, dajId) {
+  const profiles = [
+    "admin_sistema", "advogado_lider", "advogado", "assessor_chefe", "assessor",
+    "secretaria", "estagio", "escritorio"
+  ];
+  await Promise.all(profiles.map(async (profile) => {
+    const items = await readDajWorkflowInbox(env, profile);
+    const filtered = items.filter((item) => item.dajId !== dajId);
+    if (filtered.length !== items.length) {
+      await env.JUS9_DAJ_PROCESS_LINKS.put(dajWorkflowInboxKey(profile), JSON.stringify(filtered));
+    }
+  }));
 }
 
 async function deleteDajTestRecord(env, session, request, url, payload) {
@@ -2258,6 +2559,7 @@ async function deleteDajTestRecord(env, session, request, url, payload) {
     "daj-process-links:index",
     JSON.stringify(items.filter((entry) => entry.id !== dajId).slice(0, 500))
   );
+  await removeDajFromWorkflowInboxes(env, dajId);
   await env.JUS9_DAJ_PROCESS_LINKS.delete(dajRecordDetailKey(dajId));
   await appendDajProcessLinkAudit(env, session, {
     action: "exclui_cadastro_daj_homologacao",
@@ -2370,7 +2672,20 @@ function publicDajRegistryItem(item, detail = null) {
       caseSummary: detail.caseSummary || "",
       documentsMentioned: detail.documentsMentioned || "",
       attachmentsPendingCount: Number(detail.attachmentsPendingCount || 0)
-    }
+    },
+    authorship: {
+      createdByProfile: normalizeDajWorkflowProfile(detail.createdByProfile || item.createdByProfile || item.updatedByProfile),
+      updatedByProfile: normalizeDajWorkflowProfile(detail.updatedByProfile || item.updatedByProfile)
+    },
+    workflow: detail.workflow ? {
+      status: detail.workflow.status || "",
+      lastAction: detail.workflow.lastAction || "",
+      destinationProfile: normalizeDajWorkflowProfile(detail.workflow.destinationProfile),
+      reason: detail.workflow.reason || "",
+      lastEventId: detail.workflow.lastEventId || "",
+      lastAnalysisRoomId: detail.workflow.lastAnalysisRoomId || "",
+      lastAnalysisAt: detail.workflow.lastAnalysisAt || ""
+    } : null
   };
 }
 

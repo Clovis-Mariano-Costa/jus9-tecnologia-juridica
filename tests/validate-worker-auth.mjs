@@ -79,6 +79,12 @@ assert(response.status === 200 && data.permissions.includes("dajs:write"), "advo
 assert(data.permissions.includes("drive:write"), "advogado sem drive:write governado");
 console.log("AUTH_OK advogado=dajs:write");
 
+response = await request("/api/auth/permissions", { headers: { cookie: await cookieFor("estagio") } });
+data = await response.json();
+assert(response.status === 200 && data.permissions.includes("dajs:write"), "estagio deve poder redigir DAJ sob supervisao automatica");
+assert(!data.permissions.includes("audit:write") && !data.permissions.includes("processes:read"), "estagio nao deve receber poderes de auditoria ou processo");
+console.log("AUTH_OK estagio=dajs:write-supervisionado");
+
 response = await request("/api/auth/permissions", { headers: { cookie: await cookieFor("empresa") } });
 data = await response.json();
 assert(response.status === 200 && data.permissions.includes("documents:read"), "empresa sem documents:read");
@@ -1014,6 +1020,122 @@ assert(response.status === 200 && data.idempotentReplay === true && data.item.id
 assert(data.persistence?.stored === true && data.persistence?.dajId === intakeDajId && data.persistence?.idempotentReplay === true, "replay deveria devolver comprovante do mesmo DAJ");
 assert(JSON.parse(await dajProcessLinksEnv.JUS9_DAJ_PROCESS_LINKS.get("daj-process-links:index")).length === 1, "repeticao idempotente nao deve duplicar DAJ");
 console.log("AUTH_OK daj-registry-idempotent-replay=200");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/dajs/review", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ dajId: intakeDajId, analysisRoomId: "daj-analysis-anonima", analysisResult: "Resultado ficticio suficientemente longo para teste." })
+  }),
+  dajProcessLinksEnv
+);
+assert(response.status === 401, "analise DAJ anonima deve ser bloqueada");
+console.log("AUTH_OK daj-review-anonymous=401");
+
+const lawyerAnalysisResult = "Analise ficticia concluida: fatos organizados, documentos pendentes e retorno humano recomendado sem inventar prazo.";
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/dajs/review", {
+    method: "POST",
+    headers: { "content-type": "application/json", cookie: await cookieFor("advogado") },
+    body: JSON.stringify({
+      dajId: intakeDajId,
+      analysisRoomId: "daj-analysis-lawyer-0001",
+      analysisResult: lawyerAnalysisResult,
+      riskLevel: "normal"
+    })
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 201 && data.feedback?.action === "devolver", "analise do advogado deveria retornar ao perfil de autoria");
+assert(data.feedback?.destinationProfile === "advogado" && data.feedback?.resultSummary.includes("Analise ficticia concluida"), "feedback deveria conter destino e resultado");
+const lawyerReviewEventId = data.feedback.eventId;
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/dajs/inbox", { headers: { cookie: await cookieFor("advogado") } }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.items.some((item) => item.eventId === lawyerReviewEventId), "caixa do advogado deveria receber feedback da analise");
+const reviewedDetail = JSON.parse(await dajProcessLinksEnv.JUS9_DAJ_PROCESS_LINKS.get(`daj-record:v1:${intakeDajId}`));
+assert(reviewedDetail.workflow?.status === "analise_devolvida" && reviewedDetail.analysisHistory?.[0]?.analysisResult === lawyerAnalysisResult, "detalhe DAJ deveria preservar resultado e estado do fluxo");
+console.log("AUTH_OK daj-review-feedback-return=201/200");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/dajs", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      cookie: await cookieFor("estagio"),
+      "idempotency-key": "daj-intern-supervised-0001"
+    },
+    body: JSON.stringify({
+      partyName: "Parte Estagio Ficticia",
+      area: "Ambiental",
+      urgency: "Normal",
+      secrecyLevel: "Comum",
+      caseSummary: "Relato ambiental inteiramente ficticio para testar supervisao.",
+      testMode: true,
+      environment: "homologacao"
+    })
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 201 && data.item.authorship?.createdByProfile === "estagio", "DAJ do estagio deveria registrar autoria supervisionada");
+const internDajId = data.item.id;
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/dajs/review", {
+    method: "POST",
+    headers: { "content-type": "application/json", cookie: await cookieFor("estagio") },
+    body: JSON.stringify({
+      dajId: internDajId,
+      analysisRoomId: "daj-analysis-intern-0001",
+      analysisResult: "Resultado ficticio do DAJ ambiental: faltam circunstancias, especie, documentos e revisao humana.",
+      riskLevel: "normal"
+    })
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 201 && data.feedback?.action === "reencaminhar", "DAJ de estagio deveria ser reencaminhado");
+assert(data.feedback?.destinationProfile === "assessor" && data.feedback?.status === "aguardando_revisao_supervisionada", "DAJ comum de estagio deveria chegar ao assessor");
+const internReviewEventId = data.feedback.eventId;
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/dajs/inbox", { headers: { cookie: await cookieFor("assessor") } }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.items.some((item) => item.eventId === internReviewEventId && item.kind === "review_assignment"), "assessor deveria receber a revisao do estagio");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/dajs/inbox", { headers: { cookie: await cookieFor("estagio") } }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.items.some((item) => item.eventId === internReviewEventId && item.kind === "review_feedback"), "estagio deveria receber feedback do reencaminhamento");
+console.log("AUTH_OK daj-review-intern-supervision=201/200");
+
+response = await worker.fetch(
+  new Request(`https://jus9.invalid/api/dajs?dajId=${encodeURIComponent(internDajId)}`, {
+    method: "DELETE",
+    headers: { "content-type": "application/json", cookie: await cookieFor("advogado") },
+    body: JSON.stringify({
+      reason: "Limpeza do DAJ ficticio usado no teste de supervisao.",
+      confirmation: `EXCLUIR TESTE ${internDajId}`
+    })
+  }),
+  dajProcessLinksEnv
+);
+assert(response.status === 200, "DAJ ficticio do estagio deveria ser limpo apos o teste");
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/dajs/inbox", { headers: { cookie: await cookieFor("assessor") } }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 200 && !data.items.some((item) => item.dajId === internDajId), "limpeza ficticia deve retirar resumo das caixas de encaminhamento");
 
 response = await worker.fetch(
   new Request("https://jus9.invalid/api/dajs", {

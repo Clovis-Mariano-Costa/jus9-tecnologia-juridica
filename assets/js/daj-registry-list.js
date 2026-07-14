@@ -6,6 +6,8 @@
 
   var statusBox = document.querySelector('[data-daj-registry-status]');
   var loginLink = document.querySelector('[data-daj-registry-login]');
+  var inbox = document.querySelector('[data-daj-workflow-inbox]');
+  var inboxStatus = document.querySelector('[data-daj-inbox-status]');
   var requestedDajId = String(new URL(window.location.href).searchParams.get('dajId') || '').toUpperCase();
 
   function setStatus(message, state) {
@@ -27,6 +29,12 @@
     link.href = href;
     link.textContent = label;
     parent.appendChild(link);
+  }
+
+  function setInboxStatus(message, state) {
+    if (!inboxStatus) return;
+    inboxStatus.textContent = message;
+    inboxStatus.dataset.state = state || 'info';
   }
 
   function formatDate(value) {
@@ -113,8 +121,58 @@
     }
   }
 
+  function renderInboxItem(item) {
+    if (!inbox) return;
+    var row = document.createElement('article');
+    row.className = 'daj-row';
+    var head = document.createElement('div');
+    head.className = 'daj-row-head';
+    var identity = document.createElement('div');
+    appendText(identity, 'h3', item.dajId + ' - ' + (item.kind === 'review_assignment' ? 'Revisao recebida' : 'Feedback da analise'));
+    appendText(identity, 'p', 'Registrado: ' + formatDate(item.createdAt));
+    head.appendChild(identity);
+    appendText(head, 'span', String(item.status || '').replace(/_/g, ' '), 'badge secret');
+    row.appendChild(head);
+    appendText(row, 'p', item.resultSummary || 'Resultado sem resumo disponivel.');
+    appendText(row, 'p', 'Motivo: ' + (item.reason || 'encaminhamento governado'), 'fine-note');
+    var actions = document.createElement('div');
+    actions.className = 'link-actions';
+    appendLink(actions, 'Abrir DAJ', 'app-atendimento-inicial.html?dajId=' + encodeURIComponent(item.dajId));
+    appendLink(actions, 'Analisar em nova sala', 'app-ia-profissional.html?dajId=' + encodeURIComponent(item.dajId) + '&autorun=1#chat-ia');
+    row.appendChild(actions);
+    inbox.appendChild(row);
+  }
+
+  async function loadWorkflowInbox() {
+    if (!inbox) return;
+    setInboxStatus('Lendo feedbacks e encaminhamentos do perfil...', 'loading');
+    try {
+      var response = await fetch('/api/dajs/inbox', {
+        credentials: 'include',
+        cache: 'no-store'
+      });
+      var data = await response.json().catch(function () { return {}; });
+      if (response.status === 401) {
+        setInboxStatus('Entre com Google para consultar os encaminhamentos do seu perfil.', 'error');
+        return;
+      }
+      if (!response.ok || !data.ok || !Array.isArray(data.items)) {
+        setInboxStatus('Nao foi possivel confirmar os encaminhamentos agora.', 'error');
+        return;
+      }
+      inbox.textContent = '';
+      data.items.forEach(renderInboxItem);
+      setInboxStatus(data.items.length
+        ? data.items.length + (data.items.length === 1 ? ' encaminhamento encontrado.' : ' encaminhamentos encontrados.')
+        : 'Nenhum encaminhamento pendente para este perfil.', 'success');
+    } catch (_) {
+      setInboxStatus('Falha de comunicacao com a caixa de encaminhamentos.', 'error');
+    }
+  }
+
   if (loginLink) {
     loginLink.href = '/auth/google/start?return_to=' + encodeURIComponent(window.location.pathname + window.location.search);
   }
   loadRegistry();
+  loadWorkflowInbox();
 })();

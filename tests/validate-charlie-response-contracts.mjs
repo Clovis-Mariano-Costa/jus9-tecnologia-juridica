@@ -118,8 +118,14 @@ assertIncludes(processPage, "cada DAJ corresponde a um unico processo", "vinculo
 assertIncludes(processPage, "bloqueio_daj_ja_vinculado", "vinculo DAJ-processo");
 assertIncludes(processPage, "bloqueio_processo_ja_vinculado", "vinculo DAJ-processo");
 assertIncludes(intakePage, "data-charlie-exclude", "atendimento DAJ exclui campos sensiveis da analise");
-assertIncludes(script, "Identidade, CPF e contato da parte foram omitidos deste prompt por minimizacao", "analise DAJ minimiza identidade e contato");
+assertIncludes(script, "Dados de identificacao e contato da parte foram omitidos deste contexto por minimizacao", "analise DAJ minimiza identidade e contato");
 assertIncludes(script, "loadGovernedDajAnalysisPrompt", "analise DAJ rele o cadastro oficial");
+assertIncludes(script, "createGovernedDajAnalysisRoom", "analise DAJ cria sala independente");
+assertIncludes(script, "daj_analise_governada", "analise DAJ usa rota fixa");
+assertIncludes(script, "useRoomMemory:false", "analise DAJ nao herda memoria da sala anterior");
+assertIncludes(script, "isMisdirectedDajAnalysis", "analise DAJ recusa desvio para pesquisa de partes");
+assertIncludes(script, "registerDajAnalysisWorkflow", "analise DAJ registra feedback e encaminhamento");
+assertIncludes(script, "Feedback do fluxo DAJ", "analise DAJ sempre apresenta feedback");
 assertIncludes(intakeScript, "form.dataset.savedDajId", "analise DAJ usa identificador realmente salvo");
 assertIncludes(intakeScript, "fetch('/api/dajs'", "atendimento DAJ usa cadastro governado");
 assertIncludes(intakeScript, "app-ia-profissional.html?dajId=", "handoff DAJ envia somente identificador governado");
