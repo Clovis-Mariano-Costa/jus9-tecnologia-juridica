@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.13.0 - 2026-07-14
+
+- Seis telas do DAJ recebem layout clean isolado e menu lateral padronizado.
+- Perfis e acessos passam a listar os 19 papeis reconhecidos, oito deles ligados ao DAJ.
+- Painel remove metricas e processos ficticios apresentados como dados operacionais.
+- Pesquisa processual remove atalhos redundantes e abre o DAJ realmente vinculado.
+- Funcionalidades de backend, Charlie, feedback e encaminhamento permanecem preservadas.
+
 ## 1.12.0 - 2026-07-14
 
 - Analise do DAJ passa a usar sala nova, rota fixa e nenhuma memoria da sala anterior.
