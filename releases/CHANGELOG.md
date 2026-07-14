@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.12.0 - 2026-07-14
+
+- Analise do DAJ passa a usar sala nova, rota fixa e nenhuma memoria da sala anterior.
+- Resultado completo fica no historico governado e o autor recebe feedback obrigatorio.
+- Backend devolve ou reencaminha por perfil, risco, urgencia e sigilo.
+- Estagio pode criar DAJ, mas a analise segue para supervisao de assessor ou advogado.
+- Cadastro ganha caixa de encaminhamentos por perfil.
+
 ## 1.11.0 - 2026-07-14
 
 - Salvamento DAJ passa a devolver comprovante de indice e detalhe persistidos.
