@@ -64,7 +64,7 @@ assert(sharedScript.includes("socialResponsibilityFallback"), "fallback tematico
 assert(sharedScript.includes("initPriorityWorkflow"), "fluxos aprofundados compartilhados ausentes");
 assert(sharedScript.includes("initGuidedPrompts"), "perguntas guiadas compartilhadas ausentes");
 assert(sharedScript.includes("initTeamMenuLink"), "menu compartilhado de equipe ausente");
-assert(sharedScript.includes("initTeamPage"), "pagina compartilhada de equipe ausente");
+assert(!sharedScript.includes("initTeamPage") && !sharedScript.includes("jus9MvpTeamMembersV1") && !sharedScript.includes("jus9MvpTeamAuditV1"), "fluxo local legado de equipe ainda presente");
 assert(sharedScript.includes("/api/attachments/extract"), "extrator backend governado de anexos ausente");
 assert(sharedScript.includes("canReadUploadAsDocx"), "leitura DOCX governada ausente");
 assert(sharedScript.includes("docx_backend_xml"), "modo DOCX backend ausente");
@@ -198,7 +198,7 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v36-2026-07-14-modular-team-directory"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("jus9-pwa-v37-2026-07-14-team-local-cleanup"), "cache PWA principal desatualizado");
 assert(canonicalServiceWorker.includes("/assets/js/daj-intake.js"), "cache PWA sem cliente do cadastro DAJ");
 assert(canonicalServiceWorker.includes("/assets/js/daj-registry-list.js"), "cache PWA sem lista oficial de DAJs");
 assert(canonicalServiceWorker.includes("/assets/js/governed-team-directory.js"), "cache PWA sem diretorio governado da equipe");
