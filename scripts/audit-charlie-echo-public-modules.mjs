@@ -60,8 +60,12 @@ for (const pattern of ["pdfSafeText", "pdfLiteral", "Baixar PDF", "Abrir no Driv
 
 const intakeResponse = await fetch(`${baseUrl}/app-atendimento-inicial.html?audit=charlie-intake-${Date.now()}`);
 const intake = await intakeResponse.text();
-for (const pattern of ["data-daj-intake-form", "data-send-daj-analysis", "Enviar DAJ para analise da Charlie Echo", expectedScript, "daj-clean-ui.css?v=20260714-daj-clean-ui-v1"]) {
+for (const pattern of ["data-daj-intake-form", "data-send-daj-analysis", "Enviar DAJ para analise da Charlie Echo", expectedScript]) {
   if (!intake.includes(pattern)) failures.push(`app-atendimento-inicial.html: ausente ${pattern}`);
+}
+const acceptedDajStyles = ["daj-clean-ui.css?v=20260714-daj-clean-ui-v1", "daj-clean-ui.css?v=20260714-team-directory-v1"];
+if (!acceptedDajStyles.some((pattern) => intake.includes(pattern))) {
+  failures.push("app-atendimento-inicial.html: camada clean DAJ versionada ausente");
 }
 
 const styleResponse = await fetch(`${baseUrl}/style.css?audit=charlie-style-${Date.now()}`);

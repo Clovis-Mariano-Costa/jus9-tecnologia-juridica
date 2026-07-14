@@ -38,6 +38,7 @@ for (const profile of catalog.profiles) {
 
 const sharedScript = await fs.readFile(new URL("../script.js", import.meta.url), "utf8");
 const teamPage = await fs.readFile(new URL("../app-equipe.html", import.meta.url), "utf8");
+const teamDirectoryScript = await fs.readFile(new URL("../assets/js/governed-team-directory.js", import.meta.url), "utf8");
 const processPage = await fs.readFile(new URL("../app-processos.html", import.meta.url), "utf8");
 const intakePage = await fs.readFile(new URL("../app-atendimento-inicial.html", import.meta.url), "utf8");
 const intakeScript = await fs.readFile(new URL("../assets/js/daj-intake.js", import.meta.url), "utf8");
@@ -90,10 +91,13 @@ assert(sharedScript.includes("createGovernedDajAnalysisRoom") && sharedScript.in
 assert(sharedScript.includes("registerDajAnalysisWorkflow") && sharedScript.includes("/api/dajs/review"), "analise DAJ sem feedback e encaminhamento backend");
 assert(sharedScript.includes("isMisdirectedDajAnalysis") && sharedScript.includes("resposta_daj_incompativel_com_a_rota"), "analise DAJ sem guarda contra desvio para pesquisa de partes");
 assert(!sharedScript.includes("jus9DajInitialAttendanceDraftV1") && !sharedScript.includes("dajDraft"), "handoff para Charlie ainda transporta rascunho local");
-assert(sharedScript.includes("jus9MvpTeamMembersV1"), "persistencia local de equipe ausente");
-assert(sharedScript.includes("jus9MvpTeamAuditV1"), "auditoria local de equipe ausente");
-assert(teamPage.includes("data-team-page"), "pagina compartilhada de equipe sem raiz");
-assert(teamPage.includes("data-team-form"), "pagina compartilhada de equipe sem formulario");
+assert(teamPage.includes("data-governed-team-directory"), "diretorio governado de equipe sem raiz");
+assert(teamPage.includes("data-team-request-form"), "diretorio de equipe sem formulario de solicitacao");
+assert(teamPage.includes("data-team-members") && teamPage.includes("data-team-requests") && teamPage.includes("data-team-audit"), "diretorio de equipe sem paineis operacionais");
+assert(teamPage.includes("governed-team-directory.js?v=20260714-team-directory-v1"), "diretorio de equipe sem cliente versionado");
+assert(teamDirectoryScript.includes("/api/governed-profiles") && teamDirectoryScript.includes("/api/profile-requests"), "diretorio nao usa APIs governadas");
+assert(teamDirectoryScript.includes("/api/profile-requests/action") && teamDirectoryScript.includes("/api/profile-requests/audit"), "diretorio sem revisao e auditoria governadas");
+assert(teamDirectoryScript.includes("textContent") && !teamDirectoryScript.includes("innerHTML"), "diretorio deve renderizar dados sem HTML dinamico");
 assert(processPage.includes('id="process-search-type"'), "pagina de processos sem seletor de tipo de pesquisa");
 assert(processPage.includes('<option value="daj">DAJ</option>'), "pagina de processos sem busca por DAJ");
 assert(processPage.includes('<option value="nome">Nome da parte</option>'), "pagina de processos sem busca por nome");
@@ -148,14 +152,14 @@ for (const profile of ["admin_sistema", "advogado_lider", "advogado", "assessor_
 }
 assert(dajProfilesPage.includes("O perfil vem do login governado") && dajProfilesPage.includes("nao pode ser escolhido livremente"), "pagina de perfis nao explica a governanca do login");
 assert(dajDashboardPage.includes("Painel de trabalho") && !dajDashboardPage.includes("processos ativos"), "painel DAJ ainda usa metricas demonstrativas como dados operacionais");
-for (const page of [dajDashboardPage, intakePage, dajRegistryPage, processPage, dajProfilesPage, dajAiPage]) {
-  assert(page.includes("daj-workspace-shell") && page.includes("daj-clean-ui.css?v=20260714-daj-clean-ui-v1"), "pagina do modelo DAJ sem layout clean isolado");
+for (const page of [dajDashboardPage, intakePage, dajRegistryPage, processPage, dajProfilesPage, dajAiPage, teamPage]) {
+  assert(page.includes("daj-workspace-shell") && page.includes("daj-clean-ui.css?v=20260714-team-directory-v1"), "pagina do modelo DAJ sem layout clean isolado");
   assert(!page.includes("links-semanticos-jus9") && !page.includes("font-size:42px"), "pagina do modelo DAJ ainda contem faixa ou titulo visual redundante");
-  for (const target of ["app-demo-advogar.html", "app-atendimento-inicial.html", "app-clientes.html", "app-processos.html", "app-agenda.html", "app-prazos.html", "app-documentos.html", "app-cofre.html", "app-workspace.html", "app-ia-profissional.html", "app-perfis.html", "mvp.html"]) {
+  for (const target of ["app-demo-advogar.html", "app-atendimento-inicial.html", "app-clientes.html", "app-processos.html", "app-agenda.html", "app-prazos.html", "app-documentos.html", "app-cofre.html", "app-workspace.html", "app-ia-profissional.html", "app-equipe.html", "mvp.html"]) {
     assert(page.includes(`href="${target}"`), `menu DAJ incompleto: ${target}`);
   }
 }
-assert(dajCleanStyle.includes(".daj-workspace-shell") && dajCleanStyle.includes(".daj-role-grid"), "estilo clean DAJ incompleto");
+assert(dajCleanStyle.includes(".daj-workspace-shell") && dajCleanStyle.includes(".daj-role-grid") && dajCleanStyle.includes(".team-directory-grid"), "estilo clean DAJ incompleto");
 assert(!processPage.includes("data-tribunal=") && processPage.includes("DataJud Wiki"), "pagina de processos ainda duplica a selecao de tribunais em botoes");
 assert(processPage.includes("app-atendimento-inicial.html?dajId=") && processPage.includes("app-ia-profissional.html?dajId="), "painel processual nao abre o DAJ realmente vinculado");
 assert(wranglerConfig.includes('"binding": "JUS9_DAJ_PROCESS_LINKS"'), "wrangler sem KV oficial DAJ-processo");
@@ -183,11 +187,13 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v34-2026-07-14-daj-clean-ui"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("jus9-pwa-v35-2026-07-14-team-directory"), "cache PWA principal desatualizado");
 assert(canonicalServiceWorker.includes("/assets/js/daj-intake.js"), "cache PWA sem cliente do cadastro DAJ");
 assert(canonicalServiceWorker.includes("/assets/js/daj-registry-list.js"), "cache PWA sem lista oficial de DAJs");
+assert(canonicalServiceWorker.includes("/assets/js/governed-team-directory.js"), "cache PWA sem diretorio governado da equipe");
 assert(distSyncScript.includes("assets\\js\\daj-intake.js"), "sincronizacao de deploy nao inclui cliente do cadastro DAJ");
 assert(distSyncScript.includes("assets\\js\\daj-registry-list.js"), "sincronizacao de deploy nao inclui lista oficial de DAJs");
+assert(distSyncScript.includes("assets\\js\\governed-team-directory.js"), "sincronizacao de deploy nao inclui diretorio governado da equipe");
 assert(canonicalServiceWorker.includes("caches.match('/offline.html')"), "fallback de arquivos estaticos do worker principal incorreto");
 
 for (const code of expectedCodes) {
@@ -263,8 +269,8 @@ for (const page of workspacePages) {
 
 console.log("STATIC_OK chat-compartilhado-14-mvps");
 console.log("STATIC_OK fluxos-aprofundados-14-mvps");
-console.log("STATIC_OK equipe-local-14-mvps");
-console.log("STATIC_OK cache-bust-equipe-14-mvps");
+console.log("STATIC_OK equipe-governada-daj");
+console.log("STATIC_OK cache-bust-diretorio-equipe-daj");
 console.log("STATIC_OK redes-sociais-workspace-13-paginas-ia");
 console.log("STATIC_OK card-instalacao-jus9-verde");
 console.log("STATIC_OK service-worker-principal-canonico");

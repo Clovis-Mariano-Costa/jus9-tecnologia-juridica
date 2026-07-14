@@ -48,6 +48,46 @@ import {
 
 const CHARLIE_API_URL = "https://charlieecho.jus9tecnologia.com.br/api/ia";
 const CHARLIE_PROXY_MAX_BODY_BYTES = 300_000;
+const PROFILE_DIRECTORY_MODULES = Object.freeze({
+  DAJ: ["admin_sistema", "advogado_lider", "advogado", "assessor_chefe", "assessor", "secretaria", "estagio", "escritorio"],
+  DAA: ["admin_sistema", "academia"],
+  DEJ: ["admin_sistema", "estudante", "academia"],
+  DIC: ["admin_sistema", "cidadao"],
+  DPJ: ["admin_sistema", "perito"],
+  DIP: ["admin_sistema", "parceiro"],
+  DEE: ["admin_sistema", "escritorio", "advogado_lider", "advogado", "assessor_chefe", "assessor", "secretaria", "estagio"],
+  DEJI: ["admin_sistema", "empresa"],
+  DOI: ["admin_sistema", "orgao_publico"],
+  DGE: ["admin_sistema"],
+  DMG: ["admin_sistema", "magistrado", "assessor_chefe", "assessor", "secretaria", "estagio"],
+  DMP: ["admin_sistema", "ministerio_publico", "assessor_chefe", "assessor", "secretaria", "estagio"],
+  DAP: ["admin_sistema", "autoridade_policial", "assessor", "secretaria", "estagio"],
+  DED: ["admin_sistema", "autor_editor"]
+});
+const PROFILE_DIRECTORY_ACCESS = Object.freeze({
+  advogado_lider: ["DAJ", "DEE"],
+  advogado: ["DAJ", "DEE"],
+  assessor_chefe: ["DAJ", "DEE", "DMG", "DMP"],
+  assessor: ["DAJ", "DEE", "DMG", "DMP", "DAP"],
+  secretaria: ["DAJ", "DEE", "DMG", "DMP", "DAP"],
+  estagio: ["DAJ", "DEE", "DMG", "DMP", "DAP"],
+  academia: ["DAA", "DEJ"],
+  estudante: ["DEJ"],
+  cidadao: ["DIC"],
+  perito: ["DPJ"],
+  parceiro: ["DIP"],
+  escritorio: ["DAJ", "DEE"],
+  empresa: ["DEJI"],
+  orgao_publico: ["DOI"],
+  magistrado: ["DMG"],
+  ministerio_publico: ["DMP"],
+  autoridade_policial: ["DAP"],
+  autor_editor: ["DED"]
+});
+const PROFILE_DIRECTORY_MANAGERS = Object.freeze({
+  advogado_lider: ["DAJ", "DEE"],
+  assessor_chefe: ["DAJ", "DEE"]
+});
 
 export default {
   async fetch(request, env) {
@@ -621,18 +661,27 @@ async function handleProfileRequests(request, env) {
   }
 
   if (request.method === "POST") {
-    if (!hasPermission(session, "auth:read")) {
-      return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "auth:read" }, 403, corsHeaders);
+    if (!hasPermission(session, "profiles:request")) {
+      return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "profiles:request" }, 403, corsHeaders);
     }
     const result = await saveProfileRequest(env, session, request, await request.json().catch(() => null));
     return jsonResponse(result.payload, result.status, corsHeaders);
   }
 
   if (request.method === "GET") {
-    if (!hasPermission(session, "audit:write")) {
-      return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "audit:write" }, 403, corsHeaders);
+    const moduleCode = profileDirectoryModuleFromRequest(request);
+    const canManage = hasPermission(session, "profiles:manage");
+    if (canManage && !canManageProfileModule(session, moduleCode)) {
+      return jsonResponse({ ok: false, error: "modulo_sem_permissao", module: moduleCode || "todos" }, 403, corsHeaders);
     }
-    const result = await listProfileRequests(env);
+    if (!canManage && !hasPermission(session, "profiles:request")) {
+      return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "profiles:request" }, 403, corsHeaders);
+    }
+    const result = await listProfileRequests(env, {
+      moduleCode,
+      requesterEmailHash: canManage ? "" : session.emailHash,
+      canManage
+    });
     return jsonResponse(result.payload, result.status, corsHeaders);
   }
 
@@ -649,8 +698,8 @@ async function handleProfileRequestAction(request, env) {
   if (request.method !== "POST") {
     return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "POST" });
   }
-  if (!hasPermission(session, "audit:write")) {
-    return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "audit:write" }, 403, corsHeaders);
+  if (!hasPermission(session, "profiles:manage")) {
+    return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "profiles:manage" }, 403, corsHeaders);
   }
   const result = await updateProfileRequestStatus(env, session, request, await request.json().catch(() => null));
   return jsonResponse(result.payload, result.status, corsHeaders);
@@ -666,11 +715,16 @@ async function handleProfileRequestAudit(request, env) {
   if (request.method !== "GET") {
     return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET" });
   }
-  if (!hasPermission(session, "audit:write")) {
-    return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "audit:write" }, 403, corsHeaders);
+  if (!hasPermission(session, "profiles:manage")) {
+    return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "profiles:manage" }, 403, corsHeaders);
+  }
+  const moduleCode = profileDirectoryModuleFromRequest(request);
+  if (!canManageProfileModule(session, moduleCode)) {
+    return jsonResponse({ ok: false, error: "modulo_sem_permissao", module: moduleCode || "todos" }, 403, corsHeaders);
   }
   const items = await env.JUS9_PROFILE_REQUESTS.get("profile-requests:audit", "json").catch(() => null);
-  return jsonResponse({ ok: true, items: Array.isArray(items) ? items : [] }, 200, corsHeaders);
+  const filtered = (Array.isArray(items) ? items : []).filter((item) => !moduleCode || item.module === moduleCode);
+  return jsonResponse({ ok: true, module: moduleCode || "todos", items: filtered }, 200, corsHeaders);
 }
 
 async function handleGovernedProfiles(request, env) {
@@ -683,11 +737,18 @@ async function handleGovernedProfiles(request, env) {
   if (request.method !== "GET") {
     return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET" });
   }
-  if (!hasPermission(session, "audit:write")) {
-    return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "audit:write" }, 403, corsHeaders);
+  if (!hasPermission(session, "profiles:read")) {
+    return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "profiles:read" }, 403, corsHeaders);
   }
-  const items = await listGovernedProfiles(env);
-  return jsonResponse({ ok: true, items }, 200, corsHeaders);
+  const moduleCode = profileDirectoryModuleFromRequest(request);
+  if (!moduleCode || !canReadProfileModule(session, moduleCode)) {
+    return jsonResponse({ ok: false, error: "modulo_sem_permissao", module: moduleCode || "ausente" }, 403, corsHeaders);
+  }
+  const canManage = hasPermission(session, "profiles:manage") && canManageProfileModule(session, moduleCode);
+  const items = (await listGovernedProfiles(env))
+    .filter((item) => item.module === moduleCode)
+    .map((item) => publicGovernedProfile(item, canManage));
+  return jsonResponse({ ok: true, module: moduleCode, canManage, items }, 200, corsHeaders);
 }
 
 async function handleCharlieMemory(request, env) {
@@ -1465,6 +1526,42 @@ function hasPermission(session, permission) {
   return getPermissions(session?.profile).includes(permission);
 }
 
+function profileDirectoryModuleFromRequest(request) {
+  const code = normalizeModuleCode(new URL(request.url).searchParams.get("module"));
+  return PROFILE_DIRECTORY_MODULES[code] ? code : "";
+}
+
+function isProfileAllowedForModule(profile, moduleCode) {
+  return Boolean(PROFILE_DIRECTORY_MODULES[moduleCode]?.includes(profile));
+}
+
+function canReadProfileModule(session, moduleCode) {
+  if (!moduleCode || !PROFILE_DIRECTORY_MODULES[moduleCode]) return false;
+  if (session?.profile === "admin_sistema") return true;
+  return Boolean(PROFILE_DIRECTORY_ACCESS[session?.profile]?.includes(moduleCode));
+}
+
+function canManageProfileModule(session, moduleCode) {
+  if (session?.profile === "admin_sistema") return !moduleCode || Boolean(PROFILE_DIRECTORY_MODULES[moduleCode]);
+  if (!moduleCode) return false;
+  return Boolean(PROFILE_DIRECTORY_MANAGERS[session?.profile]?.includes(moduleCode));
+}
+
+function publicGovernedProfile(item, includeEmail) {
+  return {
+    sourceRequestId: item.sourceRequestId || "",
+    status: item.status || "",
+    scope: item.scope || "",
+    name: item.name || "",
+    email: includeEmail ? item.email || "" : "",
+    profile: item.profile || "",
+    module: item.module || "",
+    roleDetail: item.roleDetail || "",
+    approvedAt: item.approvedAt || "",
+    updatedAt: item.updatedAt || ""
+  };
+}
+
 function safeJsonParse(value) {
   try {
     return JSON.parse(String(value || ""));
@@ -1766,16 +1863,27 @@ async function saveProfileRequest(env, session, request, payload) {
   const scope = sanitizeToken(payload.scope, 32) || "equipe";
   const name = sanitizeText(payload.name, 120);
   const email = sanitizeEmail(payload.email);
-  const profile = sanitizeText(payload.profile, 80);
-  const module = sanitizeText(payload.module, 80);
+  const profile = sanitizeToken(payload.profile, 80);
+  const module = normalizeModuleCode(payload.module);
   const notes = sanitizeText(payload.notes, 900);
   const imagePolicy = sanitizeText(payload.imagePolicy, 80) || "sem_imagem";
   const roleDetail = sanitizeText(payload.roleDetail, 120);
   const ageGroup = sanitizeText(payload.ageGroup, 80) || "nao_informado";
   const professionalDocumentStatus = sanitizeText(payload.professionalDocumentStatus, 80) || "nao_informado";
   const responsibleReview = sanitizeText(payload.responsibleReview, 120);
-  if (!name || !email || !profile) {
-    return { status: 400, payload: { ok: false, error: "campos_obrigatorios", required: ["name", "email", "profile"] } };
+  if (!name || !email || !profile || !module) {
+    return { status: 400, payload: { ok: false, error: "campos_obrigatorios", required: ["name", "email", "profile", "module"] } };
+  }
+  if (!isKnownAuthProfile(profile) || !isProfileAllowedForModule(profile, module)) {
+    return { status: 400, payload: { ok: false, error: "perfil_incompativel_com_modulo", profile, module } };
+  }
+  const requestedEmailHash = await sha256Base64url(email);
+  const canManageRequestedModule = hasPermission(session, "profiles:manage") && canManageProfileModule(session, module);
+  if (!canManageRequestedModule && requestedEmailHash !== session.emailHash) {
+    return { status: 403, payload: { ok: false, error: "solicitacao_de_terceiro_exige_gestor" } };
+  }
+  if (profile === "admin_sistema" && session.profile !== "admin_sistema") {
+    return { status: 403, payload: { ok: false, error: "perfil_administrador_exige_administrador" } };
   }
 
   const now = new Date().toISOString();
@@ -1820,6 +1928,7 @@ async function saveProfileRequest(env, session, request, payload) {
     imagePolicy,
     origin,
     requesterProfile: session.profile,
+    requesterEmailHash: session.emailHash,
     createdAt: now
   });
   return {
@@ -1842,9 +1951,26 @@ async function appendProfileRequestIndex(env, item) {
   await env.JUS9_PROFILE_REQUESTS.put(key, JSON.stringify(items.slice(0, 200)));
 }
 
-async function listProfileRequests(env) {
+async function listProfileRequests(env, options = {}) {
   const items = await env.JUS9_PROFILE_REQUESTS.get("profile-requests:index", "json").catch(() => null);
-  return { status: 200, payload: { ok: true, items: Array.isArray(items) ? items : [] } };
+  const filtered = (Array.isArray(items) ? items : []).filter((item) => {
+    if (options.requesterEmailHash && item.requesterEmailHash !== options.requesterEmailHash) return false;
+    if (options.moduleCode && item.module !== options.moduleCode) return false;
+    return true;
+  });
+  const visible = filtered.map((item) => options.canManage ? item : {
+    id: item.id,
+    status: item.status,
+    scope: item.scope,
+    name: item.name,
+    email: item.email,
+    profile: item.profile,
+    module: item.module,
+    roleDetail: item.roleDetail,
+    createdAt: item.createdAt,
+    reviewedAt: item.reviewedAt || ""
+  });
+  return { status: 200, payload: { ok: true, module: options.moduleCode || "todos", canManage: Boolean(options.canManage), items: visible } };
 }
 
 async function updateProfileRequestStatus(env, session, request, payload) {
@@ -1867,6 +1993,12 @@ async function updateProfileRequestStatus(env, session, request, payload) {
   const record = await env.JUS9_PROFILE_REQUESTS.get(id, "json").catch(() => null);
   if (!record || record.id !== id) {
     return { status: 404, payload: { ok: false, error: "solicitacao_nao_encontrada" } };
+  }
+  if (!canManageProfileModule(session, record.module)) {
+    return { status: 403, payload: { ok: false, error: "modulo_sem_permissao", module: record.module || "ausente" } };
+  }
+  if (record.profile === "admin_sistema" && session.profile !== "admin_sistema") {
+    return { status: 403, payload: { ok: false, error: "perfil_administrador_exige_administrador" } };
   }
 
   const now = new Date().toISOString();
@@ -1899,7 +2031,14 @@ async function updateProfileRequestStatus(env, session, request, payload) {
     reviewedAt: now,
     reviewedByProfile: session.profile
   });
-  await appendProfileRequestAudit(env, { id, name: record.name, email: record.email, ...auditItem });
+  await appendProfileRequestAudit(env, {
+    id,
+    name: record.name,
+    email: record.email,
+    profile: record.profile,
+    module: record.module,
+    ...auditItem
+  });
   if (nextStatus === "aprovada_revisao_humana") {
     await upsertGovernedProfile(env, updated, auditItem);
   } else {

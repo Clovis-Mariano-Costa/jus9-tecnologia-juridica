@@ -423,7 +423,27 @@ response = await worker.fetch(
   new Request("https://jus9.invalid/api/profile-requests", {
     method: "POST",
     headers: {
-      cookie: await cookieFor("assessor", Date.now() + 60_000, "assessor@jus9tecnologia.com.br"),
+      cookie: await cookieFor("assessor", Date.now() + 60_000, "pessoa@jus9tecnologia.com.br"),
+      "content-type": "application/json"
+    },
+    body: JSON.stringify({
+      scope: "equipe",
+      name: "Outra Pessoa",
+      email: "outra@jus9tecnologia.com.br",
+      profile: "assessor",
+      module: "DAJ"
+    })
+  }),
+  calendarEnv
+);
+assert(response.status === 403, "perfil sem gestao nao deve solicitar acesso para terceiro");
+console.log("AUTH_OK profile-request-third-party-blocked=403");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/profile-requests", {
+    method: "POST",
+    headers: {
+      cookie: await cookieFor("assessor", Date.now() + 60_000, "pessoa@jus9tecnologia.com.br"),
       "content-type": "application/json",
       origin: "https://equipe.jus9tecnologia.com.br"
     },
@@ -431,8 +451,8 @@ response = await worker.fetch(
       scope: "equipe",
       name: "Pessoa Teste <script>",
       email: "Pessoa@Jus9Tecnologia.com.br",
-      profile: "Assessor",
-      module: "Equipe",
+      profile: "assessor",
+      module: "DAJ",
       notes: "Solicitacao governada"
     })
   }),
@@ -447,7 +467,7 @@ response = await worker.fetch(
   new Request("https://jus9.invalid/api/profile-requests/action", {
     method: "POST",
     headers: {
-      cookie: await cookieFor("assessor", Date.now() + 60_000, "assessor@jus9tecnologia.com.br"),
+      cookie: await cookieFor("assessor", Date.now() + 60_000, "pessoa@jus9tecnologia.com.br"),
       "content-type": "application/json"
     },
     body: JSON.stringify({ id: profileRequestId, action: "aprovar" })
@@ -466,7 +486,7 @@ console.log("AUTH_OK profile-request-audit-anonymous=401");
 
 response = await worker.fetch(
   new Request("https://jus9.invalid/api/profile-requests/audit", {
-    headers: { cookie: await cookieFor("assessor", Date.now() + 60_000, "assessor@jus9tecnologia.com.br") }
+    headers: { cookie: await cookieFor("assessor", Date.now() + 60_000, "pessoa@jus9tecnologia.com.br") }
   }),
   calendarEnv
 );
@@ -482,7 +502,7 @@ console.log("AUTH_OK governed-profiles-anonymous=401");
 
 response = await worker.fetch(
   new Request("https://jus9.invalid/api/governed-profiles", {
-    headers: { cookie: await cookieFor("assessor", Date.now() + 60_000, "assessor@jus9tecnologia.com.br") }
+    headers: { cookie: await cookieFor("assessor", Date.now() + 60_000, "pessoa@jus9tecnologia.com.br") }
   }),
   calendarEnv
 );
@@ -517,7 +537,7 @@ assert(data.items[0].status === "aprovada_revisao_humana", "auditoria deveria re
 console.log("AUTH_OK profile-request-audit-admin=200");
 
 response = await worker.fetch(
-  new Request("https://jus9.invalid/api/governed-profiles", {
+  new Request("https://jus9.invalid/api/governed-profiles?module=DAJ", {
     headers: { cookie: await cookieFor("admin_sistema", Date.now() + 60_000, "clovis@jus9tecnologia.com.br") }
   }),
   calendarEnv
@@ -527,6 +547,26 @@ assert(response.status === 200 && Array.isArray(data.items) && data.items.length
 assert(data.items[0].sourceRequestId === profileRequestId, "perfil governado deveria apontar para solicitacao aprovada");
 assert(data.items[0].email === "pessoa@jus9tecnologia.com.br", "perfil governado deveria manter e-mail normalizado");
 console.log("AUTH_OK governed-profiles-admin=200");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/governed-profiles?module=DAJ", {
+    headers: { cookie: await cookieFor("assessor", Date.now() + 60_000, "pessoa@jus9tecnologia.com.br") }
+  }),
+  calendarEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.canManage === false && data.items.length === 1, "membro do DAJ deveria ler o diretorio do proprio modulo");
+assert(data.items[0].email === "", "leitor sem gestao nao deve receber e-mail do diretorio");
+console.log("AUTH_OK governed-profiles-daj-reader=200-redacted");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/profile-requests?module=DGE", {
+    headers: { cookie: await cookieFor("advogado_lider", Date.now() + 60_000, "lider@jus9tecnologia.com.br") }
+  }),
+  calendarEnv
+);
+assert(response.status === 403, "gestor do DAJ nao deve administrar outro modulo");
+console.log("AUTH_OK profile-manager-cross-module=403");
 
 const governedContextEnv = {
   ...calendarEnv,
@@ -540,17 +580,19 @@ response = await worker.fetch(
 );
 data = await response.json();
 assert(response.status === 200 && data.identity?.user?.governedProfile?.sourceRequestId === profileRequestId, "contexto deveria carregar perfil governado aprovado");
-assert(data.identity.user.governedProfile.profile === "Assessor", "contexto deveria preservar perfil aprovado");
+assert(data.identity.user.governedProfile.profile === "assessor", "contexto deveria preservar perfil aprovado");
 console.log("AUTH_OK context=governed_profile");
 
 response = await worker.fetch(
   new Request("https://jus9.invalid/api/profile-requests", {
-    headers: { cookie: await cookieFor("assessor", Date.now() + 60_000, "assessor@jus9tecnologia.com.br") }
+    headers: { cookie: await cookieFor("assessor", Date.now() + 60_000, "pessoa@jus9tecnologia.com.br") }
   }),
   calendarEnv
 );
-assert(response.status === 403, "assessor nao deve listar solicitacoes de perfil");
-console.log("AUTH_OK profile-request-list-assessor=403");
+data = await response.json();
+assert(response.status === 200 && data.canManage === false && data.items.length === 1, "assessor deveria listar apenas a propria solicitacao");
+assert(data.items[0].email === "pessoa@jus9tecnologia.com.br", "solicitante deveria ver o proprio e-mail");
+console.log("AUTH_OK profile-request-list-self=200");
 
 response = await worker.fetch(
   new Request("https://jus9.invalid/api/profile-requests", {

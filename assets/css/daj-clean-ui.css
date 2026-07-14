@@ -303,9 +303,110 @@
 .daj-workspace-shell .jus9-autoria-rodape{
   margin-top:0!important;
 }
+.team-directory-summary{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+.team-directory-summary .daj-card{
+  display:grid;
+  gap:4px;
+  padding:14px 16px;
+}
+.team-directory-summary strong{
+  color:var(--daj-clean-ink);
+  font-size:1.35rem;
+}
+.team-section-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:12px;
+}
+.team-directory-grid,
+.team-request-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+.team-directory-item,
+.team-request-item{
+  min-width:0;
+  border:1px solid var(--daj-clean-border);
+  border-radius:6px;
+  background:#fff;
+  padding:13px;
+}
+.team-directory-item h3,
+.team-request-item h3{
+  margin:0 0 5px;
+  color:var(--daj-clean-ink);
+  font-size:.98rem;
+}
+.team-directory-item p,
+.team-request-item p{
+  margin:3px 0;
+  overflow-wrap:anywhere;
+}
+.team-governed-form{
+  display:grid;
+  gap:11px;
+}
+.team-governed-form label,
+.team-review-controls label{
+  display:grid;
+  gap:5px;
+  color:#2a3545;
+  font-size:.88rem;
+  font-weight:700;
+}
+.team-governed-form input,
+.team-governed-form select,
+.team-governed-form textarea,
+.team-review-controls textarea{
+  width:100%;
+  border:1px solid #cfd6de;
+  border-radius:6px;
+  background:#fff;
+  padding:10px 11px;
+  color:var(--daj-clean-ink);
+  font:inherit;
+  font-weight:400;
+  box-shadow:none;
+}
+.team-governed-form textarea,
+.team-review-controls textarea{
+  resize:vertical;
+}
+.team-review-controls{
+  margin-top:10px;
+  border-top:1px solid var(--daj-clean-border);
+  padding-top:8px;
+}
+.team-review-controls summary{
+  color:#344155;
+  font-size:.86rem;
+  font-weight:800;
+  cursor:pointer;
+}
+.team-review-controls > div{
+  padding-top:10px;
+}
+.team-audit-row{
+  border-bottom:1px solid var(--daj-clean-border);
+  padding:8px 0;
+}
+.team-audit-row:last-child{
+  border-bottom:0;
+}
+.team-audit-row p{
+  margin:0;
+}
 @media(max-width:1120px){
   .daj-role-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .daj-workspace-shell .state-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .team-directory-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:860px){
   .daj-workspace-shell .demo-layout{display:block}
@@ -327,12 +428,16 @@
   .daj-workspace-shell .process-layout{grid-template-columns:minmax(0,1fr)}
   .daj-clean-context{align-items:flex-start;flex-direction:column}
   .daj-clean-context .link-actions{width:100%}
+  .team-section-head{display:block}
 }
 @media(max-width:620px){
   .daj-workspace-shell .demo-sidebar nav{grid-template-columns:repeat(2,minmax(0,1fr))}
   .daj-workspace-shell .demo-topbar{display:grid;align-items:start}
   .daj-workspace-shell .demo-topbar h1{font-size:1.65rem!important}
   .daj-role-grid,
+  .team-directory-summary,
+  .team-directory-grid,
+  .team-request-grid,
   .daj-workspace-shell .state-grid,
   .daj-workspace-shell .quick-links{grid-template-columns:minmax(0,1fr)}
   .daj-workspace-shell .permission-table{display:block;overflow-x:auto}

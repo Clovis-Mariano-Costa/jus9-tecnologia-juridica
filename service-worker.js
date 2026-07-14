@@ -4,7 +4,7 @@
   Não armazena dados sensíveis. Não altera login, backend ou rotas protegidas.
 */
 
-const JUS9_CACHE = 'jus9-pwa-v34-2026-07-14-daj-clean-ui';
+const JUS9_CACHE = 'jus9-pwa-v35-2026-07-14-team-directory';
 const JUS9_ASSETS = [
   '/',
   '/index.html',
@@ -20,6 +20,7 @@ const JUS9_ASSETS = [
   '/app-workspace-autor-editor.html',
   '/app-ia-profissional.html',
   '/app-perfis.html',
+  '/app-equipe.html',
   '/app-processos.html',
   '/app-agenda.html',
   '/app-clientes.html',
@@ -35,6 +36,7 @@ const JUS9_ASSETS = [
   '/assets/js/whatsapp-local-demo.js',
   '/assets/js/daj-intake.js',
   '/assets/js/daj-registry-list.js',
+  '/assets/js/governed-team-directory.js',
   '/assets/favicon.svg',
   '/assets/jus9-logo.svg',
   '/assets/clovis-founder-portrait.png',

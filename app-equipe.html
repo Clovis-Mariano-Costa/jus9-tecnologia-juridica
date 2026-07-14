@@ -1,78 +1,158 @@
+<!--
+Jus 9 Tecnologia Juridica
+Repositorio: jus9-tecnologia-juridica
+Software livre com autoria preservada.
+-->
 <!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow,noarchive">
-  <title>Equipe por MVP | Jus 9 Tecnologia Juridica</title>
-  <meta name="description" content="Cadastro local e demonstrativo de equipe por MVP da Jus 9 Tecnologia Juridica.">
+  <title>Equipe e acessos - Jus 9</title>
+  <meta name="description" content="Diretorio governado de usuarios, perfis e solicitacoes do DAJ.">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
+  <link rel="stylesheet" href="assets/css/daj-clean-ui.css?v=20260714-team-directory-v1">
   <meta name="theme-color" content="#07111f">
   <link rel="manifest" href="manifest.webmanifest">
 </head>
-<body class="demo-shell" data-team-page>
-<div class="jus9-autoria-topo" role="note" style="font-size:.82rem;line-height:1.4;text-align:center;padding:.45rem .75rem;background:rgba(15,23,42,.94);color:#f8fafc;letter-spacing:.01em;">Jus 9 Tecnologia Juridica - software livre, autoria preservada.</div>
-<div class="demo-layout">
-  <aside class="demo-sidebar">
-    <img src="assets/jus9-logo.svg" alt="Jus 9">
-    <nav>
-      <a data-team-panel-link href="mvp.html#demos-jus9">Painel do MVP</a>
-      <a class="active" href="#">Equipe</a>
-      <a data-team-profiles-link href="mvp.html#demos-jus9">Perfis</a>
-      <a href="mvp.html#demos-jus9">Sair do demo</a>
-    </nav>
-  </aside>
-  <main class="demo-main">
-    <section class="demo-topbar">
-      <div>
-        <div class="eyebrow">Equipe por MVP - <span data-team-code>...</span></div>
-        <h1 data-team-title style="font-size:42px;color:#0b1728;margin-top:8px">Carregando equipe demonstrativa...</h1>
-        <p data-team-subtitle style="color:#51627a;margin:8px 0 0">Carregando catalogo publico de perfis.</p>
-      </div>
-      <span class="badge secret">LOCAL - SEM DADOS REAIS</span>
-    </section>
+<body class="demo-shell daj-workspace-shell" data-governed-team-directory data-team-module="DAJ">
+  <div class="jus9-autoria-topo" role="note" aria-label="Autoria da producao" style="font-size:.82rem;line-height:1.4;text-align:center;padding:.45rem .75rem;background:rgba(15,23,42,.94);color:#f8fafc">
+    Jus 9 Tecnologia Juridica - software livre, autoria preservada.
+  </div>
 
-    <section class="demo-card team-warning">
-      <h2 style="color:#0b1728">Cadastro demonstrativo</h2>
-      <p>Esta tela organiza perfis do MVP escolhido. Ela nao cria conta real, permissao real ou acesso a servidor. Use somente nomes ficticios e e-mails terminados em <code>@jus9.invalid</code>.</p>
-    </section>
+  <div class="demo-layout">
+    <aside class="demo-sidebar">
+      <img src="assets/jus9-logo.svg" alt="Jus 9">
+      <nav aria-label="Navegacao do DAJ">
+        <a href="app-demo-advogar.html">Painel</a>
+        <a href="app-atendimento-inicial.html">Atendimento</a>
+        <a href="app-clientes.html">DAJs</a>
+        <a href="app-processos.html">Processos</a>
+        <a href="app-agenda.html">Agenda</a>
+        <a href="app-prazos.html">Prazos</a>
+        <a href="app-documentos.html">Documentos</a>
+        <a href="app-cofre.html">Cofre Juridico</a>
+        <a href="app-workspace.html">Workspace</a>
+        <a href="app-ia-profissional.html">Charlie Echo</a>
+        <a class="active" href="app-equipe.html">Equipe e acessos</a>
+        <a href="mvp.html">Sair do demo</a>
+      </nav>
+    </aside>
 
-    <section class="demo-grid-2 team-workbench">
-      <article class="demo-card">
-        <div class="eyebrow">Novo membro da equipe</div>
-        <h2 style="color:#0b1728">Cadastro local ficticio</h2>
-        <form class="team-form" data-team-form>
-          <input type="hidden" name="editing_id">
-          <label>Nome ficticio<input name="name" required placeholder="Ex.: Ana Demonstrativa"></label>
-          <label>Perfil do MVP<select name="profile" required></select></label>
-          <label>Area demonstrativa<input name="area" required placeholder="Ex.: Compliance demonstrativo"></label>
-          <label>E-mail ficticio<input name="email" required placeholder="ana@jus9.invalid"></label>
-          <div class="link-actions">
-            <button class="primary-action" type="submit" data-team-submit>Cadastrar membro ficticio</button>
-            <button type="button" data-team-reset>Limpar formulario</button>
+    <main class="demo-main">
+      <section class="demo-topbar">
+        <div>
+          <div class="eyebrow">Diretorio governado <span data-team-module-code>DAJ</span></div>
+          <h1>Equipe, perfis e solicitacoes</h1>
+          <p>Pessoas, papeis e revisoes ficam separados. Nenhum perfil sensivel e concedido apenas pelo preenchimento deste formulario.</p>
+        </div>
+        <span class="badge secret">Acesso por login</span>
+      </section>
+
+      <section class="daj-card daj-clean-context" aria-live="polite">
+        <div>
+          <strong data-team-auth>Verificando sessao...</strong>
+          <p>O diretorio usa o cadastro governado oficial da Jus 9.</p>
+        </div>
+        <div class="link-actions">
+          <a data-team-login href="/auth/google/start?return_to=%2Fapp-equipe.html">Entrar com Google</a>
+          <a href="app-perfis.html">Ver papeis possiveis</a>
+        </div>
+      </section>
+
+      <section class="team-directory-summary" aria-label="Resumo do diretorio">
+        <article class="daj-card">
+          <span class="eyebrow">Perfis aprovados</span>
+          <strong data-team-member-count>-</strong>
+        </article>
+        <article class="daj-card">
+          <span class="eyebrow">Solicitacoes visiveis</span>
+          <strong data-team-request-count>-</strong>
+        </article>
+        <article class="daj-card">
+          <span class="eyebrow">Modulo</span>
+          <strong>DAJ Advogados</strong>
+        </article>
+      </section>
+
+      <section class="process-layout">
+        <article class="daj-card">
+          <div class="team-section-head">
+            <div>
+              <div class="eyebrow">Diretorio oficial</div>
+              <h2>Pessoas com perfil aprovado</h2>
+            </div>
           </div>
-        </form>
-        <p class="fine-note" data-team-status>Carregando perfis...</p>
-      </article>
+          <div class="team-directory-grid" data-team-members>
+            <p class="fine-note">Carregando diretorio...</p>
+          </div>
+        </article>
 
-      <article class="demo-card">
-        <div class="eyebrow">Auditoria demonstrativa</div>
-        <h2 style="color:#0b1728">Eventos salvos neste navegador</h2>
-        <div data-team-audit></div>
-      </article>
-    </section>
+        <article class="daj-card" data-team-request-panel hidden>
+          <div class="eyebrow">Inclusao governada</div>
+          <h2 data-team-form-title>Solicitar perfil</h2>
+          <form class="team-governed-form" data-team-request-form>
+            <label>Nome
+              <input name="name" required maxlength="120" autocomplete="name" placeholder="Nome da pessoa">
+            </label>
+            <label>E-mail usado no login
+              <input name="email" required type="email" maxlength="180" autocomplete="email" placeholder="nome@exemplo.com">
+            </label>
+            <label>Perfil solicitado
+              <select name="profile" required></select>
+            </label>
+            <label>Funcao na equipe
+              <input name="roleDetail" maxlength="120" placeholder="Ex.: triagem, revisao, atendimento">
+            </label>
+            <label>Justificativa
+              <textarea name="notes" rows="4" maxlength="900" placeholder="Explique a necessidade de acesso, sem inserir dados de cliente ou segredo profissional."></textarea>
+            </label>
+            <button class="primary-action" type="submit">Enviar para revisao</button>
+          </form>
+          <p class="fine-note" data-team-status>O pedido nao altera permissoes automaticamente.</p>
+        </article>
+      </section>
 
-    <section class="demo-card">
-      <div class="eyebrow">Membros do MVP</div>
-      <h2 style="color:#0b1728">Equipe ficticia cadastrada</h2>
-      <div class="team-member-grid" data-team-list></div>
-    </section>
-  </main>
-</div>
-<footer class="jus9-autoria-rodape" role="contentinfo" style="font-size:.85rem;line-height:1.5;text-align:center;padding:1rem .75rem;margin-top:2rem;background:rgba(15,23,42,.96);color:#f8fafc;">Producao do site: Jus 9 Tecnologia Juridica. Software livre com autoria, origem e direitos autorais preservados.</footer>
-<script src="script.js?v=20260712-charlie-pesquisa-ativa-v1"></script>
-<script src="assets/js/pwa-install.js"></script>
+      <section class="daj-card">
+        <div class="team-section-head">
+          <div>
+            <div class="eyebrow">Fila de acesso</div>
+            <h2>Solicitacoes e decisoes</h2>
+          </div>
+          <span class="fine-note">Cada pessoa ve os proprios pedidos; gestores autorizados veem o modulo.</span>
+        </div>
+        <div class="team-request-grid" data-team-requests>
+          <p class="fine-note">Carregando solicitacoes...</p>
+        </div>
+      </section>
+
+      <details class="daj-operational-details" data-team-manager-only hidden>
+        <summary>Auditoria das revisoes de acesso</summary>
+        <div data-team-audit>
+          <p class="fine-note">Carregando auditoria...</p>
+        </div>
+      </details>
+
+      <details class="daj-operational-details">
+        <summary>Como o acesso funciona</summary>
+        <div>
+          <p><strong>Solicitacao:</strong> registra o pedido e a justificativa, sem liberar permissao.</p>
+          <p><strong>Revisao:</strong> somente gestor autorizado do modulo pode aprovar ou recusar.</p>
+          <p><strong>Login:</strong> a politica de autenticacao continua sendo a fonte efetiva das permissoes.</p>
+          <p><strong>Auditoria:</strong> decisao, perfil revisor, data e justificativa permanecem registrados.</p>
+        </div>
+      </details>
+    </main>
+  </div>
+
+  <script src="script.js?v=20260714-daj-isolated-review-v1"></script>
+  <script src="assets/js/governed-team-directory.js?v=20260714-team-directory-v1"></script>
+  <footer class="jus9-autoria-rodape" role="contentinfo" aria-label="Direitos autorais" style="font-size:.85rem;line-height:1.5;text-align:center;padding:1rem .75rem;background:rgba(15,23,42,.96);color:#f8fafc">
+    Producao do site: Jus 9 Tecnologia Juridica. Software livre com autoria, origem e direitos autorais preservados.
+  </footer>
+  <script src="assets/js/pwa-install.js"></script>
 </body>
 </html>
