@@ -42,8 +42,10 @@ hash: commit-6d78f9e
 ## Publicacao
 
 - Commit: `6d78f9e`.
+- Ajuste de entrada autenticada: commit `141ea6b`.
 - Deploy automatico: `c08ee2d7-72cd-4aa7-9ad8-625126bf8691`.
 - Worker verificado: `fc89e543-3bff-4a07-b5c4-b5749717ce48`.
+- Worker com entrada autenticada: `a3be4c19-8b64-4573-bd4e-7fb71ea65bce`.
 - Release viva: `governanca-1.9.0-daj-intake-index-1.0`.
 
 ## Rollback
