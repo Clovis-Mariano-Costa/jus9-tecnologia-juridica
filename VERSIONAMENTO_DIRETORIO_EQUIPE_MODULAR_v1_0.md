@@ -67,11 +67,18 @@ Os aliases `INV` e `ORG` continuam aceitos e sao normalizados para `DIP` e `DOI`
 
 ## Proximos pacotes
 
-1. Remover o bloco local de equipe que permanece inativo no `script.js` compartilhado.
-2. Fazer aceite visual autenticado em DAJ, DIC, DPJ, DEJI e DGE.
-3. Criar ativacao de acesso governada com revogacao verificavel, sem transformar aprovacao cadastral em privilegio silencioso.
-4. Integrar convite ou aviso interno com trilha, sem enviar segredo por e-mail.
-5. Consolidar painel administrativo transversal e relatorio de auditoria para parceiros.
+1. Fazer aceite visual autenticado em DAJ, DIC, DPJ, DEJI e DGE.
+2. Criar ativacao de acesso governada com revogacao verificavel, sem transformar aprovacao cadastral em privilegio silencioso.
+3. Integrar convite ou aviso interno com trilha, sem enviar segredo por e-mail.
+4. Consolidar painel administrativo transversal e relatorio de auditoria para parceiros.
+
+## Manutencao 1.15.1
+
+- O bloco local inativo foi removido de `script.js`.
+- Commit: `5fdf715`.
+- Worker: `3ea6e197-148f-4fac-b4ba-ca307e86c51e`.
+- Release: `governanca-1.15.1-team-local-cleanup-1.0`.
+- CI completa e smoke de producao aprovados.
 
 ## Rollback
 

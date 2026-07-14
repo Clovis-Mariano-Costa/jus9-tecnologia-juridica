@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.15.1 - 2026-07-14
+
+- Removido do script compartilhado o cadastro local ficticio de equipe.
+- Chaves `jus9MvpTeamMembersV1` e `jus9MvpTeamAuditV1` deixam de existir no portal.
+- Menu que encaminha os 14 MVPs ao diretorio governado permanece ativo.
+- Cache PWA renovado para descartar copias antigas.
+
 ## 1.15.0 - 2026-07-14
 
 - Diretorio governado de equipe passa a atender os 14 MVPs com configuracao independente.
