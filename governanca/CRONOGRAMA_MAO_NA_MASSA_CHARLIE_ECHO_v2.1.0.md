@@ -64,19 +64,19 @@ hash: nao-aplicavel-planejamento
 
 ## Pacote 5 - Auditoria e release
 
-- Release 1.8.0: fail-closed de nome/CPF, HMAC exato, rota deterministica e regressao anti-invencao.
+- Release 1.8.0: publicada em 2026-07-13 com fail-closed de nome/CPF, HMAC exato, rota deterministica e regressao anti-invencao.
 - Janela de observacao: 72 horas apos publicacao.
 - Criterio de rollback: qualquer minuta em resposta a consulta de partes, vazamento de CPF, mutacao por pesquisa ou falsa alegacao de consulta externa.
 
 ## Sequencia imediata
 
-1. Publicar a API Charlie com a trava de rota estruturada.
-2. Configurar `JUS9_DAJ_PII_INDEX_KEY` como segredo do Worker do portal.
-3. Publicar o portal e verificar health `ready`.
-4. Homologar nome e CPF com dados inteiramente ficticios e login autorizado.
-5. Reindexar registros reais somente em ambiente apropriado e por usuario autorizado.
-6. Aguardar a resposta oficial sobre o conector externo.
-7. Retomar a integracao externa apenas com evidencia documental e credenciais validas.
+1. Concluido: publicar a API Charlie com a trava de rota estruturada.
+2. Concluido: configurar `JUS9_DAJ_PII_INDEX_KEY` como segredo do Worker do portal.
+3. Concluido: publicar o portal e verificar health `ready`.
+4. Proximo aceite humano: homologar nome e CPF com dados inteiramente ficticios e login autorizado.
+5. Depois do aceite: reindexar registros reais somente em ambiente apropriado e por usuario autorizado.
+6. Em espera: aguardar a resposta oficial sobre o conector externo.
+7. Futuro condicionado: retomar a integracao externa apenas com evidencia documental e credenciais validas.
 
 ## Fontes oficiais da decisao
 
@@ -85,4 +85,3 @@ hash: nao-aplicavel-planejamento
 - PDPJ - Padroes de API: https://docs.pdpj.jus.br/desenvolvendo-para-a-pdpj/padroes-de-api/
 - PDPJ - Discovery e Gateway: https://docs.pdpj.jus.br/servicos-estruturantes/discovery-gateway/
 - CNJ - Consulta Nacional de Pessoas: https://www.cnj.jus.br/tecnologia-da-informacao-e-comunicacao/justica-4-0/consulta-nacional-de-pessoas/
-
