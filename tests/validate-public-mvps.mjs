@@ -39,12 +39,15 @@ for (const profile of catalog.profiles) {
 const sharedScript = await fs.readFile(new URL("../script.js", import.meta.url), "utf8");
 const teamPage = await fs.readFile(new URL("../app-equipe.html", import.meta.url), "utf8");
 const processPage = await fs.readFile(new URL("../app-processos.html", import.meta.url), "utf8");
+const intakePage = await fs.readFile(new URL("../app-atendimento-inicial.html", import.meta.url), "utf8");
+const intakeScript = await fs.readFile(new URL("../assets/js/daj-intake.js", import.meta.url), "utf8");
 const installPage = await fs.readFile(new URL("../instalar-app.html", import.meta.url), "utf8");
 const pwaInstallScript = await fs.readFile(new URL("../assets/js/pwa-install.js", import.meta.url), "utf8");
 const canonicalServiceWorker = await fs.readFile(new URL("../service-worker.js", import.meta.url), "utf8");
 const legacyServiceWorker = await fs.readFile(new URL("../sw.js", import.meta.url), "utf8");
 const wranglerConfig = await fs.readFile(new URL("../wrangler.jsonc", import.meta.url), "utf8");
 const workerSource = await fs.readFile(new URL("../worker.js", import.meta.url), "utf8");
+const distSyncScript = await fs.readFile(new URL("../scripts/Sync-PortalDist.ps1", import.meta.url), "utf8");
 assert(sharedScript.includes("/api/charlie/respond"), "chat compartilhado nao aponta para proxy governado da API");
 assert(sharedScript.includes("asksAboutCharlieModes"), "roteamento explicito de modos ausente");
 assert(sharedScript.includes("Protocolo Centelha Criativa 5.4"), "protocolo de criatividade governada ausente");
@@ -97,6 +100,16 @@ assert(processPage.includes("data-daj-link-list"), "pagina de processos sem indi
 assert(processPage.includes("Cada DAJ pode ficar vinculado a um unico processo"), "pagina de processos sem regra um DAJ um processo");
 assert(processPage.includes("Indice DAJ-processo"), "pagina de processos ainda apresenta indice apenas local");
 assert(processPage.includes("Entrar para usar a memoria oficial"), "pagina de processos sem acesso ao login da memoria oficial");
+assert(intakePage.includes("data-daj-intake-form"), "atendimento inicial sem formulario DAJ governado");
+assert(intakePage.includes('name="cpf"') && intakePage.includes('data-sensitive-field="cpf"'), "atendimento inicial sem CPF marcado como sensivel");
+assert(intakePage.includes("data-charlie-exclude"), "atendimento inicial nao exclui dados sensiveis do prompt da Charlie");
+assert(intakePage.includes("assets/js/daj-intake.js?v=20260713-daj-index-v1"), "atendimento inicial sem cliente versionado do cadastro DAJ");
+assert(!intakePage.includes("Demonstração: atendimento inicial salvo"), "atendimento inicial ainda finge salvamento por alerta");
+assert(intakeScript.includes("fetch('/api/dajs'"), "cliente do atendimento nao chama cadastro DAJ");
+assert(intakeScript.includes("credentials: 'include'"), "cadastro DAJ no frontend sem sessao autenticada");
+assert(intakeScript.includes("'Idempotency-Key'"), "cadastro DAJ no frontend sem idempotencia");
+assert(intakeScript.includes("cpfInput.value = ''"), "frontend nao limpa CPF integral depois de indexar");
+assert(!intakeScript.includes("localStorage"), "cliente do cadastro DAJ nao deve persistir atendimento no navegador");
 assert(wranglerConfig.includes('"binding": "JUS9_DAJ_PROCESS_LINKS"'), "wrangler sem KV oficial DAJ-processo");
 assert(wranglerConfig.includes('"binding": "JUS9_USER_MEMORY"'), "wrangler sem KV dedicado de memoria do usuario");
 assert(wranglerConfig.includes('"binding": "JUS9_DATAJUD_CACHE"'), "wrangler sem KV dedicado do DataJud");
@@ -104,6 +117,9 @@ assert(workerSource.includes('originalUrl.pathname === "/api/health"'), "worker 
 assert(workerSource.includes('originalUrl.pathname === "/api/judicial/datajud/readiness"'), "worker sem readiness canonico DataJud");
 assert(workerSource.includes('originalUrl.pathname === "/api/judicial/pdpj/readiness"'), "worker sem readiness PDPJ");
 assert(workerSource.includes('originalUrl.pathname === "/api/judicial/parties/search"'), "worker sem pesquisa estruturada de partes");
+assert(workerSource.includes('originalUrl.pathname === "/api/dajs"'), "worker sem cadastro DAJ autenticado");
+assert(workerSource.includes("idempotency_key_reutilizada_com_payload_diferente"), "worker sem protecao idempotente do cadastro DAJ");
+assert(workerSource.includes("daj-record:v1:"), "worker sem detalhe DAJ separado do indice pesquisavel");
 assert(workerSource.includes("cpfLookupHash"), "worker sem indice HMAC exato de CPF");
 assert(workerSource.includes('DED: ["Autor / Editor"'), "worker sem contexto canonico DED");
 assert(installPage.includes("install-app-green-card"), "card da Jus 9 Verde ausente na pagina de instalacao");
@@ -112,7 +128,9 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v28-2026-07-13-pesquisa-partes-fail-closed"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("jus9-pwa-v29-2026-07-13-daj-intake-index"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("/assets/js/daj-intake.js"), "cache PWA sem cliente do cadastro DAJ");
+assert(distSyncScript.includes("assets\\js\\daj-intake.js"), "sincronizacao de deploy nao inclui cliente do cadastro DAJ");
 assert(canonicalServiceWorker.includes("caches.match('/offline.html')"), "fallback de arquivos estaticos do worker principal incorreto");
 
 for (const code of expectedCodes) {

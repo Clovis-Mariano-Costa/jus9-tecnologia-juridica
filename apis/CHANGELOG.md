@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - APIs
 
+## 1.9.0 - 2026-07-13
+
+- Adicionadas rotas autenticadas `GET/POST /api/dajs` e `GET /api/dajs/readiness`.
+- Cadastro DAJ passa a alimentar o indice de nome e CPF HMAC antes do vinculo processual.
+- Criacao recebe idempotencia obrigatoria; detalhe sigiloso permanece separado do indice pesquisavel.
+- Vinculo posterior preserva identidade, HMAC e classificacao originados no atendimento.
+
 ## 1.3.0 - 2026-07-12
 
 - Adicionado contrato de backend governado com rotas, eventos, bloqueios e regras de Drive/memoria.

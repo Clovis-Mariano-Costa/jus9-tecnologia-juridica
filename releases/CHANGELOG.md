@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.9.0 - 2026-07-13
+
+- Atendimento inicial deixa de simular salvamento e cria DAJ autenticado no backend.
+- Nome e CPF exato passam a ser pesquisaveis antes de existir numero processual.
+- CPF integral nao e persistido; contato e relato ficam fora do indice de pesquisa.
+- Pacote 1B publicado somente em homologacao, com dados ficticios ate o aceite 1C.
+
 ## 1.8.0 - 2026-07-13
 
 - Pesquisa por nome/CPF separada da IA generativa e movida para endpoint autenticado somente leitura.

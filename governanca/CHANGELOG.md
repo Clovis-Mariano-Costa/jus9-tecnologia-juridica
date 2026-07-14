@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.9.0 - 2026-07-13
+
+- DAJ passa a ser a fonte operacional do indice interno de partes.
+- Criacao, atualizacao, idempotencia, separacao de detalhe e vinculo posterior receberam regressao automatizada.
+- Reindexacao real e replicacao continuam bloqueadas ate o aceite autenticado com dados ficticios.
+
 ## 1.8.0 - 2026-07-13
 
 - Consultas processuais estruturadas passam a obedecer a politica `no_llm_no_invented_results`.

@@ -816,6 +816,12 @@ assert(response.status === 200 && data.service === "daj-process-links", "readine
 assert(data.configured === false && data.storage === "JUS9_DAJ_PROCESS_LINKS", "readiness DAJ-processo deveria indicar KV pendente");
 console.log("AUTH_OK daj-process-links-readiness=200");
 
+response = await request("/api/dajs/readiness");
+data = await response.json();
+assert(response.status === 200 && data.service === "daj-registry", "readiness do cadastro DAJ deveria responder");
+assert(data.processRequiredAtIntake === false && data.policy === "cpf_request_only_hmac_at_rest", "readiness do cadastro DAJ perdeu politica do indice");
+console.log("AUTH_OK daj-registry-readiness=200");
+
 response = await request("/api/judicial/parties/readiness");
 data = await response.json();
 assert(response.status === 200 && data.policy === "no_llm_no_invented_results", "readiness de partes deveria declarar politica sem invencao");
@@ -846,6 +852,22 @@ response = await request("/api/daj-process-links");
 assert(response.status === 401, "DAJ-processo anonimo deveria exigir sessao");
 console.log("AUTH_OK daj-process-links-anonymous=401");
 
+response = await request("/api/dajs", { method: "POST" });
+assert(response.status === 401, "cadastro DAJ anonimo deveria exigir sessao");
+console.log("AUTH_OK daj-registry-anonymous=401");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/dajs", {
+    method: "POST",
+    headers: { "content-type": "application/json", cookie: await cookieFor("advogado") },
+    body: JSON.stringify({ partyName: "Parte Ficticia", cpf: "111.444.777-35" })
+  }),
+  env
+);
+data = await response.json();
+assert(response.status === 501 && data.error === "daj_registry_configuracao_pendente", "cadastro DAJ sem KV deveria falhar fechado");
+console.log("AUTH_OK daj-registry-kv-pendente=501");
+
 response = await worker.fetch(
   new Request("https://jus9.invalid/api/daj-process-links", {
     headers: { cookie: await cookieFor("advogado") }
@@ -861,6 +883,214 @@ const dajProcessLinksEnv = {
   JUS9_DAJ_PROCESS_LINKS: memoryKv(),
   JUS9_DAJ_PII_INDEX_KEY: "chave-hmac-ficticia-longa-para-testes"
 };
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/dajs", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      cookie: await cookieFor("assessor"),
+      "idempotency-key": "daj-intake-assessor-0001"
+    },
+    body: JSON.stringify({ partyName: "Parte Ficticia", cpf: "111.444.777-35" })
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 403 && data.permission === "dajs:write", "perfil sem escrita nao deve criar DAJ");
+console.log("AUTH_OK daj-registry-write-permission=403");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/dajs", {
+    method: "POST",
+    headers: { "content-type": "application/json", cookie: await cookieFor("advogado") },
+    body: JSON.stringify({ partyName: "Parte Sem Chave Ficticia", cpf: "123.456.789-09" })
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 400 && data.error === "idempotency_key_obrigatoria", "criacao DAJ deve exigir chave idempotente");
+console.log("AUTH_OK daj-registry-idempotency-required=400");
+
+const missingHmacKv = memoryKv();
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/dajs", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      cookie: await cookieFor("advogado"),
+      "idempotency-key": "daj-intake-missing-hmac-01"
+    },
+    body: JSON.stringify({ partyName: "Parte Sem Hmac Ficticia", cpf: "123.456.789-09" })
+  }),
+  { ...dajProcessLinksEnv, JUS9_DAJ_PROCESS_LINKS: missingHmacKv, JUS9_DAJ_PII_INDEX_KEY: "" }
+);
+data = await response.json();
+assert(response.status === 503 && data.error === "indice_cpf_exato_configuracao_pendente", "cadastro com CPF deve falhar fechado sem HMAC");
+assert(await missingHmacKv.get("daj-process-links:index") === null, "falha de HMAC nao deve criar indice parcial");
+console.log("AUTH_OK daj-registry-hmac-required=503");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/dajs", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      cookie: await cookieFor("advogado"),
+      "idempotency-key": "daj-intake-payload-large-01"
+    },
+    body: JSON.stringify({ partyName: "Parte Payload Ficticia", caseSummary: "x".repeat(33000) })
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 413 && data.error === "payload_muito_grande", "cadastro DAJ deveria limitar payload mesmo sem content-length confiavel");
+console.log("AUTH_OK daj-registry-payload-limit=413");
+
+const intakePayload = {
+  partyName: "Ana Cadastro Ficticia",
+  cpf: "123.456.789-09",
+  contact: "ana@example.invalid",
+  area: "Familia",
+  urgency: "Importante",
+  attentionReason: "documento faltante",
+  secrecyLevel: "Restrito",
+  caseSummary: "Relato inteiramente ficticio para homologacao do cadastro DAJ.",
+  documentsMentioned: "Documento ficticio A.",
+  attachmentsPendingCount: 2
+};
+const intakeIdempotencyKey = "daj-intake-auth-test-0001";
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/dajs", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      cookie: await cookieFor("advogado"),
+      "idempotency-key": intakeIdempotencyKey
+    },
+    body: JSON.stringify(intakePayload)
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 201 && /^DAJ-\d{4}-\d{4}$/.test(data.item?.id), "cadastro deveria gerar DAJ no servidor");
+assert(data.item.cpfMasked === "***.***.***-09" && data.cpfIndexed === true, "cadastro deveria indexar CPF exato e devolver apenas mascara");
+assert(data.item.processLinked === false && data.item.status === "em_triagem", "DAJ deveria nascer antes do vinculo processual");
+assert(data.item.classification === "JURIDICO_SIGILOSO", "sigilo restrito deveria classificar cadastro como sigiloso");
+assert(!JSON.stringify(data).includes("12345678909"), "cadastro DAJ nao deve devolver CPF integral");
+const intakeDajId = data.item.id;
+console.log("AUTH_OK daj-registry-create-indexed=201");
+
+const intakeIndexRaw = await dajProcessLinksEnv.JUS9_DAJ_PROCESS_LINKS.get("daj-process-links:index");
+const intakeDetailRaw = await dajProcessLinksEnv.JUS9_DAJ_PROCESS_LINKS.get(`daj-record:v1:${intakeDajId}`);
+assert(!String(intakeIndexRaw).includes("12345678909") && !String(intakeDetailRaw).includes("12345678909"), "CPF integral nao deve ser persistido no indice nem no detalhe");
+assert(!String(intakeIndexRaw).includes("ana@example.invalid") && String(intakeDetailRaw).includes("ana@example.invalid"), "contato deve ficar fora do indice pesquisavel");
+assert(String(intakeIndexRaw).includes("cpfLookupHash"), "indice DAJ deveria conter HMAC do CPF");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/dajs", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      cookie: await cookieFor("advogado"),
+      "idempotency-key": intakeIdempotencyKey
+    },
+    body: JSON.stringify(intakePayload)
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.idempotentReplay === true && data.item.id === intakeDajId, "repeticao deveria devolver o mesmo DAJ sem duplicar");
+assert(JSON.parse(await dajProcessLinksEnv.JUS9_DAJ_PROCESS_LINKS.get("daj-process-links:index")).length === 1, "repeticao idempotente nao deve duplicar DAJ");
+console.log("AUTH_OK daj-registry-idempotent-replay=200");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/dajs", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      cookie: await cookieFor("advogado"),
+      "idempotency-key": intakeIdempotencyKey
+    },
+    body: JSON.stringify({ ...intakePayload, partyName: "Outra Parte Ficticia" })
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 409 && data.error === "idempotency_key_reutilizada_com_payload_diferente", "chave idempotente nao deve aceitar outro cadastro");
+console.log("AUTH_OK daj-registry-idempotency-conflict=409");
+
+response = await worker.fetch(
+  new Request(`https://jus9.invalid/api/dajs?dajId=${encodeURIComponent(intakeDajId)}`, {
+    headers: { cookie: await cookieFor("advogado") }
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.item.operational?.area === "Familia", "leitura autorizada deveria devolver detalhe operacional");
+assert(data.item.operational?.contact === "ana@example.invalid" && !JSON.stringify(data).includes("12345678909"), "detalhe deve preservar contato sem expor CPF integral");
+console.log("AUTH_OK daj-registry-detail=200");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/dajs", {
+    method: "POST",
+    headers: { "content-type": "application/json", cookie: await cookieFor("advogado") },
+    body: JSON.stringify({ dajId: intakeDajId, partyName: intakePayload.partyName, urgency: "Urgente", secrecyLevel: "Comum" })
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.item.classification === "JURIDICO_SIGILOSO", "atualizacao comum nao deve rebaixar sigilo automaticamente");
+assert(data.item.cpfIndexed === true, "atualizacao sem CPF deve preservar indice exato existente");
+console.log("AUTH_OK daj-registry-update-preserves-index=200");
+
+const indexBeforeInvalidCpf = await dajProcessLinksEnv.JUS9_DAJ_PROCESS_LINKS.get("daj-process-links:index");
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/dajs", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      cookie: await cookieFor("advogado"),
+      "idempotency-key": "daj-intake-invalid-cpf-001"
+    },
+    body: JSON.stringify({ partyName: "CPF Parcial Ficticio", cpf: "777-35" })
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 400 && data.error === "cpf_invalido", "CPF parcial deve ser recusado sem deducao");
+assert(await dajProcessLinksEnv.JUS9_DAJ_PROCESS_LINKS.get("daj-process-links:index") === indexBeforeInvalidCpf, "CPF invalido nao deve alterar indice");
+console.log("AUTH_OK daj-registry-invalid-cpf-no-mutation=400");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/judicial/parties/search", {
+    method: "POST",
+    headers: { "content-type": "application/json", cookie: await cookieFor("advogado") },
+    body: JSON.stringify({ searchType: "cpf", cpf: "123.456.789-09" })
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.total === 1 && data.items[0].id === intakeDajId, "CPF deveria encontrar DAJ antes de existir processo");
+console.log("AUTH_OK daj-registry-cpf-search-before-process=200");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/daj-process-links", {
+    method: "POST",
+    headers: { "content-type": "application/json", cookie: await cookieFor("advogado") },
+    body: JSON.stringify({
+      dajId: intakeDajId,
+      processNumber: "6666666-66.2024.8.24.0000",
+      tribunal: "tjsc",
+      partyName: "Nome Nao Deve Sobrescrever"
+    })
+  }),
+  dajProcessLinksEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.item.processNumber === "6666666-66.2024.8.24.0000", "DAJ criado no atendimento deveria aceitar vinculo posterior");
+assert(data.item.partyName === intakePayload.partyName && data.item.classification === "JURIDICO_SIGILOSO", "vinculo processual deve preservar identidade e sigilo do cadastro");
+console.log("AUTH_OK daj-registry-link-later=200");
+
 response = await worker.fetch(
   new Request("https://jus9.invalid/api/daj-process-links", {
     method: "POST",

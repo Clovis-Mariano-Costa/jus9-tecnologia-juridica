@@ -27,6 +27,8 @@ function assertOrder(text, first, second, label) {
 const root = new URL("../", import.meta.url);
 const script = await fs.readFile(new URL("script.js", root), "utf8");
 const processPage = await fs.readFile(new URL("app-processos.html", root), "utf8");
+const intakePage = await fs.readFile(new URL("app-atendimento-inicial.html", root), "utf8");
+const intakeScript = await fs.readFile(new URL("assets/js/daj-intake.js", root), "utf8");
 const datajud = await fs.readFile(new URL("functions/_shared/datajud.js", root), "utf8");
 
 const routeBlock = between(script, "function charlieRouteDecision", "function localFallbackForRoute");
@@ -115,6 +117,11 @@ assertIncludes(processPage, "data-daj-link-list", "vinculo DAJ-processo");
 assertIncludes(processPage, "cada DAJ corresponde a um unico processo", "vinculo DAJ-processo");
 assertIncludes(processPage, "bloqueio_daj_ja_vinculado", "vinculo DAJ-processo");
 assertIncludes(processPage, "bloqueio_processo_ja_vinculado", "vinculo DAJ-processo");
+assertIncludes(intakePage, "data-charlie-exclude", "atendimento DAJ exclui campos sensiveis da analise");
+assertIncludes(script, "!field.hasAttribute('data-charlie-exclude')", "coleta DAJ nao envia campos excluidos a Charlie");
+assertIncludes(script, "form.dataset.savedDajId", "analise DAJ usa identificador realmente salvo");
+assertIncludes(intakeScript, "fetch('/api/dajs'", "atendimento DAJ usa cadastro governado");
+assert(!intakeScript.includes("localStorage"), "cadastro DAJ nao pode guardar CPF ou relato em localStorage");
 assertIncludes(datajud, "supportedSearchTypes", "DataJud governado");
 assertIncludes(datajud, "datajud_busca_por_parte_indisponivel_na_api_publica", "DataJud governado");
 assertIncludes(datajud, "requer_conector_autorizado_de_partes", "DataJud governado");

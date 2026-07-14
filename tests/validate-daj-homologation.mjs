@@ -100,27 +100,59 @@ data = await response.json();
 assert(response.status === 200 && data.storage === "nao_salvo", "upload temporario nao deve ser persistido automaticamente");
 assert(data.files?.[0]?.readable === true && /inteiramente ficticio/i.test(data.files[0].text), "texto do anexo ficticio nao foi extraido");
 
+const baseIntake = {
+  partyName: "Parte Alfa Ficticia",
+  cpf: "123.456.789-09",
+  contact: "parte.alfa@example.invalid",
+  area: "Familia",
+  urgency: "Importante",
+  attentionReason: "documento faltante",
+  secrecyLevel: "Restrito",
+  caseSummary: "Atendimento inteiramente ficticio para homologacao do modelo-mae.",
+  documentsMentioned: "Documento ficticio A."
+};
 const baseLink = {
   tribunal: "tjsc",
   tribunalLabel: "Tribunal de Justica de Santa Catarina",
-  title: "Homologacao ficticia DAJ-processo",
-  partyName: "Parte Alfa Ficticia",
-  cpf: "123.456.789-09"
+  title: "Homologacao ficticia DAJ-processo"
 };
+
+response = await call("/api/dajs", {
+  method: "POST",
+  headers: {
+    cookie,
+    "content-type": "application/json",
+    "idempotency-key": "daj-homologacao-intake-0001",
+    origin: "https://jus9tecnologia.com.br"
+  },
+  body: JSON.stringify(baseIntake)
+});
+data = await response.json();
+assert(response.status === 201 && data.item?.processLinked === false, "primeiro DAJ deveria nascer no atendimento antes do processo");
+const firstDajId = data.item.id;
+
+response = await call("/api/dajs", {
+  method: "POST",
+  headers: { cookie, "content-type": "application/json", "idempotency-key": "daj-homologacao-intake-0002" },
+  body: JSON.stringify(baseIntake)
+});
+data = await response.json();
+assert(response.status === 201 && data.item.id !== firstDajId, "mesma parte deveria poder possuir segundo DAJ");
+const secondDajId = data.item.id;
 
 response = await call("/api/daj-process-links", {
   method: "POST",
   headers: { cookie, "content-type": "application/json", origin: "https://jus9tecnologia.com.br" },
-  body: JSON.stringify({ ...baseLink, dajId: "DAJ-2099-0001", processNumber: "0000001-00.2099.8.24.0001" })
+  body: JSON.stringify({ ...baseLink, dajId: firstDajId, processNumber: "0000001-00.2099.8.24.0001" })
 });
-assert(response.status === 201, "primeiro vinculo DAJ-processo deveria ser criado");
+assert(response.status === 200, "primeiro DAJ deveria receber vinculo processual posterior");
 
 response = await call("/api/daj-process-links", {
   method: "POST",
   headers: { cookie, "content-type": "application/json" },
-  body: JSON.stringify({ ...baseLink, dajId: "DAJ-2099-0002", processNumber: "0000002-00.2099.8.24.0001" })
+  body: JSON.stringify({ ...baseLink, dajId: secondDajId, processNumber: "0000002-00.2099.8.24.0001" })
 });
-assert(response.status === 201, "segundo DAJ da mesma parte deveria ser permitido");
+assert(response.status === 200, "segundo DAJ deveria receber processo diferente");
 
 response = await call("/api/judicial/parties/search", {
   method: "POST",
@@ -149,13 +181,16 @@ assert(response.status === 409 && data.error === "processo_ja_vinculado", "proce
 
 const indexRaw = await dajProcessKv.get("daj-process-links:index");
 const auditRaw = await dajProcessKv.get("daj-process-links:audit");
+const detailRaw = await dajProcessKv.get(`daj-record:v1:${firstDajId}`);
 assert(!String(indexRaw).includes("12345678909"), "indice nao deve persistir CPF integral");
+assert(!String(detailRaw).includes("12345678909"), "detalhe DAJ nao deve persistir CPF integral");
+assert(!String(indexRaw).includes("parte.alfa@example.invalid") && String(detailRaw).includes("parte.alfa@example.invalid"), "contato deve ficar fora do indice e dentro do detalhe autorizado");
 assert(String(indexRaw).includes("cpfLookupHash"), "indice deveria persistir somente hash HMAC para pesquisa exata");
 assert(!String(auditRaw).includes("12345678909"), "auditoria nao deve persistir CPF integral");
-assert(Array.isArray(JSON.parse(auditRaw)) && JSON.parse(auditRaw).length >= 3, "auditoria DAJ-processo deveria registrar criacoes e bloqueio");
+assert(Array.isArray(JSON.parse(auditRaw)) && JSON.parse(auditRaw).length >= 5, "auditoria DAJ deveria registrar cadastros, vinculos e bloqueio");
 
 response = await call("/api/charlie/memory", { method: "DELETE", headers: { cookie } });
 data = await response.json();
 assert(response.status === 200 && data.deleted === true, "usuario deveria conseguir limpar memoria oficial");
 
-console.log("DAJ_HOMOLOGATION_TECHNICAL_OK memory,upload,links,multi-daj,cpf-mask,audit,delete");
+console.log("DAJ_HOMOLOGATION_TECHNICAL_OK memory,upload,intake-index,links,multi-daj,cpf-mask,audit,delete");

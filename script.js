@@ -798,12 +798,13 @@ window.jus9DemoLogin = function(form){
   }
 
   function collectDajIntake(form){
-    var fields = Array.prototype.slice.call(form.querySelectorAll('.form-field')).map(function(field){
-      return { label:fieldLabel(field), value:fieldValue(field) };
-    });
+    var fields = Array.prototype.slice.call(form.querySelectorAll('.form-field'))
+      .filter(function(field){ return !field.hasAttribute('data-charlie-exclude'); })
+      .map(function(field){ return { label:fieldLabel(field), value:fieldValue(field) }; });
+    var savedDajId = String(form.dataset.savedDajId || '').trim();
     return {
-      id:'DAJ-2026-0004',
-      source:'Atendimento inicial demonstrativo',
+      id:savedDajId || 'DAJ ainda nao salvo',
+      source:savedDajId ? 'Cadastro DAJ governado' : 'Rascunho de atendimento inicial',
       createdAt:new Date().toISOString(),
       fields:fields
     };
