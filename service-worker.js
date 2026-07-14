@@ -4,7 +4,7 @@
   Não armazena dados sensíveis. Não altera login, backend ou rotas protegidas.
 */
 
-const JUS9_CACHE = 'jus9-pwa-v33-2026-07-14-daj-isolated-review';
+const JUS9_CACHE = 'jus9-pwa-v34-2026-07-14-daj-clean-ui';
 const JUS9_ASSETS = [
   '/',
   '/index.html',
@@ -19,6 +19,8 @@ const JUS9_ASSETS = [
   '/app-documentos-autor-editor.html',
   '/app-workspace-autor-editor.html',
   '/app-ia-profissional.html',
+  '/app-perfis.html',
+  '/app-processos.html',
   '/app-agenda.html',
   '/app-clientes.html',
   '/app-atendimento-inicial.html',
@@ -37,7 +39,8 @@ const JUS9_ASSETS = [
   '/assets/jus9-logo.svg',
   '/assets/clovis-founder-portrait.png',
   '/assets/clovis-founder-context.png',
-  '/assets/css/visual-jus9-fase-final.css'
+  '/assets/css/visual-jus9-fase-final.css',
+  '/assets/css/daj-clean-ui.css'
 ];
 
 self.addEventListener('install', (event) => {

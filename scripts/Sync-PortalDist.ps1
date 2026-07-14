@@ -26,6 +26,7 @@ $files = @(
   'service-worker.js',
   'assets\js\daj-intake.js',
   'assets\js\daj-registry-list.js',
+  'assets\css\daj-clean-ui.css',
   'data-publica\mvp-perfis.json',
   'assets\clovis-founder-portrait.png',
   'assets\clovis-founder-context.png'

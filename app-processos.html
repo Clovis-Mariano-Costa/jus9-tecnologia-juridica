@@ -19,25 +19,27 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
+  <link rel="stylesheet" href="assets/css/daj-clean-ui.css?v=20260714-daj-clean-ui-v1">
   <meta name="theme-color" content="#07111f">
   <link rel="manifest" href="manifest.webmanifest">
 </head>
-<body class="demo-shell">
+<body class="demo-shell daj-workspace-shell">
 <div class="jus9-autoria-topo" role="note" aria-label="Autoria e licenca da producao do site" style="font-size:0.82rem;line-height:1.4;text-align:center;padding:0.45rem 0.75rem;background:rgba(15,23,42,0.94);color:#f8fafc;letter-spacing:0.01em;">Jus 9 Tecnologia Juridica - software livre, autoria preservada.</div>
 <div class="demo-layout">
   <aside class="demo-sidebar">
     <img src="assets/jus9-logo.svg" alt="Jus 9">
-    <nav>
+    <nav aria-label="Navegacao do DAJ">
       <a href="app-demo-advogar.html">Painel</a>
-      <a href="app-clientes.html">Clientes</a>
-      <a href="app-daj.html">DAJ</a>
+      <a href="app-atendimento-inicial.html">Atendimento</a>
+      <a href="app-clientes.html">DAJs</a>
       <a class="active" href="app-processos.html">Processos</a>
       <a href="app-agenda.html">Agenda</a>
       <a href="app-prazos.html">Prazos</a>
       <a href="app-documentos.html">Documentos</a>
       <a href="app-cofre.html">Cofre Juridico</a>
       <a href="app-workspace.html">Workspace</a>
-      <a href="app-ia-profissional.html">IA Profissional</a>
+      <a href="app-ia-profissional.html">Charlie Echo</a>
+      <a href="app-perfis.html">Perfis e acessos</a>
       <a href="mvp.html">Sair do demo</a>
     </nav>
   </aside>
@@ -45,23 +47,22 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
     <section class="demo-topbar">
       <div>
         <div class="eyebrow">Processos</div>
-        <h1 style="font-size:42px;color:#0b1728;margin-top:8px">Pesquisa processual governada.</h1>
-        <p style="color:#51627a;margin:8px 0 0">Modelo DAJ: numero CNJ segue ao gateway oficial; nome e CPF consultam somente o indice interno autenticado. A pesquisa externa por partes permanece aguardando orientacao oficial, sem resposta inventada.</p>
+        <h1>Pesquisa processual</h1>
+        <p>Numero CNJ consulta o DataJud. Nome, CPF e DAJ consultam somente o indice interno autenticado.</p>
       </div>
       <span class="badge" id="datajud-status-badge">Verificando DataJud</span>
     </section>
 
     <section class="daj-card">
       <div class="daj-actions-fixed">
-        <a href="app-atendimento-inicial.html">+ Novo DAJ</a>
-        <a href="app-clientes.html">Lista de DAJs</a>
-        <a href="app-daj.html">DAJ vinculado</a>
+        <a href="app-atendimento-inicial.html">Novo DAJ</a>
+        <a href="app-clientes.html">DAJs salvos</a>
       </div>
     </section>
 
     <section class="process-layout">
       <article class="process-card">
-        <h2>Consulta via Charlie Echo</h2>
+        <h2>Pesquisa oficial e interna</h2>
         <form class="form-grid" data-process-form>
           <div class="form-field">
             <label for="process-search-type">Tipo de pesquisa</label>
@@ -142,88 +143,50 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
             </select>
             <small data-daj-link-help>Cada DAJ pode ficar vinculado a um unico processo. Nome e CPF podem reunir varios DAJs.</small>
           </div>
-          <button class="mvp-button" type="submit">Consultar via Charlie Echo</button>
+          <button class="mvp-button" type="submit">Consultar</button>
         </form>
 
-        <div id="process-result" aria-live="polite" style="margin-top:18px;background:#f8fafc;border:1px dashed #c58b2f;border-radius:16px;padding:16px">
+        <div id="process-result" class="process-result-panel" aria-live="polite">
           <h3>Resultado governado</h3>
           <p>Informe numero CNJ, DAJ, nome ou CPF. Consultas estruturadas mostram apenas resultados efetivamente encontrados e CPF sempre mascarado.</p>
         </div>
 
-        <h3 style="margin-top:20px">Tribunais estaduais</h3>
-        <div class="state-grid" data-state-grid>
-          <a href="#" data-tribunal="tjac">TJAC</a><a href="#" data-tribunal="tjal">TJAL</a><a href="#" data-tribunal="tjap">TJAP</a><a href="#" data-tribunal="tjam">TJAM</a><a href="#" data-tribunal="tjba">TJBA</a><a href="#" data-tribunal="tjce">TJCE</a><a href="#" data-tribunal="tjdft">TJDFT</a><a href="#" data-tribunal="tjes">TJES</a><a href="#" data-tribunal="tjgo">TJGO</a><a href="#" data-tribunal="tjma">TJMA</a><a href="#" data-tribunal="tjmt">TJMT</a><a href="#" data-tribunal="tjms">TJMS</a><a href="#" data-tribunal="tjmg">TJMG</a><a href="#" data-tribunal="tjpa">TJPA</a><a href="#" data-tribunal="tjpb">TJPB</a><a href="#" data-tribunal="tjpr">TJPR</a><a href="#" data-tribunal="tjpe">TJPE</a><a href="#" data-tribunal="tjpi">TJPI</a><a href="#" data-tribunal="tjrj">TJRJ</a><a href="#" data-tribunal="tjrn">TJRN</a><a href="#" data-tribunal="tjrs">TJRS</a><a href="#" data-tribunal="tjro">TJRO</a><a href="#" data-tribunal="tjrr">TJRR</a><a href="#" data-tribunal="tjsc">TJSC</a><a href="#" data-tribunal="tjsp">TJSP</a><a href="#" data-tribunal="tjse">TJSE</a><a href="#" data-tribunal="tjto">TJTO</a>
-        </div>
-        <div class="quick-links">
-          <a href="https://datajud-wiki.cnj.jus.br/api-publica/" target="_blank" rel="noopener">DataJud Wiki</a>
-          <a href="https://www.cnj.jus.br/sistemas/datajud/api-publica/" target="_blank" rel="noopener">API Publica CNJ</a>
-        </div>
+        <details class="daj-operational-details">
+          <summary>Fontes oficiais do DataJud</summary>
+          <div>
+            <div class="quick-links">
+              <a href="https://datajud-wiki.cnj.jus.br/api-publica/" target="_blank" rel="noopener">DataJud Wiki</a>
+              <a href="https://www.cnj.jus.br/sistemas/datajud/api-publica/" target="_blank" rel="noopener">API Publica CNJ</a>
+            </div>
+          </div>
+        </details>
       </article>
 
       <article class="process-card" id="linked-daj-panel" data-linked-daj-panel>
         <h2>DAJ vinculado</h2>
         <div data-linked-daj-summary>
-          <p><strong>DAJ-2026-0001</strong></p>
-          <p>Processo demonstrativo vinculado ao dossie local.</p>
-          <p>Observacao: a consulta externa mostra o processo; o DAJ mostra o caso vivo por dentro.</p>
+          <p>Nenhum vinculo carregado.</p>
         </div>
         <div class="quick-links" data-linked-daj-actions>
-          <a href="app-daj.html">Abrir DAJ</a>
-          <a href="app-clientes.html">Cliente</a>
-          <a href="app-documentos.html">Documentos</a>
-          <a href="app-agenda.html">Agenda</a>
-          <a href="app-prazos.html">Prazos</a>
-          <a href="app-cofre.html">Cofre Juridico</a>
-          <a href="app-workspace.html">Workspace</a>
+          <a href="app-clientes.html">Abrir lista de DAJs</a>
         </div>
       </article>
     </section>
 
     <section class="process-card">
       <h2>Indice DAJ-processo</h2>
-      <p>Um DAJ corresponde a um processo. Com login autorizado, a API autenticada e o KV oficial preservam o vinculo e a auditoria; sem sessao, a pagina conserva apenas um exemplo local demonstrativo.</p>
+      <p>Um DAJ corresponde a um processo. A API autenticada preserva o vinculo e a auditoria; o fallback local permanece apenas para homologacao ficticia.</p>
       <div data-daj-link-list>
         <p>Carregando vinculos locais.</p>
       </div>
     </section>
 
-    <section class="process-card">
-      <h2>Movimentos processuais demonstrativos</h2>
-      <table class="demo-table">
-        <thead><tr><th>Data</th><th>Movimento</th><th>Origem</th><th>Acao interna</th></tr></thead>
-        <tbody>
-          <tr><td>08/05/2026</td><td>Conclusos para decisao</td><td>DataJud / tribunal</td><td>Notificar responsavel</td></tr>
-          <tr><td>06/05/2026</td><td>Juntada de documento</td><td>Consulta publica</td><td>Vincular ao DAJ</td></tr>
-          <tr><td>04/05/2026</td><td>Intimacao publicada</td><td>Tribunal</td><td>Criar prazo fatal</td></tr>
-        </tbody>
-      </table>
-    </section>
-
-    <section class="process-card">
-      <h2>Regra de seguranca do modelo</h2>
-      <p>O DataJud e usado aqui como fonte oficial de metadados publicos por numero CNJ. Pesquisa por nome ou CPF exige conector autorizado do tribunal ou parceiro, finalidade legitima, minimizacao, auditoria e resposta com CPF mascarado. A consulta nao substitui autos, documentos, sigilo, conferencia humana, peticionamento, ciencia ou protocolo.</p>
-    </section>
-
-    <section class="daj-card">
-      <h2>IA Profissional</h2>
-      <p>Apoio supervisionado sobre os dados autorizados deste contexto.</p>
-      <div class="link-actions">
-        <a href="app-ia-profissional.html">Perguntar a IA</a>
-        <a href="app-ia-profissional.html">Resumir DAJ</a>
-        <a href="app-ia-profissional.html">Analisar documentos</a>
-        <a href="app-ia-profissional.html">Sugerir proximos passos</a>
+    <details class="daj-operational-details">
+      <summary>Limites e seguranca da pesquisa</summary>
+      <div>
+        <p>O DataJud fornece metadados publicos por numero CNJ. Pesquisa externa por nome ou CPF depende de conector autorizado, finalidade legitima, minimizacao e auditoria. A consulta nao substitui autos, sigilo, conferencia humana, peticionamento, ciencia ou protocolo.</p>
       </div>
-    </section>
-
-    <section class="links-semanticos-jus9-v1-5" aria-label="Links institucionais Jus 9" style="margin:2rem auto;max-width:1100px;padding:1rem;border:1px solid rgba(212,180,99,.35);border-radius:18px;background:rgba(15,23,42,.04);font-size:.95rem;line-height:1.6">
-      <strong>Links Jus 9:</strong>
-      <a href="https://equipe.jus9tecnologia.com.br/">Equipe</a> &middot;
-      <a href="https://investimentos.jus9tecnologia.com.br/">Investimentos</a> &middot;
-      <a href="https://jus9tecnologia.com.br/mvp#demos-jus9">MVP</a> &middot;
-      <a href="https://charlieecho.jus9tecnologia.com.br/ia-profissional">Charlie Echo</a> &middot;
-      <a href="https://jus9verde.jus9tecnologia.com.br/charlie-echo-social">Charlie Echo Social</a> &middot;
-      <a href="mailto:Contato@jus9tecnologia.com.br">Contato</a>
-    </section>
+    </details>
   </main>
 </div>
 
@@ -468,16 +431,17 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
     dajSelect.value = exists ? normalized : (items.length ? items[0].id : 'novo');
   }
 
-  function renderDajActions(){
+  function renderDajActions(item){
     if(!linkedDajActions) return;
+    var dajId = normalizeDajId(item && item.id);
+    if(!dajId){
+      linkedDajActions.innerHTML = '<a href="app-clientes.html">Abrir lista de DAJs</a>';
+      return;
+    }
     linkedDajActions.innerHTML = [
-      '<a href="app-daj.html">Abrir DAJ</a>',
-      '<a href="app-clientes.html">Cliente</a>',
+      '<a href="app-atendimento-inicial.html?dajId=' + encodeURIComponent(dajId) + '">Abrir DAJ</a>',
+      '<a href="app-ia-profissional.html?dajId=' + encodeURIComponent(dajId) + '&autorun=1#chat-ia">Analisar com Charlie</a>',
       '<a href="app-documentos.html">Documentos</a>',
-      '<a href="app-agenda.html">Agenda</a>',
-      '<a href="app-prazos.html">Prazos</a>',
-      '<a href="app-cofre.html">Cofre Juridico</a>',
-      '<a href="app-workspace.html">Workspace</a>'
     ].join('');
   }
 
@@ -486,7 +450,7 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
     var item = focus || findDajLink(loadDajProcessLinks(), dajSelect && dajSelect.value) || loadDajProcessLinks()[0];
     if(!item){
       linkedDajSummary.innerHTML = '<p>Nenhum DAJ local vinculado ainda.</p>';
-      renderDajActions();
+      renderDajActions(null);
       return;
     }
     linkedDajSummary.innerHTML = [
@@ -499,13 +463,13 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
       '<p>Observacao: a consulta externa mostra o processo; o DAJ mostra o caso vivo por dentro.</p>',
       note ? '<p><strong>' + escapeHtml(note) + '</strong></p>' : ''
     ].join('');
-    renderDajActions();
+    renderDajActions(item);
   }
 
   function renderEmptyDajLinkPanel(note){
     if(!linkedDajSummary) return;
     linkedDajSummary.innerHTML = '<p>Nenhum DAJ correspondeu a chave consultada.</p>' + (note ? '<p><strong>' + escapeHtml(note) + '</strong></p>' : '');
-    renderDajActions();
+    renderDajActions(null);
   }
 
   function renderDajLinkList(items){

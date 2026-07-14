@@ -1,0 +1,339 @@
+/* DAJ clean operational UI v1.0 - scoped to the DAJ model pages. */
+.daj-workspace-shell{
+  --daj-clean-bg:#f3f5f7;
+  --daj-clean-surface:#ffffff;
+  --daj-clean-border:#dfe4ea;
+  --daj-clean-ink:#152033;
+  --daj-clean-muted:#5f6b7a;
+  --daj-clean-accent:#9a6517;
+  background:var(--daj-clean-bg);
+  color:var(--daj-clean-ink);
+}
+.daj-workspace-shell *{
+  letter-spacing:0!important;
+}
+.daj-workspace-shell .demo-layout{
+  grid-template-columns:224px minmax(0,1fr);
+  gap:0;
+  max-width:1600px;
+  margin:0 auto;
+  padding:0;
+}
+.daj-workspace-shell .demo-sidebar{
+  position:sticky;
+  top:0;
+  align-self:start;
+  min-height:calc(100vh - 32px);
+  height:calc(100vh - 32px);
+  overflow:auto;
+  border-radius:0 8px 8px 0;
+  padding:20px 14px;
+  box-shadow:none;
+}
+.daj-workspace-shell .demo-sidebar img{
+  height:44px;
+  margin:0 8px 20px;
+}
+.daj-workspace-shell .demo-sidebar nav{
+  gap:3px;
+}
+.daj-workspace-shell .demo-sidebar nav a{
+  min-height:38px;
+  border:0;
+  border-radius:6px;
+  padding:9px 11px;
+  background:transparent;
+  font-size:.92rem;
+  box-shadow:none;
+}
+.daj-workspace-shell .demo-sidebar nav a.active,
+.daj-workspace-shell .demo-sidebar nav a:hover{
+  background:rgba(231,195,108,.12);
+}
+.daj-workspace-shell .demo-main{
+  width:100%;
+  min-width:0;
+  max-width:1320px;
+  margin:0 auto;
+  padding:24px 30px 48px;
+  gap:14px;
+}
+.daj-workspace-shell .demo-topbar{
+  align-items:flex-end;
+  padding:4px 0 18px;
+  border:0;
+  border-bottom:1px solid var(--daj-clean-border);
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+.daj-workspace-shell .demo-topbar h1{
+  max-width:860px;
+  margin:5px 0 0!important;
+  color:var(--daj-clean-ink)!important;
+  font-size:2rem!important;
+  line-height:1.16!important;
+}
+.daj-workspace-shell .demo-topbar p{
+  max-width:820px;
+  margin:6px 0 0!important;
+  color:var(--daj-clean-muted)!important;
+  line-height:1.5;
+}
+.daj-workspace-shell .eyebrow{
+  color:var(--daj-clean-accent);
+  font-size:.75rem;
+}
+.daj-workspace-shell .badge,
+.daj-workspace-shell .badge.secret{
+  border-radius:6px;
+  padding:6px 8px;
+  box-shadow:none;
+  text-transform:none;
+  white-space:normal;
+}
+.daj-workspace-shell .demo-card,
+.daj-workspace-shell .daj-card,
+.daj-workspace-shell .process-card,
+.daj-workspace-shell .auth-status-panel{
+  min-width:0;
+  border:1px solid var(--daj-clean-border);
+  border-radius:8px;
+  background:var(--daj-clean-surface);
+  padding:18px;
+  box-shadow:none;
+  transform:none;
+}
+.daj-workspace-shell .demo-card:hover,
+.daj-workspace-shell .daj-card:hover,
+.daj-workspace-shell .process-card:hover{
+  border-color:#cfd6de;
+  box-shadow:none;
+  transform:none;
+}
+.daj-workspace-shell .daj-card h2,
+.daj-workspace-shell .process-card h2,
+.daj-workspace-shell .demo-card h2{
+  margin:0 0 8px;
+  color:var(--daj-clean-ink);
+  font-size:1.18rem;
+  line-height:1.28;
+}
+.daj-workspace-shell .daj-card h3,
+.daj-workspace-shell .process-card h3{
+  font-size:1rem;
+}
+.daj-workspace-shell .daj-card p,
+.daj-workspace-shell .process-card p,
+.daj-workspace-shell .demo-card p{
+  color:var(--daj-clean-muted);
+}
+.daj-workspace-shell .process-layout{
+  grid-template-columns:minmax(0,1.3fr) minmax(280px,.7fr);
+  gap:14px;
+}
+.daj-workspace-shell .form-grid{
+  gap:13px;
+}
+.daj-workspace-shell .form-field label{
+  color:#2a3545;
+  font-size:.88rem;
+}
+.daj-workspace-shell .form-field input,
+.daj-workspace-shell .form-field select,
+.daj-workspace-shell .form-field textarea,
+.daj-workspace-shell .ai-chat-form textarea{
+  border-color:#cfd6de;
+  border-radius:6px;
+  background:#fff;
+  box-shadow:none;
+}
+.daj-workspace-shell .form-field textarea{
+  min-height:112px;
+}
+.daj-workspace-shell .form-note,
+.daj-workspace-shell .fine-note,
+.daj-workspace-shell small{
+  color:#687485;
+}
+.daj-workspace-shell .link-actions,
+.daj-workspace-shell .daj-actions-fixed,
+.daj-workspace-shell .quick-links,
+.daj-workspace-shell .form-actions{
+  gap:8px;
+  margin:12px 0 0;
+}
+.daj-workspace-shell .link-actions a,
+.daj-workspace-shell .link-actions button,
+.daj-workspace-shell .daj-actions-fixed a,
+.daj-workspace-shell .quick-links a,
+.daj-workspace-shell .mvp-button,
+.daj-workspace-shell .ghost-button{
+  min-height:38px;
+  border-radius:6px;
+  padding:9px 12px;
+  box-shadow:none;
+  transform:none;
+  font-size:.9rem;
+}
+.daj-workspace-shell .quick-links{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+}
+.daj-workspace-shell .quick-links a{
+  background:#fff;
+}
+.daj-workspace-shell .warning-note,
+.daj-workspace-shell .daj-save-status,
+.daj-workspace-shell .fine-note,
+.daj-workspace-shell .media-consent-warning{
+  border-radius:6px;
+  box-shadow:none;
+}
+.daj-workspace-shell .daj-save-status{
+  margin:12px 0 0;
+}
+.daj-clean-context > .daj-save-status{
+  flex:1;
+  margin:0;
+}
+.process-result-panel{
+  margin-top:16px;
+  border:1px solid var(--daj-clean-border);
+  border-left:3px solid var(--daj-clean-accent);
+  border-radius:6px;
+  background:#f8fafc;
+  padding:14px;
+}
+.process-result-panel h3{
+  margin:0 0 6px;
+}
+.daj-workspace-shell .permission-table{
+  width:100%;
+  border-collapse:collapse;
+}
+.daj-workspace-shell .permission-table th,
+.daj-workspace-shell .permission-table td{
+  padding:11px 12px;
+  border-bottom:1px solid var(--daj-clean-border);
+  text-align:left;
+  vertical-align:top;
+}
+.daj-workspace-shell .permission-table th{
+  background:#f6f8fa;
+  color:#475466;
+  font-size:.78rem;
+  text-transform:uppercase;
+}
+.daj-role-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin-top:14px;
+}
+.daj-role-item{
+  min-width:0;
+  border:1px solid var(--daj-clean-border);
+  border-radius:6px;
+  background:#fff;
+  padding:13px;
+}
+.daj-role-item strong{
+  display:block;
+  color:var(--daj-clean-ink);
+  font-size:.92rem;
+}
+.daj-role-item code{
+  display:block;
+  margin:3px 0 8px;
+  color:var(--daj-clean-accent);
+  font-size:.75rem;
+  overflow-wrap:anywhere;
+}
+.daj-role-item p{
+  margin:0;
+  font-size:.86rem;
+  line-height:1.4;
+}
+.daj-clean-context{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+.daj-clean-context p{
+  margin:0;
+}
+.daj-clean-context .link-actions{
+  flex:none;
+  margin:0;
+}
+.daj-operational-details{
+  border:1px solid var(--daj-clean-border);
+  border-radius:8px;
+  background:#fff;
+}
+.daj-operational-details summary{
+  padding:13px 16px;
+  color:#2b3748;
+  font-weight:800;
+  cursor:pointer;
+}
+.daj-operational-details > div{
+  padding:0 16px 16px;
+}
+.daj-workspace-shell .state-grid{
+  grid-template-columns:repeat(7,minmax(0,1fr));
+}
+.daj-workspace-shell .state-grid a{
+  border-radius:5px;
+  padding:8px;
+  background:#fff;
+}
+.daj-workspace-shell .ai-chat-card{
+  padding:16px;
+}
+.daj-workspace-shell .ai-chat-window{
+  min-height:340px;
+  border-radius:6px;
+  box-shadow:none;
+}
+.daj-workspace-shell .ai-mode-row{
+  border-radius:6px;
+}
+.daj-workspace-shell .jus9-autoria-rodape{
+  margin-top:0!important;
+}
+@media(max-width:1120px){
+  .daj-role-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .daj-workspace-shell .state-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(max-width:860px){
+  .daj-workspace-shell .demo-layout{display:block}
+  .daj-workspace-shell .demo-sidebar{
+    position:static;
+    width:100%;
+    height:auto;
+    min-height:0;
+    border-radius:0;
+  }
+  .daj-workspace-shell .demo-sidebar nav{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  .daj-workspace-shell .demo-sidebar nav a{
+    justify-content:center;
+    text-align:center;
+  }
+  .daj-workspace-shell .demo-main{padding:18px 16px 36px}
+  .daj-workspace-shell .process-layout{grid-template-columns:minmax(0,1fr)}
+  .daj-clean-context{align-items:flex-start;flex-direction:column}
+  .daj-clean-context .link-actions{width:100%}
+}
+@media(max-width:620px){
+  .daj-workspace-shell .demo-sidebar nav{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .daj-workspace-shell .demo-topbar{display:grid;align-items:start}
+  .daj-workspace-shell .demo-topbar h1{font-size:1.65rem!important}
+  .daj-role-grid,
+  .daj-workspace-shell .state-grid,
+  .daj-workspace-shell .quick-links{grid-template-columns:minmax(0,1fr)}
+  .daj-workspace-shell .permission-table{display:block;overflow-x:auto}
+}

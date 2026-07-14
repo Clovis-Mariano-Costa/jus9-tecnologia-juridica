@@ -19,25 +19,27 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
+  <link rel="stylesheet" href="assets/css/daj-clean-ui.css?v=20260714-daj-clean-ui-v1">
   <meta name="theme-color" content="#07111f">
   <link rel="manifest" href="manifest.webmanifest">
 </head>
-<body class="demo-shell charlie-workbench-page charlie-mvp-shell">
+<body class="demo-shell charlie-workbench-page charlie-mvp-shell daj-workspace-shell">
 <div class="jus9-autoria-topo" role="note" aria-label="Autoria e licenca da producao do site" style="font-size:0.82rem;line-height:1.4;text-align:center;padding:0.45rem 0.75rem;background:rgba(15,23,42,0.94);color:#f8fafc;letter-spacing:0.01em;">Jus 9 Tecnologia Juridica - software livre, autoria preservada.</div>
 <div class="demo-layout">
   <aside class="demo-sidebar">
     <img src="assets/jus9-logo.svg" alt="Jus 9">
-    <nav>
+    <nav aria-label="Navegacao do DAJ">
       <a href="app-demo-advogar.html">Painel</a>
       <a href="app-atendimento-inicial.html">Atendimento</a>
-      <a href="app-daj.html">DAJ</a>
-      <a href="app-documentos.html">Documentos</a>
+      <a href="app-clientes.html">DAJs</a>
       <a href="app-processos.html">Processos</a>
-      <a href="app-prazos.html">Prazos</a>
       <a href="app-agenda.html">Agenda</a>
+      <a href="app-prazos.html">Prazos</a>
+      <a href="app-documentos.html">Documentos</a>
+      <a href="app-cofre.html">Cofre Juridico</a>
       <a href="app-workspace.html">Workspace</a>
-      <a class="active" href="app-ia-profissional.html">IA Profissional</a>
-      <a href="app-perfis.html">Perfis</a>
+      <a class="active" href="app-ia-profissional.html">Charlie Echo</a>
+      <a href="app-perfis.html">Perfis e acessos</a>
       <a href="mvp.html">Sair do demo</a>
     </nav>
   </aside>
@@ -46,49 +48,35 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
     <section class="demo-topbar">
       <div>
         <div class="eyebrow">Charlie Echo da Costa - DAJ Advogados</div>
-        <h1 style="font-size:42px;color:#0b1728;margin-top:8px">IA profissional limpa, ativa e governada.</h1>
-        <p style="color:#51627a;margin:8px 0 0">Entrada do modulo DAJ: responder com criatividade juridica responsavel, buscar fonte quando necessario, aceitar anexos e salvar no Drive Saver quando a classificacao permitir.</p>
+        <h1>Charlie Echo para o DAJ</h1>
+        <p>Analise, pesquisa, documentos e encaminhamentos em uma sala governada.</p>
       </div>
       <span class="badge secret">Revisao humana</span>
     </section>
 
-    <section class="demo-card auth-status-panel" data-auth-panel data-auth-module="DAJ" data-auth-login="/auth/google/start" data-auth-logout="/auth/logout">
-      <div class="eyebrow">Acesso governado</div>
-      <h2>Conta e perfil operacional</h2>
-      <p data-auth-status>Verificando sessao segura...</p>
-      <p class="auth-identity-context" data-auth-identity hidden></p>
-      <div class="auth-permission-list" data-auth-permissions hidden></div>
-      <div class="link-actions"><a data-auth-login-link href="/auth/google/start">Entrar com Google</a><button type="button" data-auth-logout-button hidden>Sair</button><a href="app-perfis.html">Perfis</a></div>
-      <p class="fine-note">Ambiente MVP: use dados ficticios ate revisao humana e ativacao controlada para dados reais.</p>
+    <section class="demo-card auth-status-panel daj-clean-context" data-auth-panel data-auth-module="DAJ" data-auth-login="/auth/google/start" data-auth-logout="/auth/logout">
+      <div>
+        <div class="eyebrow">Acesso governado</div>
+        <h2>Conta e perfil</h2>
+        <p data-auth-status>Verificando sessao segura...</p>
+        <p class="auth-identity-context" data-auth-identity hidden></p>
+        <div class="auth-permission-list" data-auth-permissions hidden></div>
+      </div>
+      <div class="link-actions"><a data-auth-login-link href="/auth/google/start">Entrar com Google</a><button type="button" data-auth-logout-button hidden>Sair</button><a href="app-perfis.html">Ver perfis</a></div>
     </section>
 
-    <section class="process-layout">
-      <article class="process-card">
-        <h2>Contrato DAJ da Charlie</h2>
-        <p data-daj-active-summary><strong>DAJ ativo:</strong> selecione um DAJ no cadastro oficial. A Charlie deve organizar fatos, documentos, processos, prazos, fontes, minuta, Drive Saver e revisao humana antes de fechar uma entrega.</p>
-        <div class="quick-links">
-          <a href="app-daj.html">DAJ</a>
-          <a href="app-documentos.html">Documentos</a>
-          <a href="app-processos.html">Processos</a>
-          <a href="app-prazos.html">Prazos</a>
-        </div>
-      </article>
-      <article class="process-card">
-        <h2>Acoes guiadas</h2>
-        <p>Use poucos comandos bons. O painel de configuracoes da Charlie concentra memoria, upload, fala, Drive e autonomia do instrumento.</p>
-        <div class="link-actions">
-          <button type="button" data-charlie-prompt="Gere relatorio executivo do DAJ ativo com fatos, documentos, processos, prazos, riscos, perguntas de retorno e proximo passo seguro.">Resumo DAJ</button>
-          <button type="button" data-charlie-prompt="Crie uma minuta completa demonstrativa a partir do DAJ ativo, com placeholders, fundamentos a conferir e checklist de revisao humana.">Criar minuta</button>
-          <button type="button" data-charlie-prompt="Pesquise fontes oficiais e academicas para o tema juridico do DAJ. Nao invente autor, obra, pagina, julgado ou citacao.">Pesquisar fontes</button>
-          <button type="button" data-charlie-prompt="Salve a ultima resposta no Cartorio Digital Charlie Echo somente se a classificacao governada permitir e retorne downloadUrl real se o backend autorizado devolver.">Salvar no Drive</button>
-        </div>
-      </article>
+    <section class="daj-card daj-clean-context">
+      <p data-daj-active-summary><strong>DAJ ativo:</strong> selecione um registro no cadastro oficial para iniciar uma analise isolada.</p>
+      <div class="link-actions">
+        <a href="app-clientes.html">Abrir DAJs</a>
+        <a href="app-processos.html">Processos</a>
+      </div>
     </section>
 
     <section id="chat-ia" class="demo-card ai-chat-card" data-ai-chat data-ai-layout="detalhista" data-ai-title="IA Profissional Jurista" data-ai-code="DAJ" data-ai-focus="DAJ, documentos, processos, prazos, doutrina, DataJud e apoio juridico supervisionado">
       <div class="eyebrow">Chat DAJ</div>
-      <h2 style="color:#0b1728">Falar com Charlie Echo</h2>
-      <p style="color:#51627a">Digite uma pergunta ficticia. A resposta deve passar pela API segura e usar memoria, fonte e governanca sem repetir protocolo vazio.</p>
+      <h2>Falar com Charlie Echo</h2>
+      <p>A resposta passa pela API segura. Upload, fala, memoria, Drive e comandos guiados ficam em Configuracoes.</p>
       <div class="ai-mode-row" role="radiogroup" aria-label="Modo de resposta">
         <label><input type="radio" name="mode-DAJ" value="jurista" checked> Jurista</label>
         <label><input type="radio" name="mode-DAJ" value="especialista"> Especialista DAJ</label>
@@ -99,17 +87,7 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
         <textarea data-ai-chat-input rows="4" placeholder="Ex.: Fale sobre direito de propriedade citando fontes oficiais e academicas, sem inventar obra ou pagina."></textarea>
         <button class="mvp-button" type="submit">Enviar para Charlie</button>
       </form>
-      <div class="fine-note"><strong>Limite:</strong> nao informe dados reais, nomes reais, processos reais, WhatsApp, tokens, senhas, arquivos internos ou documentos sigilosos.</div>
-    </section>
-
-    <section class="links-semanticos-jus9-v1-5" aria-label="Links institucionais Jus 9" style="margin:2rem auto;max-width:1100px;padding:1rem;border:1px solid rgba(212,180,99,.35);border-radius:18px;background:rgba(15,23,42,.04);font-size:.95rem;line-height:1.6">
-      <strong>Links Jus 9:</strong>
-      <a href="https://equipe.jus9tecnologia.com.br/">Equipe</a> &middot;
-      <a href="https://investimentos.jus9tecnologia.com.br/">Investimentos</a> &middot;
-      <a href="https://jus9tecnologia.com.br/mvp#demos-jus9">MVP</a> &middot;
-      <a href="https://charlieecho.jus9tecnologia.com.br/ia-profissional">Charlie Echo</a> &middot;
-      <a href="https://jus9verde.jus9tecnologia.com.br/charlie-echo-social">Charlie Echo Social</a> &middot;
-      <a href="mailto:Contato@jus9tecnologia.com.br">Contato</a>
+      <div class="fine-note"><strong>Homologacao:</strong> use somente informacoes ficticias.</div>
     </section>
   </main>
 </div>

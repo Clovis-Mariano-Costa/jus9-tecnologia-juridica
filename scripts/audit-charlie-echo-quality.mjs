@@ -47,7 +47,7 @@ const checks = [
   {
     name: "atendimento inicial envia DAJ para analise da Charlie",
     file: "app-atendimento-inicial.html",
-    patterns: ["data-daj-intake-form", "data-send-daj-analysis", "Enviar DAJ para análise da Charlie Echo"],
+    patterns: ["data-daj-intake-form", "data-send-daj-analysis", "Enviar DAJ para analise da Charlie Echo"],
   },
   {
     name: "estilo do upload local governado",
@@ -97,7 +97,7 @@ const checks = [
   {
     name: "service worker nao prende MVP antigo",
     file: "service-worker.js",
-    patterns: ["jus9-pwa-v33-2026-07-14-daj-isolated-review", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
+    patterns: ["jus9-pwa-v34-2026-07-14-daj-clean-ui", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
   },
   {
     name: "casa propria da Charlie Echo publicada",

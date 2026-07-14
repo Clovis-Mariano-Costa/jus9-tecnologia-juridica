@@ -1,51 +1,136 @@
-﻿<!--
-Jus 9 Tecnologia Jurídica
-Repositório: jus9-tecnologia-juridica
+<!--
+Jus 9 Tecnologia Juridica
+Repositorio: jus9-tecnologia-juridica
 Software livre com autoria preservada.
-Direitos autorais reservados para Jus 9 Tecnologia Jurídica.
-Produção do site: © Jus 9 Tecnologia Jurídica. Direitos autorais da produção reservados.
-A licença livre não remove autoria, origem, assinatura institucional nem direitos autorais.
-Referência oficial: https://www.jus9tecnologia.com.br/
-E-mail de contato: Contato@jus9tecnologia.com.br
-DNA de referência de <a href="https://charlieecho.jus9tecnologia.com.br/ia-profissional">Charlie Echo</a> da Costa: charlieecho-jus9-tecnologia-juridica
 -->
-
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><title>Painel Demonstrativo — Jus 9 Advogados</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css"><meta name="theme-color" content="#07111f"><link rel="manifest" href="manifest.webmanifest"></head>
-<body class="demo-shell">
-<div class="jus9-autoria-topo" role="note" aria-label="Autoria e licença da produção do site" style="font-size: 0.82rem; line-height: 1.4; text-align: center; padding: 0.45rem 0.75rem; background: rgba(15, 23, 42, 0.94); color: #f8fafc; letter-spacing: 0.01em;">Jus 9 Tecnologia Jurídica — software livre, autoria preservada.</div>
-<div class="demo-layout"><aside class="demo-sidebar"><img src="assets/jus9-logo.svg" alt="Jus 9"><nav><a class="active" href="#">Painel</a><a class="sidebar-priority sidebar-agenda" href="app-agenda.html">Agenda</a><a class="sidebar-priority sidebar-ai" href="app-ia-profissional.html">IA Profissional</a><a href="app-clientes.html">Clientes</a><a href="app-atendimento-inicial.html">Atendimento inicial</a><a href="app-retorno.html">Retorno</a><a href="app-daj.html">DAJ</a><a href="app-processos.html">Processos</a><a href="app-prazos.html">Prazos</a><a href="app-documentos.html">Documentos</a><a href="app-workspace.html">Workspace</a><a href="app-cofre.html">Cofre Jurídico</a><a href="app-cofre.html">Área Secreta</a><a href="mvp.html">Sair do demo</a></nav></aside><main class="demo-main"><section class="demo-topbar"><div><div class="eyebrow">Ambiente demonstrativo</div><h1 style="font-size:42px;color:#0b1728;margin-top:8px">Jus 9 Advogados</h1><p style="color:#51627a;margin:8px 0 0">Painel estático para demonstrar a direção do MVP. Nenhum dado real é usado nesta página.</p><div class="daj-actions-fixed"><a href="app-atendimento-inicial.html">+ Novo DAJ</a><a href="#novo-dossie">Cadastros DAJ</a><a class="quick-agenda" href="app-agenda.html">Abrir Agenda</a><a class="quick-ai" href="app-ia-profissional.html">Abrir IA Profissional</a><a href="app-perfis.html">Perfis e permissões</a></div></div><span class="badge secret">DEMO • SEM DADOS REAIS</span></section><section class="demo-card ia-professional-spotlight"><div><span class="badge secret">Acesso rápido</span><h2 style="color:#0b1728">IA Profissional do MVP</h2><p style="color:#51627a">Atalho principal para assistência jurídica supervisionada: resumo de DAJ, análise de documentos, pesquisa, minutas, prazos e apoio à Agenda.</p></div><div class="link-actions ia-actions"><a class="primary-action" href="app-ia-profissional.html">Abrir IA Profissional</a><a href="app-agenda.html">Abrir Agenda</a><a href="ia-profissional.html">Ver arquitetura pública</a></div></section>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>DAJ Advogados - Jus 9</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
+  <link rel="stylesheet" href="assets/css/daj-clean-ui.css?v=20260714-daj-clean-ui-v1">
+  <meta name="theme-color" content="#07111f">
+  <link rel="manifest" href="manifest.webmanifest">
+</head>
+<body class="demo-shell daj-workspace-shell">
+  <div class="jus9-autoria-topo" role="note" aria-label="Autoria da producao" style="font-size:.82rem;line-height:1.4;text-align:center;padding:.45rem .75rem;background:rgba(15,23,42,.94);color:#f8fafc">
+    Jus 9 Tecnologia Juridica - software livre, autoria preservada.
+  </div>
 
-    <section id="novo-dossie" class="demo-card profile-adapted-panel">
-      <div class="eyebrow">Dossie adaptado por perfil</div>
-      <h2 style="color:#0b1728">Novo DAJ - DAJ</h2>
-      <p style="color:#51627a">Ambiente de advocacia e defensoria com clientes, partes, processos, equipe e documentos ficticios. Este botao prepara o fluxo visual do MVP; por enquanto nao salva em servidor e nao deve receber dados reais.</p>
-      <div class="link-actions"><a class="primary-action" href="#cadastros-perfil">Abrir cadastros do perfil</a><a href="app-agenda.html">Vincular agenda</a><a href="app-documentos.html">Vincular documentos</a><a href="app-ia-profissional.html">Apoio da IA Profissional</a></div>
-      <p><span class="badge secret">Sem dados reais</span> <span class="badge secret">Sem ato oficial</span> <span class="badge secret">Governanca humana</span></p>
-    </section>
+  <div class="demo-layout">
+    <aside class="demo-sidebar">
+      <img src="assets/jus9-logo.svg" alt="Jus 9">
+      <nav aria-label="Navegacao do DAJ">
+        <a class="active" href="app-demo-advogar.html">Painel</a>
+        <a href="app-atendimento-inicial.html">Atendimento</a>
+        <a href="app-clientes.html">DAJs</a>
+        <a href="app-processos.html">Processos</a>
+        <a href="app-agenda.html">Agenda</a>
+        <a href="app-prazos.html">Prazos</a>
+        <a href="app-documentos.html">Documentos</a>
+        <a href="app-cofre.html">Cofre Juridico</a>
+        <a href="app-workspace.html">Workspace</a>
+        <a href="app-ia-profissional.html">Charlie Echo</a>
+        <a href="app-perfis.html">Perfis e acessos</a>
+        <a href="mvp.html">Sair do demo</a>
+      </nav>
+    </aside>
 
-    <section id="cadastros-perfil" class="demo-card profile-adapted-panel">
-      <div class="eyebrow">Perfis e cadastros proprios</div>
-      <h2 style="color:#0b1728">Cadastros juridicos do Demo 1</h2>
-      <p style="color:#51627a">Perfis sugeridos para este ambiente demonstrativo:</p>
-      <div class="profile-chip-grid"><span class="badge">Advogado titular</span><span class="badge">Defensor publico</span><span class="badge">Cliente ficticio</span><span class="badge">Parte adversa ficticia</span><span class="badge">Assessor juridico</span><span class="badge">Secretaria</span><span class="badge">Estagio supervisionado</span><span class="badge">Correspondente demonstrativo</span></div>
-      <div class="demo-grid profile-module-grid"><article class="mvp-card"><h3>Atendimento inicial</h3><p>Cadastro demonstrativo, ficticio e sujeito a revisao humana.</p></article><article class="mvp-card"><h3>Cliente ou assistido ficticio</h3><p>Cadastro demonstrativo, ficticio e sujeito a revisao humana.</p></article><article class="mvp-card"><h3>Parte e contraparte</h3><p>Cadastro demonstrativo, ficticio e sujeito a revisao humana.</p></article><article class="mvp-card"><h3>Processo demonstrativo</h3><p>Cadastro demonstrativo, ficticio e sujeito a revisao humana.</p></article><article class="mvp-card"><h3>Prazo e audiencia</h3><p>Cadastro demonstrativo, ficticio e sujeito a revisao humana.</p></article><article class="mvp-card"><h3>Documento e cofre juridico</h3><p>Cadastro demonstrativo, ficticio e sujeito a revisao humana.</p></article></div>
-    </section>
-<section class="demo-grid"><a class="demo-card demo-stat" href="app-agenda.html" aria-label="Abrir Agenda para ver prazos próximos"><strong>12</strong><span>prazos próximos</span></a><article class="demo-card demo-stat"><strong>28</strong><span>processos ativos</span></article><article class="demo-card demo-stat"><strong>04</strong><span>casos secretos</span></article><article class="demo-card demo-stat"><strong>86</strong><span>documentos no cofre</span></article></section><section class="demo-grid-2"><article class="demo-card"><h2 style="color:#0b1728">Processos em acompanhamento</h2><table class="demo-table"><thead><tr><th>Processo</th><th>Status</th><th>Sigilo</th></tr></thead><tbody><tr><td>0001234-00.2026.8.24.0000</td><td>Prazo interno</td><td><span class="badge">Restrito</span></td></tr><tr><td>0005678-00.2026.8.24.0000</td><td>Documentos pendentes</td><td><span class="badge secret">Secreto</span></td></tr><tr><td>0009012-00.2026.8.24.0000</td><td>Aguardando audiência</td><td><span class="badge">Equipe</span></td></tr></tbody></table></article><article class="demo-card"><h2 style="color:#0b1728">Área Secreta</h2><p style="color:#51627a">Processos marcados como secretos ficam visíveis apenas ao titular e a usuários expressamente autorizados.</p><p><span class="badge secret">Acesso nominal</span> <span class="badge secret">Logs ativos</span></p><p style="color:#51627a">Próximo passo técnico: autenticação real, banco de dados e políticas de permissão por perfil.</p></article></section><section class="demo-card"><h2 style="color:#0b1728">DAJs em atenção</h2><p style="color:#51627a">Resumo operacional dos dossiês com prazo próximo, urgência ou outra razão de atenção.</p><div class="daj-list"><article class="daj-row"><div class="daj-row-head"><div><h3>DAJ-2026-0001</h3><p>Prazo próximo • Documento pendente • Cliente aguardando retorno</p></div><span class="badge secret">Urgente</span></div><div class="link-actions"><a href="app-daj.html">Abrir DAJ</a><a href="app-agenda.html">Abrir Agenda</a><a href="app-prazos.html">Ver prazo</a><a href="app-retorno.html">Abrir retorno</a></div></article></div></section><section class="demo-card"><h2 style="color:#0b1728">Trilha de auditoria demonstrativa</h2><table class="demo-table"><thead><tr><th>Usuário</th><th>Ação</th><th>Área</th><th>Registro</th></tr></thead><tbody><tr><td>Advogado titular</td><td>Visualizou</td><td>Cofre Jurídico</td><td>Hoje, 09:42</td></tr><tr><td>Secretaria</td><td>Atualizou prazo</td><td>Agenda</td><td>Hoje, 10:18</td></tr><tr><td>Assessoria</td><td>Enviou minuta</td><td>Documentos</td><td>Hoje, 11:03</td></tr></tbody></table></section><section class="daj-card"><h2>Grandes escritórios e gravações</h2><p>Previsão de grupos de escritórios associados e mídias do atendimento no DAJ.</p><div class="link-actions"><a href="app-grupos.html">Grupos e escritórios</a><a href="app-gravacoes.html">Mídias e gravações</a></div></section>
+    <main class="demo-main">
+      <section class="demo-topbar">
+        <div>
+          <div class="eyebrow">DAJ Advogados</div>
+          <h1>Painel de trabalho</h1>
+          <p>Atendimento, dossies, pesquisa processual e analise da Charlie Echo em um fluxo unico.</p>
+        </div>
+        <span class="badge secret">DEMO - SEM DADOS REAIS</span>
+      </section>
 
-<section class="links-semanticos-jus9-v1-5" aria-label="Links institucionais Jus 9" style="margin:2rem auto;max-width:1100px;padding:1rem;border:1px solid rgba(212,180,99,.35);border-radius:18px;background:rgba(15,23,42,.04);font-size:.95rem;line-height:1.6">
-  <strong>Links Jus 9:</strong>
-  <a href="https://equipe.jus9tecnologia.com.br/">Equipe</a> ·
-  <a href="https://investimentos.jus9tecnologia.com.br/">Investimentos</a> ·
-  <a href="https://jus9tecnologia.com.br/mvp#demos-jus9">MVP</a> ·
-  <a href="https://charlieecho.jus9tecnologia.com.br/ia-profissional">Charlie Echo</a> ·
-  <a href="https://jus9verde.jus9tecnologia.com.br/charlie-echo-social">Charlie Echo Social</a> ·
-  <a href="mailto:Contato@jus9tecnologia.com.br">Contato</a>
-</section>
+      <section class="demo-card auth-status-panel daj-clean-context" data-auth-panel data-auth-module="DAJ" data-auth-login="/auth/google/start" data-auth-logout="/auth/logout">
+        <div>
+          <div class="eyebrow">Sessao</div>
+          <h2>Conta e perfil</h2>
+          <p data-auth-status>Verificando sessao segura...</p>
+          <p class="auth-identity-context" data-auth-identity hidden></p>
+          <div class="auth-permission-list" data-auth-permissions hidden></div>
+        </div>
+        <div class="link-actions">
+          <a data-auth-login-link href="/auth/google/start">Entrar com Google</a>
+          <button type="button" data-auth-logout-button hidden>Sair</button>
+          <a href="app-perfis.html">Ver perfis</a>
+        </div>
+      </section>
 
-</main></div><script src="script.js?v=20260531-team-v1"></script>
-<footer class="jus9-autoria-rodape" role="contentinfo" aria-label="Direitos autorais e origem da produção do site" style="font-size: 0.85rem; line-height: 1.5; text-align: center; padding: 1rem 0.75rem; margin-top: 2rem; background: rgba(15, 23, 42, 0.96); color: #f8fafc;">Produção do site: © Jus 9 Tecnologia Jurídica. Software livre com autoria, origem e direitos autorais preservados.</footer>
-<script src="assets/js/pwa-install.js"></script></body></html>
+      <section class="daj-card">
+        <h2>Acoes principais</h2>
+        <div class="daj-role-grid">
+          <article class="daj-role-item">
+            <strong>Novo atendimento</strong>
+            <p>Registre a triagem e crie um DAJ confirmado pelo backend.</p>
+            <div class="link-actions"><a href="app-atendimento-inicial.html">Iniciar</a></div>
+          </article>
+          <article class="daj-role-item">
+            <strong>DAJs e encaminhamentos</strong>
+            <p>Consulte registros salvos, feedbacks e tarefas destinadas ao seu perfil.</p>
+            <div class="link-actions"><a href="app-clientes.html">Abrir DAJs</a></div>
+          </article>
+          <article class="daj-role-item">
+            <strong>Pesquisa processual</strong>
+            <p>Consulte numero CNJ, nome, CPF ou DAJ pelas fontes governadas.</p>
+            <div class="link-actions"><a href="app-processos.html">Pesquisar</a></div>
+          </article>
+          <article class="daj-role-item">
+            <strong>Charlie Echo</strong>
+            <p>Analise DAJs, anexos e fontes em salas independentes.</p>
+            <div class="link-actions"><a href="app-ia-profissional.html">Abrir Charlie</a></div>
+          </article>
+        </div>
+      </section>
 
+      <section class="process-layout">
+        <article class="process-card">
+          <h2>Fluxo do DAJ</h2>
+          <table class="permission-table">
+            <thead><tr><th>Etapa</th><th>Resultado esperado</th></tr></thead>
+            <tbody>
+              <tr><td>1. Atendimento</td><td>DAJ salvo com recibo do indice e do detalhe.</td></tr>
+              <tr><td>2. Analise</td><td>Nova sala, resultado especifico e historico governado.</td></tr>
+              <tr><td>3. Encaminhamento</td><td>Retorno ao autor ou envio ao perfil competente.</td></tr>
+              <tr><td>4. Processo</td><td>Um processo vinculado a cada DAJ, quando existente.</td></tr>
+            </tbody>
+          </table>
+        </article>
+        <article class="process-card">
+          <h2>Ferramentas</h2>
+          <div class="quick-links">
+            <a href="app-agenda.html">Agenda</a>
+            <a href="app-prazos.html">Prazos</a>
+            <a href="app-documentos.html">Documentos</a>
+            <a href="app-cofre.html">Cofre Juridico</a>
+            <a href="app-workspace.html">Workspace</a>
+            <a href="app-perfis.html">Perfis e acessos</a>
+          </div>
+        </article>
+      </section>
 
+      <details class="daj-operational-details">
+        <summary>Estado deste ambiente</summary>
+        <div>
+          <p>O MVP esta em homologacao. Use somente dados ficticios. DAJs reais, documentos sigilosos e atos juridicos dependem de ativacao controlada e revisao humana.</p>
+        </div>
+      </details>
+    </main>
+  </div>
 
+  <script src="script.js?v=20260714-daj-isolated-review-v1"></script>
+  <footer class="jus9-autoria-rodape" role="contentinfo" aria-label="Direitos autorais" style="font-size:.85rem;line-height:1.5;text-align:center;padding:1rem .75rem;background:rgba(15,23,42,.96);color:#f8fafc">
+    Producao do site: Jus 9 Tecnologia Juridica. Software livre com autoria, origem e direitos autorais preservados.
+  </footer>
+  <script src="assets/js/pwa-install.js"></script>
+</body>
+</html>

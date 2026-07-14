@@ -60,7 +60,7 @@ for (const pattern of ["pdfSafeText", "pdfLiteral", "Baixar PDF", "Abrir no Driv
 
 const intakeResponse = await fetch(`${baseUrl}/app-atendimento-inicial.html?audit=charlie-intake-${Date.now()}`);
 const intake = await intakeResponse.text();
-for (const pattern of ["data-daj-intake-form", "data-send-daj-analysis", "Enviar DAJ para análise da Charlie Echo", expectedScript]) {
+for (const pattern of ["data-daj-intake-form", "data-send-daj-analysis", "Enviar DAJ para analise da Charlie Echo", expectedScript, "daj-clean-ui.css?v=20260714-daj-clean-ui-v1"]) {
   if (!intake.includes(pattern)) failures.push(`app-atendimento-inicial.html: ausente ${pattern}`);
 }
 

@@ -43,6 +43,10 @@ const intakePage = await fs.readFile(new URL("../app-atendimento-inicial.html", 
 const intakeScript = await fs.readFile(new URL("../assets/js/daj-intake.js", import.meta.url), "utf8");
 const dajRegistryPage = await fs.readFile(new URL("../app-clientes.html", import.meta.url), "utf8");
 const dajRegistryScript = await fs.readFile(new URL("../assets/js/daj-registry-list.js", import.meta.url), "utf8");
+const dajProfilesPage = await fs.readFile(new URL("../app-perfis.html", import.meta.url), "utf8");
+const dajDashboardPage = await fs.readFile(new URL("../app-demo-advogar.html", import.meta.url), "utf8");
+const dajAiPage = await fs.readFile(new URL("../app-ia-profissional.html", import.meta.url), "utf8");
+const dajCleanStyle = await fs.readFile(new URL("../assets/css/daj-clean-ui.css", import.meta.url), "utf8");
 const installPage = await fs.readFile(new URL("../instalar-app.html", import.meta.url), "utf8");
 const pwaInstallScript = await fs.readFile(new URL("../assets/js/pwa-install.js", import.meta.url), "utf8");
 const canonicalServiceWorker = await fs.readFile(new URL("../service-worker.js", import.meta.url), "utf8");
@@ -139,6 +143,21 @@ assert(!dajRegistryPage.includes("Cliente demonstra") && !dajRegistryPage.includ
 assert(dajRegistryScript.includes("fetch('/api/dajs'") && dajRegistryScript.includes("credentials: 'include'"), "lista de DAJs nao consulta backend autenticado");
 assert(dajRegistryScript.includes("fetch('/api/dajs/inbox'") && dajRegistryScript.includes("renderInboxItem"), "lista de DAJs nao exibe encaminhamentos autenticados");
 assert(dajRegistryScript.includes("textContent") && !dajRegistryScript.includes("item.partyName + '</"), "lista de DAJs nao minimiza risco de injecao ao renderizar dados");
+for (const profile of ["admin_sistema", "advogado_lider", "advogado", "assessor_chefe", "assessor", "secretaria", "estagio", "escritorio", "academia", "estudante", "cidadao", "perito", "parceiro", "empresa", "orgao_publico", "magistrado", "ministerio_publico", "autoridade_policial", "autor_editor"]) {
+  assert(dajProfilesPage.includes(`data-auth-profile="${profile}"`), `lista de perfis sem ${profile}`);
+}
+assert(dajProfilesPage.includes("O perfil vem do login governado") && dajProfilesPage.includes("nao pode ser escolhido livremente"), "pagina de perfis nao explica a governanca do login");
+assert(dajDashboardPage.includes("Painel de trabalho") && !dajDashboardPage.includes("processos ativos"), "painel DAJ ainda usa metricas demonstrativas como dados operacionais");
+for (const page of [dajDashboardPage, intakePage, dajRegistryPage, processPage, dajProfilesPage, dajAiPage]) {
+  assert(page.includes("daj-workspace-shell") && page.includes("daj-clean-ui.css?v=20260714-daj-clean-ui-v1"), "pagina do modelo DAJ sem layout clean isolado");
+  assert(!page.includes("links-semanticos-jus9") && !page.includes("font-size:42px"), "pagina do modelo DAJ ainda contem faixa ou titulo visual redundante");
+  for (const target of ["app-demo-advogar.html", "app-atendimento-inicial.html", "app-clientes.html", "app-processos.html", "app-agenda.html", "app-prazos.html", "app-documentos.html", "app-cofre.html", "app-workspace.html", "app-ia-profissional.html", "app-perfis.html", "mvp.html"]) {
+    assert(page.includes(`href="${target}"`), `menu DAJ incompleto: ${target}`);
+  }
+}
+assert(dajCleanStyle.includes(".daj-workspace-shell") && dajCleanStyle.includes(".daj-role-grid"), "estilo clean DAJ incompleto");
+assert(!processPage.includes("data-tribunal=") && processPage.includes("DataJud Wiki"), "pagina de processos ainda duplica a selecao de tribunais em botoes");
+assert(processPage.includes("app-atendimento-inicial.html?dajId=") && processPage.includes("app-ia-profissional.html?dajId="), "painel processual nao abre o DAJ realmente vinculado");
 assert(wranglerConfig.includes('"binding": "JUS9_DAJ_PROCESS_LINKS"'), "wrangler sem KV oficial DAJ-processo");
 assert(wranglerConfig.includes('"binding": "JUS9_USER_MEMORY"'), "wrangler sem KV dedicado de memoria do usuario");
 assert(wranglerConfig.includes('"binding": "JUS9_DATAJUD_CACHE"'), "wrangler sem KV dedicado do DataJud");
@@ -164,7 +183,7 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v33-2026-07-14-daj-isolated-review"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("jus9-pwa-v34-2026-07-14-daj-clean-ui"), "cache PWA principal desatualizado");
 assert(canonicalServiceWorker.includes("/assets/js/daj-intake.js"), "cache PWA sem cliente do cadastro DAJ");
 assert(canonicalServiceWorker.includes("/assets/js/daj-registry-list.js"), "cache PWA sem lista oficial de DAJs");
 assert(distSyncScript.includes("assets\\js\\daj-intake.js"), "sincronizacao de deploy nao inclui cliente do cadastro DAJ");
@@ -207,7 +226,11 @@ for (const [code, page] of Object.entries(priorityAiPages)) {
 
 for (const page of catalog.profiles.map((profile) => profile.entry_page)) {
   const html = await fs.readFile(new URL(`../${page}`, import.meta.url), "utf8");
-  const expectedScript = page === "app-demo-autor-editor.html" ? "script.js?v=20260621-demo14" : "script.js?v=20260531-team-v1";
+  const expectedScript = page === "app-demo-autor-editor.html"
+    ? "script.js?v=20260621-demo14"
+    : page === "app-demo-advogar.html"
+      ? "script.js?v=20260714-daj-isolated-review-v1"
+      : "script.js?v=20260531-team-v1";
   assert(html.includes(expectedScript), `painel sem versao esperada de script: ${page}`);
 }
 
