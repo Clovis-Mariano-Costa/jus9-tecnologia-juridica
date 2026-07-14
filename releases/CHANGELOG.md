@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.14.0 - 2026-07-14
+
+- Equipe DAJ deixa de ser cadastro ficticio local e passa a usar diretorio governado oficial.
+- Solicitacao propria, convite de gestor, perfis aprovados e auditoria recebem interface unica e clean.
+- Backend separa `profiles:request`, `profiles:read` e `profiles:manage`, com limite por modulo.
+- E-mails do diretorio ficam ocultos para leitores sem gestao.
+- Empresa e Investidor recebem atalho de Agenda.
+
 ## 1.13.0 - 2026-07-14
 
 - Seis telas do DAJ recebem layout clean isolado e menu lateral padronizado.
