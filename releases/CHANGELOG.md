@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.15.0 - 2026-07-14
+
+- Diretorio governado de equipe passa a atender os 14 MVPs com configuracao independente.
+- Cada modulo recebe navegacao e perfis proprios.
+- Aliases INV/ORG continuam compativeis com DIP/DOI.
+- DIC preserva solicitacao pessoal sem expor o diretorio social interno.
+- Matriz autenticada dos 14 modulos e smoke de 16 URLs passam a integrar a validacao.
+
 ## 1.14.0 - 2026-07-14
 
 - Equipe DAJ deixa de ser cadastro ficticio local e passa a usar diretorio governado oficial.
