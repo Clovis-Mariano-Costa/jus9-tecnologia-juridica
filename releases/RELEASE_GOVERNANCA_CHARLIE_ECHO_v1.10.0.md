@@ -44,7 +44,9 @@ hash: commit-77b6d96
 ## Publicacao
 
 - Commit tecnico: `77b6d96`.
-- Worker: `00937709-62aa-4c50-a156-91e4ae441037`.
+- Patch visual: commit `6b4b727`, ocultando a limpeza ate existir DAJ ficticio salvo.
+- Worker inicial: `00937709-62aa-4c50-a156-91e4ae441037`.
+- Worker atual: `3b2c553d-90e3-4fd3-9155-108a9359130c`.
 - URL: `https://jus9tecnologia.com.br/app-atendimento-inicial.html`.
 
 ## Rollback
