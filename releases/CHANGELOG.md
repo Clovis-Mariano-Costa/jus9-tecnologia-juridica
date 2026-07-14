@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.11.0 - 2026-07-14
+
+- Salvamento DAJ passa a devolver comprovante de indice e detalhe persistidos.
+- Cadastro de clientes deixa de exibir exemplos fixos e le a lista oficial autenticada.
+- Envio para Charlie transporta somente `dajId`; a analise rele o detalhe no backend e falha fechada sem ele.
+- Nome, CPF e contato ficam fora do prompt automatico de analise.
+
 ## 1.10.1 - 2026-07-14
 
 - Pagina de atendimento mostra o resultado do login e o perfil autorizado.

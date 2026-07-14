@@ -11,6 +11,10 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Documentacao
 
+## 1.11.0 - 2026-07-14
+
+- Documentado o contrato de persistencia verificavel e handoff backend do DAJ para Charlie Echo.
+
 ## 1.0.0 - 2026-07-12
 
 - Criada area oficial para documentos de governanca, auditoria e evidencias.

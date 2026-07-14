@@ -12,6 +12,7 @@
   var dajState = document.querySelector('[data-daj-state]');
   var loginLink = document.querySelector('[data-daj-login-link]');
   var authStatus = document.querySelector('[data-daj-auth-status]');
+  var officialLink = document.querySelector('[data-daj-official-link]');
   var cpfInput = form.elements.cpf;
   var pendingIdempotencyKey = '';
 
@@ -126,6 +127,21 @@
     deleteButton.style.display = visible ? '' : 'none';
   }
 
+  function setOfficialLink(dajId) {
+    if (!officialLink) return;
+    var visible = /^DAJ-\d{4}-\d{4}$/.test(String(dajId || ''));
+    officialLink.hidden = !visible;
+    officialLink.style.display = visible ? '' : 'none';
+    if (visible) officialLink.href = 'app-clientes.html?dajId=' + encodeURIComponent(dajId);
+  }
+
+  function hasPersistenceReceipt(data) {
+    var receipt = data && data.persistence;
+    var item = data && data.item;
+    return Boolean(receipt && item && receipt.stored === true && receipt.indexWritten === true &&
+      receipt.detailWritten === true && receipt.dajId === item.id);
+  }
+
   function showSavedItem(item) {
     var operational = item.operational || {};
     form.dataset.savedDajId = item.id;
@@ -134,6 +150,7 @@
     if (dajState) dajState.textContent = item.status || 'em triagem';
     if (analysisButton) analysisButton.disabled = false;
     if (saveButton) saveButton.textContent = 'Atualizar atendimento';
+    setOfficialLink(item.id);
     setDeleteButtonVisible(item.testMode === true);
     setControl('partyName', item.partyName);
     setControl('contact', operational.contact);
@@ -181,7 +198,7 @@
         credentials: 'include'
       });
       var data = await response.json().catch(function () { return {}; });
-      if (!response.ok || !data.ok || !data.item) {
+      if (!response.ok || !data.ok || !data.item || data.detailAvailable !== true) {
         setStatus(errorMessage(data, response.status), 'error');
         return;
       }
@@ -218,6 +235,10 @@
         setStatus(errorMessage(data, response.status), 'error');
         return;
       }
+      if (!hasPersistenceReceipt(data)) {
+        setStatus('O servidor respondeu sem comprovante completo de persistencia. Consulte o cadastro oficial antes de repetir; a mesma chave segura foi preservada.', 'error');
+        return;
+      }
 
       showSavedItem(data.item);
       setResumeUrl(data.item.id);
@@ -225,13 +246,44 @@
       var suffix = Number(requestPayload.attachmentsPendingCount || 0)
         ? ' Os anexos selecionados continuam locais e ainda nao foram gravados.'
         : '';
-      setStatus(data.item.id + ' salvo em homologacao. Nome indexado e CPF protegido por correspondencia exata.' + suffix, 'success');
+      var verifiedAt = data.persistence.verifiedAt
+        ? new Date(data.persistence.verifiedAt).toLocaleString('pt-BR')
+        : 'agora';
+      setStatus(data.item.id + ' confirmado no cadastro oficial em ' + verifiedAt + '. Indice e detalhe foram gravados.' + suffix, 'success');
     } catch (_) {
       setStatus('Falha de comunicacao. Tente novamente; a mesma chave segura sera reutilizada para evitar DAJ duplicado.', 'error');
     } finally {
       if (saveButton) saveButton.disabled = false;
     }
   });
+
+  if (analysisButton) {
+    analysisButton.addEventListener('click', async function () {
+      var dajId = currentDajId();
+      if (!/^DAJ-\d{4}-\d{4}$/.test(dajId)) {
+        setStatus('Salve e confirme o DAJ no cadastro oficial antes de enviar para analise.', 'error');
+        return;
+      }
+      analysisButton.disabled = true;
+      setStatus('Confirmando ' + dajId + ' no backend antes de abrir a Charlie...', 'loading');
+      try {
+        var response = await fetch('/api/dajs?dajId=' + encodeURIComponent(dajId), {
+          credentials: 'include',
+          cache: 'no-store'
+        });
+        var data = await response.json().catch(function () { return {}; });
+        if (!response.ok || !data.ok || !data.item || data.item.id !== dajId || data.detailAvailable !== true) {
+          setStatus(errorMessage(data, response.status), 'error');
+          return;
+        }
+        window.location.href = 'app-ia-profissional.html?dajId=' + encodeURIComponent(dajId) + '&autorun=1#chat-ia';
+      } catch (_) {
+        setStatus('Nao foi possivel reler o DAJ oficial. Nenhum rascunho local foi enviado para a Charlie.', 'error');
+      } finally {
+        analysisButton.disabled = false;
+      }
+    });
+  }
 
   if (deleteButton) {
     deleteButton.addEventListener('click', async function () {
@@ -264,6 +316,7 @@
         if (dajState) dajState.textContent = 'triagem inicial';
         if (analysisButton) analysisButton.disabled = true;
         if (saveButton) saveButton.textContent = 'Salvar atendimento e criar DAJ';
+        setOfficialLink('');
         if (cpfInput) {
           cpfInput.required = true;
           cpfInput.placeholder = '000.000.000-00';

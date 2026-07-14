@@ -37,7 +37,7 @@ const checks = [
   {
     name: "DAJ integrado como modelo-mae da Charlie Echo",
     file: "script.js",
-    patterns: ["injectMvpIntegrationPanel", "data-daj-integration-panel", "Contrato DAJ ativo", "DAJ-2026-0001", "initCharliePromptFromUrl", "Resuma o DAJ-2026-0001", "jus9DajInitialAttendanceDraftV1", "appendDajDraftFromUrl", "dajJurisprudenceProductPrompts", "Jurisprudencia governada DAJ", "Argumento com precedente", "Checklist probatorio", "Quadro comparativo", "dajDoctrineBibliographyProductPrompts", "Doutrina e bibliografia DAJ", "Mapa bibliografico", "Sintese doutrinaria", "Ficha de obra"],
+    patterns: ["injectMvpIntegrationPanel", "data-daj-integration-panel", "Contrato DAJ ativo", "DAJ-2026-0001", "initCharliePromptFromUrl", "Resuma o DAJ-2026-0001", "loadGovernedDajAnalysisPrompt", "buildGovernedDajPrompt", "/api/dajs?dajId=", "Nenhum rascunho local foi usado", "dajJurisprudenceProductPrompts", "Jurisprudencia governada DAJ", "Argumento com precedente", "Checklist probatorio", "Quadro comparativo", "dajDoctrineBibliographyProductPrompts", "Doutrina e bibliografia DAJ", "Mapa bibliografico", "Sintese doutrinaria", "Ficha de obra"],
   },
   {
     name: "hub de configuracoes padroniza botoes da Charlie",
@@ -97,7 +97,7 @@ const checks = [
   {
     name: "service worker nao prende MVP antigo",
     file: "service-worker.js",
-    patterns: ["jus9-pwa-v31-2026-07-14-daj-auth-status", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
+    patterns: ["jus9-pwa-v32-2026-07-14-daj-backend-handoff", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
   },
   {
     name: "casa propria da Charlie Echo publicada",
@@ -127,6 +127,11 @@ for (const check of checks) {
 const appIaFiles = fs.readdirSync(root).filter((name) => /^app-ia-.*\.html$/.test(name));
 if (appIaFiles.length !== 14) {
   failures.push(`esperados 14 arquivos app-ia-*.html, encontrados ${appIaFiles.length}`);
+}
+
+const sharedScript = read("script.js");
+if (sharedScript.includes("jus9DajInitialAttendanceDraftV1") || sharedScript.includes("appendDajDraftFromUrl") || sharedScript.includes("dajDraft")) {
+  failures.push("DAJ integrado como modelo-mae da Charlie Echo: handoff ainda depende de rascunho local em script.js");
 }
 for (const file of appIaFiles) {
   const html = read(file);

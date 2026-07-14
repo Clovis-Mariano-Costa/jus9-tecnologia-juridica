@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - APIs
 
+## 1.11.0 - 2026-07-14
+
+- `POST /api/dajs` adiciona recibo `persistence` para indice e detalhe.
+- Replay idempotente rele o detalhe antes de confirmar persistencia completa.
+- Lista e detalhe autenticados tornam-se a unica fonte do cadastro e da analise automatica do DAJ.
+
 ## 1.10.1 - 2026-07-14
 
 - Frontend do DAJ consulta `/api/auth/permissions` antes de habilitar a criacao.

@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.11.0 - 2026-07-14
+
+- Sucesso de gravacao exige comprovante correspondente ao `dajId`, indice e detalhe.
+- O cadastro oficial substitui exemplos locais na continuidade do atendimento.
+- Handoff DAJ-Charlie passa a reler a fonte governada e nao aceita rascunho de navegador.
+- Prompt automatico aplica minimizacao de identidade, CPF e contato.
+
 ## 1.10.1 - 2026-07-14
 
 - Atendimento DAJ passa a confirmar sessao e `dajs:write` antes de liberar gravacao.

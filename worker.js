@@ -1064,6 +1064,7 @@ async function handleDajsReadiness(request, env) {
     writePermission: "dajs:write",
     policy: "cpf_request_only_hmac_at_rest",
     processRequiredAtIntake: false,
+    persistenceReceipt: true,
     homologationCleanup: {
       enabled: true,
       testRecordsOnly: true,
@@ -2057,12 +2058,14 @@ async function saveDajRecord(env, session, request, payload) {
       dajId = normalizeDajIdForLink(idempotencyMarker.dajId);
       previous = items.find((item) => item.id === dajId) || null;
       if (idempotencyMarker.state === "complete" && previous) {
+        const replayDetail = await readDajRecordDetail(env, dajId);
         return {
           status: 200,
           payload: {
             ok: true,
-            item: publicDajRegistryItem(previous),
+            item: publicDajRegistryItem(previous, replayDetail),
             idempotentReplay: true,
+            persistence: dajPersistenceReceipt(previous, true, Boolean(replayDetail)),
             message: "DAJ ja havia sido criado para esta operacao."
           }
         };
@@ -2160,8 +2163,21 @@ async function saveDajRecord(env, session, request, payload) {
       cpfIndexed: Boolean(cpfLookupHashValue),
       processLinked: Boolean(record.processDigits),
       attachmentsStored: false,
+      persistence: dajPersistenceReceipt(record, false, true),
       message: previous ? "Cadastro do DAJ atualizado e indice preservado." : "DAJ criado e parte indexada de forma governada."
     }
+  };
+}
+
+function dajPersistenceReceipt(record, idempotentReplay, detailWritten) {
+  return {
+    stored: true,
+    storage: "JUS9_DAJ_PROCESS_LINKS",
+    indexWritten: true,
+    detailWritten: detailWritten === true,
+    dajId: record?.id || "",
+    verifiedAt: record?.updatedAt || new Date().toISOString(),
+    idempotentReplay: Boolean(idempotentReplay)
   };
 }
 

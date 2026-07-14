@@ -41,6 +41,8 @@ const teamPage = await fs.readFile(new URL("../app-equipe.html", import.meta.url
 const processPage = await fs.readFile(new URL("../app-processos.html", import.meta.url), "utf8");
 const intakePage = await fs.readFile(new URL("../app-atendimento-inicial.html", import.meta.url), "utf8");
 const intakeScript = await fs.readFile(new URL("../assets/js/daj-intake.js", import.meta.url), "utf8");
+const dajRegistryPage = await fs.readFile(new URL("../app-clientes.html", import.meta.url), "utf8");
+const dajRegistryScript = await fs.readFile(new URL("../assets/js/daj-registry-list.js", import.meta.url), "utf8");
 const installPage = await fs.readFile(new URL("../instalar-app.html", import.meta.url), "utf8");
 const pwaInstallScript = await fs.readFile(new URL("../assets/js/pwa-install.js", import.meta.url), "utf8");
 const canonicalServiceWorker = await fs.readFile(new URL("../service-worker.js", import.meta.url), "utf8");
@@ -78,6 +80,9 @@ assert(sharedScript.includes("asksActiveLegalCitationResearch"), "pesquisa ativa
 assert(sharedScript.includes("activeLegalCitationInstruction"), "instrucao de pesquisa ativa ausente");
 assert(sharedScript.includes("pesquisa_citacao_doutrinaria_ativa"), "rota de pesquisa ativa ausente");
 assert(sharedScript.includes("Em pesquisa processual governada, reconheca tres chaves"), "governanca de pesquisa processual nome/CPF ausente");
+assert(sharedScript.includes("loadGovernedDajAnalysisPrompt"), "Charlie nao rele o DAJ governado antes da analise");
+assert(sharedScript.includes("/api/dajs?dajId="), "Charlie sem leitura autenticada do DAJ por identificador");
+assert(!sharedScript.includes("jus9DajInitialAttendanceDraftV1") && !sharedScript.includes("dajDraft"), "handoff para Charlie ainda transporta rascunho local");
 assert(sharedScript.includes("jus9MvpTeamMembersV1"), "persistencia local de equipe ausente");
 assert(sharedScript.includes("jus9MvpTeamAuditV1"), "auditoria local de equipe ausente");
 assert(teamPage.includes("data-team-page"), "pagina compartilhada de equipe sem raiz");
@@ -104,11 +109,12 @@ assert(intakePage.includes("data-daj-intake-form"), "atendimento inicial sem for
 assert(intakePage.includes("/auth/google/start?return_to=%2Fapp-atendimento-inicial.html"), "atendimento inicial sem login com retorno seguro");
 assert(intakePage.includes('name="cpf"') && intakePage.includes('data-sensitive-field="cpf"'), "atendimento inicial sem CPF marcado como sensivel");
 assert(intakePage.includes("data-charlie-exclude"), "atendimento inicial nao exclui dados sensiveis do prompt da Charlie");
-assert(intakePage.includes("assets/js/daj-intake.js?v=20260714-daj-auth-status-v1"), "atendimento inicial sem cliente versionado do estado autenticado");
+assert(intakePage.includes("assets/js/daj-intake.js?v=20260714-daj-backend-handoff-v1"), "atendimento inicial sem cliente versionado do handoff governado");
 assert(intakePage.includes("data-delete-test-daj"), "atendimento inicial sem limpeza governada do registro ficticio");
 assert(intakePage.includes('data-delete-test-daj hidden style="display:none"'), "botao de limpeza deve nascer visualmente oculto");
 assert(intakePage.includes("data-daj-login-link"), "atendimento inicial sem retorno autenticado ao DAJ consultado");
 assert(intakePage.includes("data-daj-auth-status"), "atendimento inicial sem estado visivel da sessao");
+assert(intakePage.includes("data-daj-official-link"), "atendimento inicial sem atalho para conferir o DAJ salvo");
 assert(intakePage.includes("data-save-daj disabled"), "gravacao DAJ deve nascer bloqueada ate confirmar a sessao");
 assert(!intakePage.includes("Demonstração: atendimento inicial salvo"), "atendimento inicial ainda finge salvamento por alerta");
 assert(intakeScript.includes("fetch('/api/dajs'"), "cliente do atendimento nao chama cadastro DAJ");
@@ -121,7 +127,13 @@ assert(intakeScript.includes("setDeleteButtonVisible") && intakeScript.includes(
 assert(intakeScript.includes("resumeDajFromUrl") && intakeScript.includes("searchParams.get('dajId')"), "frontend sem retomada do DAJ por URL");
 assert(intakeScript.includes("checkAuthenticatedSession") && intakeScript.includes("/api/auth/permissions"), "frontend nao confirma permissoes antes de liberar gravacao");
 assert(intakeScript.includes("permissions.indexOf('dajs:write')"), "frontend nao exige dajs:write para liberar o formulario");
+assert(intakeScript.includes("hasPersistenceReceipt") && intakeScript.includes("receipt.detailWritten === true"), "frontend declara sucesso sem comprovante completo de persistencia");
+assert(intakeScript.includes("app-ia-profissional.html?dajId=") && intakeScript.includes("data.detailAvailable !== true"), "envio para Charlie nao confirma detalhe oficial do DAJ");
 assert(!intakeScript.includes("localStorage"), "cliente do cadastro DAJ nao deve persistir atendimento no navegador");
+assert(dajRegistryPage.includes("data-daj-registry-list") && dajRegistryPage.includes("assets/js/daj-registry-list.js"), "cadastro de DAJs nao usa lista oficial dinamica");
+assert(!dajRegistryPage.includes("Cliente demonstra") && !dajRegistryPage.includes("Familia Almeida"), "cadastro de DAJs ainda exibe exemplos fixos como registros");
+assert(dajRegistryScript.includes("fetch('/api/dajs'") && dajRegistryScript.includes("credentials: 'include'"), "lista de DAJs nao consulta backend autenticado");
+assert(dajRegistryScript.includes("textContent") && !dajRegistryScript.includes("item.partyName + '</"), "lista de DAJs nao minimiza risco de injecao ao renderizar dados");
 assert(wranglerConfig.includes('"binding": "JUS9_DAJ_PROCESS_LINKS"'), "wrangler sem KV oficial DAJ-processo");
 assert(wranglerConfig.includes('"binding": "JUS9_USER_MEMORY"'), "wrangler sem KV dedicado de memoria do usuario");
 assert(wranglerConfig.includes('"binding": "JUS9_DATAJUD_CACHE"'), "wrangler sem KV dedicado do DataJud");
@@ -130,6 +142,7 @@ assert(workerSource.includes('originalUrl.pathname === "/api/judicial/datajud/re
 assert(workerSource.includes('originalUrl.pathname === "/api/judicial/pdpj/readiness"'), "worker sem readiness PDPJ");
 assert(workerSource.includes('originalUrl.pathname === "/api/judicial/parties/search"'), "worker sem pesquisa estruturada de partes");
 assert(workerSource.includes('originalUrl.pathname === "/api/dajs"'), "worker sem cadastro DAJ autenticado");
+assert(workerSource.includes("dajPersistenceReceipt") && workerSource.includes('storage: "JUS9_DAJ_PROCESS_LINKS"'), "worker sem comprovante explicito de persistencia DAJ");
 assert(workerSource.includes("idempotency_key_reutilizada_com_payload_diferente"), "worker sem protecao idempotente do cadastro DAJ");
 assert(workerSource.includes("exclui_cadastro_daj_homologacao"), "worker sem auditoria da limpeza de homologacao");
 assert(workerSource.includes("daj-record:tombstone:v1:"), "worker sem tombstone do DAJ ficticio removido");
@@ -143,9 +156,11 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v31-2026-07-14-daj-auth-status"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("jus9-pwa-v32-2026-07-14-daj-backend-handoff"), "cache PWA principal desatualizado");
 assert(canonicalServiceWorker.includes("/assets/js/daj-intake.js"), "cache PWA sem cliente do cadastro DAJ");
+assert(canonicalServiceWorker.includes("/assets/js/daj-registry-list.js"), "cache PWA sem lista oficial de DAJs");
 assert(distSyncScript.includes("assets\\js\\daj-intake.js"), "sincronizacao de deploy nao inclui cliente do cadastro DAJ");
+assert(distSyncScript.includes("assets\\js\\daj-registry-list.js"), "sincronizacao de deploy nao inclui lista oficial de DAJs");
 assert(canonicalServiceWorker.includes("caches.match('/offline.html')"), "fallback de arquivos estaticos do worker principal incorreto");
 
 for (const code of expectedCodes) {

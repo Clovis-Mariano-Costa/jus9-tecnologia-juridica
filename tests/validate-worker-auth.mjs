@@ -979,6 +979,8 @@ response = await worker.fetch(
 );
 data = await response.json();
 assert(response.status === 201 && /^DAJ-\d{4}-\d{4}$/.test(data.item?.id), "cadastro deveria gerar DAJ no servidor");
+assert(data.persistence?.stored === true && data.persistence?.indexWritten === true && data.persistence?.detailWritten === true, "cadastro deveria confirmar persistencia de indice e detalhe");
+assert(data.persistence?.dajId === data.item.id && data.persistence?.idempotentReplay === false, "comprovante deveria corresponder ao DAJ criado");
 assert(data.item.cpfMasked === "***.***.***-09" && data.cpfIndexed === true, "cadastro deveria indexar CPF exato e devolver apenas mascara");
 assert(data.item.processLinked === false && data.item.status === "em_triagem", "DAJ deveria nascer antes do vinculo processual");
 assert(data.item.classification === "JURIDICO_SIGILOSO", "sigilo restrito deveria classificar cadastro como sigiloso");
@@ -1009,6 +1011,7 @@ response = await worker.fetch(
 );
 data = await response.json();
 assert(response.status === 200 && data.idempotentReplay === true && data.item.id === intakeDajId, "repeticao deveria devolver o mesmo DAJ sem duplicar");
+assert(data.persistence?.stored === true && data.persistence?.dajId === intakeDajId && data.persistence?.idempotentReplay === true, "replay deveria devolver comprovante do mesmo DAJ");
 assert(JSON.parse(await dajProcessLinksEnv.JUS9_DAJ_PROCESS_LINKS.get("daj-process-links:index")).length === 1, "repeticao idempotente nao deve duplicar DAJ");
 console.log("AUTH_OK daj-registry-idempotent-replay=200");
 

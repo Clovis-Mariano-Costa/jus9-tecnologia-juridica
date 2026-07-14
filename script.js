@@ -780,87 +780,6 @@ window.jus9DemoLogin = function(form){
 })();
 
 (function(){
-  var storageKey = 'jus9DajInitialAttendanceDraftV1';
-
-  function fieldLabel(field){
-    var label = field.querySelector('label');
-    return label ? String(label.textContent || '').replace(/\s+/g, ' ').trim() : 'Campo';
-  }
-
-  function fieldValue(field){
-    var control = field.querySelector('textarea, select, input');
-    if(!control) return '';
-    if(control.type === 'file'){
-      var files = Array.prototype.slice.call(control.files || []);
-      return files.length ? files.map(function(file){ return file.name; }).join(', ') : 'nenhum arquivo selecionado';
-    }
-    return String(control.value || '').replace(/\s+/g, ' ').trim();
-  }
-
-  function collectDajIntake(form){
-    var fields = Array.prototype.slice.call(form.querySelectorAll('.form-field'))
-      .filter(function(field){ return !field.hasAttribute('data-charlie-exclude'); })
-      .map(function(field){ return { label:fieldLabel(field), value:fieldValue(field) }; });
-    var savedDajId = String(form.dataset.savedDajId || '').trim();
-    return {
-      id:savedDajId || 'DAJ ainda nao salvo',
-      source:savedDajId ? 'Cadastro DAJ governado' : 'Rascunho de atendimento inicial',
-      createdAt:new Date().toISOString(),
-      fields:fields
-    };
-  }
-
-  function buildDajAnalysisPrompt(draft){
-    var filled = (draft.fields || []).filter(function(item){
-      return item.value && !/^nenhum arquivo selecionado$/i.test(item.value);
-    });
-    var lines = [
-      'Leia o DAJ recem-criado a partir do atendimento inicial demonstrativo e faca uma analise da Charlie Echo.',
-      '',
-      'Tarefas:',
-      '1. Organizar fatos relevantes, documentos mencionados, urgencia, sigilo e area juridica provavel.',
-      '2. Indicar riscos, prazos aparentes, documentos faltantes e perguntas de retorno ao cliente.',
-      '3. Sugerir proximos atos do DAJ: triagem, minuta, pesquisa de fontes, checklist, Drive Saver ou revisao humana.',
-      '4. Se os dados parecerem reais, tratar como JURIDICO_SIGILOSO e pedir sanitizacao/revisao humana.',
-      '5. Gerar um relatorio de analise DAJ com formato salvavel no Cartorio Digital Charlie Echo.',
-      '6. Se o backend autorizado permitir, salvar automaticamente o relatorio no Drive Saver sem link publico quando a classificacao for INTERNO ou JURIDICO_SIGILOSO.',
-      '7. Usar este DAJ como modelo-mae replicavel: dossie ativo, fatos, documentos, riscos, fontes, proximo ato humano e politica de Drive.',
-      '',
-      'DAJ previsto: ' + draft.id + '.',
-      'Origem: ' + draft.source + '.'
-    ];
-    if(filled.length){
-      lines.push('', 'Campos preenchidos/selecionados:');
-      filled.forEach(function(item){
-        lines.push('- ' + item.label + ': ' + item.value);
-      });
-    } else {
-      lines.push('', 'Nenhum campo foi preenchido. Use o DAJ demonstrativo e entregue um roteiro de coleta inicial.');
-    }
-    return lines.join('\n');
-  }
-
-  function initDajIntakeAnalysisButton(){
-    var form = document.querySelector('[data-daj-intake-form]');
-    var button = document.querySelector('[data-send-daj-analysis]');
-    if(!form || !button) return;
-    button.addEventListener('click', function(){
-      var draft = collectDajIntake(form);
-      var prompt = buildDajAnalysisPrompt(draft);
-      var draftKey = 'daj-' + Date.now();
-      try {
-        localStorage.setItem(storageKey, JSON.stringify({ id:draftKey, draft:draft, prompt:prompt }));
-      } catch(err) {}
-      var basePrompt = 'Leia o DAJ recem-criado a partir do atendimento inicial demonstrativo, gere relatorio de analise da Charlie Echo e salve no Cartorio Digital se a classificacao governada permitir.';
-      var url = 'app-ia-profissional.html?prompt=' + encodeURIComponent(basePrompt) + '&dajDraft=' + encodeURIComponent(draftKey) + '&autorun=1#chat-ia';
-      window.location.href = url;
-    });
-  }
-
-  initDajIntakeAnalysisButton();
-})();
-
-(function(){
   function escapeHtml(text){
     return String(text || '').replace(/[<>&"]/g, function(ch){
       return ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[ch]);
@@ -4443,28 +4362,108 @@ window.jus9DemoLogin = function(form){
     });
   });
 
-  function appendDajDraftFromUrl(params, prompt){
-    var draftId = params.get('dajDraft');
-    if(!draftId) return prompt;
-    try {
-      var saved = JSON.parse(localStorage.getItem('jus9DajInitialAttendanceDraftV1') || 'null');
-      if(saved && saved.id === draftId && saved.prompt) {
-        return prompt + '\n\n[ATENDIMENTO INICIAL DO DAJ - RASCUNHO LOCAL]\n' + saved.prompt;
-      }
-    } catch(err) {}
-    return prompt + '\n\n[ATENDIMENTO INICIAL DO DAJ]\nRascunho local nao encontrado neste navegador. Use o DAJ demonstrativo e entregue roteiro de coleta inicial.';
+  function validDajId(value){
+    var dajId = String(value || '').trim().toUpperCase();
+    return /^DAJ-\d{4}-\d{4}$/.test(dajId) ? dajId : '';
   }
 
-  function initCharliePromptFromUrl(){
+  function conciseDajValue(value, limit){
+    return String(value || '').replace(/\s+/g, ' ').trim().slice(0, limit);
+  }
+
+  function setActiveDajPresentation(item){
+    var summary = document.querySelector('[data-daj-active-summary]');
+    if(summary){
+      summary.textContent = item.id + ' carregado do cadastro oficial. Status: ' + (item.status || 'em_triagem') +
+        '. Classificacao: ' + (item.classification || 'JURIDICO_SIGILOSO') + '.';
+    }
+    document.querySelectorAll('[data-charlie-prompt]').forEach(function(button){
+      var current = button.getAttribute('data-charlie-prompt') || '';
+      button.setAttribute('data-charlie-prompt', current
+        .replace(/DAJ-\d{4}-\d{4}/g, item.id)
+        .replace(/DAJ ativo/gi, item.id));
+    });
+  }
+
+  function buildGovernedDajPrompt(item){
+    var operational = item.operational || {};
+    var lines = [
+      'Analise o DAJ abaixo, lido agora do cadastro oficial governado da Jus 9.',
+      'Nao trate este conteudo como rascunho local e nao invente fatos, documentos, prazos, fontes ou providencias.',
+      '',
+      'Identificador: ' + item.id,
+      'Status: ' + conciseDajValue(item.status, 80),
+      'Classificacao: ' + conciseDajValue(item.classification, 100),
+      'Processo vinculado: ' + (item.processLinked ? 'sim' : 'nao'),
+      'Area informada: ' + (conciseDajValue(operational.area, 120) || 'nao informada'),
+      'Urgencia informada: ' + (conciseDajValue(operational.urgency, 100) || 'nao informada'),
+      'Razao de atencao: ' + (conciseDajValue(operational.attentionReason, 180) || 'nao informada'),
+      'Nivel de sigilo: ' + (conciseDajValue(operational.secrecyLevel, 100) || 'nao informado'),
+      'Resumo do caso: ' + (conciseDajValue(operational.caseSummary, 2600) || 'nao informado'),
+      'Documentos mencionados: ' + (conciseDajValue(operational.documentsMentioned, 1400) || 'nenhum informado'),
+      'Anexos ainda pendentes: ' + Number(operational.attachmentsPendingCount || 0),
+      'Identidade, CPF e contato da parte foram omitidos deste prompt por minimizacao.',
+      '',
+      'Entregue:',
+      '1. sintese fiel dos fatos informados;',
+      '2. riscos, urgencias e prazos apenas quando sustentados pelo conteudo;',
+      '3. documentos faltantes e perguntas objetivas para completar o DAJ;',
+      '4. proximos atos sugeridos, separados entre acao da equipe e apoio da Charlie;',
+      '5. fontes oficiais ou academicas a consultar quando o tema exigir, sem inventar citacao;',
+      '6. indicacao expressa do que nao pode ser concluido com os dados atuais.'
+    ];
+    return lines.join('\n').slice(0, 6000);
+  }
+
+  async function loadGovernedDajAnalysisPrompt(dajId){
+    var response = await fetch('/api/dajs?dajId=' + encodeURIComponent(dajId), {
+      credentials:'include',
+      cache:'no-store'
+    });
+    var data = await response.json().catch(function(){ return {}; });
+    if(!response.ok || !data.ok || !data.item || data.item.id !== dajId || data.detailAvailable !== true){
+      var error = new Error(response.status === 401
+        ? 'Sessao obrigatoria para ler o DAJ oficial.'
+        : 'O DAJ nao foi confirmado com detalhe no cadastro oficial.');
+      error.status = response.status;
+      throw error;
+    }
+    setActiveDajPresentation(data.item);
+    return buildGovernedDajPrompt(data.item);
+  }
+
+  function showDajLoadFailure(card, message){
+    var windowEl = card && card.querySelector('[data-ai-chat-window]');
+    if(!windowEl) return;
+    var item = document.createElement('div');
+    item.className = 'ai-message ai-message-echo';
+    item.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(message);
+    windowEl.querySelectorAll('.ai-message-empty').forEach(function(empty){ empty.remove(); });
+    windowEl.appendChild(item);
+    keepChatInView(card, item);
+  }
+
+  async function initCharliePromptFromUrl(){
     var params = new URLSearchParams(location.search || '');
     var prompt = params.get('prompt') || params.get('charlie_prompt');
-    if(!prompt) return;
-    prompt = appendDajDraftFromUrl(params, prompt);
+    var dajId = validDajId(params.get('dajId'));
+    if(!prompt && !dajId) return;
     var card = document.querySelector('[data-ai-chat]');
     if(!card) return;
     var input = card.querySelector('[data-ai-chat-input]');
     var form = card.querySelector('[data-ai-chat-form]');
     if(!input || !form) return;
+    if(dajId){
+      try {
+        prompt = await loadGovernedDajAnalysisPrompt(dajId);
+      } catch(err) {
+        var loginHint = err && err.status === 401
+          ? ' Entre com Google e abra novamente o DAJ pela lista oficial.'
+          : ' Volte ao cadastro do DAJ e confirme a gravacao antes de reenviar.';
+        showDajLoadFailure(card, 'Nao iniciei a analise porque nao consegui reler ' + dajId + ' no backend governado.' + loginHint + ' Nenhum rascunho local foi usado.');
+        return;
+      }
+    }
     input.value = String(prompt || '').slice(0, 6000);
     if(location.hash === '#chat-ia') {
       try { card.scrollIntoView({ behavior:'smooth', block:'start' }); } catch(err) {}
@@ -4474,7 +4473,7 @@ window.jus9DemoLogin = function(form){
     }
   }
 
-  initCharliePromptFromUrl();
+  initCharliePromptFromUrl().catch(function(){});
 })();
 
 (function(){

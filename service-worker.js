@@ -4,7 +4,7 @@
   Não armazena dados sensíveis. Não altera login, backend ou rotas protegidas.
 */
 
-const JUS9_CACHE = 'jus9-pwa-v31-2026-07-14-daj-auth-status';
+const JUS9_CACHE = 'jus9-pwa-v32-2026-07-14-daj-backend-handoff';
 const JUS9_ASSETS = [
   '/',
   '/index.html',
@@ -32,6 +32,7 @@ const JUS9_ASSETS = [
   '/manifest.webmanifest',
   '/assets/js/whatsapp-local-demo.js',
   '/assets/js/daj-intake.js',
+  '/assets/js/daj-registry-list.js',
   '/assets/favicon.svg',
   '/assets/jus9-logo.svg',
   '/assets/clovis-founder-portrait.png',

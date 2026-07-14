@@ -118,10 +118,14 @@ assertIncludes(processPage, "cada DAJ corresponde a um unico processo", "vinculo
 assertIncludes(processPage, "bloqueio_daj_ja_vinculado", "vinculo DAJ-processo");
 assertIncludes(processPage, "bloqueio_processo_ja_vinculado", "vinculo DAJ-processo");
 assertIncludes(intakePage, "data-charlie-exclude", "atendimento DAJ exclui campos sensiveis da analise");
-assertIncludes(script, "!field.hasAttribute('data-charlie-exclude')", "coleta DAJ nao envia campos excluidos a Charlie");
-assertIncludes(script, "form.dataset.savedDajId", "analise DAJ usa identificador realmente salvo");
+assertIncludes(script, "Identidade, CPF e contato da parte foram omitidos deste prompt por minimizacao", "analise DAJ minimiza identidade e contato");
+assertIncludes(script, "loadGovernedDajAnalysisPrompt", "analise DAJ rele o cadastro oficial");
+assertIncludes(intakeScript, "form.dataset.savedDajId", "analise DAJ usa identificador realmente salvo");
 assertIncludes(intakeScript, "fetch('/api/dajs'", "atendimento DAJ usa cadastro governado");
+assertIncludes(intakeScript, "app-ia-profissional.html?dajId=", "handoff DAJ envia somente identificador governado");
+assertIncludes(intakeScript, "data.detailAvailable !== true", "handoff DAJ exige detalhe oficial");
 assert(!intakeScript.includes("localStorage"), "cadastro DAJ nao pode guardar CPF ou relato em localStorage");
+assert(!script.includes("jus9DajInitialAttendanceDraftV1") && !script.includes("dajDraft"), "analise DAJ nao pode depender de rascunho local");
 assertIncludes(datajud, "supportedSearchTypes", "DataJud governado");
 assertIncludes(datajud, "datajud_busca_por_parte_indisponivel_na_api_publica", "DataJud governado");
 assertIncludes(datajud, "requer_conector_autorizado_de_partes", "DataJud governado");

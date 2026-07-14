@@ -25,6 +25,7 @@ $files = @(
   'app-agenda.html',
   'service-worker.js',
   'assets\js\daj-intake.js',
+  'assets\js\daj-registry-list.js',
   'data-publica\mvp-perfis.json',
   'assets\clovis-founder-portrait.png',
   'assets\clovis-founder-context.png'

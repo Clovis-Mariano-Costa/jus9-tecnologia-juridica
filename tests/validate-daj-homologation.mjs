@@ -131,6 +131,7 @@ response = await call("/api/dajs", {
 });
 data = await response.json();
 assert(response.status === 201 && data.item?.processLinked === false, "primeiro DAJ deveria nascer no atendimento antes do processo");
+assert(data.persistence?.stored === true && data.persistence?.indexWritten === true && data.persistence?.detailWritten === true, "primeiro DAJ deveria retornar comprovante completo de persistencia");
 const firstDajId = data.item.id;
 
 response = await call("/api/dajs", {
@@ -140,6 +141,7 @@ response = await call("/api/dajs", {
 });
 data = await response.json();
 assert(response.status === 201 && data.item.id !== firstDajId, "mesma parte deveria poder possuir segundo DAJ");
+assert(data.persistence?.stored === true && data.persistence?.dajId === data.item.id, "segundo DAJ deveria retornar comprovante proprio de persistencia");
 const secondDajId = data.item.id;
 
 response = await call("/api/daj-process-links", {
