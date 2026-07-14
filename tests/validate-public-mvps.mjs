@@ -106,6 +106,7 @@ assert(intakePage.includes('name="cpf"') && intakePage.includes('data-sensitive-
 assert(intakePage.includes("data-charlie-exclude"), "atendimento inicial nao exclui dados sensiveis do prompt da Charlie");
 assert(intakePage.includes("assets/js/daj-intake.js?v=20260713-daj-homologation-v1"), "atendimento inicial sem cliente versionado da homologacao reversivel");
 assert(intakePage.includes("data-delete-test-daj"), "atendimento inicial sem limpeza governada do registro ficticio");
+assert(intakePage.includes('data-delete-test-daj hidden style="display:none"'), "botao de limpeza deve nascer visualmente oculto");
 assert(intakePage.includes("data-daj-login-link"), "atendimento inicial sem retorno autenticado ao DAJ consultado");
 assert(!intakePage.includes("Demonstração: atendimento inicial salvo"), "atendimento inicial ainda finge salvamento por alerta");
 assert(intakeScript.includes("fetch('/api/dajs'"), "cliente do atendimento nao chama cadastro DAJ");
@@ -114,6 +115,7 @@ assert(intakeScript.includes("'Idempotency-Key'"), "cadastro DAJ no frontend sem
 assert(intakeScript.includes("cpfInput.value = ''"), "frontend nao limpa CPF integral depois de indexar");
 assert(intakeScript.includes("testMode: true") && intakeScript.includes("environment: 'homologacao'"), "frontend nao marca registros ficticios de homologacao");
 assert(intakeScript.includes("method: 'DELETE'") && intakeScript.includes("EXCLUIR TESTE"), "frontend sem exclusao confirmada do DAJ ficticio");
+assert(intakeScript.includes("setDeleteButtonVisible") && intakeScript.includes("deleteButton.style.display"), "frontend nao governa a visibilidade real da limpeza");
 assert(intakeScript.includes("resumeDajFromUrl") && intakeScript.includes("searchParams.get('dajId')"), "frontend sem retomada do DAJ por URL");
 assert(!intakeScript.includes("localStorage"), "cliente do cadastro DAJ nao deve persistir atendimento no navegador");
 assert(wranglerConfig.includes('"binding": "JUS9_DAJ_PROCESS_LINKS"'), "wrangler sem KV oficial DAJ-processo");

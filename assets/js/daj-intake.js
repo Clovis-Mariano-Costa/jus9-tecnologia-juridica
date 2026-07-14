@@ -78,6 +78,12 @@
     updateLoginLink();
   }
 
+  function setDeleteButtonVisible(visible) {
+    if (!deleteButton) return;
+    deleteButton.hidden = !visible;
+    deleteButton.style.display = visible ? '' : 'none';
+  }
+
   function showSavedItem(item) {
     var operational = item.operational || {};
     form.dataset.savedDajId = item.id;
@@ -86,7 +92,7 @@
     if (dajState) dajState.textContent = item.status || 'em triagem';
     if (analysisButton) analysisButton.disabled = false;
     if (saveButton) saveButton.textContent = 'Atualizar atendimento';
-    if (deleteButton) deleteButton.hidden = item.testMode !== true;
+    setDeleteButtonVisible(item.testMode === true);
     setControl('partyName', item.partyName);
     setControl('contact', operational.contact);
     setControl('area', operational.area);
@@ -220,7 +226,7 @@
           cpfInput.required = true;
           cpfInput.placeholder = '000.000.000-00';
         }
-        deleteButton.hidden = true;
+        setDeleteButtonVisible(false);
         setResumeUrl('');
         setStatus(dajId + ' removido. Apenas tombstone e auditoria sem dados da parte foram preservados.', 'success');
       } catch (_) {
@@ -233,5 +239,6 @@
   }
 
   updateLoginLink();
+  setDeleteButtonVisible(false);
   resumeDajFromUrl();
 })();
