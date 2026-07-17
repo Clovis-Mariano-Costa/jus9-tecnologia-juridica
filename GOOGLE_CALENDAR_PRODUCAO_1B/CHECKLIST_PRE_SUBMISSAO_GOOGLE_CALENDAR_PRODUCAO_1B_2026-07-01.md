@@ -68,3 +68,14 @@ Classificacao: PUBLICO TECNICO / SEM SEGREDOS
 - [x] Criar minuta de resposta ao Google sem publicar segredos.
 - [ ] Responder ao e-mail do Google com a minuta revisada pelo Fundador.
 - [ ] Fornecer conta de teste apenas se o Google solicitar, por canal privado e controlado.
+
+## 8. Novo retorno do Google - 2026-07-17
+
+- [x] Ler retorno pedindo novo video mais abrangente.
+- [x] Identificar exigencias: funcionalidade completa, impacto na conta Google, tela OAuth expandida, correspondencia exata de escopo e Uso Limitado/IA.
+- [x] Criar roteiro de regravacao: `ROTEIRO_REGRAVACAO_VIDEO_GOOGLE_CALENDAR_2026-07-17.md`.
+- [x] Criar minuta de resposta apos novo video: `RESPOSTA_AO_GOOGLE_APOS_NOVO_VIDEO_2026-07-17.md`.
+- [ ] Decidir se manter `calendar.events` ou avaliar troca para `calendar.events.owned`.
+- [ ] Regravar video com evento ficticio aparecendo no Google Calendar da conta de teste.
+- [ ] Publicar video como nao listado.
+- [ ] Responder diretamente ao e-mail do Google com o novo link.
