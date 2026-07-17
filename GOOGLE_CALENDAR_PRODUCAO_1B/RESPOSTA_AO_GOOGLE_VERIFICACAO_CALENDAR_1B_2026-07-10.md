@@ -1,74 +1,73 @@
-# Resposta ao Google - verificacao Calendar Producao 1B
+# Historico - resposta ao Google Calendar 1B de 2026-07-10
 
-Classificacao: INTERNO / SEM SEGREDOS
-Data: 2026-07-10
+Classificacao: HISTORICO / NAO USAR COMO RESPOSTA ATUAL / SEM SEGREDOS
+Data original: 2026-07-10
+Atualizacao de responsabilidade: 2026-07-17
 Projeto Google Cloud: `jus-9-tecnologia-juridica`
 Numero do projeto: `161727838854`
 
-## Orientacao
+## Status deste arquivo
 
-Use o texto em ingles abaixo para responder diretamente ao e-mail do Google depois de revisar o link do video e qualquer conta de teste. Nao incluir senhas publicamente. Se o Google pedir credenciais, envie por canal privado e controlado.
+Este arquivo fica preservado apenas como memoria historica da primeira resposta ao Google.
 
-## Reply draft in English
+Nao usar este texto para responder ao Google a partir de 2026-07-17.
 
-Hello Google OAuth Verification Team,
-
-Thank you for reviewing the Jus 9 Tecnologia Juridica OAuth verification request for project `jus-9-tecnologia-juridica` / project number `161727838854`.
-
-We reviewed your checklist and updated the public documentation and verification materials.
-
-The requested sensitive scope is:
+Motivo: a orientacao antiga usava o escopo:
 
 `https://www.googleapis.com/auth/calendar.events`
 
-The app uses this scope only for a user-facing Google Calendar feature. An authorized, governed user can connect their own Google Calendar from the Jus 9 Agenda screen, review operational event data, and create or update calendar events such as meetings, reminders, and legal workflow appointments. The scope is requested through a separate incremental consent flow, not during basic Google sign-in.
+Depois da revisao de 2026-07-17, a decisao vigente passou a ser o escopo mais estreito:
 
-Basic Google sign-in remains separate and uses only `openid`, `email`, and `profile`. The app does not request Gmail, Drive, Contacts, files, passwords, or broader Google service access for this Calendar verification phase.
+`https://www.googleapis.com/auth/calendar.events.owned`
 
-We chose `calendar.events` as the least-privilege scope because the user-facing feature must create user-reviewed Calendar events. A read-only scope would not support the event creation demonstrated in the app, and the broader Calendar scope is not requested because it would grant more access than required.
+O codigo, as paginas publicas, o roteiro de regravacao e a minuta atual foram alinhados ao escopo `calendar.events.owned`.
 
-The public production app does not expose the new Calendar sensitive flow to general public users while verification is pending. Public users with the `cidadao` profile remain limited to basic demonstrative authentication. The Calendar OAuth flow is available only in a governed verification/test path for authorized profiles and test accounts.
+## Fonte atual de resposta ao Google
 
-Updated public documentation:
+Usar o arquivo atual:
 
-- Privacy Policy: https://jus9tecnologia.com.br/documentos/privacidade.html
-- Google Calendar data use page: https://jus9tecnologia.com.br/documentos/google-calendar.html
-- Google sign-in explanation: https://jus9tecnologia.com.br/documentos/login-google.html
+`GOOGLE_CALENDAR_PRODUCAO_1B/RESPOSTA_AO_GOOGLE_APOS_NOVO_VIDEO_2026-07-17.md`
 
-The Privacy Policy and Calendar page now clearly disclose:
+Usar o roteiro atual:
 
-- what Google user data may be accessed, including raw Calendar event data fields needed by the feature;
-- how that data is used for sign-in, access control, and user-facing Calendar event functionality;
-- that Google user data is not sold, not used for behavioral advertising, not shared with data brokers, and not used for credit or lending decisions;
-- that Google Workspace data, including Calendar data, is not used to train, develop, or improve generalized AI/ML models;
-- how data is protected through HTTPS, secure sessions, profile-based permissions, minimization, environment separation, and controlled encrypted token storage when Calendar is enabled;
-- retention, deletion, revocation, and user request paths, including Google account revocation at https://myaccount.google.com/connections.
+`GOOGLE_CALENDAR_PRODUCAO_1B/ROTEIRO_REGRAVACAO_VIDEO_GOOGLE_CALENDAR_2026-07-17.md`
 
-The demo video was prepared with fictitious data and shows the Google consent flow and Calendar functionality. Video URL submitted in the verification form:
+Antes de responder ao Google, confirmar no Google Cloud Console, em `Google Auth Platform > Acesso a dados`, que o escopo configurado e exatamente:
 
-https://youtu.be/TVTkvGfIGj4
+`https://www.googleapis.com/auth/calendar.events.owned`
 
-Reviewer navigation path:
+## Videos historicos enviados ou testados
 
-1. Open https://jus9tecnologia.com.br/app-agenda.html
-2. Sign in with Google using a governed test account authorized for Calendar verification.
-3. Open the Google Calendar connection flow from the Agenda screen.
-4. Review the Google OAuth consent screen and confirm the Calendar events scope.
-5. Create a fictitious, user-reviewed test event.
-6. Confirm the created event inside the test account's Google Calendar.
+Estes links foram usados ou preparados no ciclo anterior. Eles ficam registrados para continuidade, mas nao substituem a necessidade de seguir a minuta atual se o Google pedir novo video.
 
-No restricted Gmail, Drive, or other restricted scopes are requested in this submission. CASA is therefore not expected to apply to this Calendar-only sensitive-scope request unless Google determines otherwise.
+- `https://youtu.be/TVTkvGfIGj4`
+- `https://youtu.be/bc4wkdYZJEs?si=5GVBZx7TU0EzgXQy`
+- `https://youtu.be/LiRjC4nQB0c?si=ScZ0t0pF6IF1IyFc`
+- `https://youtu.be/TVTkvGfIGj4?si=i7fa_f4Tp4W796zU`
 
-If you need a dedicated governed test account or additional navigation details, we can provide them privately through the verification thread.
+## Resumo historico do que este arquivo representava
 
-Regards,
+Em 2026-07-10, este arquivo orientava uma resposta ao Google explicando:
 
-Jus 9 Tecnologia Juridica
+- identidade do app Jus 9 Tecnologia Juridica;
+- uso separado de login basico com Google;
+- tentativa de verificacao sensivel para Google Calendar;
+- documentacao publica de privacidade e uso de dados;
+- ausencia de Gmail, Drive, Contacts, arquivos, senhas e escopos restritos na fase Calendar;
+- envio de video demonstrativo e conta de teste governada por canal privado, se solicitado.
 
-## Resumo em portugues para o Fundador
+## Decisao superveniente de 2026-07-17
 
-- O Google pediu clareza de escopo, video, ambiente de teste, politica de privacidade, uso limitado e IA/ML.
-- As paginas publicas foram reforcadas para responder esses pontos.
-- O escopo Calendar continua separado do login basico.
-- Gmail e Drive nao foram adicionados.
-- Nao publicar senha no e-mail; se pedirem usuario de teste, enviar por canal privado.
+A decisao atual substituiu a justificativa antiga por uma abordagem de menor privilegio:
+
+- `calendar.events.owned` em vez de `calendar.events`;
+- Calendar separado de `openid`, `email` e `profile`;
+- `GOOGLE_CALENDAR_OAUTH_ENABLED=false` por padrao ate aprovacao final;
+- botao `Desvincular Google Agenda` no MVP;
+- endpoint `POST /api/calendar/disconnect` para remover o grant local de Calendar;
+- instrucao para revogacao externa em `https://myaccount.google.com/connections`;
+- paginas publicas atualizadas em `documentos/privacidade.html` e `documentos/google-calendar.html`.
+
+## Regra de continuidade
+
+Se este arquivo aparecer em busca futura, tratar como historico. A autoridade operacional atual esta no centro de responsabilidade Google e no pacote `GOOGLE_CALENDAR_PRODUCAO_1B` atualizado em 2026-07-17.
