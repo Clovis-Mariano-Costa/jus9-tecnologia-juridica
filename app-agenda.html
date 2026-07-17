@@ -89,6 +89,7 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
         <div class="link-actions">
           <button class="mvp-button" type="button" id="portalCalendarConnectButton">Conectar Google Agenda</button>
           <button class="mvp-button" type="button" id="portalCalendarReloadButton">Listar eventos</button>
+          <button class="mvp-button" type="button" id="portalCalendarDisconnectButton" disabled>Desvincular Google Agenda</button>
         </div>
         <div class="timeline-list" id="portalCalendarEvents" style="margin-top:1rem"></div>
       </article>
@@ -169,37 +170,48 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
     var status = document.getElementById('portalCalendarStatus');
     var eventsBox = document.getElementById('portalCalendarEvents');
     var connect = document.getElementById('portalCalendarConnectButton');
+    var disconnect = document.getElementById('portalCalendarDisconnectButton');
     try {
       var result = await calendarJson('/api/calendar/status');
       if(result.response.status === 401){
         status.textContent = 'Entre com Google antes de conectar a Agenda.';
         calendarConnected = false;
         connect.textContent = 'Entrar e conectar Google Agenda';
+        disconnect.disabled = true;
         return false;
       }
       if(!result.response.ok){
         status.textContent = 'Agenda real indisponivel para este perfil ou ambiente.';
         calendarConnected = false;
+        connect.textContent = 'Conectar Google Agenda';
+        disconnect.disabled = true;
         return false;
       }
       if(result.data.calendar && result.data.calendar.enabled === false){
         status.textContent = 'Google Agenda preparada, mas ainda nao ativada para esta fase.';
         eventsBox.innerHTML = '<div class="timeline-entry"><strong>Calendar Producao 1B</strong><p>A conexao real sera aberta somente apos confirmacao operacional.</p></div>';
         calendarConnected = false;
+        connect.textContent = 'Conectar Google Agenda';
+        disconnect.disabled = true;
         return false;
       }
       if(!result.data.calendar || !result.data.calendar.connected){
         status.textContent = 'Sessao ativa, mas Google Agenda ainda nao conectada.';
         calendarConnected = false;
+        connect.textContent = 'Conectar Google Agenda';
+        disconnect.disabled = true;
         return false;
       }
       status.textContent = 'Google Agenda conectada com permissao governada.';
       calendarConnected = true;
       connect.textContent = 'Reconectar Google Agenda';
+      disconnect.disabled = false;
       return true;
     } catch (error) {
       status.textContent = 'Nao foi possivel verificar a Agenda agora.';
       calendarConnected = false;
+      connect.textContent = 'Conectar Google Agenda';
+      disconnect.disabled = true;
       return false;
     }
   }
@@ -234,6 +246,23 @@ DNA de referencia de Charlie Echo da Costa: charlieecho-jus9-tecnologia-juridica
     document.getElementById('portalIcsButton').addEventListener('click', function(){ downloadIcs(eventPayload()); });
     document.getElementById('portalCalendarConnectButton').addEventListener('click', function(){ window.location.href = '/auth/google/calendar/start?return_to=' + encodeURIComponent('/app-agenda.html'); });
     document.getElementById('portalCalendarReloadButton').addEventListener('click', loadCalendarEvents);
+    document.getElementById('portalCalendarDisconnectButton').addEventListener('click', async function(){
+      var button = document.getElementById('portalCalendarDisconnectButton');
+      if(!calendarConnected) return;
+      if(!window.confirm('Desvincular a Google Agenda deste perfil na Jus 9? Para revogar tambem na Conta Google, use myaccount.google.com/connections.')) return;
+      button.disabled = true;
+      document.getElementById('portalAgendaFeedback').textContent = 'Desvinculando Google Agenda da Jus 9...';
+      var result = await calendarJson('/api/calendar/disconnect', { method:'POST', body:JSON.stringify({}) });
+      if(result.response.ok){
+        calendarConnected = false;
+        document.getElementById('portalAgendaFeedback').textContent = 'Google Agenda desvinculada da Jus 9. Para revogar o acesso no Google, acesse myaccount.google.com/connections.';
+        document.getElementById('portalCalendarEvents').innerHTML = '';
+        await calendarStatus();
+        return;
+      }
+      button.disabled = false;
+      document.getElementById('portalAgendaFeedback').textContent = 'Nao foi possivel desvincular agora. Revise a sessao e tente novamente.';
+    });
     document.getElementById('portalCalendarCreateButton').addEventListener('click', async function(){
       var item = eventPayload();
       document.getElementById('portalAgendaFeedback').textContent = 'Enviando compromisso para Google Agenda governada...';

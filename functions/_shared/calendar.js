@@ -1,6 +1,6 @@
 import { sha256Base64url } from "./oauth.js";
 
-export const GOOGLE_CALENDAR_EVENTS_SCOPE = "https://www.googleapis.com/auth/calendar.events";
+export const GOOGLE_CALENDAR_EVENTS_SCOPE = "https://www.googleapis.com/auth/calendar.events.owned";
 
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
@@ -48,6 +48,13 @@ export async function putCalendarGrant(env, session, token, userInfo = {}) {
   };
   await env.JUS9_CALENDAR_TOKENS.put(key, await encryptJson(grant, env), { expirationTtl: TOKEN_TTL_SECONDS });
   return grant;
+}
+
+export async function deleteCalendarGrant(env, session) {
+  const key = calendarTokenKey(session);
+  if (!env.JUS9_CALENDAR_TOKENS || !key) return false;
+  await env.JUS9_CALENDAR_TOKENS.delete(key);
+  return true;
 }
 
 export async function getCalendarStatus(env, session) {

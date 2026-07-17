@@ -29,14 +29,14 @@ The new video demonstrates:
 - creation of a fictitious user-reviewed event in the Jus 9 app;
 - the same event appearing in the source Google Calendar account;
 - the fact that Gmail, Drive, Contacts, files and passwords are not requested;
-- revocation through Google Account connections;
+- local Google Calendar disconnection inside Jus 9 and revocation through Google Account connections;
 - the Limited Use / AI-ML disclosure for Google Workspace and Calendar data.
 
 The Calendar feature uses Google Calendar data only to provide the user-facing Agenda functionality. The app does not sell Google user data, does not use it for advertising, does not use it for credit or lending decisions, and does not use Google Workspace or Calendar data to train, develop, or improve generalized AI/ML models.
 
 Regarding AI/ML: Jus 9 has AI-related product pages and may use AI tools in product development or separate demonstrative modules, but Google Workspace API data from this Calendar OAuth flow is not transferred to any third-party AI/ML service and is not used for training generalized models. In the Calendar verification flow, no third-party AI/ML provider processes Google Calendar user data.
 
-We also reviewed the requested scope under the minimum-privilege principle. The current submitted scope is `https://www.googleapis.com/auth/calendar.events`, used for user-reviewed Calendar event creation from the Agenda screen. If Google recommends the narrower `https://www.googleapis.com/auth/calendar.events.owned` scope for this specific use case, we are willing to update the app and Google Cloud configuration accordingly before final approval.
+We also reviewed and narrowed the requested scope under the minimum-privilege principle. The current submitted scope is `https://www.googleapis.com/auth/calendar.events.owned`, used for user-reviewed Calendar event creation in calendars owned by the connected user. This matches the app behavior: the Jus 9 Agenda screen lists and creates operational events in the connected user's own primary Google Calendar. Read-only scopes are not sufficient because the user-facing feature creates a reviewed event, and broader Calendar, Gmail, Drive, Contacts, files, and password scopes are not requested.
 
 Regards,
 
@@ -44,12 +44,4 @@ Jus 9 Tecnologia Juridica
 
 ## Nota ao Fundador
 
-Se o novo video mantiver `calendar.events`, esta resposta ja deixa aberta a porta para o Google recomendar `calendar.events.owned`.
-
-Se decidirmos trocar o escopo antes de regravar, atualizar primeiro:
-
-- codigo;
-- Google Cloud Acesso a dados;
-- paginas publicas;
-- texto do video;
-- resposta ao Google.
+Antes de enviar a resposta, substituir `[NEW_VIDEO_URL]` pelo link nao listado do novo video e confirmar que o Google Cloud `Acesso a dados` mostra exatamente `https://www.googleapis.com/auth/calendar.events.owned`.

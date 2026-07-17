@@ -1,6 +1,7 @@
 import {
   GOOGLE_CALENDAR_EVENTS_SCOPE,
   createCalendarEvent,
+  deleteCalendarGrant,
   getCalendarStatus,
   isCalendarOAuthEnabled,
   listCalendarEvents,
@@ -163,6 +164,10 @@ export default {
 
     if (originalUrl.pathname === "/api/calendar/events") {
       return handleCalendarEvents(request, env);
+    }
+
+    if (originalUrl.pathname === "/api/calendar/disconnect") {
+      return handleCalendarDisconnect(request, env);
     }
 
     if (originalUrl.pathname === "/api/tribunais/datajud/status") {
@@ -941,6 +946,27 @@ async function handleCalendarEvents(request, env) {
   return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET, POST" });
 }
 
+async function handleCalendarDisconnect(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  if (request.method !== "POST") {
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "POST" });
+  }
+
+  const session = await getSession(request, env);
+  if (!session) return jsonResponse({ authenticated: false }, 401, corsHeaders);
+  if (!isCalendarOAuthEnabled(env)) {
+    return jsonResponse({ ok: false, error: "calendar_oauth_nao_ativado" }, 403, corsHeaders);
+  }
+  if (!hasPermission(session, "calendar:write")) {
+    return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "calendar:write" }, 403, corsHeaders);
+  }
+
+  return jsonResponse({
+    ok: true,
+    disconnected: await deleteCalendarGrant(env, session)
+  }, 200, corsHeaders);
+}
+
 async function handleDataJudStatus(request, env) {
   const corsHeaders = getAuthCorsHeaders(request);
   if (request.method !== "GET") {
@@ -1492,6 +1518,7 @@ function isAuthCorsPath(pathname) {
     pathname === "/api/attachments/extract" ||
     pathname === "/api/calendar/status" ||
     pathname === "/api/calendar/events" ||
+    pathname === "/api/calendar/disconnect" ||
     pathname === "/api/tribunais/datajud/status" ||
     pathname === "/api/tribunais/datajud/search" ||
     pathname === "/api/dajs/readiness" ||

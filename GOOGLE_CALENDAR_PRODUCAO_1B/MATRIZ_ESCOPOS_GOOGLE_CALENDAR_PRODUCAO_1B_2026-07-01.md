@@ -10,7 +10,7 @@ Data: 2026-07-01
 | `openid` | Identificar sessao Google basica | Login basico | Baixo | Mantido |
 | `email` | Confirmar e-mail verificado | Login basico | Baixo | Mantido |
 | `profile` | Dados publicos minimos do perfil Google | Login basico | Baixo | Mantido |
-| `https://www.googleapis.com/auth/calendar.events` | Ver/criar/editar eventos quando pessoa autorizada conecta Agenda | Calendar 1B | Sensivel | Preparado, desligado por padrao |
+| `https://www.googleapis.com/auth/calendar.events.owned` | Ver/criar/editar eventos em calendarios proprios quando pessoa autorizada conecta Agenda | Calendar 1B | Sensivel | Escolhido, desligado por padrao |
 
 ## Escopos rejeitados nesta fase
 
@@ -40,10 +40,10 @@ Data: 2026-07-01
 - Nao sincronizar dados sensiveis sem revisao humana.
 - Preferir descricoes neutras e operacionais.
 - Agenda Jus 9 interna continua como fonte de verdade.
+- Oferecer `Desvincular Google Agenda` para remover o grant local de Calendar.
 
 ## Referencias oficiais
 
 - Google Calendar API scopes: https://developers.google.com/workspace/calendar/api/auth
 - Google sensitive scope verification: https://developers.google.com/identity/protocols/oauth2/production-readiness/sensitive-scope-verification
 - Google app verification submission: https://support.google.com/cloud/answer/13461325
-

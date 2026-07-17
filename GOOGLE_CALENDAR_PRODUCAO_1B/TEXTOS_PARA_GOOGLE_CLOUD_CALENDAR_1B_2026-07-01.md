@@ -30,7 +30,7 @@ https://jus9tecnologia.com.br/documentos/google-calendar.html
 
 ## Escopo solicitado
 
-`https://www.googleapis.com/auth/calendar.events`
+`https://www.googleapis.com/auth/calendar.events.owned`
 
 ## Justificativa curta em portugues
 
@@ -42,7 +42,7 @@ Jus 9 uses this scope only when an authorized user voluntarily connects their ow
 
 ## Justificativa detalhada em portugues
 
-O produto possui uma Agenda Jus 9 propria para organizar compromissos operacionais. A integracao com Google Calendar funciona como espelho e lembrete escolhido pela pessoa usuaria. O escopo `calendar.events` e solicitado em um fluxo incremental separado de `/auth/google/start`, pela rota `/auth/google/calendar/start`, somente para perfis governados com permissao `calendar:write`.
+O produto possui uma Agenda Jus 9 propria para organizar compromissos operacionais. A integracao com Google Calendar funciona como espelho e lembrete escolhido pela pessoa usuaria. O escopo `calendar.events.owned` e solicitado em um fluxo incremental separado de `/auth/google/start`, pela rota `/auth/google/calendar/start`, somente para perfis governados com permissao `calendar:write`.
 
 O perfil publico `cidadao` nao pode conectar Calendar. Quando a fase sensivel esta desligada, `GOOGLE_CALENDAR_OAUTH_ENABLED=false` impede que qualquer pessoa seja redirecionada ao Google para solicitar Calendar.
 
@@ -50,7 +50,7 @@ Os eventos enviados ao Google Calendar devem conter apenas dados minimos: titulo
 
 ## Detailed justification in English
 
-Jus 9 has its own internal agenda for operational scheduling. The Google Calendar integration is used only as an optional mirror/reminder chosen by the user. The `calendar.events` scope is requested through a separate incremental flow, `/auth/google/calendar/start`, not through the basic sign-in flow. Only governed profiles with the `calendar:write` permission can start this flow.
+Jus 9 has its own internal agenda for operational scheduling. The Google Calendar integration is used only as an optional mirror/reminder chosen by the user. The `calendar.events.owned` scope is requested through a separate incremental flow, `/auth/google/calendar/start`, not through the basic sign-in flow. Only governed profiles with the `calendar:write` permission can start this flow.
 
 The public `cidadao` profile cannot connect Google Calendar. When the sensitive phase is disabled, `GOOGLE_CALENDAR_OAUTH_ENABLED=false` prevents the app from redirecting any user to Google for Calendar consent.
 
@@ -68,11 +68,11 @@ Data received from Google APIs is used only to provide and improve user-facing f
 
 ## Resposta para "How will your app use this scope?"
 
-The app uses `https://www.googleapis.com/auth/calendar.events` only after a separate user consent flow. Authorized users can connect their own Google Calendar from the Jus 9 Agenda screen to list upcoming events and create reviewed operational events. The scope is not requested during basic sign-in, and public users cannot access the Calendar flow. Calendar data is not used for ads, not sold, and not used to train generalized AI models.
+The app uses `https://www.googleapis.com/auth/calendar.events.owned` only after a separate user consent flow. Authorized users can connect their own Google Calendar from the Jus 9 Agenda screen to list upcoming events and create reviewed operational events in calendars they own. The app also lets the user disconnect the local Calendar grant from the Jus 9 Agenda screen. The scope is not requested during basic sign-in, and public users cannot access the Calendar flow. Calendar data is not used for ads, not sold, and not used to train generalized AI models.
 
 ## Resposta para "Why is a narrower scope not sufficient?"
 
-The app needs to create user-reviewed calendar events, not only display availability or read public events. The broad `calendar` scope is not requested because it grants wider calendar management access than needed. Gmail and Drive scopes are not requested. The chosen scope is limited to event-level functionality required for the user-facing Agenda feature.
+The app needs to create user-reviewed calendar events, not only display availability or read public events. A read-only scope is not sufficient because the user-facing Agenda feature creates an operational event after review. The broader `calendar` scope is not requested because it grants wider calendar management access than needed. Gmail and Drive scopes are not requested. The chosen scope is limited to event-level functionality in calendars owned by the connected user.
 
 ## Video demo URL
 
@@ -87,4 +87,4 @@ O Google solicitou reforco de transparencia para escopos sensiveis. As paginas p
 
 Texto curto para resposta:
 
-We reviewed Google's OAuth verification checklist and updated the public Privacy Policy and Google Calendar data-use page. The app requests only `https://www.googleapis.com/auth/calendar.events` for user-reviewed Calendar event functionality. Basic Google sign-in remains separate and uses only `openid`, `email`, and `profile`. Gmail, Drive, Contacts, files, passwords, and broader Google service scopes are not requested in this submission. Google user data is not sold, not used for behavioral advertising, not used for credit/lending decisions, and not used to train generalized AI/ML models.
+We reviewed Google's OAuth verification checklist and updated the public Privacy Policy and Google Calendar data-use page. The app requests only `https://www.googleapis.com/auth/calendar.events.owned` for user-reviewed Calendar event functionality. Basic Google sign-in remains separate and uses only `openid`, `email`, and `profile`. Gmail, Drive, Contacts, files, passwords, and broader Google service scopes are not requested in this submission. Google user data is not sold, not used for behavioral advertising, not used for credit/lending decisions, and not used to train generalized AI/ML models.

@@ -49,7 +49,7 @@ Tenha abertas estas paginas:
 3. Nao adicione Drive.
 4. Nao adicione Gmail.
 5. Para Calendar 1B, preparar o escopo:
-   - `https://www.googleapis.com/auth/calendar.events`
+   - `https://www.googleapis.com/auth/calendar.events.owned`
 
 ## 5. Preencher justificativa
 
@@ -63,7 +63,7 @@ Copie a versao curta ou detalhada conforme o campo do Google.
 
 Use o arquivo:
 
-`ROTEIRO_VIDEO_VERIFICACAO_GOOGLE_CALENDAR_1B_2026-07-01.md`
+`ROTEIRO_REGRAVACAO_VIDEO_GOOGLE_CALENDAR_2026-07-17.md`
 
 Antes de gravar:
 
@@ -72,6 +72,8 @@ Antes de gravar:
 - nao mostre segredo;
 - nao mostre e-mail privado se puder evitar;
 - nao mostre cliente ou processo real.
+- mostre o escopo `https://www.googleapis.com/auth/calendar.events.owned` expandido na tela de consentimento.
+- mostre o botao `Desvincular Google Agenda` depois do teste.
 
 ## 7. Submeter para verificacao
 
@@ -104,4 +106,3 @@ GOOGLE_CALENDAR_OAUTH_ENABLED=true
 
 4. Testar conta governada.
 5. Testar conta publica `cidadao` bloqueada.
-

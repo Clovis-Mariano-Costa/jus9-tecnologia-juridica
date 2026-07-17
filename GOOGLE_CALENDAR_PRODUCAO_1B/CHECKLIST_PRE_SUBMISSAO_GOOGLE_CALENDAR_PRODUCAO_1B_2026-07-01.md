@@ -14,6 +14,8 @@ Classificacao: PUBLICO TECNICO / SEM SEGREDOS
 ## 2. Codigo
 
 - [x] Criar trava `GOOGLE_CALENDAR_OAUTH_ENABLED`.
+- [x] Reduzir escopo Calendar para `https://www.googleapis.com/auth/calendar.events.owned`.
+- [x] Criar endpoint `/api/calendar/disconnect` para desvincular grant local de Calendar.
 - [x] Deixar `GOOGLE_CALENDAR_OAUTH_ENABLED=false` no `wrangler.jsonc`.
 - [x] Bloquear `/auth/google/calendar/start` enquanto a trava estiver desligada.
 - [x] Retornar status `calendar_oauth_nao_ativado` sem pedir escopo ao Google.
@@ -27,7 +29,7 @@ Classificacao: PUBLICO TECNICO / SEM SEGREDOS
 - [ ] Confirmar dominios autorizados.
 - [ ] Confirmar redirect URI `https://jus9tecnologia.com.br/auth/google/callback`.
 - [ ] Confirmar redirect URI `https://www.jus9tecnologia.com.br/auth/google/callback`.
-- [x] Declarar o escopo `https://www.googleapis.com/auth/calendar.events` apenas quando houver submissao.
+- [x] Declarar o escopo `https://www.googleapis.com/auth/calendar.events.owned` apenas quando houver submissao.
 - [x] Preencher justificativa de uso do escopo.
 - [x] Enviar video demonstrando o fluxo.
 - [x] Preparar textos copiaveis para o Google Cloud.
@@ -75,7 +77,8 @@ Classificacao: PUBLICO TECNICO / SEM SEGREDOS
 - [x] Identificar exigencias: funcionalidade completa, impacto na conta Google, tela OAuth expandida, correspondencia exata de escopo e Uso Limitado/IA.
 - [x] Criar roteiro de regravacao: `ROTEIRO_REGRAVACAO_VIDEO_GOOGLE_CALENDAR_2026-07-17.md`.
 - [x] Criar minuta de resposta apos novo video: `RESPOSTA_AO_GOOGLE_APOS_NOVO_VIDEO_2026-07-17.md`.
-- [ ] Decidir se manter `calendar.events` ou avaliar troca para `calendar.events.owned`.
+- [x] Decidir escopo final: `calendar.events.owned`.
+- [ ] Confirmar no Google Cloud que `Acesso a dados` usa exatamente `https://www.googleapis.com/auth/calendar.events.owned`.
 - [ ] Regravar video com evento ficticio aparecendo no Google Calendar da conta de teste.
 - [ ] Publicar video como nao listado.
 - [ ] Responder diretamente ao e-mail do Google com o novo link.

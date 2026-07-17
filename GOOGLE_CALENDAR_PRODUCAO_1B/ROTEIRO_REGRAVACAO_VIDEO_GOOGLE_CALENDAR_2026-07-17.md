@@ -9,7 +9,7 @@ Numero do projeto: `161727838854`
 
 O Google informou que o video anterior nao demonstrou suficientemente:
 
-- por que o escopo `https://www.googleapis.com/auth/calendar.events` e necessario;
+- por que o escopo `https://www.googleapis.com/auth/calendar.events.owned` e necessario;
 - por que escopos mais restritos nao bastariam;
 - a funcionalidade operacional completa do escopo;
 - a tela de consentimento OAuth com escopos totalmente expandidos e legiveis;
@@ -18,14 +18,15 @@ O Google informou que o video anterior nao demonstrou suficientemente:
 
 ## 2. Decisao antes de gravar
 
-Antes de regravar, confirmar com o Fundador:
+Decisao tomada em 2026-07-17:
 
-1. Manter `https://www.googleapis.com/auth/calendar.events`; ou
-2. Avaliar troca para `https://www.googleapis.com/auth/calendar.events.owned`.
+- usar `https://www.googleapis.com/auth/calendar.events.owned`;
+- atualizar o codigo, as paginas publicas e o pacote de verificacao para esse escopo;
+- confirmar no Google Cloud que `Acesso a dados` tambem usa exatamente esse escopo antes de regravar.
 
-Observacao tecnica: o codigo atual usa `calendarId: "primary"` para listar/criar eventos. Como isso tende a operar na agenda principal da propria conta de teste, `calendar.events.owned` pode ser uma opcao mais estreita e mais alinhada ao principio de menor privilegio. Nao alterar no Google Cloud nem no codigo sem confirmacao expressa.
+Observacao tecnica: o codigo usa `calendarId: "primary"` para listar/criar eventos na agenda principal da propria conta conectada. Por isso, `calendar.events.owned` e mais estreito e mais alinhado ao principio de menor privilegio do que `calendar.events`.
 
-Se mantiver `calendar.events`, o video precisa explicar que a funcao prevista e listar e criar eventos operacionais revisados na agenda conectada pelo usuario, e que escopos somente leitura nao bastam porque o usuario precisa criar o evento pelo app.
+O video precisa explicar que a funcao prevista e listar e criar eventos operacionais revisados na agenda conectada pelo usuario, e que escopos somente leitura nao bastam porque o usuario precisa criar o evento pelo app.
 
 ## 3. Preparacao segura
 
@@ -148,14 +149,15 @@ Narracao sugerida em ingles:
 
 Mostrar:
 
-1. `https://myaccount.google.com/connections`
-2. Onde o usuario pode revisar/remover acesso.
-3. Voltar para a Jus 9.
-4. Logout local.
+1. No app, o botao `Desvincular Google Agenda`, explicando que ele remove o grant de Calendar salvo pela Jus 9.
+2. `https://myaccount.google.com/connections`
+3. Onde o usuario pode revisar/remover acesso no Google.
+4. Voltar para a Jus 9.
+5. Logout local.
 
 Narracao sugerida em ingles:
 
-`The user can revoke the app connection from their Google Account connections page. Jus 9 also documents revocation and deletion paths in the privacy policy.`
+`The user can disconnect Google Calendar inside Jus 9. The user can also revoke the app connection from their Google Account connections page. Jus 9 documents revocation and deletion paths in the privacy policy.`
 
 ## 8. Fechamento sobre IA/ML
 

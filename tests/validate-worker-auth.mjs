@@ -7,6 +7,11 @@ import {
   signPayload,
   verifyPayload
 } from "../functions/_shared/oauth.js";
+import {
+  GOOGLE_CALENDAR_EVENTS_SCOPE,
+  getCalendarStatus,
+  putCalendarGrant
+} from "../functions/_shared/calendar.js";
 
 const env = {
   AUTH_COOKIE_SECRET: "segredo-local-ficticio-comprido-para-homologacao",
@@ -676,7 +681,7 @@ response = await worker.fetch(
   calendarEnabledEnv
 );
 assert(response.status === 302, "Agenda com sessao deve redirecionar para Google");
-assert(response.headers.get("location")?.includes("calendar.events"), "OAuth de Agenda deve pedir escopo de eventos");
+assert(response.headers.get("location")?.includes("calendar.events.owned"), "OAuth de Agenda deve pedir escopo de eventos owned");
 const calendarCookie = response.headers.get("set-cookie")?.match(/jus9_calendar_oauth_tx=([^;]+)/)?.[1];
 const calendarTxPayload = await verifyPayload(decodeURIComponent(calendarCookie || ""), calendarEnv);
 assert(calendarTxPayload?.kind === "google_calendar_oauth_tx", "transacao de Agenda nao foi criada");
@@ -702,6 +707,24 @@ response = await worker.fetch(
 assert(response.status === 204, "preflight CORS da Agenda deveria retornar 204");
 assert(response.headers.get("access-control-allow-origin") === "https://universidadedofuturo.jus9tecnologia.com.br", "CORS da Agenda nao liberou subdominio autorizado");
 console.log("AUTH_OK calendar-cors=204");
+
+await putCalendarGrant(
+  calendarEnabledEnv,
+  { emailHash: "hash-admin_sistema", googleSubHash: "google-sub-admin_sistema" },
+  { access_token: "access-token-ficticio", refresh_token: "refresh-token-ficticio", expires_in: 3600, scope: GOOGLE_CALENDAR_EVENTS_SCOPE }
+);
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/calendar/disconnect", {
+    method: "POST",
+    headers: { cookie: await cookieFor("admin_sistema") }
+  }),
+  calendarEnabledEnv
+);
+data = await response.json();
+assert(response.status === 200 && data.disconnected === true, "desvinculo de Agenda deveria apagar grant local");
+const calendarStatusAfterDisconnect = await getCalendarStatus(calendarEnabledEnv, { emailHash: "hash-admin_sistema", googleSubHash: "google-sub-admin_sistema" });
+assert(calendarStatusAfterDisconnect.connected === false, "grant de Agenda deveria sumir apos desvinculo");
+console.log("AUTH_OK calendar-disconnect=200");
 
 response = await request("/api/tribunais/datajud/status");
 data = await response.json();
