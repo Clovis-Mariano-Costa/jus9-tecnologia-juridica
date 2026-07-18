@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.12.0 - 2026-07-18
+
+- Criado cronograma Mao na Massa v2.4.0 com datas concretas, base dos 14 MVPs publicada e porta humana do Pacote 1C preservada.
+- Demo 14 passa a integrar a fila de continuidade com IA Editorial dedicada e smoke test publico.
+- Proximos pacotes ficam condicionados a aceite humano autenticado com dados ficticios quando houver memoria, Drive, DAJ ou indice governado.
+
 ## 1.11.0 - 2026-07-14
 
 - Sucesso de gravacao exige comprovante correspondente ao `dajId`, indice e detalhe.
