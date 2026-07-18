@@ -28,6 +28,7 @@ $files = @(
   'assets\js\daj-registry-list.js',
   'assets\js\governed-team-directory.js',
   'assets\css\daj-clean-ui.css',
+  'assets\css\build-week-reviewer.css',
   'data-publica\mvp-perfis.json',
   'assets\clovis-founder-portrait.png',
   'assets\clovis-founder-context.png'

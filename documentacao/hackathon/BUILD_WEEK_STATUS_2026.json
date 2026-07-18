@@ -1,0 +1,122 @@
+{
+  "metadata": {
+    "id": "JUS9-BUILD-WEEK-STATUS-2026-001",
+    "versao": "1.0.0",
+    "autor": "Codex / Charlie Fox",
+    "revisor_responsavel": "Clovis Mariano da Costa",
+    "data": "2026-07-18",
+    "status": "ativo-controlado",
+    "classificacao": "PUBLICO-INSTITUCIONAL",
+    "hash": "gerar-na-versao-final"
+  },
+  "schemaVersion": "1.0.0",
+  "documentId": "JUS9-BUILD-WEEK-STATUS-2026-001",
+  "updatedAt": "2026-07-18T20:30:00-03:00",
+  "owner": "Clovis Mariano da Costa / Aeon Primevo",
+  "reviewer": "Codex / Charlie Fox",
+  "classification": "PUBLICO-INSTITUCIONAL",
+  "project": {
+    "name": "Jus 9 DAJ",
+    "track": "Work and Productivity",
+    "reviewerUrl": "https://jus9tecnologia.com.br/build-week-2026.html",
+    "repositoryUrl": "https://github.com/Clovis-Mariano-Costa/jus9-tecnologia-juridica",
+    "baselineCommit": "a45ae2cf75221eaf7f3679ad8c20c59146f73ae6",
+    "periodStartPacific": "2026-07-13T09:00:00-07:00",
+    "periodStartBrazil": "2026-07-13T13:00:00-03:00",
+    "submissionDeadlinePacific": "2026-07-21T17:00:00-07:00",
+    "submissionDeadlineBrazil": "2026-07-21T21:00:00-03:00"
+  },
+  "claims": {
+    "significantExtensionAfterStart": {
+      "state": "verified",
+      "evidence": "Git history after the recorded baseline and EVIDENCIAS_BUILD_WEEK_2026.md"
+    },
+    "codexCollaboration": {
+      "state": "verified",
+      "evidence": "Timestamped Codex work record, continuity documents, commits, tests, and releases",
+      "sessionId": "pending_private_attachment"
+    },
+    "openAiApiIntegration": {
+      "state": "verified_in_source",
+      "evidence": "Charlie Echo API source calls OpenAI Responses and active-search endpoints"
+    },
+    "gpt56Runtime": {
+      "state": "unverified",
+      "evidence": "No sanitized deployment attestation is attached; no runtime claim is permitted"
+    },
+    "entrantEligibility": {
+      "state": "blocked_pending_official_clarification",
+      "evidence": "Current Official Rules appear to exclude residents and organizations domiciled in Brazil"
+    }
+  },
+  "integrations": {
+    "openai": {
+      "state": "technical_integration_verified_terms_evidence_pending",
+      "publicDemoPolicy": "No secret, token, private prompt, or unverified model identity may be disclosed"
+    },
+    "cloudflare": {
+      "state": "production_configuration_verified",
+      "publicDemoPolicy": "Use least privilege, Worker authentication, observability, and secret bindings"
+    },
+    "googleDrive": {
+      "state": "governed_proxy_verified_user_authorization_evidence_pending",
+      "publicDemoPolicy": "Use synthetic documents, minimum scopes, and no published credentials"
+    },
+    "datajud": {
+      "state": "read_only_technical_connector_verified_legal_review_pending",
+      "publicDemoPolicy": "Use CNJ number metadata only; no real case data, party search, case files, or transactional act"
+    },
+    "externalPartySearch": {
+      "state": "unavailable_fail_closed",
+      "publicDemoPolicy": "Never replace an unavailable official party search with a generative answer"
+    }
+  },
+  "reviewPath": [
+    {
+      "order": 1,
+      "name": "Fictional DAJ intake",
+      "url": "https://jus9tecnologia.com.br/app-atendimento-inicial.html"
+    },
+    {
+      "order": 2,
+      "name": "Isolated Charlie Echo analysis",
+      "url": "https://jus9tecnologia.com.br/app-ia-profissional.html"
+    },
+    {
+      "order": 3,
+      "name": "Read-only process metadata and linkage",
+      "url": "https://jus9tecnologia.com.br/app-processos.html"
+    },
+    {
+      "order": 4,
+      "name": "Governed DAJ team routing",
+      "url": "https://jus9tecnologia.com.br/app-equipe.html?mvp=DAJ"
+    }
+  ],
+  "submissionArtifacts": {
+    "judgeAccount": {
+      "state": "pending_private_configuration",
+      "publicRepositoryPolicy": "Never commit or publish judge credentials"
+    },
+    "assetRightsDeclaration": {
+      "state": "pending_owner_signoff"
+    },
+    "finalZip": {
+      "state": "deferred_until_technical_freeze",
+      "note": "Owner requested that ZIP finalization happen at the end"
+    },
+    "demoVideo": {
+      "state": "deferred_until_technical_freeze",
+      "note": "Owner requested that recording and publication happen at the end"
+    }
+  },
+  "strictSubmissionBlockers": [
+    "Official written eligibility clarification for a Brazilian resident",
+    "Private Codex Session ID attachment from /feedback",
+    "Least-privilege judge account or isolated sandbox",
+    "Third-party authorization and asset-rights evidence",
+    "Sanitized GPT-5.6 evidence if GPT-5.6 is claimed",
+    "Final ZIP integrity review",
+    "Public demo video under three minutes"
+  ]
+}

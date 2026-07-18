@@ -25,6 +25,10 @@ The focused Build Week demonstration is:
 
 ## Reviewer path
 
+**Start here:** https://jus9tecnologia.com.br/build-week-2026.html
+
+This English reviewer workspace presents the working flow in order, separates verified claims from limitations, and links directly to the reproducible evidence.
+
 ### Public, no-account tour
 
 - Main product: https://jus9tecnologia.com.br/
@@ -147,6 +151,15 @@ node scripts/run-local-ci.mjs
 
 The CI runner validates the public portal and 14 MVPs, Charlie Echo routing and personas, governance structure, response contracts, RLS, Worker authentication, DAJ homologation, backend fail-closed policy, public installation pages, and QR codes.
 
+The competition-specific audit can also be run independently:
+
+```powershell
+node scripts/audit-build-week-readiness.mjs
+node scripts/audit-build-week-readiness.mjs --strict
+```
+
+Regular mode verifies the evidence and reports unresolved submission blockers. Strict mode exits unsuccessfully until eligibility, private evidence, judge access, rights review, final ZIP, and the public video are ready.
+
 Cloudflare configuration can be inspected with:
 
 ```powershell
@@ -219,6 +232,8 @@ Use placeholders in `.env.example`. Provide judge access through a limited test 
 ## Submission package
 
 The supplementary ZIP audited on July 18 contains 32 entries and is 23,730,283 bytes. The chat-only `sandbox:/mnt/data/...` link is not durable. The final package must be uploaded through a stable submission path, visually reviewed, scanned for secrets, accompanied by an asset-rights declaration, and frozen with a SHA-256 hash.
+
+The final ZIP and demo video are intentionally deferred until the technical and evidence freeze requested by the project owner. Their pending state is enforced by `documentacao/hackathon/BUILD_WEEK_STATUS_2026.json` and the strict readiness audit.
 
 ## License and authorship
 

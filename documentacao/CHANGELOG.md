@@ -1,6 +1,6 @@
 ---
 id: DOC-CHARLIE-CHANGELOG-001
-versao: 1.13.0
+versao: 1.14.0
 autor: Codex / Charlie Fox
 revisor_responsavel: Clovis Mariano da Costa
 data: 2026-07-18
@@ -10,6 +10,13 @@ hash: nao-aplicavel-changelog
 ---
 
 # Changelog - Documentacao
+
+## 1.14.0 - 2026-07-18
+
+- Criada rota publica em ingles para o avaliador percorrer intake, analise DAJ, DataJud, vinculo e encaminhamento humano.
+- Preparados rascunho final da Devpost e roteiro tecnico de oito minutos, ambos com alegacoes verificadas e limites expressos.
+- Adicionado manifesto estruturado de prontidao e auditoria automatizada com modo estrito para impedir submissao com bloqueios pendentes.
+- Mantidos ZIP final e video como entregas diferidas ate o congelamento tecnico e de evidencias.
 
 ## 1.13.0 - 2026-07-18
 

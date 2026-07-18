@@ -7,6 +7,12 @@ const githubRoot = path.resolve(portalRoot, "..");
 
 const checks = [
   {
+    label: "Prontidao OpenAI Build Week",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-build-week-readiness.mjs"]
+  },
+  {
     label: "Portal publico e 14 MVPs",
     cwd: portalRoot,
     command: process.execPath,
@@ -136,4 +142,4 @@ for (const check of checks) {
   }
 }
 
-console.log("\nLOCAL_CI_OK portal,rls,sql-homologacao,worker-auth,backend-local,charlie-echo,instalacao-publica,qr-codes");
+console.log("\nLOCAL_CI_OK build-week,portal,rls,sql-homologacao,worker-auth,backend-local,charlie-echo,instalacao-publica,qr-codes");
