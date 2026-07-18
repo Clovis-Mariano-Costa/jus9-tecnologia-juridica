@@ -11,6 +11,11 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.12.1 - 2026-07-18
+
+- Executado pre-aceite tecnico do Pacote 1C com homologacao DAJ, regressao de autenticacao e gate publico vivo.
+- Registrado que o ambiente publico falha fechado sem sessao autorizada e que o aceite humano segue pendente.
+
 ## 1.12.0 - 2026-07-18
 
 - Criado cronograma Mao na Massa v2.4.0 com datas concretas, base dos 14 MVPs publicada e porta humana do Pacote 1C preservada.
