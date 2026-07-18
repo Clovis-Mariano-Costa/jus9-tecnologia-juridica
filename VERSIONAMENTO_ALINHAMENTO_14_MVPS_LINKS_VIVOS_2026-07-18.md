@@ -6,6 +6,7 @@ Classificacao: PUBLICO SANITIZADO / VERSIONAMENTO / SEM SEGREDOS
 
 - Alinhamento das paginas publicas de MVP para o catalogo canonico de 14 ambientes demonstrativos.
 - Inclusao do Demo 14 - DED - Autor / Editora / Autor-Editor no painel do lider MVP.
+- Ajuste da pagina publica do Demo 14 para apontar para a IA Editorial dedicada.
 - Padronizacao de links publicos de Equipe para `https://equipe.jus9tecnologia.com.br/`.
 - Atualizacao do auditor local da Charlie Echo para exigir o contrato publico de 14 ambientes.
 
