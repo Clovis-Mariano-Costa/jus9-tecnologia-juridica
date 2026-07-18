@@ -1,0 +1,27 @@
+JUS 9 DAJ - OPENAI BUILD WEEK 2026
+CANDIDATE PACKAGE V2 - NOT FINAL
+
+PRIMARY REVIEW PATH
+1. README.md
+2. docs/01_PRODUCT_AND_DEMO.md
+3. docs/02_BUILD_WEEK_EVIDENCE.md
+4. docs/03_CODEX_AND_MODEL_DISCLOSURE.md
+5. docs/04_THIRD_PARTY_AND_SAFETY.md
+6. docs/05_GOVERNANCE_SUMMARY.md
+7. docs/06_REVIEWER_CHECKLIST.md
+
+APPROVED COMPLEMENTARY MEDIA
+1. media/11_charlie_echo_governance_card.jpg
+2. media/14_governance_hierarchy.jpg
+
+MISSING BEFORE FINAL
+- real sanitized product screenshots
+- eligibility clarification
+- Codex Session ID
+- GPT-5.6 evidence if claimed
+- judge access path
+- completed asset-rights declaration
+- final video URL
+- final SHA-256
+
+NO INVESTMENT PITCH DECK IS INCLUDED IN V2.

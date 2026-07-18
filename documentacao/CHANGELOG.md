@@ -1,6 +1,6 @@
 ---
 id: DOC-CHARLIE-CHANGELOG-001
-versao: 1.12.0
+versao: 1.13.0
 autor: Codex / Charlie Fox
 revisor_responsavel: Clovis Mariano da Costa
 data: 2026-07-18
@@ -10,6 +10,12 @@ hash: nao-aplicavel-changelog
 ---
 
 # Changelog - Documentacao
+
+## 1.13.0 - 2026-07-18
+
+- Auditado estrutural e visualmente o ZIP original da Build Week, reprovado como pacote final e preservado como evidencia historica.
+- Criado pacote candidato v2 em ingles, sem pitch de investimento e com foco no fluxo funcional DAJ.
+- Registradas pendencias de screenshots reais, direitos de ativos, elegibilidade, Session ID e evidencia de modelo.
 
 ## 1.12.0 - 2026-07-18
 
