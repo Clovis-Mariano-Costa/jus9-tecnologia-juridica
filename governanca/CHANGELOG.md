@@ -11,6 +11,11 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.12.2 - 2026-07-18
+
+- Criado kit de aceite humano do Pacote 1C com dataset ficticio, roteiro de evidencias, condicoes de parada e decisao final.
+- Adicionado auditor estatico do kit para preservar a porta humana, a minimizacao de CPF e o bloqueio contra dados reais.
+
 ## 1.12.1 - 2026-07-18
 
 - Executado pre-aceite tecnico do Pacote 1C com homologacao DAJ, regressao de autenticacao e gate publico vivo.

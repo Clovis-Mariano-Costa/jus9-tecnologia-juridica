@@ -6,6 +6,7 @@ revisor_responsavel: Clovis Mariano da Costa
 data: 2026-07-18
 status: pre-aceite-tecnico-concluido
 classificacao: PUBLICO-INSTITUCIONAL / SEM DADOS REAIS
+hash: nao-aplicavel-pre-aceite
 ---
 
 # Relatorio de pre-aceite - Pacote 1C - DAJ reversivel

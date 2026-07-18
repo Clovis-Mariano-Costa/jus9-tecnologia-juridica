@@ -91,6 +91,12 @@ const checks = [
     args: ["tests/validate-daj-homologation.mjs"]
   },
   {
+    label: "Kit de aceite humano Pacote 1C",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-pacote-1c-acceptance-kit.mjs"]
+  },
+  {
     label: "Backend local fail closed",
     cwd: path.join(githubRoot, "backend-api-jus9-tecnologia-juridica"),
     command: process.execPath,
