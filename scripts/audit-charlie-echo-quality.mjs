@@ -72,7 +72,7 @@ const checks = [
   {
     name: "lider MVP lista ambientes prontos",
     file: "lider-mvp.html",
-    patterns: ["Acesso rapido aos 13 ambientes demonstrativos", "app-demo-advogar.html", "app-demo-delegado.html", "app-ia-profissional.html#chat-ia"],
+    patterns: ["Acesso rapido aos 14 ambientes demonstrativos", "app-demo-advogar.html", "app-demo-delegado.html", "app-demo-autor-editor.html", "app-ia-profissional.html#chat-ia", "app-ia-autor-editor.html#chat-ia"],
   },
   {
     name: "painel de saude publicado",
