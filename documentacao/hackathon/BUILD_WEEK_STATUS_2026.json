@@ -101,6 +101,10 @@
     "assetRightsDeclaration": {
       "state": "pending_owner_signoff"
     },
+    "repositoryHygiene": {
+      "state": "blocked_tracked_legacy_zip_extraction",
+      "note": "The original ZIP extraction remains tracked under tmp and must be removed from the final public HEAD by an explicit owner-approved cleanup"
+    },
     "finalZip": {
       "state": "deferred_until_technical_freeze",
       "note": "Owner requested that ZIP finalization happen at the end"
@@ -115,6 +119,7 @@
     "Private Codex Session ID attachment from /feedback",
     "Least-privilege judge account or isolated sandbox",
     "Third-party authorization and asset-rights evidence",
+    "Owner-approved removal of the tracked legacy ZIP extraction from the final public HEAD",
     "Sanitized GPT-5.6 evidence if GPT-5.6 is claimed",
     "Final ZIP integrity review",
     "Public demo video under three minutes"

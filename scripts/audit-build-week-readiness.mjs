@@ -82,6 +82,7 @@ check(status.integrations?.externalPartySearch?.state === "unavailable_fail_clos
 check(status.integrations?.datajud?.state.includes("read_only"), "DataJud remains read-only", "DataJud must remain read-only in the competition package");
 check(status.submissionArtifacts?.finalZip?.state === "deferred_until_technical_freeze", "final ZIP is explicitly deferred", "Final ZIP deferral was lost");
 check(status.submissionArtifacts?.demoVideo?.state === "deferred_until_technical_freeze", "demo video is explicitly deferred", "Demo video deferral was lost");
+check(status.submissionArtifacts?.repositoryHygiene?.state === "blocked_tracked_legacy_zip_extraction", "tracked legacy ZIP extraction is declared", "Repository hygiene status does not declare the tracked legacy ZIP extraction");
 
 check(/<html\s+lang="en">/i.test(reviewerPage), "reviewer page language", "Reviewer page must declare English");
 check(/id="live-flow"/.test(reviewerPage) && /id="evidence"/.test(reviewerPage) && /id="safety"/.test(reviewerPage), "reviewer page sections", "Reviewer page is missing live flow, evidence, or safety sections");
@@ -156,6 +157,7 @@ try {
 let commitCount = "unknown";
 let diffStat = "unavailable";
 let head = "unknown";
+let trackedTemporaryFiles = [];
 try {
   head = git(["rev-parse", "--short=12", "HEAD"]);
   commitCount = git(["rev-list", "--count", `${baseline}..HEAD`]);
@@ -166,6 +168,9 @@ try {
   const cutoff = Date.parse(status.project.periodStartBrazil);
   const beforeCutoff = datedCommits.filter((line) => Date.parse(line.split("|")[1]) < cutoff);
   check(beforeCutoff.length === 0, "all compared commits are after the event cutoff", `Found ${beforeCutoff.length} compared commit(s) dated before the event cutoff`);
+  trackedTemporaryFiles = git(["ls-files", "tmp"])
+    .split(/\r?\n/)
+    .filter(Boolean);
 } catch (error) {
   errors.push(`Could not reproduce Git evidence: ${error.message}`);
 }
@@ -174,6 +179,7 @@ block(status.claims.entrantEligibility.state !== "verified_eligible", "Entrant e
 block(status.claims.codexCollaboration.sessionId !== "attached_privately", "Codex Session ID from /feedback is not attached privately.");
 block(status.submissionArtifacts.judgeAccount.state !== "ready_private", "Least-privilege judge account or isolated sandbox is not ready.");
 block(status.submissionArtifacts.assetRightsDeclaration.state !== "approved", "Asset-rights declaration is not approved.");
+block(trackedTemporaryFiles.length > 0, `Repository still tracks ${trackedTemporaryFiles.length} temporary ZIP-audit file(s) under tmp.`);
 block(!status.integrations.datajud.state.includes("legal_review_complete"), "DataJud terms review or authorization evidence is incomplete for the demonstrated use.");
 block(status.submissionArtifacts.finalZip.state !== "ready_hashed_scanned", "Final ZIP is deferred and not frozen, scanned, and hashed.");
 block(status.submissionArtifacts.demoVideo.state !== "ready_public_under_3_minutes", "Public demo video under three minutes is deferred.");
@@ -188,6 +194,7 @@ console.log(`baseline=${baseline.slice(0, 12)}`);
 console.log(`head=${head}`);
 console.log(`commits_after_baseline=${commitCount}`);
 console.log(`diff=${diffStat}`);
+console.log(`tracked_tmp_files=${trackedTemporaryFiles.length}`);
 console.log(`checks_passed=${passed.length}`);
 
 for (const warning of warnings) console.log(`WARN ${warning}`);

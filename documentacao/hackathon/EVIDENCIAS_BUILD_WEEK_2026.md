@@ -1,10 +1,10 @@
 ---
 id: JUS9-BUILD-WEEK-EVIDENCIAS-001
-versao: 1.0.0
+versao: 1.1.0
 autor: Codex / Charlie Fox
 revisor_responsavel: Clovis Mariano da Costa
 data: 2026-07-18
-status: em-revisao
+status: ativo-controlado
 classificacao: INTERNO
 hash: nao-aplicavel-ate-aprovacao
 ---
@@ -23,15 +23,17 @@ Repositorio: `Clovis-Mariano-Costa/jus9-tecnologia-juridica`.
 
 - Baseline: `a45ae2cf75221eaf7f3679ad8c20c59146f73ae6`.
 - Baseline registrado em: 13/07/2026, 01:35:10 -03:00.
-- HEAD da auditoria: `e546a9c61e8f3fd3e4634ecee2cf0ddbefbc151f`.
-- Commits no intervalo: 42.
-- Arquivos alterados: 108.
-- Adicoes: 12.067.
-- Remocoes: 1.055.
+- Snapshot congelado da auditoria tecnica: `d052ebea14b8d03def0df788c50d66eb681680ac`.
+- Commits no intervalo ate o snapshot: 52.
+- Arquivos alterados: 185.
+- Adicoes: 15.041.
+- Remocoes: 1.088.
 
 Comparacao, disponivel aos usuarios com acesso ao repositorio:
 
-https://github.com/Clovis-Mariano-Costa/jus9-tecnologia-juridica/compare/a45ae2c...e546a9c
+https://github.com/Clovis-Mariano-Costa/jus9-tecnologia-juridica/compare/a45ae2c...d052ebe
+
+O comando `node scripts/audit-build-week-readiness.mjs` imprime o HEAD e as estatisticas correntes. Os numeros acima permanecem como snapshot reproduzivel, mesmo quando commits documentais posteriores forem adicionados.
 
 ## Entregas representativas
 
@@ -55,6 +57,12 @@ https://github.com/Clovis-Mariano-Costa/jus9-tecnologia-juridica/compare/a45ae2c
 | `5fdf715` | 14/07 15:48 | Remocao do cadastro local legado |
 | `2e082f1` | 17/07 18:10 | Continuidade tecnica consolidada pelo Codex |
 | `e546a9c` | 17/07 20:41 | README preparado para Build Week |
+| `487214e` | 18/07 19:13 | Conformidade, evidencia temporal e integracoes auditadas |
+| `2a1aacc` | 18/07 20:13 | ZIP original reprovado e pacote candidato enxuto preparado |
+| `d42f4bf` | 18/07 20:27 | Kit de aceite humano do DAJ preparado |
+| `d052ebe` | 18/07 20:40 | Rota publica do avaliador e auditoria estrita implementadas |
+
+O intervalo tambem contem commits de extracao e auditoria de artefatos. Esses arquivos nao sao apresentados como funcionalidade nova do produto. A extracao temporaria do ZIP original que permanece rastreada deve ser retirada do HEAD antes da abertura competitiva do repositorio, sem reescrever a evidencia historica sem decisao expressa do responsavel.
 
 ## API central da Charlie Echo
 
@@ -75,13 +83,13 @@ Repositorio: `Clovis-Mariano-Costa/charlieecho-jus9-tecnologia-juridica`.
 ## Comandos de reproducao
 
 ```powershell
-$git = "C:\Users\aeonp\AppData\Local\GitHubDesktop\app-3.6.2\resources\app\git\cmd\git.exe"
 $baseline = "a45ae2cf75221eaf7f3679ad8c20c59146f73ae6"
 
-& $git log "$baseline..HEAD" --reverse --date=iso-strict --pretty=format:"%h|%ad|%an|%s"
-& $git rev-list --count "$baseline..HEAD"
-& $git diff --shortstat "$baseline..HEAD"
-& $git diff --name-only "$baseline..HEAD"
+git log "$baseline..HEAD" --reverse --date=iso-strict --pretty=format:"%h|%ad|%an|%s"
+git rev-list --count "$baseline..HEAD"
+git diff --shortstat "$baseline..HEAD"
+git diff --name-only "$baseline..HEAD"
+node scripts/audit-build-week-readiness.mjs
 ```
 
 ## Evidencia de colaboracao Codex

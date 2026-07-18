@@ -1,6 +1,6 @@
 ---
 id: DOC-CHARLIE-CHANGELOG-001
-versao: 1.14.0
+versao: 1.15.0
 autor: Codex / Charlie Fox
 revisor_responsavel: Clovis Mariano da Costa
 data: 2026-07-18
@@ -10,6 +10,12 @@ hash: nao-aplicavel-changelog
 ---
 
 # Changelog - Documentacao
+
+## 1.15.0 - 2026-07-18
+
+- Atualizado snapshot reproduzivel da Build Week para `d052ebe`, com 52 commits posteriores ao baseline.
+- Diferenciado o snapshot congelado da contagem corrente impressa automaticamente pelo auditor.
+- Registrada a extracao antiga do ZIP ainda rastreada em `tmp` como bloqueio estrito de higiene, sem remover arquivos de outra frente sem aprovacao expressa.
 
 ## 1.14.0 - 2026-07-18
 

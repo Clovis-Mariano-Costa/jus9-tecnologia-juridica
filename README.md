@@ -52,15 +52,17 @@ The public pages can be inspected without credentials, but public availability m
 - Official start: July 13, 2026, 9:00 AM Pacific Time.
 - Evidence cutoff used in Brazil: July 13, 2026, 1:00 PM BRT.
 - Main repository baseline: [`a45ae2c`](https://github.com/Clovis-Mariano-Costa/jus9-tecnologia-juridica/commit/a45ae2cf75221eaf7f3679ad8c20c59146f73ae6).
-- Audited head: [`e546a9c`](https://github.com/Clovis-Mariano-Costa/jus9-tecnologia-juridica/commit/e546a9c61e8f3fd3e4634ecee2cf0ddbefbc151f).
-- Comparison: [`a45ae2c...e546a9c`](https://github.com/Clovis-Mariano-Costa/jus9-tecnologia-juridica/compare/a45ae2c...e546a9c).
+- Frozen technical-audit snapshot: [`d052ebe`](https://github.com/Clovis-Mariano-Costa/jus9-tecnologia-juridica/commit/d052ebea14b8d03def0df788c50d66eb681680ac).
+- Current comparison: [`a45ae2c...main`](https://github.com/Clovis-Mariano-Costa/jus9-tecnologia-juridica/compare/a45ae2c...main).
 
-As audited on July 18:
+At the frozen `d052ebe` snapshot on July 18:
 
-- 42 commits after the baseline;
-- 108 files changed;
-- 12,067 additions;
-- 1,055 deletions.
+- 52 commits after the baseline;
+- 185 files changed;
+- 15,041 additions;
+- 1,088 deletions.
+
+These are reproducible snapshot figures, not a live marketing counter. The readiness audit prints the current Git head and comparison every time it runs.
 
 ### Principal new work
 
