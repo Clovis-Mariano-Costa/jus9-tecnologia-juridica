@@ -49,6 +49,12 @@ const checks = [
     args: ["scripts/audit-mvp-prioritization-matrix.mjs"]
   },
   {
+    label: "Kits demonstrativos DED e DIC",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-mvp-demo-kits.mjs"]
+  },
+  {
     label: "Estrutura versionada de governanca",
     cwd: portalRoot,
     command: process.execPath,

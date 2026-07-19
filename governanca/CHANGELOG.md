@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.12.4 - 2026-07-19
+
+- Criados kits demonstrativos de vitrine para DED e DIC com datasets ficticios, roteiros, evidencias esperadas e condicoes de parada.
+- DED passa a ter prova guiada de autoria/editoria sem promessa de publicacao, ISBN, venda ou Drive real.
+- DIC passa a ter prova guiada social/cidada sem coleta de dado pessoal, sem substituir humano e sem contaminar linguagem pelo DAJ.
+- Adicionado auditor dos kits demonstrativos ao CI local.
+
 ## 1.12.3 - 2026-07-19
 
 - Criada matriz de priorizacao dos 14 MVPs com criterios ponderados, ranking, ondas de execucao e proximas acoes.
