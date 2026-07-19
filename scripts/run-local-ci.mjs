@@ -67,6 +67,12 @@ const checks = [
     args: ["scripts/audit-dic-social-showcase.mjs"]
   },
   {
+    label: "Pacote 5 B2B e pericial",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-package5-b2b-technical-showcases.mjs"]
+  },
+  {
     label: "Estrutura versionada de governanca",
     cwd: portalRoot,
     command: process.execPath,
@@ -131,6 +137,12 @@ const checks = [
     cwd: portalRoot,
     command: process.execPath,
     args: ["scripts/audit-mao-na-massa-v3.mjs"]
+  },
+  {
+    label: "Fechamento Mao na Massa Video ZIP",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-mao-na-massa-final-reminders.mjs"]
   },
   {
     label: "Painel executivo dos MVPs",

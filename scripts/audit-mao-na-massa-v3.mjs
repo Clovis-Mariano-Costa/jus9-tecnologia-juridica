@@ -27,7 +27,12 @@ for (const phrase of [
   "cde1bf89-3d93-4429-a485-be46945bec04",
   "LIVE_DAJ_SEARCH_SMOKE_OK page,js,apis-fail-closed",
   "BLOQUEADO_ATE_REVERSIBILIDADE_1C",
-  "DEPENDENTE_DE_ACAO_HUMANA"
+  "DEPENDENTE_DE_ACAO_HUMANA",
+  "Vitrines seguras `DED`, `DIC`, `DEE`, `DEJI` e `DPJ` publicadas",
+  "PENDENTE_FECHAMENTO_GERAL",
+  "video publico curto",
+  "ZIP final congelado, escaneado e hashado",
+  "O ultimo pacote e sempre a revisao de todos os pacotes"
 ]) {
   assert(cronograma.includes(phrase) || aceiteParcial.includes(phrase), `marco v3 ausente: ${phrase}`);
 }
@@ -50,4 +55,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("MAO_NA_MASSA_V3_OK aceite=parcial daj=DAJ-2026-0002 pacotes=7");
+console.log("MAO_NA_MASSA_V3_OK aceite=parcial daj=DAJ-2026-0002 pacotes=9 fechamento=video-zip-revisao");

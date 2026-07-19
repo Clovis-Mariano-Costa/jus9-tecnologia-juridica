@@ -29,15 +29,15 @@ const packageStatuses = [
   "CONCLUIDO",
   "CONCLUIDO_PUBLICADO",
   "DEPENDENTE_DE_ACAO_HUMANA",
-  "PROXIMO_APOS_VITRINES",
   "BLOQUEADO_ATE_REVERSIBILIDADE_1C",
+  "PENDENTE_FECHAMENTO_GERAL",
 ];
 
 for (const status of packageStatuses) {
   assert(panel.includes(status), `painel executivo sem status ${status}`);
 }
 
-for (const packageNumber of ["0", "1", "2", "3", "4", "5", "6", "7"]) {
+for (const packageNumber of ["0", "1", "2", "3", "4", "5", "6", "7", "8"]) {
   assert(panel.includes(`data-package="${packageNumber}"`), `painel executivo sem Pacote ${packageNumber}`);
 }
 
@@ -56,6 +56,9 @@ for (const target of [
   "app-ia-autor-editor.html#chat-ia",
   "app-demo-cidadao.html",
   "app-ia-cidadao.html#chat-ia",
+  "app-demo-escritorio.html",
+  "app-demo-empresa.html",
+  "app-demo-perito.html",
   "mvp.html",
   "lider-mvp.html",
 ]) {
@@ -65,4 +68,4 @@ for (const target of [
 assert(mvpPage.includes("app-painel-mvps.html"), "mvp.html sem link para painel executivo");
 assert(leaderPage.includes("app-painel-mvps.html"), "lider-mvp.html sem link para painel executivo");
 
-console.log("MVP_EXECUTIVE_PANEL_OK mvps=14 pacotes=8 status=CONCLUIDO_PUBLICADO");
+console.log("MVP_EXECUTIVE_PANEL_OK mvps=14 pacotes=9 status=CONCLUIDO_PUBLICADO fechamento=PENDENTE_FECHAMENTO_GERAL");

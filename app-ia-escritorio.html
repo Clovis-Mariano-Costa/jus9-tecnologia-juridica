@@ -50,7 +50,14 @@
       <article class="mvp-card"><h3>Auditoria</h3><p>Registra pendencia, permissao, evidencias e responsavel humano.</p></article>
     </section>
 
-    <section id="chat-ia" class="demo-card ai-chat-card" data-ai-chat data-ai-layout="medio" data-ai-title="Charlie Escritorio - DEE" data-ai-code="DEE" data-ai-focus="escritorio juridico, equipe, clientes ficticios, tarefas, prazos, documentos, sigilo profissional e permissao por caso">
+    <section class="demo-card" data-dee-prompt-pack>
+      <div class="eyebrow">Pacote de prompts DEE</div>
+      <h2 style="color:#0b1728">Escritorio ficticio pronto para teste</h2>
+      <p style="color:#51627a">Use o dataset <code>DEE-MODELO-VITRINE-2026</code>: <code>Escritorio Alfa Ficticio</code>, <code>CLIENTE-FICTICIO-SEM-DADOS</code> e demanda de prazos/documentos. Peca triagem, responsavel humano, permissao por caso, auditoria e revisao do advogado.</p>
+      <p><span class="badge secret">Sem cliente real</span> <span class="badge secret">Sem processo real</span> <span class="badge secret">Sem honorarios reais</span> <span class="badge secret">Sem assinatura automatica</span></p>
+    </section>
+
+    <section id="chat-ia" class="demo-card ai-chat-card" data-ai-chat data-ai-layout="medio" data-ai-title="Charlie Escritorio - DEE" data-ai-code="DEE" data-ai-focus="escritorio juridico, equipe, clientes ficticios, tarefas, prazos, documentos, sigilo profissional e permissao por caso" data-dee-guardrails>
       <div class="eyebrow">Chat demonstrativo</div>
       <h2 style="color:#0b1728">Falar com Charlie Escritorio</h2>
       <p style="color:#51627a">Use um pedido ficticio. A Charlie deve consultar a API quando necessario, entregar fluxo operacional e proteger sigilo profissional.</p>
@@ -69,10 +76,10 @@
         <div class="ai-message ai-message-echo"><strong>Charlie Echo:</strong> Ola. Estou no DEE. Posso organizar demandas, equipe, prazos, documentos e permissao por caso com sigilo e revisao humana.</div>
       </div>
       <form class="ai-chat-form" data-ai-chat-form>
-        <textarea data-ai-chat-input rows="4" placeholder="No DEE, organize uma demanda ficticia de escritorio com responsavel, prazo, documentos e revisao."></textarea>
+        <textarea data-ai-chat-input rows="4" placeholder="Com o DEE-MODELO-VITRINE-2026, organize uma demanda ficticia com responsavel humano, prazo, permissao por caso e revisao."></textarea>
         <button class="mvp-button" type="submit">Enviar para Charlie Echo</button>
       </form>
-      <div class="fine-note"><strong>Limite:</strong> nao informe cliente real, processo real, documento sigiloso, honorarios reais, WhatsApp, tokens, senhas, arquivos internos ou segredos profissionais.</div>
+      <div class="fine-note"><strong>Limite:</strong> nao informe cliente real, processo real, documento sigiloso, honorarios reais, WhatsApp, tokens, senhas, arquivos internos ou segredos profissionais. Charlie nao assina, nao protocola, nao decide estrategia final e nao substitui o advogado responsavel.</div>
     </section>
   </main>
 </div>

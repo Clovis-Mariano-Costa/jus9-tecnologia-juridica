@@ -50,7 +50,14 @@
       <article class="mvp-card"><h3>Risco</h3><p>Organiza probabilidade, impacto, prioridade e decisao revisavel.</p></article>
     </section>
 
-    <section id="chat-ia" class="demo-card ai-chat-card" data-ai-chat data-ai-layout="medio" data-ai-title="Charlie Empresa - DEJI" data-ai-code="DEJI" data-ai-focus="juridico interno, demandas corporativas, contratos, fornecedores, compliance, LGPD, riscos e pareceres demonstrativos">
+    <section class="demo-card" data-deji-prompt-pack>
+      <div class="eyebrow">Pacote de prompts DEJI</div>
+      <h2 style="color:#0b1728">Juridico interno ficticio pronto para teste</h2>
+      <p style="color:#51627a">Use o dataset <code>DEJI-MODELO-VITRINE-2026</code>: <code>Empresa Beta Ficticia</code>, contrato ficticio de fornecedor, compliance e LGPD demonstrativos. Peca matriz de risco, aprovacao humana e proximos passos revisaveis.</p>
+      <p><span class="badge secret">Sem contrato real</span> <span class="badge secret">Sem fornecedor real</span> <span class="badge secret">Sem dado financeiro real</span> <span class="badge secret">Sem aprovacao automatica</span></p>
+    </section>
+
+    <section id="chat-ia" class="demo-card ai-chat-card" data-ai-chat data-ai-layout="medio" data-ai-title="Charlie Empresa - DEJI" data-ai-code="DEJI" data-ai-focus="juridico interno, demandas corporativas, contratos, fornecedores, compliance, LGPD, riscos e pareceres demonstrativos" data-deji-guardrails>
       <div class="eyebrow">Chat demonstrativo</div>
       <h2 style="color:#0b1728">Falar com Charlie Empresa</h2>
       <p style="color:#51627a">Use um pedido ficticio. A Charlie deve consultar a API quando necessario, entregar matriz corporativa e marcar limites de decisao, sigilo e revisao humana.</p>
@@ -69,10 +76,10 @@
         <div class="ai-message ai-message-echo"><strong>Charlie Echo:</strong> Ola. Estou no DEJI. Posso organizar demandas internas, contratos, fornecedores, compliance, LGPD e riscos com decisao humana revisavel.</div>
       </div>
       <form class="ai-chat-form" data-ai-chat-form>
-        <textarea data-ai-chat-input rows="4" placeholder="No DEJI, classifique uma demanda contratual ficticia por risco, area, documentos e aprovacao."></textarea>
+        <textarea data-ai-chat-input rows="4" placeholder="Com o DEJI-MODELO-VITRINE-2026, classifique uma demanda contratual ficticia por risco, area, LGPD, compliance e aprovacao humana."></textarea>
         <button class="mvp-button" type="submit">Enviar para Charlie Echo</button>
       </form>
-      <div class="fine-note"><strong>Limite:</strong> nao informe contrato real, dados financeiros, segredo empresarial, fornecedor real, dados pessoais, tokens, senhas ou documentos internos.</div>
+      <div class="fine-note"><strong>Limite:</strong> nao informe contrato real, dados financeiros, segredo empresarial, fornecedor real, dados pessoais, tokens, senhas ou documentos internos. Charlie nao aprova fornecedor, nao assina contrato, nao decide pela empresa e nao substitui juridico, compliance ou diretoria.</div>
     </section>
   </main>
 </div>

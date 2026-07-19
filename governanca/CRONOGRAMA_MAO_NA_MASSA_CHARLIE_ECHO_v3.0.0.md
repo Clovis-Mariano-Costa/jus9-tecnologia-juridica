@@ -20,6 +20,8 @@ Base em 2026-07-19:
 - `DAJ-2026-0002` confirmado no cadastro oficial em `2026-07-19 13:44:32 BRT`, com indice e detalhe gravados.
 - Pacote 1C esta em `ACEITE_HUMANO_PARCIAL_CONFIRMADO / REVERSIBILIDADE_PENDENTE`.
 - Consulta governada em `app-clientes.html` publicada para DAJ, nome, CPF exato, numero de processo e detalhes seguros.
+- Vitrines seguras `DED`, `DIC`, `DEE`, `DEJI` e `DPJ` publicadas com dados ficticios, guardrails e revisao humana.
+- Lembrete final obrigatorio registrado: revisar todos os pacotes, preparar video publico curto e congelar ZIP final escaneado e hashado.
 - Commit de referencia da consulta: `a142825 feat: consulta governada de dajs por chaves`.
 - Deploy de referencia: `cde1bf89-3d93-4429-a485-be46945bec04`.
 - Smoke publico: `LIVE_DAJ_SEARCH_SMOKE_OK page,js,apis-fail-closed`.
@@ -115,17 +117,17 @@ Entregas:
 
 ### Pacote 5 - DEE, DEJI e DPJ
 
-Estado: `PROXIMO_APOS_VITRINES`.
+Estado: `CONCLUIDO_PUBLICADO`.
 
 Objetivo:
 
 - Replicar a matriz DAJ para mercados juridicos proximos, mantendo permissao, auditoria e personalidade propria.
 
-Ordem:
+Entregas:
 
-1. `DEE` - escritorio juridico.
-2. `DEJI` - empresa / juridico interno.
-3. `DPJ` - perito judicial.
+- `DEE` - escritorio juridico com dataset ficticio, permissao por caso, sigilo profissional, auditoria e revisao do advogado.
+- `DEJI` - empresa / juridico interno com contrato ficticio, compliance, LGPD, risco e decisao humana.
+- `DPJ` - perito judicial com quesitos ficticios, metodo, cadeia tecnica, contraditorio e assinatura humana.
 
 ### Pacote 6 - Memoria e Drive
 
@@ -139,12 +141,28 @@ Nao iniciar enquanto o Pacote 1C nao estiver fechado ou enquanto a reversibilida
 
 ### Pacote 7 - Painel executivo dos 14 MVPs
 
-Estado: `PRONTO_PARA_EXECUCAO_SEGURA`.
+Estado: `CONCLUIDO_PUBLICADO`.
 
 Objetivo:
 
 - Criar visao executiva de prontidao, riscos, evidencias, commits, deploys e proximas portas para os 14 MVPs.
 
+### Pacote 8 - Revisao geral, Video e ZIP
+
+Estado: `PENDENTE_FECHAMENTO_GERAL`.
+
+Objetivo:
+
+- Revisar todos os pacotes do Mao na Massa antes de declarar encerramento.
+- Lembrar e preparar o video publico curto.
+- Lembrar e preparar o ZIP final congelado, escaneado e hashado.
+
+Regra:
+
+- O ultimo pacote e sempre a revisao de todos os pacotes.
+- O video nao pode mostrar conta, token, CPF, documento real, processo real, Drive real ou dado sensivel.
+- O ZIP nao pode conter credenciais, `.env`, tokens, sessoes, arquivos reais, dados pessoais ou evidencias privadas.
+
 ## Proxima acao
 
-Executar primeiro os pacotes seguros `3`, `4` e `7` se a porta humana do Pacote 2 nao estiver disponivel. Quando houver sessao autorizada, voltar ao Pacote 2 e fechar a reversibilidade do `DAJ-2026-0002`.
+Quando houver sessao autorizada, voltar ao Pacote 2 e fechar a reversibilidade do `DAJ-2026-0002`. Enquanto isso, manter o Pacote 6 bloqueado e preparar o Pacote 8 somente no fim: revisao geral, video e ZIP.

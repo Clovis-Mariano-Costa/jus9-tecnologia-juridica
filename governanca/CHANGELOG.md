@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.13.0 - 2026-07-19
+
+- Publicado Pacote 5 com vitrines `DEE`, `DEJI` e `DPJ`, cada uma com dataset ficticio, checklist governado, pacote de prompts e guardrails de revisao humana.
+- Registrado checklist final obrigatorio do Mao na Massa: revisao geral de todos os pacotes, video publico curto e ZIP final congelado, escaneado e hashado.
+- Painel executivo passa a marcar o Pacote 5 como `CONCLUIDO_PUBLICADO` e o Pacote 8 como `PENDENTE_FECHAMENTO_GERAL`.
+
 ## 1.12.9 - 2026-07-19
 
 - Publicada vitrine social DIC com dataset ficticio, checklist anti-PII, fonte oficial e encaminhamento humano.

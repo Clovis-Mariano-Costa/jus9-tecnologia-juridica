@@ -55,6 +55,13 @@ const dedDashboardPage = await fs.readFile(new URL("../app-demo-autor-editor.htm
 const dedAiShowcasePage = await fs.readFile(new URL("../app-ia-autor-editor.html", import.meta.url), "utf8");
 const dicDashboardPage = await fs.readFile(new URL("../app-demo-cidadao.html", import.meta.url), "utf8");
 const dicAiShowcasePage = await fs.readFile(new URL("../app-ia-cidadao.html", import.meta.url), "utf8");
+const deeDashboardPage = await fs.readFile(new URL("../app-demo-escritorio.html", import.meta.url), "utf8");
+const deeAiShowcasePage = await fs.readFile(new URL("../app-ia-escritorio.html", import.meta.url), "utf8");
+const dejiDashboardPage = await fs.readFile(new URL("../app-demo-empresa.html", import.meta.url), "utf8");
+const dejiAiShowcasePage = await fs.readFile(new URL("../app-ia-empresa.html", import.meta.url), "utf8");
+const dpjDashboardPage = await fs.readFile(new URL("../app-demo-perito.html", import.meta.url), "utf8");
+const dpjAiShowcasePage = await fs.readFile(new URL("../app-ia-perito.html", import.meta.url), "utf8");
+const finalChecklistPage = await fs.readFile(new URL("../governanca/CHECKLIST_FECHAMENTO_MAO_NA_MASSA_VIDEO_ZIP_REVISAO_GERAL_2026-07-19.md", import.meta.url), "utf8");
 const installPage = await fs.readFile(new URL("../instalar-app.html", import.meta.url), "utf8");
 const pwaInstallScript = await fs.readFile(new URL("../assets/js/pwa-install.js", import.meta.url), "utf8");
 const canonicalServiceWorker = await fs.readFile(new URL("../service-worker.js", import.meta.url), "utf8");
@@ -176,7 +183,9 @@ assert(mvpExecutivePanelPage.includes("a142825") && mvpExecutivePanelPage.includ
 assert(mvpExecutivePanelPage.includes("BLOQUEADO_ATE_REVERSIBILIDADE_1C") && mvpExecutivePanelPage.includes("DEPENDENTE_DE_ACAO_HUMANA"), "painel executivo sem bloqueios de governanca");
 assert(mvpExecutivePanelPage.includes('data-package="3" data-package-status="CONCLUIDO_PUBLICADO"'), "painel executivo nao marca DED como Pacote 3 publicado");
 assert(mvpExecutivePanelPage.includes('data-package="4" data-package-status="CONCLUIDO_PUBLICADO"'), "painel executivo nao marca DIC como Pacote 4 publicado");
-assert(mvpExecutivePanelPage.includes("app-clientes.html#consulta-daj") && mvpExecutivePanelPage.includes("app-demo-autor-editor.html") && mvpExecutivePanelPage.includes("app-demo-cidadao.html"), "painel executivo sem atalhos DAJ/DED/DIC");
+assert(mvpExecutivePanelPage.includes('data-package="5" data-package-status="CONCLUIDO_PUBLICADO"'), "painel executivo nao marca Pacote 5 como publicado");
+assert(mvpExecutivePanelPage.includes('data-package="8" data-package-status="PENDENTE_FECHAMENTO_GERAL"'), "painel executivo sem pacote final de revisao/video/zip");
+assert(mvpExecutivePanelPage.includes("app-clientes.html#consulta-daj") && mvpExecutivePanelPage.includes("app-demo-autor-editor.html") && mvpExecutivePanelPage.includes("app-demo-cidadao.html") && mvpExecutivePanelPage.includes("app-demo-escritorio.html") && mvpExecutivePanelPage.includes("app-demo-empresa.html") && mvpExecutivePanelPage.includes("app-demo-perito.html"), "painel executivo sem atalhos DAJ/DED/DIC/DEE/DEJI/DPJ");
 for (const code of expectedCodes) {
   assert(mvpExecutivePanelPage.includes(`<span class="rank-code">${code}</span>`), `painel executivo sem codigo ${code}`);
 }
@@ -193,6 +202,13 @@ assert(dicDashboardPage.includes("DIC-MODELO-VITRINE-2026") && dicDashboardPage.
 assert(dicAiShowcasePage.includes("data-dic-prompt-pack") && dicAiShowcasePage.includes("data-dic-guardrails"), "IA DIC sem pacote de prompts ou guardrails");
 assert(dicAiShowcasePage.includes("Charlie nao substitui advogado, Defensoria, orgao publico, saude, policia, emergencia ou decisao humana"), "IA DIC sem limite humano completo");
 assert(!dicDashboardPage.includes("Digite seu CPF") && !dicAiShowcasePage.includes("envie documento real"), "DIC ainda sugere coleta de dado real");
+assert(deeDashboardPage.includes("data-dee-showcase") && deeDashboardPage.includes("DEE-MODELO-VITRINE-2026") && deeDashboardPage.includes("CLIENTE-FICTICIO-SEM-DADOS"), "DEE sem vitrine e dataset ficticio");
+assert(deeAiShowcasePage.includes("data-dee-prompt-pack") && deeAiShowcasePage.includes("data-dee-guardrails") && deeAiShowcasePage.includes("Charlie nao assina, nao protocola, nao decide estrategia final"), "IA DEE sem guardrails");
+assert(dejiDashboardPage.includes("data-deji-showcase") && dejiDashboardPage.includes("DEJI-MODELO-VITRINE-2026") && dejiDashboardPage.includes("Fornecedor Demonstrativo Sem Dados Reais"), "DEJI sem vitrine e dataset ficticio");
+assert(dejiAiShowcasePage.includes("data-deji-prompt-pack") && dejiAiShowcasePage.includes("data-deji-guardrails") && dejiAiShowcasePage.includes("Charlie nao aprova fornecedor"), "IA DEJI sem guardrails");
+assert(dpjDashboardPage.includes("data-dpj-showcase") && dpjDashboardPage.includes("DPJ-MODELO-VITRINE-2026") && dpjDashboardPage.includes("Perito Delta Ficticio"), "DPJ sem vitrine e dataset ficticio");
+assert(dpjAiShowcasePage.includes("data-dpj-prompt-pack") && dpjAiShowcasePage.includes("data-dpj-guardrails") && dpjAiShowcasePage.includes("Charlie nao conclui fato tecnico sem evidencia"), "IA DPJ sem guardrails");
+assert(finalChecklistPage.includes("O ultimo pacote do Mao na Massa e sempre a revisao geral de todos os pacotes") && finalChecklistPage.includes("Video") && finalChecklistPage.includes("ZIP"), "checklist final sem revisao geral, video e ZIP");
 for (const profile of ["admin_sistema", "advogado_lider", "advogado", "assessor_chefe", "assessor", "secretaria", "estagio", "escritorio", "academia", "estudante", "cidadao", "perito", "parceiro", "empresa", "orgao_publico", "magistrado", "ministerio_publico", "autoridade_policial", "autor_editor"]) {
   assert(dajProfilesPage.includes(`data-auth-profile="${profile}"`), `lista de perfis sem ${profile}`);
 }

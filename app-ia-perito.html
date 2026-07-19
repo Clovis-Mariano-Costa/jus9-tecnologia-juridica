@@ -50,7 +50,14 @@
       <article class="mvp-card"><h3>Laudo</h3><p>Estrutura objeto, metodologia, achados, respostas e limitacoes para revisao.</p></article>
     </section>
 
-    <section id="chat-ia" class="demo-card ai-chat-card" data-ai-chat data-ai-layout="medio" data-ai-title="Charlie Perito - DPJ" data-ai-code="DPJ" data-ai-focus="pericia judicial, quesitos, metodo, diligencias, evidencias, laudo, cadeia tecnica e revisao humana">
+    <section class="demo-card" data-dpj-prompt-pack>
+      <div class="eyebrow">Pacote de prompts DPJ</div>
+      <h2 style="color:#0b1728">Pericia ficticia pronta para teste</h2>
+      <p style="color:#51627a">Use o dataset <code>DPJ-MODELO-VITRINE-2026</code>: <code>Perito Delta Ficticio</code>, quesitos periciais ficticios, anexos simulados e metodo antes de conclusao. Peca roteiro de laudo, cadeia tecnica, contraditorio e assinatura humana.</p>
+      <p><span class="badge secret">Sem evidencia real</span> <span class="badge secret">Sem processo real</span> <span class="badge secret">Sem laudo final automatico</span> <span class="badge secret">Assinatura humana</span></p>
+    </section>
+
+    <section id="chat-ia" class="demo-card ai-chat-card" data-ai-chat data-ai-layout="medio" data-ai-title="Charlie Perito - DPJ" data-ai-code="DPJ" data-ai-focus="pericia judicial, quesitos, metodo, diligencias, evidencias, laudo, cadeia tecnica e revisao humana" data-dpj-guardrails>
       <div class="eyebrow">Chat demonstrativo</div>
       <h2 style="color:#0b1728">Falar com Charlie Perito</h2>
       <p style="color:#51627a">Use um pedido ficticio. A Charlie deve consultar a API quando necessario, estruturar produto pericial e deixar claro o que depende de evidencia ou revisao humana.</p>
@@ -69,10 +76,10 @@
         <div class="ai-message ai-message-echo"><strong>Charlie Echo:</strong> Ola. Estou no DPJ. Posso organizar quesitos, metodo, anexos, diligencias e laudo demonstrativo com rastreabilidade e revisao humana.</div>
       </div>
       <form class="ai-chat-form" data-ai-chat-form>
-        <textarea data-ai-chat-input rows="4" placeholder="No DPJ, crie um checklist pericial demonstrativo com quesitos, metodo, evidencias e limites."></textarea>
+        <textarea data-ai-chat-input rows="4" placeholder="Com o DPJ-MODELO-VITRINE-2026, crie checklist pericial ficticio com quesitos, metodo, cadeia tecnica, limites e assinatura humana."></textarea>
         <button class="mvp-button" type="submit">Enviar para Charlie Echo</button>
       </form>
-      <div class="fine-note"><strong>Limite:</strong> nao informe dados reais, processos reais, documentos sigilosos, pericia real, WhatsApp, tokens, senhas, arquivos internos ou evidencias verdadeiras.</div>
+      <div class="fine-note"><strong>Limite:</strong> nao informe dados reais, processos reais, documentos sigilosos, pericia real, WhatsApp, tokens, senhas, arquivos internos ou evidencias verdadeiras. Charlie nao conclui fato tecnico sem evidencia, nao assina laudo e nao substitui perito habilitado, juizo ou assistente tecnico.</div>
     </section>
   </main>
 </div>
