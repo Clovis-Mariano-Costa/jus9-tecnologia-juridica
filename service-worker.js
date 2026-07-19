@@ -4,12 +4,16 @@
   Não armazena dados sensíveis. Não altera login, backend ou rotas protegidas.
 */
 
-const JUS9_CACHE = 'jus9-pwa-v37-2026-07-14-team-local-cleanup';
+const JUS9_CACHE = 'jus9-pwa-v38-2026-07-19-build-week-state-map';
 const JUS9_ASSETS = [
   '/',
   '/index.html',
+  '/saiba-mais.html',
+  '/versionamento.html',
+  '/build-week-2026.html',
   '/mvp.html',
   '/mvp-o-que-ja-funciona.html',
+  '/app-painel-mvps.html',
   '/demo-01-advogado-defensor.html',
   '/app-demo-advogar.html',
   '/demo-14-autor-editor.html',
@@ -42,7 +46,8 @@ const JUS9_ASSETS = [
   '/assets/clovis-founder-portrait.png',
   '/assets/clovis-founder-context.png',
   '/assets/css/visual-jus9-fase-final.css',
-  '/assets/css/daj-clean-ui.css'
+  '/assets/css/daj-clean-ui.css',
+  '/assets/css/build-week-reviewer.css'
 ];
 
 self.addEventListener('install', (event) => {

@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.16.0 - 2026-07-19
+
+- Publicado pacote de links Build Week/Saiba Mais/mapa de estados dos MVPs.
+- Service worker e sitemap passam a incluir Build Week, Saiba Mais, painel executivo e O que ja funciona.
+- Cronograma Mao na Massa v3.1.0 e auditores dedicados entram como release candidata de continuidade.
+
 ## 1.15.1 - 2026-07-14
 
 - Removido do script compartilhado o cadastro local ficticio de equipe.

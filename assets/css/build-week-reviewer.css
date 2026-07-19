@@ -48,6 +48,15 @@ a{color:inherit}
 .status-dot{width:9px;height:9px;border-radius:50%;background:var(--muted)}
 .status-dot.live,.status-dot.verified{background:var(--green)}
 .status-dot.pending{background:var(--gold)}
+.mvp-scope-band{background:#f8fafb;margin-inline:-44px;padding-inline:44px}
+.scope-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:20px}
+.scope-card{display:flex;flex-direction:column;min-height:132px;border:1px solid var(--border);border-radius:8px;background:var(--surface);padding:16px;text-decoration:none}
+.scope-card.primary{background:var(--navy);border-color:var(--navy);color:#fff}
+.scope-card strong{font-size:1rem}
+.scope-card span{margin-top:8px;color:var(--muted);font-size:.9rem}
+.scope-card.primary span{color:#dbe4ef}
+.scope-card:hover,.scope-card:focus-visible{border-color:var(--gold);outline:none}
+.compact-status{margin-top:6px}
 .reviewer-section{padding:52px 0;border-bottom:1px solid var(--border);scroll-margin-top:20px}
 .section-heading{max-width:900px;margin-bottom:24px}
 .section-heading h2{margin:0;color:var(--ink);font-size:1.75rem;line-height:1.2}
@@ -95,7 +104,7 @@ code{font-family:"Cascadia Code","SFMono-Regular",Consolas,monospace}
 @media (max-width:1050px){
   .reviewer-layout{grid-template-columns:190px minmax(0,1fr)}
   .reviewer-main{padding-inline:28px}
-  .evidence-band,.architecture-band{margin-inline:-28px;padding-inline:28px}
+  .evidence-band,.architecture-band,.mvp-scope-band{margin-inline:-28px;padding-inline:28px}
   .architecture-flow{grid-template-columns:1fr}
   .flow-arrow{transform:rotate(90deg);justify-self:center}
 }
@@ -113,10 +122,10 @@ code{font-family:"Cascadia Code","SFMono-Regular",Consolas,monospace}
   .status-strip>div{border-right:0;border-bottom:1px solid var(--border)}
   .status-strip>div:last-child{border-bottom:0}
   .reviewer-section{padding-block:38px}
-  .evidence-band,.architecture-band{margin-inline:-18px;padding-inline:18px}
+  .evidence-band,.architecture-band,.mvp-scope-band{margin-inline:-18px;padding-inline:18px}
   .workflow-list li{grid-template-columns:38px minmax(0,1fr);gap:12px;padding:18px 2px}
   .workflow-list a{grid-column:2;width:100%}
-  .evidence-grid,.source-links{grid-template-columns:minmax(0,1fr)}
+  .evidence-grid,.source-links,.scope-grid{grid-template-columns:minmax(0,1fr)}
   .status-row,.status-head{grid-template-columns:1fr;gap:0;padding:11px 0}
   .status-head{display:none}
   .status-row>span,.status-row>strong{padding:3px 13px}

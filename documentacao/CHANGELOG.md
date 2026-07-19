@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Documentacao
 
+## 1.16.0 - 2026-07-19
+
+- Build Week recebeu secao de consolidacao dos MVPs, com DAJ como piloto operacional, 13 vitrines governadas e proximo nucleo `Charlie Core v0`.
+- Manifesto `BUILD_WEEK_STATUS_2026.json` atualizado para versao `1.1.0` com links para mapa de estados, painel executivo e Saiba Mais.
+- Pagina `mvp-o-que-ja-funciona.html` foi reorganizada para separar estados ativo, demonstrativo, planejado e bloqueado.
+
 ## 1.15.0 - 2026-07-18
 
 - Atualizado snapshot reproduzivel da Build Week para `d052ebe`, com 52 commits posteriores ao baseline.

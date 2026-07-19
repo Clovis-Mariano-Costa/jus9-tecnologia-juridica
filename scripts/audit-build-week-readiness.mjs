@@ -16,6 +16,9 @@ const gitExecutable = gitCandidates.find((candidate) => existsSync(candidate)) |
 const requiredFiles = [
   "README.md",
   "build-week-2026.html",
+  "saiba-mais.html",
+  "mvp-o-que-ja-funciona.html",
+  "app-painel-mvps.html",
   "assets/css/build-week-reviewer.css",
   "documentacao/hackathon/BUILD_WEEK_STATUS_2026.json",
   "documentacao/hackathon/DEVPOST_SUBMISSION_DRAFT_EN.md",
@@ -73,6 +76,10 @@ const integrationMatrix = read("documentacao/hackathon/MATRIZ_INTEGRACOES_TERCEI
 check(status.schemaVersion === "1.0.0", "status manifest schema", "Unexpected Build Week status schema");
 check(status.project?.track === "Work and Productivity", "competition track", "Track must be Work and Productivity");
 check(status.project?.reviewerUrl === "https://jus9tecnologia.com.br/build-week-2026.html", "canonical reviewer URL", "Reviewer URL does not match the public page");
+check(status.mvpConsolidation?.stateMapUrl === "https://jus9tecnologia.com.br/mvp-o-que-ja-funciona.html", "MVP state-map URL", "Build Week status does not point to the public MVP state map");
+check(status.mvpConsolidation?.executivePanelUrl === "https://jus9tecnologia.com.br/app-painel-mvps.html", "MVP executive-panel URL", "Build Week status does not point to the MVP executive panel");
+check(status.mvpConsolidation?.ecosystemMapUrl === "https://jus9tecnologia.com.br/saiba-mais.html", "ecosystem map URL", "Build Week status does not point to Saiba mais");
+check(status.mvpConsolidation?.operationalPilot === "DAJ", "DAJ operational pilot", "Build Week status must keep DAJ as the operational pilot");
 check(status.claims?.significantExtensionAfterStart?.state === "verified", "significant-extension claim", "Significant extension is not marked verified");
 check(status.claims?.codexCollaboration?.state === "verified", "Codex collaboration status", "Codex collaboration must be supported by evidence");
 check(status.claims?.openAiApiIntegration?.state === "verified_in_source", "OpenAI source integration status", "OpenAI integration must remain scoped to source verification");
@@ -86,7 +93,9 @@ check(status.submissionArtifacts?.repositoryHygiene?.state === "blocked_tracked_
 
 check(/<html\s+lang="en">/i.test(reviewerPage), "reviewer page language", "Reviewer page must declare English");
 check(/id="live-flow"/.test(reviewerPage) && /id="evidence"/.test(reviewerPage) && /id="safety"/.test(reviewerPage), "reviewer page sections", "Reviewer page is missing live flow, evidence, or safety sections");
+check(/id="mvp-scope"/.test(reviewerPage) && /data-build-week-mvp-scope/.test(reviewerPage), "reviewer MVP scope section", "Reviewer page is missing the MVP scope section");
 check(/app-atendimento-inicial\.html/.test(reviewerPage) && /app-ia-profissional\.html/.test(reviewerPage) && /app-processos\.html/.test(reviewerPage), "reviewer workflow links", "Reviewer page does not link the complete DAJ flow");
+check(/saiba-mais\.html/.test(reviewerPage) && /mvp-o-que-ja-funciona\.html/.test(reviewerPage) && /app-painel-mvps\.html/.test(reviewerPage), "reviewer ecosystem links", "Reviewer page does not link Saiba mais, state map, and executive panel");
 check(/@media \(max-width:760px\)/.test(reviewerCss), "reviewer mobile layout", "Reviewer CSS has no mobile layout");
 check(/build-week-2026\.html/.test(readme), "README reviewer entry", "README does not link the public reviewer page");
 check(/a45ae2cf75221eaf7f3679ad8c20c59146f73ae6/.test(devpostDraft), "Devpost baseline disclosure", "Devpost draft does not include the full baseline commit");

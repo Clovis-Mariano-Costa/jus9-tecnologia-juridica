@@ -253,7 +253,11 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v37-2026-07-14-team-local-cleanup"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("jus9-pwa-v38-2026-07-19-build-week-state-map"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("/saiba-mais.html"), "cache PWA sem pagina Saiba mais");
+assert(canonicalServiceWorker.includes("/build-week-2026.html"), "cache PWA sem pagina Build Week");
+assert(canonicalServiceWorker.includes("/app-painel-mvps.html"), "cache PWA sem painel executivo dos MVPs");
+assert(canonicalServiceWorker.includes("/assets/css/build-week-reviewer.css"), "cache PWA sem CSS da Build Week");
 assert(canonicalServiceWorker.includes("/assets/js/daj-intake.js"), "cache PWA sem cliente do cadastro DAJ");
 assert(canonicalServiceWorker.includes("/assets/js/daj-registry-list.js"), "cache PWA sem lista oficial de DAJs");
 assert(canonicalServiceWorker.includes("/assets/js/governed-team-directory.js"), "cache PWA sem diretorio governado da equipe");

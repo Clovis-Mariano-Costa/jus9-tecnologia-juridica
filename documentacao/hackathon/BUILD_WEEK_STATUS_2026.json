@@ -1,17 +1,17 @@
 {
   "metadata": {
     "id": "JUS9-BUILD-WEEK-STATUS-2026-001",
-    "versao": "1.0.0",
+    "versao": "1.1.0",
     "autor": "Codex / Charlie Fox",
     "revisor_responsavel": "Clovis Mariano da Costa",
-    "data": "2026-07-18",
+    "data": "2026-07-19",
     "status": "ativo-controlado",
     "classificacao": "PUBLICO-INSTITUCIONAL",
     "hash": "gerar-na-versao-final"
   },
   "schemaVersion": "1.0.0",
   "documentId": "JUS9-BUILD-WEEK-STATUS-2026-001",
-  "updatedAt": "2026-07-18T20:30:00-03:00",
+  "updatedAt": "2026-07-19T15:34:50-03:00",
   "owner": "Clovis Mariano da Costa / Aeon Primevo",
   "reviewer": "Codex / Charlie Fox",
   "classification": "PUBLICO-INSTITUCIONAL",
@@ -25,6 +25,14 @@
     "periodStartBrazil": "2026-07-13T13:00:00-03:00",
     "submissionDeadlinePacific": "2026-07-21T17:00:00-07:00",
     "submissionDeadlineBrazil": "2026-07-21T21:00:00-03:00"
+  },
+  "mvpConsolidation": {
+    "stateMapUrl": "https://jus9tecnologia.com.br/mvp-o-que-ja-funciona.html",
+    "executivePanelUrl": "https://jus9tecnologia.com.br/app-painel-mvps.html",
+    "ecosystemMapUrl": "https://jus9tecnologia.com.br/saiba-mais.html",
+    "operationalPilot": "DAJ",
+    "showcasePolicy": "The other 13 MVPs remain governed public showcases with fictional datasets and human-review limits.",
+    "nextSharedCore": "Charlie Core v0"
   },
   "claims": {
     "significantExtensionAfterStart": {

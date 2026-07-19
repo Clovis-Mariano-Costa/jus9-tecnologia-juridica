@@ -13,6 +13,12 @@ const checks = [
     args: ["scripts/audit-build-week-readiness.mjs"]
   },
   {
+    label: "Links Saiba Mais e Build Week",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-saiba-mais-build-week-links.mjs"]
+  },
+  {
     label: "Portal publico e 14 MVPs",
     cwd: portalRoot,
     command: process.execPath,
@@ -137,6 +143,12 @@ const checks = [
     cwd: portalRoot,
     command: process.execPath,
     args: ["scripts/audit-mao-na-massa-v3.mjs"]
+  },
+  {
+    label: "Mao na Massa v3.1",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-mao-na-massa-v3-1.mjs"]
   },
   {
     label: "Fechamento Mao na Massa Video ZIP",

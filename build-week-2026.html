@@ -11,7 +11,7 @@ Software livre com autoria preservada.
   <meta name="robots" content="noindex,nofollow,noarchive">
   <title>Jus 9 DAJ - Build Week reviewer path</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/css/build-week-reviewer.css?v=20260718-v1">
+  <link rel="stylesheet" href="assets/css/build-week-reviewer.css?v=20260719-v2">
   <meta name="theme-color" content="#07111f">
 </head>
 <body>
@@ -27,6 +27,7 @@ Software livre com autoria preservada.
       </a>
       <nav aria-label="Reviewer navigation">
         <a class="active" href="#overview">Overview</a>
+        <a href="#mvp-scope">MVP scope</a>
         <a href="#live-flow">Live flow</a>
         <a href="#evidence">Evidence</a>
         <a href="#safety">Safety and limits</a>
@@ -35,6 +36,9 @@ Software livre com autoria preservada.
       </nav>
       <div class="reviewer-sidebar-footer">
         <a href="index.html">Main Jus 9 site</a>
+        <a href="saiba-mais.html">Ecosystem map</a>
+        <a href="mvp-o-que-ja-funciona.html">State map</a>
+        <a href="app-painel-mvps.html">MVP executive panel</a>
         <a href="mvp.html#demos-jus9">All MVPs</a>
       </div>
     </aside>
@@ -48,6 +52,7 @@ Software livre com autoria preservada.
         </div>
         <div class="reviewer-actions" aria-label="Primary reviewer actions">
           <a class="reviewer-action primary" href="app-atendimento-inicial.html">Start live review</a>
+          <a class="reviewer-action" href="saiba-mais.html">Open ecosystem map</a>
           <a class="reviewer-action" href="https://github.com/Clovis-Mariano-Costa/jus9-tecnologia-juridica" target="_blank" rel="noopener">Inspect source</a>
         </div>
       </header>
@@ -56,6 +61,35 @@ Software livre com autoria preservada.
         <div><span class="status-dot live" aria-hidden="true"></span><strong>Product</strong><span>Public workflow live</span></div>
         <div><span class="status-dot verified" aria-hidden="true"></span><strong>Build evidence</strong><span>Git and Codex records</span></div>
         <div><span class="status-dot pending" aria-hidden="true"></span><strong>Eligibility</strong><span>Official clarification pending</span></div>
+      </section>
+
+      <section class="reviewer-section mvp-scope-band" id="mvp-scope" data-build-week-mvp-scope>
+        <div class="section-heading">
+          <p class="reviewer-eyebrow">MVP consolidation</p>
+          <h2>One operational pilot, thirteen governed showcases</h2>
+          <p>The current Mao na Massa direction is to keep DAJ as the operational Build Week pilot, keep the other MVPs as public governed showcases, and move shared behavior into a versioned Charlie Core.</p>
+        </div>
+        <div class="scope-grid" aria-label="MVP state map">
+          <a class="scope-card primary" href="app-painel-mvps.html">
+            <strong>Executive panel</strong>
+            <span>Readiness, packages, risks, evidence, deploys, and next governance doors for the 14 MVPs.</span>
+          </a>
+          <a class="scope-card" href="mvp-o-que-ja-funciona.html">
+            <strong>What already works</strong>
+            <span>Public state map separating active, demonstrative, planned, and blocked features.</span>
+          </a>
+          <a class="scope-card" href="saiba-mais.html">
+            <strong>Jus 9 ecosystem</strong>
+            <span>Portuguese public map for visitors who need the broader institutional context.</span>
+          </a>
+        </div>
+        <div class="status-table compact-status" role="table" aria-label="MVP scope states">
+          <div class="status-row status-head" role="row"><span role="columnheader">Scope</span><span role="columnheader">State</span><span role="columnheader">Reviewer note</span></div>
+          <div class="status-row" role="row"><strong role="cell">DAJ pilot</strong><span class="state verified" role="cell">Active pilot</span><span role="cell">Fictional intake, DAJ registry, governed analysis, review routing, and read-only public metadata.</span></div>
+          <div class="status-row" role="row"><strong role="cell">13 MVP expansions</strong><span class="state limited" role="cell">Governed demos</span><span role="cell">Public showcase pages use fictional datasets and explicit human-review limits.</span></div>
+          <div class="status-row" role="row"><strong role="cell">Charlie Core v0</strong><span class="state pending" role="cell">Next package</span><span role="cell">Policies, module registry, risk classification, contracts, downloads, and audit should become shared code/config.</span></div>
+          <div class="status-row" role="row"><strong role="cell">Drive, memory, ZIP, video</strong><span class="state blocked" role="cell">Deferred</span><span role="cell">Real Drive/memory remain blocked until DAJ reversibility closes; final ZIP and video stay last-package tasks.</span></div>
+        </div>
       </section>
 
       <section class="reviewer-section" id="live-flow">

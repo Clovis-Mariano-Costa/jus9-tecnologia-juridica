@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.13.2 - 2026-07-19
+
+- Criado cronograma Mao na Massa v3.1.0 a partir do briefing de auditoria anexado, sem sobrescrever o v3.0.0.
+- v3.1.0 preserva DAJ como piloto operacional, 13 MVPs como vitrines governadas, `Charlie Core v0` como proximo pacote seguro e revisao/video/ZIP como ultimo pacote.
+- Adicionados auditores para cronograma v3.1.0 e para links Build Week/Saiba Mais/mapa de estados.
+
 ## 1.13.1 - 2026-07-19
 
 - Registrada revisao geral do Mao na Massa cobrindo Pacotes 0 a 8.
