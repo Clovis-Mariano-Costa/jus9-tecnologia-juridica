@@ -4,7 +4,7 @@ versao: 0.1.0
 autor: Codex
 revisor_responsavel: Clovis Mariano da Costa
 data: 2026-07-19
-status: candidato-publicacao-controlada
+status: publicado-controlado
 classificacao: INTERNO
 hash: calcular-na-release-aprovada
 ---
@@ -47,3 +47,10 @@ npx wrangler deploy --dry-run
 ## Porta humana preservada
 
 O login demonstrativo informado pelo Fundador deve ser promovido pela allowlist secreta separada. O pacote nao inclui e-mail ou senha em codigo, teste, log, documento ou commit.
+
+## Publicacao
+
+- Release: `governanca-1.17.0-charlie-core-contracts-auth-1.0`.
+- Commit fonte: `7d94802`.
+- Versao ativa do Worker: `84c5123f-e475-4d5b-b682-437483f859b4`.
+- Autorizacao `advogado_lider` configurada por secret separado.

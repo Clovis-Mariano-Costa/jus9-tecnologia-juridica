@@ -16,7 +16,7 @@ hash: nao-aplicavel-changelog
 - Implementado localmente Charlie Core v0 com registry canonico dos 14 MVPs, aliases, estados, riscos, papeis humanos e limites por modulo.
 - Adicionados validadores dos cinco contratos JSON previstos no cronograma v3.1.1.
 - Health e diretorio modular passam a consumir o nucleo compartilhado, com testes de regressao dedicados.
-- Pacote preparado para publicacao controlada; nao altera Drive real, memoria real ou portas humanas do DAJ.
+- Pacote publicado de forma controlada na release `1.17.0`; nao altera Drive real, memoria real ou portas humanas do DAJ.
 - Entrega privada do Codex Session ID foi confirmada pelo Fundador sem registrar o identificador no repositorio.
 - Preparada allowlist secreta separada para `advogado_lider`, evitando sobrescrever `AUTH_ALLOWED_EMAILS` e evitando e-mail privilegiado em codigo.
 

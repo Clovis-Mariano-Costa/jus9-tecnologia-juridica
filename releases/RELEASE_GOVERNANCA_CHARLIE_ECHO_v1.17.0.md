@@ -4,9 +4,9 @@ versao: 1.17.0
 autor: Codex / Charlie Juris
 revisor_responsavel: Clovis Mariano da Costa
 data: 2026-07-19
-status: candidata-publicacao-controlada
+status: publicada-controlada
 classificacao: PUBLICO-INSTITUCIONAL
-hash: gerar-na-versao-final
+hash: git-7d94802-worker-84c5123f
 ---
 
 # Release v1.17.0 - Charlie Core, contratos e perfil demonstrativo
@@ -38,3 +38,11 @@ Publicar o primeiro nucleo compartilhado dos 14 MVPs, contratos JSON governados 
 - `git diff --check`.
 - `wrangler deploy --dry-run`.
 - Deploy controlado e verificacao do health publico.
+
+## Evidencia de publicacao
+
+- Commit fonte: `7d94802`.
+- Worker publicado inicialmente: `12d8251b-d010-48ea-bc90-f60002c16a31`.
+- Versao ativa apos configuracao secreta: `84c5123f-e475-4d5b-b682-437483f859b4`.
+- Health publico: `ready`, Charlie Core `0.1.0`, contratos `1.0.0`, 14 MVPs.
+- Secret confirmado somente por nome; valor nao exposto.
