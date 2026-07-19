@@ -181,6 +181,7 @@ assert(dajRegistryScript.includes("isValidCpf") && dajRegistryScript.includes("H
 assert(dajRegistryScript.includes("textContent") && !dajRegistryScript.includes("item.partyName + '</"), "lista de DAJs nao minimiza risco de injecao ao renderizar dados");
 assert(mvpExecutivePanelPage.includes("data-mvp-executive-panel"), "painel executivo dos MVPs sem marcador principal");
 assert(mvpExecutivePanelPage.includes("data-mvp-proof-map") && mvpExecutivePanelPage.includes("Mapa de provas dos 14 MVPs"), "painel executivo sem mapa de provas dos MVPs");
+assert(mvpExecutivePanelPage.includes("data-onda1-ded-dic-proof") && mvpExecutivePanelPage.includes("Onda 1 - prova DED + DIC"), "painel executivo sem prova Onda 1 DED+DIC");
 assert(mvpExecutivePanelPage.includes("DAJ-2026-0002") && mvpExecutivePanelPage.includes("ACEITE_HUMANO_PARCIAL_CONFIRMADO") && mvpExecutivePanelPage.includes("REVERSIBILIDADE_PENDENTE"), "painel executivo nao preserva o estado parcial do DAJ 1C");
 assert(mvpExecutivePanelPage.includes("a142825") && mvpExecutivePanelPage.includes("fcef514") && mvpExecutivePanelPage.includes("cde1bf89-3d93-4429-a485-be46945bec04"), "painel executivo sem evidencias de commit/deploy");
 assert(mvpExecutivePanelPage.includes("BLOQUEADO_ATE_REVERSIBILIDADE_1C") && mvpExecutivePanelPage.includes("AGUARDANDO_NOVO_TESTE_HUMANO"), "painel executivo sem bloqueios de governanca");
@@ -196,12 +197,14 @@ for (const code of expectedCodes) {
 assert(mvpLandingPage.includes("app-painel-mvps.html"), "mvp.html sem link para painel executivo dos MVPs");
 assert(leaderMvpPage.includes("app-painel-mvps.html"), "lider-mvp.html sem link para painel executivo dos MVPs");
 assert(dedDashboardPage.includes("data-ded-editorial-showcase") && dedDashboardPage.includes("data-ded-briefing") && dedDashboardPage.includes("data-ded-author-checklist"), "painel DED sem vitrine editorial governada");
+assert(dedDashboardPage.includes("data-ded-proof-runbook") && dedDashboardPage.includes("CONCLUIR_DEMO_DED"), "painel DED sem runbook de prova Onda 1");
 assert(dedDashboardPage.includes("DED-MODELO-VITRINE-2026") && dedDashboardPage.includes("Autora Beta Ficticia") && dedDashboardPage.includes("Manual Ficticio da Oficina de Palavras"), "painel DED sem dataset ficticio canonico");
 assert(dedDashboardPage.includes("Sem Drive real") && dedDashboardPage.includes("Sem ISBN") && dedDashboardPage.includes("Sem venda garantida"), "painel DED sem limites de efeitos reais");
 assert(dedAiShowcasePage.includes("data-ded-prompt-pack") && dedAiShowcasePage.includes("data-ded-guardrails"), "IA DED sem pacote de prompts ou guardrails");
 assert(dedAiShowcasePage.includes("Drive real, ISBN, venda e contrato ficam bloqueados no demo publico"), "IA DED sem bloqueio de efeitos reais");
 assert(!dedDashboardPage.includes("salvar no Drive governado") && !dedAiShowcasePage.includes("Drive oficial com decisao"), "DED ainda sugere Drive real no demo publico");
 assert(dicDashboardPage.includes("data-dic-social-showcase") && dicDashboardPage.includes("data-dic-briefing") && dicDashboardPage.includes("data-dic-no-pii-checklist"), "painel DIC sem vitrine social governada");
+assert(dicDashboardPage.includes("data-dic-proof-runbook") && dicDashboardPage.includes("CONCLUIR_DEMO_DIC"), "painel DIC sem runbook de prova Onda 1");
 assert(dicDashboardPage.includes("DIC-MODELO-VITRINE-2026") && dicDashboardPage.includes("Pessoa interessada ficticia") && dicDashboardPage.includes("Sem CPF"), "painel DIC sem dataset ficticio e limites anti-PII");
 assert(dicAiShowcasePage.includes("data-dic-prompt-pack") && dicAiShowcasePage.includes("data-dic-guardrails"), "IA DIC sem pacote de prompts ou guardrails");
 assert(dicAiShowcasePage.includes("Charlie nao substitui advogado, Defensoria, orgao publico, saude, policia, emergencia ou decisao humana"), "IA DIC sem limite humano completo");
@@ -258,7 +261,7 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v42-2026-07-19-charlie-proveniencia"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("jus9-pwa-v43-2026-07-19-onda1-ded-dic"), "cache PWA principal desatualizado");
 assert(canonicalServiceWorker.includes("/saiba-mais.html"), "cache PWA sem pagina Saiba mais");
 assert(canonicalServiceWorker.includes("/build-week-2026.html"), "cache PWA sem pagina Build Week");
 assert(canonicalServiceWorker.includes("/app-painel-mvps.html"), "cache PWA sem painel executivo dos MVPs");

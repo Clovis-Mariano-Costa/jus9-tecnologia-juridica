@@ -70,7 +70,7 @@ assert(buildWeekStatus.claims?.codexGpt56SolDevelopment?.claimBoundary?.includes
 assert(buildWeekStatus.mvpConsolidation?.operationalPilot === "DAJ", "manifesto Build Week sem DAJ como piloto operacional");
 assert(buildWeekStatus.mvpConsolidation?.nextSharedCore === "Charlie Core v0", "manifesto Build Week sem Charlie Core v0 como proximo nucleo");
 assert(buildWeekStatus.mvpConsolidation?.dajAnalysisContract?.includes("Laudo de Analise DAJ"), "manifesto Build Week sem contrato de laudo DAJ");
-assert(versionamento.includes("Versionamento Jus 9 - v5.8") && versionamento.includes("MAPA_PROVAS_MVPS_GERAIS_v1.0.0.md") && versionamento.includes("worker_daj_laudo_governado") && versionamento.includes("CRONOGRAMA_MAO_NA_MASSA_CHARLIE_ECHO_v3.1.1.md"), "versionamento publico sem registro v5.8/provas/proxy/v3.1.1");
+assert(versionamento.includes("Versionamento Jus 9 - v5.9") && versionamento.includes("PACOTE_ONDA1_DED_DIC_PROVA_VALOR_2026-07-19_v1.0.0.md") && versionamento.includes("MAPA_PROVAS_MVPS_GERAIS_v1.0.0.md") && versionamento.includes("worker_daj_laudo_governado") && versionamento.includes("CRONOGRAMA_MAO_NA_MASSA_CHARLIE_ECHO_v3.1.1.md"), "versionamento publico sem registro v5.9/Onda1/provas/proxy/v3.1.1");
 assert(syncScript.includes("'sitemap.xml'"), "Sync-PortalDist nao publica sitemap.xml");
 
 console.log("SAIBA_MAIS_BUILD_WEEK_LINKS_OK links=build-week,saiba-mais,state-map,panel");

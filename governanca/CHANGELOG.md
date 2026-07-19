@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.13.9 - 2026-07-19
+
+- Publicado pacote Onda 1 DED+DIC como prova de valor executavel em 30 minutos.
+- Painel executivo, DED e DIC passam a exibir roteiro, aceite humano e condicoes de parada especificas.
+- Criado documento governado `PACOTE_ONDA1_DED_DIC_PROVA_VALOR_2026-07-19_v1.0.0.md` e auditor dedicado no CI local.
+
 ## 1.13.8 - 2026-07-19
 
 - G1 de proveniencia da Charlie concluido no codigo e nos testes com contrato `1.1.0`.

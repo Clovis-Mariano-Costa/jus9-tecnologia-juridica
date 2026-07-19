@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.18.1 - 2026-07-19
+
+- Publicada Onda 1 dos MVPs gerais com prova DED+DIC em 30 minutos.
+- Painel executivo recebe `data-onda1-ded-dic-proof`; DED e DIC recebem runbooks publicos proprios.
+- Criado documento governado `PACOTE_ONDA1_DED_DIC_PROVA_VALOR_2026-07-19_v1.0.0.md` e auditor `audit-onda1-ded-dic-proof-package.mjs`.
+- Cache PWA sobe para `jus9-pwa-v43-2026-07-19-onda1-ded-dic`.
+
 ## 1.18.0 - 2026-07-19
 
 - Contrato Charlie Core sobe para `1.1.0` com proveniencia controlada e auditavel.

@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Documentacao
 
+## 1.17.1 - 2026-07-19
+
+- Versionamento publico v5.9 registra a Onda 1 DED+DIC como prova de valor executavel.
+- Painel executivo ganha roteiro de 30 minutos com aceite e condicoes de parada.
+- Paginas DED e DIC passam a orientar a prova direta sem dados reais, sem Drive real e sem substituir revisao humana.
+
 ## 1.17.0 - 2026-07-19
 
 - Registrada evidencia sanitizada e verificavel de `gpt-5.6-sol` na tarefa principal do Codex a partir de 13/07/2026 as 18:37:59 BRT.

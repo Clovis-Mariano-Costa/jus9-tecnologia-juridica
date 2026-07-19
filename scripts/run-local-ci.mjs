@@ -193,6 +193,12 @@ const checks = [
     args: ["scripts/audit-mvp-proof-map.mjs"]
   },
   {
+    label: "Onda 1 DED e DIC",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-onda1-ded-dic-proof-package.mjs"]
+  },
+  {
     label: "Backend local fail closed",
     cwd: path.join(githubRoot, "backend-api-jus9-tecnologia-juridica"),
     command: process.execPath,
