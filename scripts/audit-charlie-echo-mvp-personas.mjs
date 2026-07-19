@@ -64,7 +64,7 @@ for (const file of appIaFiles) {
   if (match) assert(requiredCodes.includes(match[1]), `${file}: codigo inesperado ${match[1]}`);
   assert(html.includes("data-ai-focus"), `${file}: data-ai-focus ausente`);
   const expectedScript = file === "app-ia-profissional.html"
-    ? "script.js?v=20260714-daj-isolated-review-v1"
+    ? "script.js?v=20260719-daj-laudo-v1"
     : "script.js?v=20260712-charlie-pesquisa-ativa-v1";
   assert(html.includes(expectedScript), `${file}: versao aprovada do script ausente`);
 }

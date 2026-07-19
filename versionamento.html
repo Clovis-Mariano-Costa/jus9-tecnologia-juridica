@@ -1,6 +1,6 @@
 <!--
   Jus 9 Tecnologia Juridica - software livre, autoria preservada.
-  Versionamento publico atualizado para a versao 5.5.
+  Versionamento publico atualizado para a versao 5.6.
   DNA de referencia: charlieecho-jus9-tecnologia-juridica
 -->
 <!doctype html>
@@ -8,8 +8,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Versionamento Jus 9 - v5.5</title>
-  <meta name="description" content="Versionamento publico da Jus 9 Tecnologia Juridica, com registro da entrada na versao 5.5.">
+  <title>Versionamento Jus 9 - v5.6</title>
+  <meta name="description" content="Versionamento publico da Jus 9 Tecnologia Juridica, com registro da entrada na versao 5.6.">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
@@ -37,8 +37,21 @@
   <div class="container">
     <div class="doc-shell">
       <div class="eyebrow">Versionamento publico</div>
-      <h1>Jus 9 Tecnologia Juridica - versao 5.5</h1>
-      <p class="lead">A versao 5.5 conecta Build Week, Saiba Mais, painel executivo e mapa publico de estados dos MVPs, preservando o DAJ como piloto operacional e os demais MVPs como vitrines governadas.</p>
+      <h1>Jus 9 Tecnologia Juridica - versao 5.6</h1>
+      <p class="lead">A versao 5.6 corrige o contrato de analise DAJ: Charlie Echo deve devolver laudo estruturado antes de registrar feedback, mantendo o Pacote 2 em novo teste humano.</p>
+
+      <section class="version-card">
+        <h2>Versao 5.6 - Laudo obrigatorio na analise DAJ</h2>
+        <p><strong>Data:</strong> 19/07/2026</p>
+        <ul>
+          <li>Analise governada do DAJ passa a exigir <code>Laudo de Analise DAJ</code> com dez secoes obrigatorias antes de registrar feedback.</li>
+          <li>Respostas evasivas sobre indice, endpoint, DataJud, pesquisa de partes, vinculo DAJ-processo ou <code>/api/daj-process-links</code> sao recusadas.</li>
+          <li>Paginas DAJ usam <code>script.js?v=20260719-daj-laudo-v1</code> para evitar cache antigo.</li>
+          <li>Painel executivo passa a marcar o Pacote 2 como <code>AGUARDANDO_NOVO_TESTE_HUMANO</code>; Pacote 6 continua <code>BLOQUEADO_ATE_REVERSIBILIDADE_1C</code>.</li>
+          <li>Criados <code>RELATORIO_INCIDENTE_ANALISE_DAJ_RESPOSTA_EVASIVA_2026-07-19.md</code>, <code>CRONOGRAMA_MAO_NA_MASSA_CHARLIE_ECHO_v3.1.1.md</code> e release <code>v1.16.1</code>.</li>
+          <li>Video e ZIP seguem reservados ao ultimo pacote do Mao na Massa.</li>
+        </ul>
+      </section>
 
       <section class="version-card">
         <h2>Versao 5.5 - Build Week, Saiba Mais e mapa de estados dos MVPs</h2>

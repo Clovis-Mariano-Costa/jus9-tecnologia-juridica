@@ -15,7 +15,7 @@ const [panel, mvpPage, leaderPage, matrix] = await Promise.all([
 
 assert(panel.includes("data-mvp-executive-panel"), "painel executivo sem marcador principal");
 assert(panel.includes("Painel executivo dos 14 MVPs"), "painel executivo sem titulo canonico");
-assert(panel.includes("Mao na Massa v3.0.0"), "painel executivo sem referencia ao cronograma v3");
+assert(panel.includes("Mao na Massa v3.1.1"), "painel executivo sem referencia ao cronograma v3.1.1");
 assert(panel.includes("DAJ-2026-0002"), "painel executivo sem DAJ de referencia");
 assert(panel.includes("2026-07-19 13:44:32 BRT"), "painel executivo sem data/hora concreta do aceite parcial");
 assert(panel.includes("ACEITE_HUMANO_PARCIAL_CONFIRMADO"), "painel executivo nao preserva aceite parcial");
@@ -28,7 +28,7 @@ assert(panel.includes("CPF integral nao entra em query string, prompt, localStor
 const packageStatuses = [
   "CONCLUIDO",
   "CONCLUIDO_PUBLICADO",
-  "DEPENDENTE_DE_ACAO_HUMANA",
+  "AGUARDANDO_NOVO_TESTE_HUMANO",
   "BLOQUEADO_ATE_REVERSIBILIDADE_1C",
   "PENDENTE_FECHAMENTO_GERAL",
 ];

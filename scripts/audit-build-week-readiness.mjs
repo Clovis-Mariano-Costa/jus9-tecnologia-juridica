@@ -80,6 +80,8 @@ check(status.mvpConsolidation?.stateMapUrl === "https://jus9tecnologia.com.br/mv
 check(status.mvpConsolidation?.executivePanelUrl === "https://jus9tecnologia.com.br/app-painel-mvps.html", "MVP executive-panel URL", "Build Week status does not point to the MVP executive panel");
 check(status.mvpConsolidation?.ecosystemMapUrl === "https://jus9tecnologia.com.br/saiba-mais.html", "ecosystem map URL", "Build Week status does not point to Saiba mais");
 check(status.mvpConsolidation?.operationalPilot === "DAJ", "DAJ operational pilot", "Build Week status must keep DAJ as the operational pilot");
+check(status.mvpConsolidation?.dajAnalysisContract?.includes("Laudo de Analise DAJ"), "DAJ laudo contract", "Build Week status must preserve the DAJ laudo contract");
+check(status.mvpConsolidation?.package2State === "AGUARDANDO_NOVO_TESTE_HUMANO", "Package 2 human retest state", "Build Week status must preserve Package 2 human retest state");
 check(status.claims?.significantExtensionAfterStart?.state === "verified", "significant-extension claim", "Significant extension is not marked verified");
 check(status.claims?.codexCollaboration?.state === "verified", "Codex collaboration status", "Codex collaboration must be supported by evidence");
 check(status.claims?.openAiApiIntegration?.state === "verified_in_source", "OpenAI source integration status", "OpenAI integration must remain scoped to source verification");

@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Documentacao
 
+## 1.16.1 - 2026-07-19
+
+- Documentado incidente da resposta evasiva na analise do `DAJ-2026-0002`.
+- Build Week e mapa publico passam a descrever a analise DAJ como laudo estruturado obrigatorio.
+- Manifesto Build Week atualizado para registrar o contrato de laudo DAJ e o novo estado humano do Pacote 2.
+
 ## 1.16.0 - 2026-07-19
 
 - Build Week recebeu secao de consolidacao dos MVPs, com DAJ como piloto operacional, 13 vitrines governadas e proximo nucleo `Charlie Core v0`.

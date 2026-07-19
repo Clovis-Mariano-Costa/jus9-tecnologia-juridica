@@ -37,7 +37,7 @@ const checks = [
   {
     name: "DAJ integrado como modelo-mae da Charlie Echo",
     file: "script.js",
-    patterns: ["injectMvpIntegrationPanel", "data-daj-integration-panel", "Contrato DAJ ativo", "DAJ-2026-0001", "initCharliePromptFromUrl", "Resuma o DAJ-2026-0001", "loadGovernedDajAnalysisPrompt", "buildGovernedDajPrompt", "/api/dajs?dajId=", "Nenhum rascunho local foi usado", "createGovernedDajAnalysisRoom", "daj_analise_governada", "useRoomMemory:false", "isMisdirectedDajAnalysis", "registerDajAnalysisWorkflow", "Feedback do fluxo DAJ", "dajJurisprudenceProductPrompts", "Jurisprudencia governada DAJ", "Argumento com precedente", "Checklist probatorio", "Quadro comparativo", "dajDoctrineBibliographyProductPrompts", "Doutrina e bibliografia DAJ", "Mapa bibliografico", "Sintese doutrinaria", "Ficha de obra"],
+    patterns: ["injectMvpIntegrationPanel", "data-daj-integration-panel", "Contrato DAJ ativo", "DAJ-2026-0001", "initCharliePromptFromUrl", "Resuma o DAJ-2026-0001", "loadGovernedDajAnalysisPrompt", "buildGovernedDajPrompt", "/api/dajs?dajId=", "Nenhum rascunho local foi usado", "createGovernedDajAnalysisRoom", "daj_analise_governada", "useRoomMemory:false", "isMisdirectedDajAnalysis", "hasRequiredDajLaudo", "Laudo de Analise DAJ", "resposta_daj_sem_laudo_obrigatorio", "consulta por DAJ deve ser executada", "registerDajAnalysisWorkflow", "Feedback do fluxo DAJ", "dajJurisprudenceProductPrompts", "Jurisprudencia governada DAJ", "Argumento com precedente", "Checklist probatorio", "Quadro comparativo", "dajDoctrineBibliographyProductPrompts", "Doutrina e bibliografia DAJ", "Mapa bibliografico", "Sintese doutrinaria", "Ficha de obra"],
   },
   {
     name: "hub de configuracoes padroniza botoes da Charlie",
@@ -97,7 +97,7 @@ const checks = [
   {
     name: "service worker nao prende MVP antigo",
     file: "service-worker.js",
-    patterns: ["jus9-pwa-v38-2026-07-19-build-week-state-map", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
+    patterns: ["jus9-pwa-v39-2026-07-19-daj-laudo", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
   },
   {
     name: "casa propria da Charlie Echo publicada",
@@ -136,7 +136,7 @@ if (sharedScript.includes("jus9DajInitialAttendanceDraftV1") || sharedScript.inc
 for (const file of appIaFiles) {
   const html = read(file);
   const requiredScriptVersion = file === "app-ia-profissional.html"
-    ? "script.js?v=20260714-daj-isolated-review-v1"
+    ? "script.js?v=20260719-daj-laudo-v1"
     : expectedScriptVersion;
   if (!html.includes(requiredScriptVersion)) {
     failures.push(`${file}: versao de script diferente de ${requiredScriptVersion}`);

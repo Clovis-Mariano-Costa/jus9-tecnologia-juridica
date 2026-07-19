@@ -1,7 +1,7 @@
 {
   "metadata": {
     "id": "JUS9-BUILD-WEEK-STATUS-2026-001",
-    "versao": "1.1.0",
+    "versao": "1.1.1",
     "autor": "Codex / Charlie Fox",
     "revisor_responsavel": "Clovis Mariano da Costa",
     "data": "2026-07-19",
@@ -11,7 +11,7 @@
   },
   "schemaVersion": "1.0.0",
   "documentId": "JUS9-BUILD-WEEK-STATUS-2026-001",
-  "updatedAt": "2026-07-19T15:34:50-03:00",
+  "updatedAt": "2026-07-19T16:18:34-03:00",
   "owner": "Clovis Mariano da Costa / Aeon Primevo",
   "reviewer": "Codex / Charlie Fox",
   "classification": "PUBLICO-INSTITUCIONAL",
@@ -32,7 +32,9 @@
     "ecosystemMapUrl": "https://jus9tecnologia.com.br/saiba-mais.html",
     "operationalPilot": "DAJ",
     "showcasePolicy": "The other 13 MVPs remain governed public showcases with fictional datasets and human-review limits.",
-    "nextSharedCore": "Charlie Core v0"
+    "nextSharedCore": "Charlie Core v0",
+    "dajAnalysisContract": "Charlie Echo must return a structured Laudo de Analise DAJ before DAJ review feedback is registered.",
+    "package2State": "AGUARDANDO_NOVO_TESTE_HUMANO"
   },
   "claims": {
     "significantExtensionAfterStart": {

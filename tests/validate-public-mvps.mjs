@@ -104,6 +104,8 @@ assert(sharedScript.includes("/api/dajs?dajId="), "Charlie sem leitura autentica
 assert(sharedScript.includes("createGovernedDajAnalysisRoom") && sharedScript.includes("daj_analise_governada"), "handoff DAJ nao cria sala isolada com rota fixa");
 assert(sharedScript.includes("registerDajAnalysisWorkflow") && sharedScript.includes("/api/dajs/review"), "analise DAJ sem feedback e encaminhamento backend");
 assert(sharedScript.includes("isMisdirectedDajAnalysis") && sharedScript.includes("resposta_daj_incompativel_com_a_rota"), "analise DAJ sem guarda contra desvio para pesquisa de partes");
+assert(sharedScript.includes("hasRequiredDajLaudo") && sharedScript.includes("resposta_daj_sem_laudo_obrigatorio"), "analise DAJ sem contrato obrigatorio de laudo");
+assert(sharedScript.includes("Laudo de Analise DAJ") && sharedScript.includes("consulta por DAJ deve ser executada"), "analise DAJ nao bloqueia resposta evasiva sem laudo");
 assert(!sharedScript.includes("jus9DajInitialAttendanceDraftV1") && !sharedScript.includes("dajDraft"), "handoff para Charlie ainda transporta rascunho local");
 assert(teamPage.includes("data-governed-team-directory"), "diretorio governado de equipe sem raiz");
 assert(teamPage.includes("data-team-request-form"), "diretorio de equipe sem formulario de solicitacao");
@@ -180,7 +182,7 @@ assert(dajRegistryScript.includes("textContent") && !dajRegistryScript.includes(
 assert(mvpExecutivePanelPage.includes("data-mvp-executive-panel"), "painel executivo dos MVPs sem marcador principal");
 assert(mvpExecutivePanelPage.includes("DAJ-2026-0002") && mvpExecutivePanelPage.includes("ACEITE_HUMANO_PARCIAL_CONFIRMADO") && mvpExecutivePanelPage.includes("REVERSIBILIDADE_PENDENTE"), "painel executivo nao preserva o estado parcial do DAJ 1C");
 assert(mvpExecutivePanelPage.includes("a142825") && mvpExecutivePanelPage.includes("fcef514") && mvpExecutivePanelPage.includes("cde1bf89-3d93-4429-a485-be46945bec04"), "painel executivo sem evidencias de commit/deploy");
-assert(mvpExecutivePanelPage.includes("BLOQUEADO_ATE_REVERSIBILIDADE_1C") && mvpExecutivePanelPage.includes("DEPENDENTE_DE_ACAO_HUMANA"), "painel executivo sem bloqueios de governanca");
+assert(mvpExecutivePanelPage.includes("BLOQUEADO_ATE_REVERSIBILIDADE_1C") && mvpExecutivePanelPage.includes("AGUARDANDO_NOVO_TESTE_HUMANO"), "painel executivo sem bloqueios de governanca");
 assert(mvpExecutivePanelPage.includes('data-package="3" data-package-status="CONCLUIDO_PUBLICADO"'), "painel executivo nao marca DED como Pacote 3 publicado");
 assert(mvpExecutivePanelPage.includes('data-package="4" data-package-status="CONCLUIDO_PUBLICADO"'), "painel executivo nao marca DIC como Pacote 4 publicado");
 assert(mvpExecutivePanelPage.includes('data-package="5" data-package-status="CONCLUIDO_PUBLICADO"'), "painel executivo nao marca Pacote 5 como publicado");
@@ -253,7 +255,7 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v38-2026-07-19-build-week-state-map"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("jus9-pwa-v39-2026-07-19-daj-laudo"), "cache PWA principal desatualizado");
 assert(canonicalServiceWorker.includes("/saiba-mais.html"), "cache PWA sem pagina Saiba mais");
 assert(canonicalServiceWorker.includes("/build-week-2026.html"), "cache PWA sem pagina Build Week");
 assert(canonicalServiceWorker.includes("/app-painel-mvps.html"), "cache PWA sem painel executivo dos MVPs");
@@ -293,7 +295,7 @@ for (const [code, page] of Object.entries(priorityAiPages)) {
   assert(html.includes("data-ai-chat"), `${code}: chat ausente em ${page}`);
   assert(html.includes(`data-ai-code="${code}"`), `${code}: codigo incorreto em ${page}`);
   const expectedAiScript = code === "DAJ"
-    ? 'script.js?v=20260714-daj-isolated-review-v1'
+    ? 'script.js?v=20260719-daj-laudo-v1'
     : 'script.js?v=20260712-charlie-pesquisa-ativa-v1';
   assert(html.includes(expectedAiScript), `${code}: script sem versao em ${page}`);
   assert(html.includes('charlie-mvp-shell'), `${code}: pagina da Charlie sem shell visual em ${page}`);
@@ -305,7 +307,7 @@ for (const page of catalog.profiles.map((profile) => profile.entry_page)) {
   const expectedScript = page === "app-demo-autor-editor.html"
     ? "script.js?v=20260621-demo14"
     : page === "app-demo-advogar.html"
-      ? "script.js?v=20260714-daj-isolated-review-v1"
+      ? "script.js?v=20260719-daj-laudo-v1"
       : "script.js?v=20260531-team-v1";
   assert(html.includes(expectedScript), `painel sem versao esperada de script: ${page}`);
 }

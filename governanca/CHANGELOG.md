@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.13.3 - 2026-07-19
+
+- Registrado incidente da analise DAJ em que a Charlie Echo devolveu orientacao de indice/endpoint em vez de laudo.
+- Criado cronograma Mao na Massa v3.1.1 com Pacote 2 em `AGUARDANDO_NOVO_TESTE_HUMANO` e reversibilidade bloqueada ate laudo satisfatorio.
+- Adicionada auditoria dedicada para preservar o contrato obrigatorio de laudo, a falha fechada e o ultimo pacote como revisao/video/ZIP.
+
 ## 1.13.2 - 2026-07-19
 
 - Criado cronograma Mao na Massa v3.1.0 a partir do briefing de auditoria anexado, sem sobrescrever o v3.0.0.

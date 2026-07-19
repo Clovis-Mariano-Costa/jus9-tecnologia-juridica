@@ -35,6 +35,8 @@ const routeBlock = between(script, "function charlieRouteDecision", "function lo
 const submitBlock = between(script, "form.addEventListener('submit'", "document.querySelectorAll('[data-ai-chat]')");
 const buildApiBlock = between(script, "function buildApiMessage", "async function loadGovernedIdentityContext");
 const fallbackBlock = between(script, "function textForMode", "function asksPreviousQuestion");
+const governedDajBlock = between(script, "function buildGovernedDajPrompt", "function showDajLoadFailure");
+const runGovernedDajBlock = between(script, "async function runGovernedDajAnalysis", "function showDajLoadFailure");
 
 for (const required of [
   "charlieRouteDecision",
@@ -124,8 +126,15 @@ assertIncludes(script, "createGovernedDajAnalysisRoom", "analise DAJ cria sala i
 assertIncludes(script, "daj_analise_governada", "analise DAJ usa rota fixa");
 assertIncludes(script, "useRoomMemory:false", "analise DAJ nao herda memoria da sala anterior");
 assertIncludes(script, "isMisdirectedDajAnalysis", "analise DAJ recusa desvio para pesquisa de partes");
+assertIncludes(script, "hasRequiredDajLaudo", "analise DAJ exige laudo");
+assertIncludes(script, "Laudo de Analise DAJ", "analise DAJ exige titulo de laudo");
+assertIncludes(script, "resposta_daj_sem_laudo_obrigatorio", "analise DAJ falha fechada sem laudo");
+assertIncludes(script, "consulta por DAJ deve ser executada", "analise DAJ reconhece resposta evasiva recebida");
+assertIncludes(script, "/api/daj-process-links", "analise DAJ rejeita desvio para vinculo DAJ-processo");
 assertIncludes(script, "registerDajAnalysisWorkflow", "analise DAJ registra feedback e encaminhamento");
 assertIncludes(script, "Feedback do fluxo DAJ", "analise DAJ sempre apresenta feedback");
+assertOrder(runGovernedDajBlock, "var answer = enforceCriticalAnswerGuards", "if(shouldRejectDajAnalysisAnswer(answer))", "analise DAJ valida a primeira resposta antes de registrar");
+assertOrder(runGovernedDajBlock, "if(!answer || shouldRejectDajAnalysisAnswer(answer))", "registerDajAnalysisWorkflow", "analise DAJ so registra depois do laudo validado");
 assertIncludes(intakeScript, "form.dataset.savedDajId", "analise DAJ usa identificador realmente salvo");
 assertIncludes(intakeScript, "fetch('/api/dajs'", "atendimento DAJ usa cadastro governado");
 assertIncludes(intakeScript, "app-ia-profissional.html?dajId=", "handoff DAJ envia somente identificador governado");

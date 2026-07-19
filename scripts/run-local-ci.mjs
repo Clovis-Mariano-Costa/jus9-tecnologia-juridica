@@ -103,6 +103,12 @@ const checks = [
     args: ["tests/validate-charlie-response-contracts.mjs"]
   },
   {
+    label: "Laudo obrigatorio da analise DAJ",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-daj-analysis-laudo.mjs"]
+  },
+  {
     label: "Matriz controlada de RLS",
     cwd: portalRoot,
     command: process.execPath,
@@ -149,6 +155,12 @@ const checks = [
     cwd: portalRoot,
     command: process.execPath,
     args: ["scripts/audit-mao-na-massa-v3-1.mjs"]
+  },
+  {
+    label: "Mao na Massa v3.1.1 incidente DAJ",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-mao-na-massa-v3-1-1.mjs"]
   },
   {
     label: "Fechamento Mao na Massa Video ZIP",
@@ -208,4 +220,4 @@ for (const check of checks) {
   }
 }
 
-console.log("\nLOCAL_CI_OK build-week,portal,rls,sql-homologacao,worker-auth,backend-local,charlie-echo,instalacao-publica,qr-codes");
+console.log("\nLOCAL_CI_OK build-week,portal,daj-laudo,rls,sql-homologacao,worker-auth,backend-local,charlie-echo,instalacao-publica,qr-codes");

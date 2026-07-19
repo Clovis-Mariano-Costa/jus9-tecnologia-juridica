@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.16.1 - 2026-07-19
+
+- Publicada correcao do contrato de saida da analise DAJ: sem `Laudo de Analise DAJ`, o feedback nao e registrado.
+- Paginas DAJ usam novo cache-buster `script.js?v=20260719-daj-laudo-v1`.
+- Service worker, release marker, painel executivo, versionamento e auditores passam a refletir o incidente e o novo teste humano.
+
 ## 1.16.0 - 2026-07-19
 
 - Publicado pacote de links Build Week/Saiba Mais/mapa de estados dos MVPs.

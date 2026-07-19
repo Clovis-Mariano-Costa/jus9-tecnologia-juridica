@@ -2179,7 +2179,8 @@ window.jus9DemoLogin = function(form){
       'Se os dados parecerem reais ou sensiveis, classifique como JURIDICO_SIGILOSO, mantenha placeholders e exija revisao humana.'
     ];
     if(isDajAnalysis){
-      lines.push('Para analise DAJ, entregue nesta ordem: resumo executivo do caso; fatos; documentos existentes; documentos faltantes; perguntas de retorno; riscos/prazos; caminhos juridicos possiveis; fontes para conferencia; proximo ato sugerido; classificacao e Drive Saver.');
+      lines.push('Para analise DAJ, entregue obrigatoriamente um laudo, nao um resumo defensivo. Use o titulo "Laudo de Analise DAJ" e as secoes: Identificacao e escopo; Fonte oficial analisada; Sintese objetiva dos fatos; Classificacao operacional; Riscos, urgencias e prazos; Lacunas e documentos faltantes; Providencias recomendadas; Encaminhamento humano; Limites da analise; Conclusao operacional.');
+      lines.push('Na rota DAJ governada, nao responda que a consulta por DAJ deve ser executada em indice, endpoint, DataJud, pesquisa de partes, vinculo DAJ-processo ou endpoint /api/daj-process-links. Se faltar dado, entregue laudo limitado e liste a lacuna.');
     }
     if(isDraft){
       lines.push('Para peca/minuta completa, entregue a peca inteira: enderecamento; qualificacao com campos entre colchetes; fatos; fundamentos; tutela provisoria se cabivel; pedidos; provas; valor da causa/fechamento; assinatura; checklist de revisao humana; decisao de download local/Drive Saver.');
@@ -4390,6 +4391,35 @@ window.jus9DemoLogin = function(form){
     return String(value || '').replace(/\s+/g, ' ').trim().slice(0, limit);
   }
 
+  function requiredDajLaudoSections(){
+    return [
+      'Laudo de Analise DAJ',
+      '1. Identificacao e escopo',
+      '2. Fonte oficial analisada',
+      '3. Sintese objetiva dos fatos',
+      '4. Classificacao operacional',
+      '5. Riscos, urgencias e prazos',
+      '6. Lacunas e documentos faltantes',
+      '7. Providencias recomendadas',
+      '8. Encaminhamento humano',
+      '9. Limites da analise',
+      '10. Conclusao operacional'
+    ];
+  }
+
+  function governedDajLaudoInstruction(){
+    return [
+      'Formato obrigatorio do laudo:',
+      requiredDajLaudoSections().join('\n'),
+      '',
+      'Regras duras:',
+      '- Nao devolva apenas resumo de fluxo, endpoint, indice, DataJud, consulta processual, pesquisa de partes ou vinculo DAJ-processo.',
+      '- Se houver dado insuficiente, entregue o laudo mesmo assim, limitado ao que consta no cadastro oficial, e marque a lacuna em "Lacunas e documentos faltantes" e "Limites da analise".',
+      '- Nao crie fato, numero de processo, parte, CPF, prazo, documento, fonte, decisao ou vinculo DAJ-processo que nao tenha sido fornecido.',
+      '- A conclusao deve dizer se a analise fica devolvida ao humano, reencaminhada ou pendente, sempre como recomendacao revisavel.'
+    ].join('\n');
+  }
+
   function setActiveDajPresentation(item){
     var summary = document.querySelector('[data-daj-active-summary]');
     if(summary){
@@ -4425,13 +4455,10 @@ window.jus9DemoLogin = function(form){
       'Anexos ainda pendentes: ' + Number(operational.attachmentsPendingCount || 0),
       'Dados de identificacao e contato da parte foram omitidos deste contexto por minimizacao.',
       '',
+      governedDajLaudoInstruction(),
+      '',
       'Entregue:',
-      '1. sintese fiel dos fatos informados;',
-      '2. riscos, urgencias e prazos apenas quando sustentados pelo conteudo;',
-      '3. documentos faltantes e perguntas objetivas para completar o DAJ;',
-      '4. proximos atos sugeridos, separados entre acao da equipe e apoio da Charlie;',
-      '5. fontes oficiais ou academicas a consultar quando o tema exigir, sem inventar citacao;',
-      '6. indicacao expressa do que nao pode ser concluido com os dados atuais.'
+      'um laudo completo nas 10 secoes acima, com sintese fiel dos fatos informados, riscos/urgencias/prazos apenas quando sustentados pelo conteudo, documentos faltantes, perguntas objetivas, proximos atos, fontes de conferencia quando cabiveis e indicacao expressa do que nao pode ser concluido.'
     ];
     return lines.join('\n').slice(0, 6000);
   }
@@ -4507,7 +4534,54 @@ window.jus9DemoLogin = function(form){
   }
 
   function isMisdirectedDajAnalysis(answer){
-    return /consulta processual por CPF foi interrompida|api publica datajud nao oferece pesquisa nacional de partes|endpoint autenticado \/api\/judicial\/parties\/search|nenhum modelo generativo foi chamado/i.test(String(answer || ''));
+    var raw = String(answer || '');
+    var plain = plainAiText(raw);
+    return /consulta processual por CPF foi interrompida|api publica datajud nao oferece pesquisa nacional de partes|endpoint autenticado \/api\/judicial\/parties\/search|nenhum modelo generativo foi chamado|\/api\/daj-process-links/i.test(raw) ||
+      /consulta por daj deve ser executada|indice estruturado e autenticado|api generativa nao vai criar completar ou presumir vinculo daj processo|api daj-process-links|vinculo daj processo/.test(plain);
+  }
+
+  function hasRequiredDajLaudo(answer){
+    var text = plainAiText(answer);
+    if(!text) return false;
+    return [
+      /\blaudo de analise daj\b/,
+      /\bidentificacao e escopo\b/,
+      /\bfonte oficial analisada\b/,
+      /\bsintese objetiva dos fatos\b/,
+      /\bclassificacao operacional\b/,
+      /\briscos urgencias e prazos\b/,
+      /\blacunas e documentos faltantes\b/,
+      /\bprovidencias recomendadas\b/,
+      /\bencaminhamento humano\b/,
+      /\blimites da analise\b/,
+      /\bconclusao operacional\b/
+    ].every(function(pattern){ return pattern.test(text); });
+  }
+
+  function isIncompleteDajLaudo(answer){
+    return !hasRequiredDajLaudo(answer);
+  }
+
+  function shouldRejectDajAnalysisAnswer(answer){
+    return isMisdirectedDajAnalysis(answer) || isIncompleteDajLaudo(answer);
+  }
+
+  function dajAnalysisRejectReason(answer){
+    if(!answer) return 'resposta_daj_vazia';
+    if(isMisdirectedDajAnalysis(answer)) return 'resposta_daj_incompativel_com_a_rota';
+    if(isIncompleteDajLaudo(answer)) return 'resposta_daj_sem_laudo_obrigatorio';
+    return 'resposta_daj_nao_validada';
+  }
+
+  function dajLaudoCorrectionInstruction(answer){
+    var reason = isMisdirectedDajAnalysis(answer)
+      ? 'A resposta anterior foi descartada porque desviou para indice, endpoint, DataJud, pesquisa de partes ou vinculo DAJ-processo.'
+      : 'A resposta anterior foi descartada porque nao entregou o laudo obrigatorio com as 10 secoes da rota DAJ.';
+    return [
+      reason,
+      'Reanalise exclusivamente o cadastro oficial do DAJ e devolva somente o laudo.',
+      governedDajLaudoInstruction()
+    ].join('\n\n');
   }
 
   function inferDajAnalysisRisk(answer){
@@ -4561,19 +4635,19 @@ window.jus9DemoLogin = function(form){
     try {
       var apiPayload = await askCharlieApiPayload('jurista', code, focus, loaded.prompt, room, route);
       var answer = enforceCriticalAnswerGuards(apiPayload.answer, loaded.prompt, route);
-      if(isMisdirectedDajAnalysis(answer)){
-        var correctionRoute = Object.assign({}, route, { retryCorrection:true });
+      if(shouldRejectDajAnalysisAnswer(answer)){
+        var correctionRoute = Object.assign({}, route, { retryCorrection:true, requiredOutput:'LAUDO_DAJ_V1' });
         var corrected = await askCharlieApiPayload(
           'jurista',
           code,
           focus,
-          loaded.prompt + '\n\nA resposta anterior foi descartada porque desviou para pesquisa de partes. Analise exclusivamente os fatos e documentos deste DAJ.',
+          loaded.prompt + '\n\n' + dajLaudoCorrectionInstruction(answer),
           null,
           correctionRoute
         );
         answer = enforceCriticalAnswerGuards(corrected.answer, loaded.prompt, correctionRoute);
       }
-      if(!answer || isMisdirectedDajAnalysis(answer)) throw new Error('resposta_daj_incompativel_com_a_rota');
+      if(!answer || shouldRejectDajAnalysisAnswer(answer)) throw new Error(dajAnalysisRejectReason(answer));
       var feedbackText = '';
       var workflow = null;
       try {
@@ -4585,7 +4659,7 @@ window.jus9DemoLogin = function(form){
       saveDajAnalysisRoomResult(code, room.id, requestLabel, answer, feedbackText, workflow);
       renderChatWindow(card, code, focus);
     } catch(error) {
-      var failure = 'Nao conclui a analise de ' + loaded.item.id + ' porque a API nao entregou uma resposta compativel com a rota DAJ. Nenhum resultado ou encaminhamento foi registrado. Detalhe: ' + (error && error.message ? String(error.message).slice(0, 180) : 'falha sem detalhe') + '.';
+      var failure = 'Nao conclui a analise de ' + loaded.item.id + ' porque a API nao entregou um laudo compativel com a rota DAJ. Nenhum resultado, devolucao ou encaminhamento foi registrado. Detalhe: ' + (error && error.message ? String(error.message).slice(0, 180) : 'falha sem detalhe') + '.';
       saveDajAnalysisRoomResult(code, room.id, requestLabel, failure, 'Feedback do fluxo DAJ\nSituacao: analise nao concluida; DAJ nao reencaminhado.', null);
       renderChatWindow(card, code, focus);
     }
