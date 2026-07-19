@@ -81,7 +81,7 @@ for (const file of dedSupportingPages) {
   assert(html.includes("app-ia-autor-editor.html"), `${file}: IA editorial dedicada ausente`);
 }
 const dedAiPage = fs.readFileSync(path.join(root, "app-ia-autor-editor.html"), "utf8");
-for (const phrase of ["data-ai-code=\"DED\"", "autoria", "titularidade", "fontes", "versoes", "Drive oficial"]) {
+for (const phrase of ["data-ai-code=\"DED\"", "autoria", "titularidade", "fontes", "versoes", "Drive real, ISBN, venda e contrato ficam bloqueados no demo publico"]) {
   assert(dedAiPage.includes(phrase), `DED: contrato editorial ausente na pagina de IA: ${phrase}`);
 }
 

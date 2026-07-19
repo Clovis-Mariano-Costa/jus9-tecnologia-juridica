@@ -55,6 +55,12 @@ const checks = [
     args: ["scripts/audit-mvp-demo-kits.mjs"]
   },
   {
+    label: "DED vitrine editorial",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-ded-editorial-showcase.mjs"]
+  },
+  {
     label: "Estrutura versionada de governanca",
     cwd: portalRoot,
     command: process.execPath,

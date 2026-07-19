@@ -51,6 +51,8 @@ const dajCleanStyle = await fs.readFile(new URL("../assets/css/daj-clean-ui.css"
 const mvpLandingPage = await fs.readFile(new URL("../mvp.html", import.meta.url), "utf8");
 const leaderMvpPage = await fs.readFile(new URL("../lider-mvp.html", import.meta.url), "utf8");
 const mvpExecutivePanelPage = await fs.readFile(new URL("../app-painel-mvps.html", import.meta.url), "utf8");
+const dedDashboardPage = await fs.readFile(new URL("../app-demo-autor-editor.html", import.meta.url), "utf8");
+const dedAiShowcasePage = await fs.readFile(new URL("../app-ia-autor-editor.html", import.meta.url), "utf8");
 const installPage = await fs.readFile(new URL("../instalar-app.html", import.meta.url), "utf8");
 const pwaInstallScript = await fs.readFile(new URL("../assets/js/pwa-install.js", import.meta.url), "utf8");
 const canonicalServiceWorker = await fs.readFile(new URL("../service-worker.js", import.meta.url), "utf8");
@@ -170,12 +172,19 @@ assert(mvpExecutivePanelPage.includes("data-mvp-executive-panel"), "painel execu
 assert(mvpExecutivePanelPage.includes("DAJ-2026-0002") && mvpExecutivePanelPage.includes("ACEITE_HUMANO_PARCIAL_CONFIRMADO") && mvpExecutivePanelPage.includes("REVERSIBILIDADE_PENDENTE"), "painel executivo nao preserva o estado parcial do DAJ 1C");
 assert(mvpExecutivePanelPage.includes("a142825") && mvpExecutivePanelPage.includes("fcef514") && mvpExecutivePanelPage.includes("cde1bf89-3d93-4429-a485-be46945bec04"), "painel executivo sem evidencias de commit/deploy");
 assert(mvpExecutivePanelPage.includes("BLOQUEADO_ATE_REVERSIBILIDADE_1C") && mvpExecutivePanelPage.includes("DEPENDENTE_DE_ACAO_HUMANA"), "painel executivo sem bloqueios de governanca");
+assert(mvpExecutivePanelPage.includes('data-package="3" data-package-status="CONCLUIDO_PUBLICADO"'), "painel executivo nao marca DED como Pacote 3 publicado");
 assert(mvpExecutivePanelPage.includes("app-clientes.html#consulta-daj") && mvpExecutivePanelPage.includes("app-demo-autor-editor.html") && mvpExecutivePanelPage.includes("app-demo-cidadao.html"), "painel executivo sem atalhos DAJ/DED/DIC");
 for (const code of expectedCodes) {
   assert(mvpExecutivePanelPage.includes(`<span class="rank-code">${code}</span>`), `painel executivo sem codigo ${code}`);
 }
 assert(mvpLandingPage.includes("app-painel-mvps.html"), "mvp.html sem link para painel executivo dos MVPs");
 assert(leaderMvpPage.includes("app-painel-mvps.html"), "lider-mvp.html sem link para painel executivo dos MVPs");
+assert(dedDashboardPage.includes("data-ded-editorial-showcase") && dedDashboardPage.includes("data-ded-briefing") && dedDashboardPage.includes("data-ded-author-checklist"), "painel DED sem vitrine editorial governada");
+assert(dedDashboardPage.includes("DED-MODELO-VITRINE-2026") && dedDashboardPage.includes("Autora Beta Ficticia") && dedDashboardPage.includes("Manual Ficticio da Oficina de Palavras"), "painel DED sem dataset ficticio canonico");
+assert(dedDashboardPage.includes("Sem Drive real") && dedDashboardPage.includes("Sem ISBN") && dedDashboardPage.includes("Sem venda garantida"), "painel DED sem limites de efeitos reais");
+assert(dedAiShowcasePage.includes("data-ded-prompt-pack") && dedAiShowcasePage.includes("data-ded-guardrails"), "IA DED sem pacote de prompts ou guardrails");
+assert(dedAiShowcasePage.includes("Drive real, ISBN, venda e contrato ficam bloqueados no demo publico"), "IA DED sem bloqueio de efeitos reais");
+assert(!dedDashboardPage.includes("salvar no Drive governado") && !dedAiShowcasePage.includes("Drive oficial com decisao"), "DED ainda sugere Drive real no demo publico");
 for (const profile of ["admin_sistema", "advogado_lider", "advogado", "assessor_chefe", "assessor", "secretaria", "estagio", "escritorio", "academia", "estudante", "cidadao", "perito", "parceiro", "empresa", "orgao_publico", "magistrado", "ministerio_publico", "autoridade_policial", "autor_editor"]) {
   assert(dajProfilesPage.includes(`data-auth-profile="${profile}"`), `lista de perfis sem ${profile}`);
 }

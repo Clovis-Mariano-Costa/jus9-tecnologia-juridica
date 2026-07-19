@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.12.8 - 2026-07-19
+
+- Publicada vitrine editorial DED com briefing ficticio, checklist de autoria/titularidade e pacote de prompts da IA Editorial.
+- Painel DED e IA DED deixam explicito que Drive real, ISBN, venda, contrato e publicacao ficam bloqueados no demo publico.
+- Painel executivo passa a marcar o Pacote 3 como `CONCLUIDO_PUBLICADO` e o CI local recebe auditor dedicado do DED.
+
 ## 1.12.7 - 2026-07-19
 
 - Criado `app-painel-mvps.html` como painel executivo dos 14 MVPs, com ranking, pacotes Mao na Massa, riscos, evidencias, commits e deploy base.
