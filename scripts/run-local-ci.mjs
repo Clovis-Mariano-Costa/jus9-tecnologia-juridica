@@ -61,6 +61,12 @@ const checks = [
     args: ["scripts/audit-ded-editorial-showcase.mjs"]
   },
   {
+    label: "DIC vitrine social",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-dic-social-showcase.mjs"]
+  },
+  {
     label: "Estrutura versionada de governanca",
     cwd: portalRoot,
     command: process.execPath,

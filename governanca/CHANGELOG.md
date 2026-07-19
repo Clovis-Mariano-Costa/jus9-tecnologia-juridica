@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.12.9 - 2026-07-19
+
+- Publicada vitrine social DIC com dataset ficticio, checklist anti-PII, fonte oficial e encaminhamento humano.
+- IA DIC passa a expor pacote de prompts e guardrails contra coleta de dados pessoais, caso real, urgencia e substituicao de atendimento humano.
+- Painel executivo passa a marcar o Pacote 4 como `CONCLUIDO_PUBLICADO` e o CI local recebe auditor dedicado do DIC.
+
 ## 1.12.8 - 2026-07-19
 
 - Publicada vitrine editorial DED com briefing ficticio, checklist de autoria/titularidade e pacote de prompts da IA Editorial.

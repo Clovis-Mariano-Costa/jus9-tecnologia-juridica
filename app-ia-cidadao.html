@@ -66,7 +66,14 @@ IA DIC conectada a API segura da Charlie Echo. Sem tokens no frontend e sem dado
       </article>
     </section>
 
-    <section id="chat-ia" class="demo-card ai-chat-card" data-ai-chat data-ai-layout="medio" data-ai-title="Charlie Social - Cidadao / Interessado" data-ai-code="DIC" data-ai-focus="orientacao inicial simples, documentos ficticios, fontes oficiais, encaminhamento humano e limites sociais">
+    <section class="demo-card" data-dic-prompt-pack>
+      <div class="eyebrow">Pacote de prompts DIC</div>
+      <h2 style="color:#0b1728">Orientacao ficticia pronta para teste</h2>
+      <p style="color:#51627a">Use o dataset <code>DIC-MODELO-VITRINE-2026</code>: <code>Pessoa interessada ficticia</code>, duvida geral sobre organizacao de documentos e fonte oficial a conferir pelo humano. A resposta deve ser simples, acolhedora, sem dado pessoal e sem resolver caso real.</p>
+      <p><span class="badge secret">Sem CPF</span> <span class="badge secret">Sem documento real</span> <span class="badge secret">Sem consultoria individual</span> <span class="badge secret">Encaminhamento humano</span></p>
+    </section>
+
+    <section id="chat-ia" class="demo-card ai-chat-card" data-ai-chat data-ai-layout="medio" data-ai-title="Charlie Social - Cidadao / Interessado" data-ai-code="DIC" data-ai-focus="orientacao inicial simples, documentos ficticios, fontes oficiais, encaminhamento humano e limites sociais" data-dic-guardrails>
       <div class="eyebrow">Chat social demonstrativo</div>
       <h2 style="color:#0b1728">Falar com Charlie Social</h2>
       <p style="color:#51627a">Digite uma pergunta ficticia. A consulta usa a API segura da Charlie Echo e deve priorizar linguagem simples, fontes oficiais e encaminhamento humano.</p>
@@ -77,10 +84,10 @@ IA DIC conectada a API segura da Charlie Echo. Sem tokens no frontend e sem dado
       </div>
       <div class="ai-chat-window" data-ai-chat-window><div class="ai-message ai-message-echo"><strong>Charlie Echo:</strong> Ola. Estou no modo social do DIC. Conte o tema de forma geral e sem dados pessoais; eu organizo caminhos seguros e fontes para conferencia.</div></div>
       <form class="ai-chat-form" data-ai-chat-form>
-        <textarea data-ai-chat-input rows="4" placeholder="Ex.: Tenho uma duvida geral sobre moradia. Que fontes oficiais posso consultar e quando devo procurar ajuda humana?"></textarea>
+        <textarea data-ai-chat-input rows="4" placeholder="Com o DIC-MODELO-VITRINE-2026, organize uma duvida ficticia sem pedir CPF, endereco, telefone ou processo real..."></textarea>
         <button class="mvp-button" type="submit">Enviar para Charlie</button>
       </form>
-      <div class="fine-note"><strong>Limite:</strong> nao informe nomes reais, CPF, endereco, telefone, processo real, imagens de documento, WhatsApp, senha, token ou caso urgente.</div>
+      <div class="fine-note"><strong>Limite:</strong> nao informe nomes reais, CPF, endereco, telefone, processo real, imagens de documento, WhatsApp, senha, token ou caso urgente. Charlie nao substitui advogado, Defensoria, orgao publico, saude, policia, emergencia ou decisao humana.</div>
     </section>
   </main>
 </div>

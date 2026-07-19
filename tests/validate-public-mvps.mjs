@@ -53,6 +53,8 @@ const leaderMvpPage = await fs.readFile(new URL("../lider-mvp.html", import.meta
 const mvpExecutivePanelPage = await fs.readFile(new URL("../app-painel-mvps.html", import.meta.url), "utf8");
 const dedDashboardPage = await fs.readFile(new URL("../app-demo-autor-editor.html", import.meta.url), "utf8");
 const dedAiShowcasePage = await fs.readFile(new URL("../app-ia-autor-editor.html", import.meta.url), "utf8");
+const dicDashboardPage = await fs.readFile(new URL("../app-demo-cidadao.html", import.meta.url), "utf8");
+const dicAiShowcasePage = await fs.readFile(new URL("../app-ia-cidadao.html", import.meta.url), "utf8");
 const installPage = await fs.readFile(new URL("../instalar-app.html", import.meta.url), "utf8");
 const pwaInstallScript = await fs.readFile(new URL("../assets/js/pwa-install.js", import.meta.url), "utf8");
 const canonicalServiceWorker = await fs.readFile(new URL("../service-worker.js", import.meta.url), "utf8");
@@ -173,6 +175,7 @@ assert(mvpExecutivePanelPage.includes("DAJ-2026-0002") && mvpExecutivePanelPage.
 assert(mvpExecutivePanelPage.includes("a142825") && mvpExecutivePanelPage.includes("fcef514") && mvpExecutivePanelPage.includes("cde1bf89-3d93-4429-a485-be46945bec04"), "painel executivo sem evidencias de commit/deploy");
 assert(mvpExecutivePanelPage.includes("BLOQUEADO_ATE_REVERSIBILIDADE_1C") && mvpExecutivePanelPage.includes("DEPENDENTE_DE_ACAO_HUMANA"), "painel executivo sem bloqueios de governanca");
 assert(mvpExecutivePanelPage.includes('data-package="3" data-package-status="CONCLUIDO_PUBLICADO"'), "painel executivo nao marca DED como Pacote 3 publicado");
+assert(mvpExecutivePanelPage.includes('data-package="4" data-package-status="CONCLUIDO_PUBLICADO"'), "painel executivo nao marca DIC como Pacote 4 publicado");
 assert(mvpExecutivePanelPage.includes("app-clientes.html#consulta-daj") && mvpExecutivePanelPage.includes("app-demo-autor-editor.html") && mvpExecutivePanelPage.includes("app-demo-cidadao.html"), "painel executivo sem atalhos DAJ/DED/DIC");
 for (const code of expectedCodes) {
   assert(mvpExecutivePanelPage.includes(`<span class="rank-code">${code}</span>`), `painel executivo sem codigo ${code}`);
@@ -185,6 +188,11 @@ assert(dedDashboardPage.includes("Sem Drive real") && dedDashboardPage.includes(
 assert(dedAiShowcasePage.includes("data-ded-prompt-pack") && dedAiShowcasePage.includes("data-ded-guardrails"), "IA DED sem pacote de prompts ou guardrails");
 assert(dedAiShowcasePage.includes("Drive real, ISBN, venda e contrato ficam bloqueados no demo publico"), "IA DED sem bloqueio de efeitos reais");
 assert(!dedDashboardPage.includes("salvar no Drive governado") && !dedAiShowcasePage.includes("Drive oficial com decisao"), "DED ainda sugere Drive real no demo publico");
+assert(dicDashboardPage.includes("data-dic-social-showcase") && dicDashboardPage.includes("data-dic-briefing") && dicDashboardPage.includes("data-dic-no-pii-checklist"), "painel DIC sem vitrine social governada");
+assert(dicDashboardPage.includes("DIC-MODELO-VITRINE-2026") && dicDashboardPage.includes("Pessoa interessada ficticia") && dicDashboardPage.includes("Sem CPF"), "painel DIC sem dataset ficticio e limites anti-PII");
+assert(dicAiShowcasePage.includes("data-dic-prompt-pack") && dicAiShowcasePage.includes("data-dic-guardrails"), "IA DIC sem pacote de prompts ou guardrails");
+assert(dicAiShowcasePage.includes("Charlie nao substitui advogado, Defensoria, orgao publico, saude, policia, emergencia ou decisao humana"), "IA DIC sem limite humano completo");
+assert(!dicDashboardPage.includes("Digite seu CPF") && !dicAiShowcasePage.includes("envie documento real"), "DIC ainda sugere coleta de dado real");
 for (const profile of ["admin_sistema", "advogado_lider", "advogado", "assessor_chefe", "assessor", "secretaria", "estagio", "escritorio", "academia", "estudante", "cidadao", "perito", "parceiro", "empresa", "orgao_publico", "magistrado", "ministerio_publico", "autoridade_policial", "autor_editor"]) {
   assert(dajProfilesPage.includes(`data-auth-profile="${profile}"`), `lista de perfis sem ${profile}`);
 }
