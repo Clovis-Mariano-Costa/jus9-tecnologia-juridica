@@ -1,9 +1,9 @@
 ---
 id: JUS9-BUILD-WEEK-DEVPOST-DRAFT-001
-versao: 1.0.0
+versao: 1.1.0
 autor: Codex / Charlie Fox
 revisor_responsavel: Clovis Mariano da Costa
-data: 2026-07-18
+data: 2026-07-19
 status: rascunho-controlado
 classificacao: PUBLICO-INSTITUCIONAL
 hash: gerar-na-versao-final
@@ -63,7 +63,9 @@ The production Worker serves compiled assets from `dist`. Source verification is
 
 Codex was the primary implementation collaborator during the Build Week extension. It mapped the existing repositories, translated legal and governance requirements into contracts, implemented and reviewed frontend and backend changes, diagnosed frozen-response and intent-routing failures, built fail-closed behavior, expanded automated tests, checked deployment health, versioned releases, audited secrets and public assets, and prepared timestamped evidence separating pre-existing work from new work.
 
-The required Codex Session ID will be attached privately from `/feedback`. It will not be replaced by a commit ID or an invented value.
+The required Codex task identification was received and retained privately on July 19. The public evidence contains only sanitized timestamps and cryptographic fingerprints.
+
+Local task metadata verifies `gpt-5.6-sol` in the principal Codex development task from July 13, 2026 at 6:37:59 PM BRT, after the event opened. This is a development-session claim, not a claim about the Charlie Echo production runtime.
 
 ## Existing project versus Build Week work
 
@@ -122,7 +124,7 @@ Recommended order:
 
 ## OpenAI and model disclosure
 
-OpenAI API integration is verified in source. Runtime models are selected by deployment configuration. The public evidence currently does not prove GPT-5.6 as the deployed Charlie Echo runtime, so this draft does not make that claim. If GPT-5.6 evidence is attached later, the final text must state its exact development or runtime scope.
+OpenAI API integration is verified in source. Runtime models are selected by deployment configuration. Sanitized local session metadata verifies `gpt-5.6-sol` for the Codex development task, while the public evidence does not prove GPT-5.6 as the deployed Charlie Echo runtime. This draft deliberately keeps those two claims separate.
 
 ## Third-party and safety disclosure
 

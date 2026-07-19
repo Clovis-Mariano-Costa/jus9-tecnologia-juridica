@@ -11,7 +11,7 @@ Software livre com autoria preservada.
   <meta name="robots" content="noindex,nofollow,noarchive">
   <title>Jus 9 DAJ - Build Week reviewer path</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/css/build-week-reviewer.css?v=20260719-v2">
+  <link rel="stylesheet" href="assets/css/build-week-reviewer.css?v=20260719-v3">
   <meta name="theme-color" content="#07111f">
 </head>
 <body>
@@ -59,7 +59,7 @@ Software livre com autoria preservada.
 
       <section class="status-strip" aria-label="Submission status">
         <div><span class="status-dot live" aria-hidden="true"></span><strong>Product</strong><span>Public workflow live</span></div>
-        <div><span class="status-dot verified" aria-hidden="true"></span><strong>Build evidence</strong><span>Git and Codex records</span></div>
+        <div><span class="status-dot verified" aria-hidden="true"></span><strong>Build evidence</strong><span>Git + Codex Sol verified</span></div>
         <div><span class="status-dot pending" aria-hidden="true"></span><strong>Eligibility</strong><span>Official clarification pending</span></div>
       </section>
 
@@ -158,8 +158,9 @@ node scripts/audit-build-week-readiness.mjs --strict</code></pre>
         <div class="status-table" role="table" aria-label="Build Week claim status">
           <div class="status-row status-head" role="row"><span role="columnheader">Claim</span><span role="columnheader">State</span><span role="columnheader">Reviewer note</span></div>
           <div class="status-row" role="row"><strong role="cell">Codex collaboration</strong><span class="state verified" role="cell">Verified</span><span role="cell">Timestamped development record and Git evidence</span></div>
+          <div class="status-row" role="row"><strong role="cell">Codex development model</strong><span class="state verified" role="cell">Verified</span><span role="cell"><code>gpt-5.6-sol</code> active from July 13, 2026 at 6:37:59 PM BRT; sanitized evidence only</span></div>
           <div class="status-row" role="row"><strong role="cell">OpenAI API integration</strong><span class="state verified" role="cell">Verified in source</span><span role="cell">Runtime model is selected by deployment configuration</span></div>
-          <div class="status-row" role="row"><strong role="cell">GPT-5.6 runtime</strong><span class="state pending" role="cell">Unverified</span><span role="cell">No claim is made without sanitized deployment evidence</span></div>
+          <div class="status-row" role="row"><strong role="cell">Charlie Echo GPT-5.6 runtime</strong><span class="state pending" role="cell">Unverified</span><span role="cell">Development evidence is not a production-runtime attestation</span></div>
           <div class="status-row" role="row"><strong role="cell">Brazil entrant eligibility</strong><span class="state blocked" role="cell">Clarification pending</span><span role="cell">Current rules appear to exclude Brazilian residents</span></div>
           <div class="status-row" role="row"><strong role="cell">DataJud</strong><span class="state limited" role="cell">Read-only</span><span role="cell">Public metadata by CNJ number; no case files or transactional acts</span></div>
           <div class="status-row" role="row"><strong role="cell">External name or CPF search</strong><span class="state blocked" role="cell">Unavailable</span><span role="cell">The product fails closed while official guidance and credentials are pending</span></div>
@@ -193,6 +194,7 @@ node scripts/audit-build-week-readiness.mjs --strict</code></pre>
           <a href="https://github.com/Clovis-Mariano-Costa/charlieecho-jus9-tecnologia-juridica" target="_blank" rel="noopener"><strong>Charlie Echo API</strong><span>Governed AI routing and response contracts</span></a>
           <a href="https://github.com/Clovis-Mariano-Costa/backend-api-jus9-tecnologia-juridica" target="_blank" rel="noopener"><strong>Backend API</strong><span>Exposure and fail-closed policies</span></a>
           <a href="https://github.com/Clovis-Mariano-Costa/jus9-tecnologia-juridica/blob/main/documentacao/hackathon/EVIDENCIAS_BUILD_WEEK_2026.md" target="_blank" rel="noopener"><strong>Evidence ledger</strong><span>Timestamped commits and scope</span></a>
+          <a href="https://github.com/Clovis-Mariano-Costa/jus9-tecnologia-juridica/blob/main/documentacao/hackathon/EVIDENCIA_CODEX_SOL_BUILD_WEEK_2026_v1.0.0.md" target="_blank" rel="noopener"><strong>Codex Sol evidence</strong><span>Sanitized timestamps, scope, and SHA-256 seals</span></a>
         </div>
       </section>
 

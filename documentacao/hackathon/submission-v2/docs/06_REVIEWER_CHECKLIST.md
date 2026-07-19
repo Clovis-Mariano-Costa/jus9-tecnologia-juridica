@@ -1,9 +1,9 @@
 ---
 id: JUS9-BUILD-WEEK-V2-REVIEWER-001
-versao: 2.0.0-candidate
+versao: 2.0.1-candidate
 autor: Codex / Charlie Fox
 revisor_responsavel: Clovis Mariano da Costa
-data: 2026-07-18
+data: 2026-07-19
 status: candidato-nao-final
 classificacao: PUBLICO-SANITIZADO
 hash: nao-aplicavel-pacote-candidato
@@ -14,8 +14,8 @@ hash: nao-aplicavel-pacote-candidato
 ## Before final packaging
 
 - [ ] Written eligibility clarification for an individual resident in Brazil.
-- [ ] Codex `/feedback` Session ID.
-- [ ] Timestamped evidence for any GPT-5.6 claim.
+- [x] Codex task identification retained for private submission.
+- [x] Timestamped, sanitized evidence for the `gpt-5.6-sol` development-session claim.
 - [ ] Least-privilege judge account or isolated sandbox.
 - [ ] Access to every required source repository.
 - [ ] Real sanitized screenshots of DAJ, Charlie analysis, feedback, process search, and linkage.

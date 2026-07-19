@@ -1,6 +1,6 @@
 ---
 id: DOC-CHARLIE-CHANGELOG-001
-versao: 1.15.0
+versao: 1.17.0
 autor: Codex / Charlie Fox
 revisor_responsavel: Clovis Mariano da Costa
 data: 2026-07-18
@@ -10,6 +10,12 @@ hash: nao-aplicavel-changelog
 ---
 
 # Changelog - Documentacao
+
+## 1.17.0 - 2026-07-19
+
+- Registrada evidencia sanitizada e verificavel de `gpt-5.6-sol` na tarefa principal do Codex a partir de 13/07/2026 as 18:37:59 BRT.
+- Preservado o identificador integral da tarefa apenas em evidencia privada, com lacres SHA-256 publicos.
+- Separada expressamente a prova do modelo de desenvolvimento da alegacao ainda nao verificada sobre o runtime publico da Charlie Echo.
 
 ## 1.16.3 - 2026-07-19
 

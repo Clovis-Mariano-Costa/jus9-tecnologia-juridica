@@ -1,9 +1,9 @@
 ---
 id: JUS9-BUILD-WEEK-EVIDENCIAS-001
-versao: 1.1.0
+versao: 1.2.0
 autor: Codex / Charlie Fox
 revisor_responsavel: Clovis Mariano da Costa
-data: 2026-07-18
+data: 2026-07-19
 status: ativo-controlado
 classificacao: INTERNO
 hash: nao-aplicavel-ate-aprovacao
@@ -101,13 +101,16 @@ Evidencias existentes:
 - `CONTINUIDADE_CODEX_CHARLIE_ECHO_2026-07-17.md`;
 - testes e verificacoes registrados durante as sessoes;
 - historico desta tarefa Codex iniciado antes e continuado durante o periodo.
+- identificacao integral da tarefa recebida e preservada privadamente em 19/07/2026;
+- metadados locais que registram `gpt-5.6-sol` a partir de 13/07/2026 as 18:37:59 BRT;
+- evidencia publica sanitizada em `EVIDENCIA_CODEX_SOL_BUILD_WEEK_2026_v1.0.0.md`;
+- lacres SHA-256 para conferir a identificacao privada e a linha do tempo canonica sem publicar o identificador.
 
 Evidencias ainda necessarias:
 
-- Session ID obtido pelo comando `/feedback` na sessao principal;
-- data/hora ou exportacao das sessoes Codex usadas nos pacotes centrais;
-- identificacao verificavel da sessao GPT-5.6, se ela for declarada;
 - captura da pagina Devpost com o campo preenchido, antes da submissao final.
+
+Limite: a prova acima se refere ao modelo da sessao de desenvolvimento Codex. O modelo implantado na API publica da Charlie Echo permanece nao verificado e nao deve ser inferido dessa evidencia.
 
 ## Regra de atualizacao
 

@@ -65,7 +65,7 @@ Do not use a real person's name or CPF. External party search is unavailable and
 3. Inspect `BUILD_WEEK_STATUS_2026.json`.
 4. Run `node scripts/run-local-ci.mjs` when all related repositories are available under one parent directory.
 
-Expected result: the regular audit reports verified work and unresolved blockers separately. Strict mode exits unsuccessfully while eligibility, Session ID, judge access, rights evidence, final ZIP, or video remain unresolved.
+Expected result: the regular audit reports verified work and unresolved blockers separately. It verifies the sanitized Codex Sol record without exposing the private task identifier. Strict mode exits unsuccessfully while eligibility, judge access, rights evidence, final ZIP, or video remain unresolved.
 
 ## Synthetic fixture
 
@@ -105,7 +105,7 @@ The project owner must deliver these items outside the public repository:
 
 - judge login instructions;
 - sandbox reset and cleanup procedure;
-- Codex Session ID obtained through `/feedback`;
+- private Codex task identification already retained by the owner, for entry in the required private submission field;
 - third-party authorization evidence;
 - asset-rights signoff; and
 - any sanitized model attestation used by the final claim.

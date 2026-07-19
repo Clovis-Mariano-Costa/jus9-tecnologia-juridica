@@ -1,9 +1,9 @@
 ---
 id: JUS9-BUILD-WEEK-TERCEIROS-001
-versao: 1.0.0
+versao: 1.1.0
 autor: Codex / Charlie Fox
 revisor_responsavel: Clovis Mariano da Costa
-data: 2026-07-18
+data: 2026-07-19
 status: em-revisao
 classificacao: INTERNO
 hash: nao-aplicavel-ate-aprovacao
@@ -20,7 +20,7 @@ Demonstrar que cada SDK, API, dado, biblioteca e ativo de terceiros usado na sub
 | Terceiro/componente | Uso no projeto | Evidencia tecnica | Base/termos | Estado | Acao antes de submeter |
 |---|---|---|---|---|---|
 | OpenAI API | Respostas da Charlie e pesquisa juridica ativa | Chamadas a `/v1/responses` e `/v1/chat/completions` na API central | https://openai.com/policies/service-terms/ | Tecnico verificado; conta/modelo pendentes | Guardar prova de conta e termo aplicavel; atestar modelo sem expor chave |
-| Codex | Desenvolvimento, revisao, testes e documentacao | Commits, releases e continuidade | Regras Build Week e termos OpenAI | Verificado; Session ID pendente | Executar `/feedback` na sessao principal e guardar ID |
+| Codex | Desenvolvimento, revisao, testes e documentacao | Commits, releases, continuidade e evidencia sanitizada de `gpt-5.6-sol` | Regras Build Week e termos OpenAI | Verificado; identificacao integral preservada privadamente | Informar o identificador somente no campo privado aplicavel; manter no repositorio apenas os lacres SHA-256 |
 | Google Drive / Apps Script | Memoria operacional e documentos | Proxy governado e Drive Saver | https://developers.google.com/terms | Uso verificado; conformidade documental pendente | Confirmar consentimento, politica de privacidade, escopos e propriedade dos arquivos |
 | Google OAuth / Calendar | Login e agenda | Codigo e documentos de verificacao; Calendar OAuth desativado no health auditado | https://developers.google.com/terms/api-services-user-data-policy | Em verificacao | Usar menor escopo; nao demonstrar capacidade nao aprovada; guardar resposta Google |
 | Cloudflare Workers / KV | Hosting, API, cache, memoria e registros | `wrangler.jsonc`, Worker e health de producao | Contrato aplicavel a conta Cloudflare | Uso verificado; comprovante pendente | Guardar conta/contrato e listar bindings sem valores secretos |

@@ -1,9 +1,9 @@
 ---
 id: JUS9-BUILD-WEEK-V2-README-001
-versao: 2.0.0-candidate
+versao: 2.0.1-candidate
 autor: Codex / Charlie Fox
 revisor_responsavel: Clovis Mariano da Costa
-data: 2026-07-18
+data: 2026-07-19
 status: candidato-nao-final
 classificacao: PUBLICO-SANITIZADO
 hash: nao-aplicavel-pacote-candidato
@@ -18,11 +18,11 @@ This is a **candidate review package**, not the final submission archive.
 It remains blocked by:
 
 - official eligibility clarification for an individual resident in Brazil;
-- the required Codex `/feedback` Session ID;
-- verifiable evidence for any GPT-5.6 claim;
 - a least-privilege judge account or sandbox;
 - real, sanitized product screenshots;
 - final third-party and asset-rights review.
+
+The full Codex task identification is ready for private submission and is intentionally absent from this public package. Sanitized local metadata verifies `gpt-5.6-sol` for the development task; no GPT-5.6 claim is made for the Charlie Echo production runtime.
 
 ## Product focus
 

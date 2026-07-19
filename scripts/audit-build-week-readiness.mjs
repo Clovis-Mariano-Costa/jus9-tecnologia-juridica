@@ -24,6 +24,7 @@ const requiredFiles = [
   "documentacao/hackathon/DEVPOST_SUBMISSION_DRAFT_EN.md",
   "documentacao/hackathon/JUDGE_PATH_EN.md",
   "documentacao/hackathon/EVIDENCIAS_BUILD_WEEK_2026.md",
+  "documentacao/hackathon/EVIDENCIA_CODEX_SOL_BUILD_WEEK_2026_v1.0.0.md",
   "documentacao/hackathon/MATRIZ_INTEGRACOES_TERCEIROS_BUILD_WEEK_2026.md",
   "documentacao/hackathon/RELATORIO_CONFORMIDADE_OPENAI_BUILD_WEEK_2026_v1.1.0.md"
 ];
@@ -71,6 +72,7 @@ const readme = read("README.md");
 const devpostDraft = read("documentacao/hackathon/DEVPOST_SUBMISSION_DRAFT_EN.md");
 const judgePath = read("documentacao/hackathon/JUDGE_PATH_EN.md");
 const evidenceLedger = read("documentacao/hackathon/EVIDENCIAS_BUILD_WEEK_2026.md");
+const codexSolEvidence = read("documentacao/hackathon/EVIDENCIA_CODEX_SOL_BUILD_WEEK_2026_v1.0.0.md");
 const integrationMatrix = read("documentacao/hackathon/MATRIZ_INTEGRACOES_TERCEIROS_BUILD_WEEK_2026.md");
 
 check(status.schemaVersion === "1.0.0", "status manifest schema", "Unexpected Build Week status schema");
@@ -84,6 +86,10 @@ check(status.mvpConsolidation?.dajAnalysisContract?.includes("Laudo de Analise D
 check(status.mvpConsolidation?.package2State === "AGUARDANDO_NOVO_TESTE_HUMANO", "Package 2 human retest state", "Build Week status must preserve Package 2 human retest state");
 check(status.claims?.significantExtensionAfterStart?.state === "verified", "significant-extension claim", "Significant extension is not marked verified");
 check(status.claims?.codexCollaboration?.state === "verified", "Codex collaboration status", "Codex collaboration must be supported by evidence");
+check(status.claims?.codexCollaboration?.sessionId === "attached_privately", "Codex task identification retained privately", "Codex task identification must be retained privately");
+check(status.claims?.codexGpt56SolDevelopment?.state === "verified_local_session_metadata", "Codex Sol development evidence status", "Codex Sol development evidence must be explicitly verified");
+check(status.claims?.codexGpt56SolDevelopment?.modelId === "gpt-5.6-sol", "Codex Sol model identifier", "Unexpected Codex development model identifier");
+check(status.claims?.codexGpt56SolDevelopment?.evidenceFingerprintSha256 === "d2cfd341b2ad8c4e95e47977f4a90bd3b023cde50977efd345d08d51904a54b9", "Codex Sol evidence fingerprint", "Codex Sol evidence fingerprint does not match the approved record");
 check(status.claims?.openAiApiIntegration?.state === "verified_in_source", "OpenAI source integration status", "OpenAI integration must remain scoped to source verification");
 check(status.claims?.gpt56Runtime?.state === "unverified", "GPT-5.6 claim remains unverified", "GPT-5.6 runtime must remain unverified until evidence is attached");
 check(status.claims?.entrantEligibility?.state === "blocked_pending_official_clarification", "eligibility remains explicitly blocked", "Eligibility must not be presented as approved without written clarification");
@@ -96,6 +102,7 @@ check(status.submissionArtifacts?.repositoryHygiene?.state === "blocked_tracked_
 check(/<html\s+lang="en">/i.test(reviewerPage), "reviewer page language", "Reviewer page must declare English");
 check(/id="live-flow"/.test(reviewerPage) && /id="evidence"/.test(reviewerPage) && /id="safety"/.test(reviewerPage), "reviewer page sections", "Reviewer page is missing live flow, evidence, or safety sections");
 check(/id="mvp-scope"/.test(reviewerPage) && /data-build-week-mvp-scope/.test(reviewerPage), "reviewer MVP scope section", "Reviewer page is missing the MVP scope section");
+check(/Codex development model/.test(reviewerPage) && /gpt-5\.6-sol/.test(reviewerPage), "reviewer Codex Sol disclosure", "Reviewer page does not disclose the verified Codex development model");
 check(/app-atendimento-inicial\.html/.test(reviewerPage) && /app-ia-profissional\.html/.test(reviewerPage) && /app-processos\.html/.test(reviewerPage), "reviewer workflow links", "Reviewer page does not link the complete DAJ flow");
 check(/saiba-mais\.html/.test(reviewerPage) && /mvp-o-que-ja-funciona\.html/.test(reviewerPage) && /app-painel-mvps\.html/.test(reviewerPage), "reviewer ecosystem links", "Reviewer page does not link Saiba mais, state map, and executive panel");
 check(/@media \(max-width:760px\)/.test(reviewerCss), "reviewer mobile layout", "Reviewer CSS has no mobile layout");
@@ -104,6 +111,9 @@ check(/a45ae2cf75221eaf7f3679ad8c20c59146f73ae6/.test(devpostDraft), "Devpost ba
 check(/fails? closed/i.test(devpostDraft) && /synthetic data only/i.test(judgePath), "fail-closed and synthetic-data disclosures", "Judge materials lost a critical safety disclosure");
 check(/DataJud/.test(integrationMatrix) && /OpenAI/.test(integrationMatrix) && /Google/.test(integrationMatrix), "third-party matrix coverage", "Third-party matrix does not cover the principal integrations");
 check(/a45ae2c/.test(evidenceLedger), "evidence baseline reference", "Evidence ledger does not reference the baseline");
+check(/2026-07-13 18:37:59\.601/.test(codexSolEvidence), "Codex Sol activation timestamp", "Codex Sol evidence lost its activation timestamp");
+check(/development-session evidence only/i.test(status.claims.codexGpt56SolDevelopment.claimBoundary), "Codex Sol claim boundary", "Codex Sol evidence must remain scoped to development");
+check(!/\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/i.test(codexSolEvidence), "Codex task identifier absent from public evidence", "Public Codex evidence appears to expose a full task identifier");
 
 const localLinks = [...reviewerPage.matchAll(/(?:href|src)="([^"]+)"/g)]
   .map((match) => match[1])

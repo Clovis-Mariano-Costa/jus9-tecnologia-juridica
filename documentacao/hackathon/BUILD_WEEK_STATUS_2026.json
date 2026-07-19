@@ -1,7 +1,7 @@
 {
   "metadata": {
     "id": "JUS9-BUILD-WEEK-STATUS-2026-001",
-    "versao": "1.1.2",
+    "versao": "1.2.0",
     "autor": "Codex / Charlie Fox",
     "revisor_responsavel": "Clovis Mariano da Costa",
     "data": "2026-07-19",
@@ -11,7 +11,7 @@
   },
   "schemaVersion": "1.0.0",
   "documentId": "JUS9-BUILD-WEEK-STATUS-2026-001",
-  "updatedAt": "2026-07-19T16:18:34-03:00",
+  "updatedAt": "2026-07-19T19:32:13-03:00",
   "owner": "Clovis Mariano da Costa / Aeon Primevo",
   "reviewer": "Codex / Charlie Fox",
   "classification": "PUBLICO-INSTITUCIONAL",
@@ -45,6 +45,19 @@
       "state": "verified",
       "evidence": "Timestamped Codex work record, continuity documents, commits, tests, releases, and private delivery confirmed by the Founder on 2026-07-19",
       "sessionId": "attached_privately"
+    },
+    "codexGpt56SolDevelopment": {
+      "state": "verified_local_session_metadata",
+      "modelId": "gpt-5.6-sol",
+      "settingAppliedAtBrazil": "2026-07-13T18:37:59.601-03:00",
+      "firstActiveTurnAtBrazil": "2026-07-13T18:40:30.661-03:00",
+      "firstEditAtBrazil": "2026-07-13T18:53:47.778-03:00",
+      "firstCommitAfterActivation": "cfd7c79",
+      "sessionIdHandling": "retained_privately",
+      "sessionIdSha256": "ce81b54fedefc9b4309cc4070b8899f5ffe2478d09b599fec51df73e7d24d315",
+      "evidenceFingerprintSha256": "d2cfd341b2ad8c4e95e47977f4a90bd3b023cde50977efd345d08d51904a54b9",
+      "publicEvidence": "documentacao/hackathon/EVIDENCIA_CODEX_SOL_BUILD_WEEK_2026_v1.0.0.md",
+      "claimBoundary": "Development-session evidence only; it does not attest the Charlie Echo production runtime model"
     },
     "openAiApiIntegration": {
       "state": "verified_in_source",
@@ -126,11 +139,9 @@
   },
   "strictSubmissionBlockers": [
     "Official written eligibility clarification for a Brazilian resident",
-    "Private Codex Session ID attachment from /feedback",
     "Least-privilege judge account or isolated sandbox",
     "Third-party authorization and asset-rights evidence",
     "Owner-approved removal of the tracked legacy ZIP extraction from the final public HEAD",
-    "Sanitized GPT-5.6 evidence if GPT-5.6 is claimed",
     "Final ZIP integrity review",
     "Public demo video under three minutes"
   ]

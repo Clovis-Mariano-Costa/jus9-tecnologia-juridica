@@ -6,6 +6,17 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
+function semverAtLeast(actual, minimum) {
+  const current = String(actual || "").split(".").map(Number);
+  const required = minimum.split(".").map(Number);
+  return required.every((part, index) => (current[index] || 0) === part)
+    || required.some((part, index) => {
+      if ((current[index] || 0) === part) return false;
+      return (current[index] || 0) > part
+        && required.slice(0, index).every((previous, previousIndex) => (current[previousIndex] || 0) === previous);
+    });
+}
+
 const [buildWeek, saibaMais, mvpPage, leaderPage, stateMap, panel, sitemap, serviceWorker, buildWeekStatus, versionamento, syncScript] = await Promise.all([
   fs.readFile(new URL("build-week-2026.html", root), "utf8"),
   fs.readFile(new URL("saiba-mais.html", root), "utf8"),
@@ -53,7 +64,9 @@ for (const asset of ["/saiba-mais.html", "/versionamento.html", "/build-week-202
   assert(serviceWorker.includes(asset), `service worker sem cache publico para ${asset}`);
 }
 
-assert(buildWeekStatus.metadata?.versao === "1.1.2", "manifesto Build Week sem versao 1.1.2");
+assert(semverAtLeast(buildWeekStatus.metadata?.versao, "1.2.0"), "manifesto Build Week anterior a versao 1.2.0");
+assert(buildWeekStatus.claims?.codexGpt56SolDevelopment?.state === "verified_local_session_metadata", "manifesto Build Week sem evidencia Codex Sol verificada");
+assert(buildWeekStatus.claims?.codexGpt56SolDevelopment?.claimBoundary?.includes("Development-session evidence only"), "manifesto Build Week sem limite entre desenvolvimento e runtime");
 assert(buildWeekStatus.mvpConsolidation?.operationalPilot === "DAJ", "manifesto Build Week sem DAJ como piloto operacional");
 assert(buildWeekStatus.mvpConsolidation?.nextSharedCore === "Charlie Core v0", "manifesto Build Week sem Charlie Core v0 como proximo nucleo");
 assert(buildWeekStatus.mvpConsolidation?.dajAnalysisContract?.includes("Laudo de Analise DAJ"), "manifesto Build Week sem contrato de laudo DAJ");

@@ -1,6 +1,6 @@
 # Jus 9 Tecnologia Juridica - OpenAI Build Week 2026
 
-> **Submission status, July 18, 2026:** technical work is continuing, but competitive eligibility is awaiting written clarification. The current Official Rules expressly list residents and organizations domiciled in Brazil among excluded entrants. This repository does not claim eligibility until the organizers answer.
+> **Submission status, July 19, 2026:** technical work is continuing, but competitive eligibility is awaiting written clarification. The current Official Rules expressly list residents and organizations domiciled in Brazil among excluded entrants. This repository does not claim eligibility until the organizers answer.
 
 ## One-sentence overview
 
@@ -83,6 +83,7 @@ These are reproducible snapshot figures, not a live marketing counter. The readi
 Detailed evidence is maintained in:
 
 - [`documentacao/hackathon/EVIDENCIAS_BUILD_WEEK_2026.md`](documentacao/hackathon/EVIDENCIAS_BUILD_WEEK_2026.md)
+- [`documentacao/hackathon/EVIDENCIA_CODEX_SOL_BUILD_WEEK_2026_v1.0.0.md`](documentacao/hackathon/EVIDENCIA_CODEX_SOL_BUILD_WEEK_2026_v1.0.0.md)
 - [`documentacao/hackathon/RELATORIO_CONFORMIDADE_OPENAI_BUILD_WEEK_2026_v1.1.0.md`](documentacao/hackathon/RELATORIO_CONFORMIDADE_OPENAI_BUILD_WEEK_2026_v1.1.0.md)
 
 ## How Codex contributed
@@ -100,7 +101,9 @@ Codex was used as the primary implementation collaborator during the Build Week 
 - preparing evidence that distinguishes pre-existing work from Build Week additions; and
 - preserving continuity through timestamped task records and Git commits.
 
-The required `/feedback` Codex Session ID is still pending attachment to the private submission evidence. It must never be replaced with a GitHub commit ID or an invented value.
+The task identification required for the private submission evidence was received and retained privately on July 19. The public repository stores only cryptographic fingerprints and sanitized timestamps, never the full task identifier.
+
+Local Codex task metadata verifies that `gpt-5.6-sol` was active in the principal development task from July 13, 2026 at 6:37:59 PM BRT. The first active turn followed at 6:40:30 PM BRT, and the first code edit in that context at 6:53:47 PM BRT. The sanitized proof and its reproducible SHA-256 seal are recorded in [`EVIDENCIA_CODEX_SOL_BUILD_WEEK_2026_v1.0.0.md`](documentacao/hackathon/EVIDENCIA_CODEX_SOL_BUILD_WEEK_2026_v1.0.0.md).
 
 ## OpenAI runtime and GPT-5.6 disclosure
 
@@ -110,11 +113,12 @@ At the time of this audit:
 
 - OpenAI API integration is verified in source;
 - Codex collaboration during the Submission Period is verified by the development record;
+- `gpt-5.6-sol` use in the Codex development task is verified by sanitized local session metadata;
 - the API repository's example configuration still names `gpt-5.5` as its default;
-- no sanitized deployment attestation proving GPT-5.6 at runtime has been attached; and
-- the separate Charlie Delta report states GPT-5.6 use, but its model/session evidence remains pending.
+- no sanitized deployment attestation proving GPT-5.6 in the Charlie Echo production runtime has been attached; and
+- development-session evidence is not presented as production-runtime evidence.
 
-Therefore, this repository does **not** claim verified GPT-5.6 runtime integration yet. If GPT-5.6 was used in a development, research, or documentation session, the final submission must identify that scope precisely and attach timestamped model/session evidence.
+Therefore, this repository claims verified `gpt-5.6-sol` use only for the Codex development task. It does **not** claim verified GPT-5.6 runtime integration for Charlie Echo.
 
 ## Architecture
 
@@ -204,7 +208,7 @@ Terms such as Virtual Family, baptism, oath, DNA, and Constitution are instituti
 - DataJud provides public metadata, not court-file documents;
 - PDPJ is readiness-only and no transactional connector is enabled;
 - judge credentials and a clean sandbox are not yet documented;
-- GPT-5.6 evidence is pending;
+- Charlie Echo GPT-5.6 production-runtime evidence is pending and no runtime claim is made;
 - Brazil eligibility is awaiting official clarification;
 - third-party licensing and authorization evidence is still being consolidated.
 
@@ -253,6 +257,6 @@ Open-source permission does not erase authorship or institutional provenance.
 
 A Jus 9 e uma LegalTech modular em fase de MVP. Para a Build Week, o recorte recomendado e o fluxo governado do DAJ: atendimento ficticio, salvamento oficial, analise da Charlie Echo em sala isolada, feedback e encaminhamento humano, pesquisa processual read-only e vinculo auditavel.
 
-O projeto ja existia, mas recebeu ampliacao significativa apos 13/07/2026 as 13h de Brasilia. A evidencia auditada inclui 42 commits no repositorio principal, 108 arquivos alterados e entregas tecnicas de backend, frontend, governanca, DataJud, memoria, Drive e testes.
+O projeto ja existia, mas recebeu ampliacao significativa apos 13/07/2026 as 13h de Brasilia. No snapshot congelado `d052ebe`, a evidencia auditada inclui 52 commits no repositorio principal, 185 arquivos alterados e entregas tecnicas de backend, frontend, governanca, DataJud, memoria, Drive e testes.
 
-A participacao competitiva permanece aguardando esclarecimento oficial, pois as regras vigentes listam residentes no Brasil entre os nao elegiveis. A integracao OpenAI esta comprovada no codigo e o uso do Codex esta documentado; a alegacao especifica de GPT-5.6 ainda depende de evidencia de sessao ou ambiente.
+A participacao competitiva permanece aguardando esclarecimento oficial, pois as regras vigentes listam residentes no Brasil entre os nao elegiveis. A integracao OpenAI esta comprovada no codigo e o uso de `gpt-5.6-sol` na tarefa de desenvolvimento Codex esta verificado por metadados sanitizados. O runtime publico da Charlie Echo continua sem alegacao de GPT-5.6 ate existir atestado do ambiente.
