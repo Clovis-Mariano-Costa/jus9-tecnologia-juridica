@@ -234,7 +234,7 @@ export async function sha256Base64url(value) {
 }
 
 export function parseAllowedUsers(env) {
-  return new Map(
+  const users = new Map(
     String(env.AUTH_ALLOWED_EMAILS || "")
       .split(",")
       .map((item) => item.trim())
@@ -245,6 +245,13 @@ export function parseAllowedUsers(env) {
         return [rawEmail.toLowerCase(), profile];
       })
   );
+  for (const email of String(env.AUTH_ADVOGADO_LIDER_EMAILS || "")
+    .split(",")
+    .map((item) => item.trim().toLowerCase())
+    .filter(Boolean)) {
+    users.set(email, "advogado_lider");
+  }
+  return users;
 }
 
 export async function signPayload(payload, env) {

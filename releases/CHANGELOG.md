@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.17.0 - 2026-07-19
+
+- Charlie Core v0 centraliza o registry canonico dos 14 MVPs, aliases, riscos, papeis humanos e limites por modulo.
+- Cinco contratos JSON governados passam a ter validadores e testes dedicados.
+- Health publica somente versoes e contagens nao sensiveis do nucleo compartilhado.
+- Autorizacao demonstrativa de `advogado_lider` passa a usar secret separado, sem sobrescrever a allowlist geral e sem credenciais no repositorio.
+- Confirmacao de entrega privada do Codex Session ID e registrada sem armazenar o identificador.
+
 ## 1.16.1 - 2026-07-19
 
 - Publicada correcao do contrato de saida da analise DAJ: sem `Laudo de Analise DAJ`, o feedback nao e registrado.

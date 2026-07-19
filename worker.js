@@ -46,25 +46,15 @@ import {
   publicPdpjReadiness,
   testPdpjToken
 } from "./functions/_shared/pdpj.js";
+import {
+  CHARLIE_CONTRACTS,
+  buildProfileDirectoryModules,
+  getCharlieMvpRegistrySummary
+} from "./functions/lib/charlie-core/index.js";
 
 const CHARLIE_API_URL = "https://charlieecho.jus9tecnologia.com.br/api/ia";
 const CHARLIE_PROXY_MAX_BODY_BYTES = 300_000;
-const PROFILE_DIRECTORY_MODULES = Object.freeze({
-  DAJ: ["admin_sistema", "advogado_lider", "advogado", "assessor_chefe", "assessor", "secretaria", "estagio", "escritorio"],
-  DAA: ["admin_sistema", "academia"],
-  DEJ: ["admin_sistema", "estudante", "academia"],
-  DIC: ["admin_sistema", "cidadao"],
-  DPJ: ["admin_sistema", "perito"],
-  DIP: ["admin_sistema", "parceiro"],
-  DEE: ["admin_sistema", "escritorio", "advogado_lider", "advogado", "assessor_chefe", "assessor", "secretaria", "estagio"],
-  DEJI: ["admin_sistema", "empresa"],
-  DOI: ["admin_sistema", "orgao_publico"],
-  DGE: ["admin_sistema"],
-  DMG: ["admin_sistema", "magistrado", "assessor_chefe", "assessor", "secretaria", "estagio"],
-  DMP: ["admin_sistema", "ministerio_publico", "assessor_chefe", "assessor", "secretaria", "estagio"],
-  DAP: ["admin_sistema", "autoridade_policial", "assessor", "secretaria", "estagio"],
-  DED: ["admin_sistema", "autor_editor"]
-});
+const PROFILE_DIRECTORY_MODULES = buildProfileDirectoryModules();
 const PROFILE_DIRECTORY_ACCESS = Object.freeze({
   advogado_lider: ["DAJ", "DEE"],
   advogado: ["DAJ", "DEE"],
@@ -1047,6 +1037,7 @@ function handleHealth(request, env) {
   const dataJud = publicDataJudStatus(env);
   const pdpj = publicPdpjReadiness(env);
   const userMemory = userMemoryStorageStatus(env);
+  const charlieCore = getCharlieMvpRegistrySummary();
   const criticalReady = Boolean(
     env.ASSETS &&
     env.JUS9_DAJ_PROCESS_LINKS &&
@@ -1073,6 +1064,12 @@ function handleHealth(request, env) {
       charlieApiProxy: {
         configured: true,
         privilegedDriveConfigured: Boolean(env.JUS9_CHARLIE_INTERNAL_TOKEN)
+      },
+      charlieCore: {
+        configured: charlieCore.mvps === 14,
+        version: charlieCore.version,
+        mvps: charlieCore.mvps,
+        contractVersion: CHARLIE_CONTRACTS.version
       },
       dataJud: { configured: Boolean(dataJud.configured), mode: dataJud.mode, cacheConfigured: Boolean(dataJud.cacheConfigured) },
       pdpj: { configured: Boolean(pdpj.configured), mode: "readiness_only" },

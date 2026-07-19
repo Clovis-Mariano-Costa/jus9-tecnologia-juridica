@@ -72,6 +72,8 @@ let data = await response.json();
 assert(response.status === 200 && data.service === "jus9-tecnologia-juridica", "health explicito deveria responder");
 assert(data.status === "degraded" && data.checks?.assets?.configured === true, "health local deveria informar readiness parcial");
 assert(data.checks?.charlieApiProxy?.configured === true && data.checks.charlieApiProxy.privilegedDriveConfigured === false, "health deveria expor proxy Charlie sem segredo local");
+assert(data.checks?.charlieCore?.configured === true && data.checks.charlieCore.mvps === 14, "health deveria expor Charlie Core com 14 MVPs");
+assert(data.checks?.charlieCore?.contractVersion === "1.0.0", "health deveria expor versao dos contratos Charlie Core");
 console.log("AUTH_OK health=200");
 
 response = await request("/api/auth/permissions");
@@ -183,6 +185,12 @@ const allowlistProfile = resolveGoogleAuthProfile("demo.invalid@jus9.invalid", {
   AUTH_ALLOWED_EMAILS: "demo.invalid@jus9.invalid:admin_sistema"
 });
 assert(allowlistProfile?.profile === "admin_sistema" && allowlistProfile?.accessMode === "allowlist", "allowlist deve prevalecer sobre acesso publico");
+const leaderAllowlistProfile = resolveGoogleAuthProfile("lider.invalid@jus9.invalid", {
+  ...publicGoogleEnv,
+  AUTH_ALLOWED_EMAILS: "demo.invalid@jus9.invalid:admin_sistema",
+  AUTH_ADVOGADO_LIDER_EMAILS: "lider.invalid@jus9.invalid"
+});
+assert(leaderAllowlistProfile?.profile === "advogado_lider" && leaderAllowlistProfile?.accessMode === "allowlist", "allowlist dedicada deveria conceder advogado_lider sem substituir allowlist geral");
 console.log("AUTH_OK public-google-config=cidadao");
 
 response = await worker.fetch(

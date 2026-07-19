@@ -91,6 +91,12 @@ const checks = [
     args: ["scripts/audit-charlie-governance-backend-contracts.mjs"]
   },
   {
+    label: "Charlie Core v0 e contratos JSON",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["--test", "tests/charlie-core.test.mjs"]
+  },
+  {
     label: "Qualidade da interface Charlie Echo",
     cwd: portalRoot,
     command: process.execPath,
