@@ -24,6 +24,7 @@ $files = @(
   'app-ia-profissional.html',
   'app-agenda.html',
   'service-worker.js',
+  'sitemap.xml',
   'assets\js\daj-intake.js',
   'assets\js\daj-registry-list.js',
   'assets\js\governed-team-directory.js',
