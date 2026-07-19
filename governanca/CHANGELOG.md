@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.12.6 - 2026-07-19
+
+- Registrado aceite humano parcial do `DAJ-2026-0002`, confirmado no cadastro oficial com indice e detalhe gravados.
+- Criado cronograma Mao na Massa v3.0.0 com pacotes reordenados por seguranca, deixando memoria/Drive bloqueados ate reversibilidade do 1C.
+- Adicionado auditor do Mao na Massa v3 ao CI local.
+
 ## 1.12.5 - 2026-07-19
 
 - `app-clientes.html` passa a consultar DAJs por DAJ, nome, CPF exato, numero do processo e detalhes operacionais seguros.

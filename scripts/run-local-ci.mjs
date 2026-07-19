@@ -115,6 +115,12 @@ const checks = [
     args: ["scripts/audit-pacote-1c-acceptance-kit.mjs"]
   },
   {
+    label: "Mao na Massa v3",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-mao-na-massa-v3.mjs"]
+  },
+  {
     label: "Backend local fail closed",
     cwd: path.join(githubRoot, "backend-api-jus9-tecnologia-juridica"),
     command: process.execPath,
