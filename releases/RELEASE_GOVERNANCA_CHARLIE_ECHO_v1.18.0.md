@@ -4,7 +4,7 @@ versao: 1.18.0
 autor: Codex / Charlie Juris
 revisor_responsavel: Clovis Mariano da Costa
 data: 2026-07-19
-status: release-candidata
+status: publicada-controlada
 classificacao: PUBLICO-INSTITUCIONAL
 hash: gerar-na-versao-final
 ---
@@ -29,6 +29,13 @@ Concluir o G1 do cronograma focado em Charlie, governanca, CNJ e conexoes, torna
 - Nao ativa Drive, memoria, DataJud ou PDPJ-Br.
 - O `auditId` correlaciona a resposta, mas nao substitui o evento persistente de auditoria que sera consolidado no proximo gate.
 - Respostas gerais continuam em streaming e declaram proveniencia nos cabecalhos; a rota DAJ continua materializando apenas o corpo necessario para validar o laudo.
+
+## Publicacao e verificacao
+
+- Worker: `03f2a656-ae2a-43ad-ac13-8add7e05801b`.
+- Health: `ready`, release `governanca-1.18.0-charlie-proveniencia-1.0`, contrato `1.1.0`.
+- Smoke anonimo: HTTP 200, origem `upstream`, contrato `1.1.0`, `auditId` presente e Drive `somente-resposta`.
+- Inicio da observacao: 2026-07-19T22:00:18Z.
 
 ## Rollback
 
