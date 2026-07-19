@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.13.7 - 2026-07-19
+
+- Aceite humano do laudo `DAJ-2026-0002` registrado como satisfatorio com ressalva corretiva.
+- Reversibilidade 1C concluida: exclusao autenticada, tombstone e ausencia por DAJ, nome, CPF ficticio e processo ficticio confirmados.
+- Pacote 2 passa a `CONCLUIDO_COM_RESSALVA_CORRETIVA`; Drive e memoria ficam liberados apenas para revisao e homologacao controlada, nunca ativados automaticamente.
+- Fixture de documentos restaurado e auditoria passa a impedir contaminacao pelo numero do processo ficticio.
+- Memoria sucessora fixa este chat em Charlie, governanca, CNJ/DataJud/PDPJ e conexoes; a transicao para MVPs gerais permanece historico destinado ao outro chat.
+
 ## 1.13.6 - 2026-07-19
 
 - Criado mapa de provas dos MVPs gerais para orientar continuidade fora da frente Charlie/DAJ.

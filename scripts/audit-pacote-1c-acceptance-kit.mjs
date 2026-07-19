@@ -51,6 +51,12 @@ for (const stopCondition of [
 const evidenceRows = [...kit.matchAll(/^\| (?:[1-9]|1[0-6]) \|/gm)];
 assert(evidenceRows.length === 16, `quadro de evidencias deveria conter 16 passos; encontrou ${evidenceRows.length}`);
 assert(kit.includes("| Passo | URL | Resultado esperado | Evidencia | Decisao | Observacoes |"), "cabecalho do quadro de evidencias ausente");
+const documentsDatasetRow = kit.match(/^\| Documentos \|.*$/m)?.[0] || "";
+assert(
+  documentsDatasetRow === "| Documentos | `Documento ficticio A; Documento ficticio B` |",
+  "linha Documentos do dataset deve permanecer integra e isolada"
+);
+assert(!documentsDatasetRow.includes("6666666-66.2099.8.24.0000"), "numero de processo nao pode contaminar o campo Documentos");
 assert(!/drive\.google\.com|docs\.google\.com/i.test(kit), "kit nao deve conter link real de Drive ou Docs");
 assert(!/sk-[A-Za-z0-9_-]{20,}|ghp_[A-Za-z0-9]{20,}|AIza[A-Za-z0-9_-]{20,}|Bearer\s+[A-Za-z0-9._-]+/.test(kit), "kit contem padrao parecido com segredo");
 
