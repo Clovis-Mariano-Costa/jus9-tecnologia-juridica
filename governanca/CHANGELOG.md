@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.12.5 - 2026-07-19
+
+- `app-clientes.html` passa a consultar DAJs por DAJ, nome, CPF exato, numero do processo e detalhes operacionais seguros.
+- Pesquisa por nome/CPF usa POST no indice governado de partes, sem query string com PII e sem fallback por finais de CPF.
+- Resultados da consulta enriquecem o DAJ com detalhe oficial quando disponivel, mantendo CPF mascarado e renderizacao segura por `textContent`.
+
 ## 1.12.4 - 2026-07-19
 
 - Criados kits demonstrativos de vitrine para DED e DIC com datasets ficticios, roteiros, evidencias esperadas e condicoes de parada.

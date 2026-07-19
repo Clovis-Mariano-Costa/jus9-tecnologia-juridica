@@ -44,7 +44,7 @@ Software livre com autoria preservada.
         <div>
           <div class="eyebrow">Cadastro oficial</div>
           <h1>DAJs e encaminhamentos</h1>
-          <p>Registros confirmados pelo backend e tarefas destinadas ao perfil autenticado.</p>
+          <p>Registros confirmados pelo backend, consulta governada por DAJ, nome, CPF exato e numero do processo, mais tarefas destinadas ao perfil autenticado.</p>
         </div>
         <span class="badge secret">Memoria operacional</span>
       </section>
@@ -57,6 +57,31 @@ Software livre com autoria preservada.
           <a href="app-processos.html">Processos</a>
           <a href="app-perfis.html">Perfis</a>
         </div>
+      </section>
+
+      <section class="daj-card" aria-labelledby="daj-search-title">
+        <h2 id="daj-search-title">Consulta governada de DAJs</h2>
+        <p>Use esta busca para localizar DAJs no cadastro oficial. CPF integral e usado somente na consulta HMAC exata e nunca e exibido como resultado.</p>
+        <form class="form-grid" data-daj-search-form>
+          <div class="form-field">
+            <label for="daj-search-type">Tipo de consulta</label>
+            <select id="daj-search-type" name="tipoPesquisa" data-daj-search-type>
+              <option value="daj">DAJ</option>
+              <option value="nome">Nome da parte</option>
+              <option value="cpf">CPF exato</option>
+              <option value="processo">Numero do processo</option>
+              <option value="detalhes">Status, area, urgencia ou sigilo</option>
+            </select>
+          </div>
+          <div class="form-field" style="grid-column:span 2">
+            <label for="daj-search-query" data-daj-search-label>DAJ</label>
+            <input id="daj-search-query" name="valorBusca" data-daj-search-query autocomplete="off" placeholder="DAJ-2026-0002" required>
+            <small data-daj-search-help>Informe o identificador completo ou os quatro digitos finais.</small>
+          </div>
+          <button class="mvp-button" type="submit">Consultar DAJs</button>
+        </form>
+        <p class="daj-save-status" data-daj-search-status role="status" aria-live="polite">Consulta pronta. Entre com Google se o cadastro oficial pedir sessao.</p>
+        <div class="daj-list" data-daj-search-results aria-label="Resultados da consulta de DAJs"></div>
       </section>
 
       <section class="daj-card" aria-labelledby="daj-workflow-title">
@@ -77,7 +102,7 @@ Software livre com autoria preservada.
     </main>
   </div>
   <script src="script.js?v=20260714-daj-isolated-review-v1"></script>
-  <script src="assets/js/daj-registry-list.js?v=20260714-daj-isolated-review-v1"></script>
+  <script src="assets/js/daj-registry-list.js?v=20260719-daj-search-v1"></script>
   <footer class="jus9-autoria-rodape" role="contentinfo" aria-label="Direitos autorais" style="font-size:.85rem;line-height:1.5;text-align:center;padding:1rem .75rem;margin-top:2rem;background:rgba(15,23,42,.96);color:#f8fafc">
     Producao do site: (c) Jus 9 Tecnologia Juridica. Software livre com autoria, origem e direitos autorais preservados.
   </footer>

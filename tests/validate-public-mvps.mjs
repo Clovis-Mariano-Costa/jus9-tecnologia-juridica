@@ -150,9 +150,18 @@ assert(intakeScript.includes("app-ia-profissional.html?dajId=") && intakeScript.
 assert(!intakeScript.includes("localStorage"), "cliente do cadastro DAJ nao deve persistir atendimento no navegador");
 assert(dajRegistryPage.includes("data-daj-registry-list") && dajRegistryPage.includes("assets/js/daj-registry-list.js"), "cadastro de DAJs nao usa lista oficial dinamica");
 assert(dajRegistryPage.includes("data-daj-workflow-inbox") && dajRegistryPage.includes("Encaminhamentos para meu perfil"), "cadastro sem caixa de feedback por perfil");
+assert(dajRegistryPage.includes("data-daj-search-form") && dajRegistryPage.includes("data-daj-search-results"), "cadastro sem consulta governada de DAJs");
+for (const option of ['<option value="daj">DAJ</option>', '<option value="nome">Nome da parte</option>', '<option value="cpf">CPF exato</option>', '<option value="processo">Numero do processo</option>', '<option value="detalhes">Status, area, urgencia ou sigilo</option>']) {
+  assert(dajRegistryPage.includes(option), `consulta de DAJs sem opcao: ${option}`);
+}
 assert(!dajRegistryPage.includes("Cliente demonstra") && !dajRegistryPage.includes("Familia Almeida"), "cadastro de DAJs ainda exibe exemplos fixos como registros");
 assert(dajRegistryScript.includes("fetch('/api/dajs'") && dajRegistryScript.includes("credentials: 'include'"), "lista de DAJs nao consulta backend autenticado");
 assert(dajRegistryScript.includes("fetch('/api/dajs/inbox'") && dajRegistryScript.includes("renderInboxItem"), "lista de DAJs nao exibe encaminhamentos autenticados");
+assert(dajRegistryScript.includes("fetch('/api/dajs?dajId='") && dajRegistryScript.includes("fetchDajDetail"), "consulta de DAJs nao carrega detalhe oficial por identificador");
+assert(dajRegistryScript.includes("fetch('/api/judicial/parties/search'") && dajRegistryScript.includes("method: 'POST'"), "consulta de DAJs por nome/CPF nao usa POST governado");
+assert(dajRegistryScript.includes("fetch('/api/daj-process-links?searchType=processo") && dajRegistryScript.includes("processNumber="), "consulta de DAJs por processo nao usa indice DAJ-processo");
+assert(dajRegistryScript.includes("searchByDetails") && dajRegistryScript.includes("operational.secrecyLevel") && dajRegistryScript.includes("workflow.destinationProfile"), "consulta de DAJs nao pesquisa detalhes operacionais seguros");
+assert(dajRegistryScript.includes("isValidCpf") && dajRegistryScript.includes("HMAC exato") && dajRegistryScript.includes("sem exposicao de CPF integral"), "consulta de CPF sem validacao/minimizacao explicita");
 assert(dajRegistryScript.includes("textContent") && !dajRegistryScript.includes("item.partyName + '</"), "lista de DAJs nao minimiza risco de injecao ao renderizar dados");
 for (const profile of ["admin_sistema", "advogado_lider", "advogado", "assessor_chefe", "assessor", "secretaria", "estagio", "escritorio", "academia", "estudante", "cidadao", "perito", "parceiro", "empresa", "orgao_publico", "magistrado", "ministerio_publico", "autoridade_policial", "autor_editor"]) {
   assert(dajProfilesPage.includes(`data-auth-profile="${profile}"`), `lista de perfis sem ${profile}`);
