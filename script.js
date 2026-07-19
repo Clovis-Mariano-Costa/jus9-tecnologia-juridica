@@ -866,6 +866,42 @@ window.jus9DemoLogin = function(form){
       '</section>';
   }
 
+  function normalizeCharlieProvenance(payload){
+    var data = payload || {};
+    var allowed = ['upstream', 'correcao_upstream', 'fallback_governado', 'fallback_local_demo'];
+    var source = allowed.indexOf(data.source) >= 0 ? data.source : '';
+    if(!source) return null;
+    return {
+      source: source,
+      contractVersion: String(data.contractVersion || (source === 'fallback_local_demo' ? 'local-demo' : '')).slice(0, 40),
+      auditId: String(data.auditId || '').slice(0, 160)
+    };
+  }
+
+  function charlieProvenanceLabel(source){
+    return ({
+      upstream:'API Charlie',
+      correcao_upstream:'correcao pela API Charlie',
+      fallback_governado:'fallback governado do portal',
+      fallback_local_demo:'fallback local demonstrativo'
+    })[source] || source;
+  }
+
+  function formatCharlieProvenance(payload){
+    var provenance = normalizeCharlieProvenance(payload);
+    if(!provenance) return '';
+    return [
+      'Origem tecnica: ' + charlieProvenanceLabel(provenance.source),
+      provenance.contractVersion ? 'contrato ' + provenance.contractVersion : '',
+      provenance.auditId ? 'auditoria ' + provenance.auditId : ''
+    ].filter(Boolean).join(' | ');
+  }
+
+  function renderCharlieProvenance(payload){
+    var text = formatCharlieProvenance(payload);
+    return text ? '<p class="charlie-provenance">' + escapeHtml(text) + '</p>' : '';
+  }
+
   function identityAnswer(question){
     var q = (question || '').toLowerCase();
     var plain = q.normalize ? q.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : q;
@@ -2298,6 +2334,11 @@ window.jus9DemoLogin = function(form){
         body: JSON.stringify(body)
       });
       var data = await response.json().catch(function(){ return null; });
+      if(data && typeof data === 'object'){
+        data.source = data.source || response.headers.get('x-jus9-charlie-source') || '';
+        data.contractVersion = data.contractVersion || response.headers.get('x-jus9-charlie-contract-version') || '';
+        data.auditId = data.auditId || response.headers.get('x-jus9-charlie-audit-id') || '';
+      }
       return { response:response, data:data };
     } catch (error) {
       if(error && error.name === 'AbortError') {
@@ -3959,7 +4000,7 @@ window.jus9DemoLogin = function(form){
       return '';
     }
     function lastUserText(){ var data = loadChatRooms(code), room = data.rooms.find(function(r){ return r.id === data.activeId; }); var msg = room && (room.messages || []).filter(function(m){ return m.role === 'user'; }).slice(-1)[0]; return msg ? msg.content : ''; }
-    function appendEcho(text, options){ var windowEl = card.querySelector('[data-ai-chat-window]'); if(!windowEl) return; var echoMsg = document.createElement('div'); echoMsg.className = 'ai-message ai-message-echo'; echoMsg.setAttribute('data-ai-answer-text', String(text || '')); echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(text) + renderDriveSaverCard(options && options.driveSaverPayload); windowEl.appendChild(echoMsg); keepChatInView(card, echoMsg); if(!options || options.remember !== false) rememberChatExchange(code, '', text); }
+    function appendEcho(text, options){ var windowEl = card.querySelector('[data-ai-chat-window]'); if(!windowEl) return; var echoMsg = document.createElement('div'); echoMsg.className = 'ai-message ai-message-echo'; echoMsg.setAttribute('data-ai-answer-text', String(text || '')); echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(text) + renderCharlieProvenance(options && options.driveSaverPayload) + renderDriveSaverCard(options && options.driveSaverPayload); windowEl.appendChild(echoMsg); keepChatInView(card, echoMsg); if(!options || options.remember !== false) rememberChatExchange(code, '', text); }
     function appendDownloadEcho(files){
       var windowEl = card.querySelector('[data-ai-chat-window]');
       if(!windowEl) return;
@@ -4338,7 +4379,7 @@ window.jus9DemoLogin = function(form){
         var guardedAnswer = enforceCriticalAnswerGuards(apiPayload.answer, questionForContext, apiPayload.route || routeDecision);
         var answer = applyCreativeReasoningFrame(guardedAnswer, question, code, focus);
         echoMsg.setAttribute('data-ai-answer-text', answer);
-        echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(answer) + renderDriveSaverCard(apiPayload);
+        echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(answer) + renderCharlieProvenance(apiPayload) + renderDriveSaverCard(apiPayload);
         keepChatInView(card, echoMsg);
         var remembered = rememberChatExchange(code, question, answer);
         updateRoomIntelligence(code, remembered, focus);
@@ -4350,7 +4391,7 @@ window.jus9DemoLogin = function(form){
         if(localFallback){
           var fallbackAnswer = applyCreativeReasoningFrame(localFallback, question, code, focus);
           echoMsg.setAttribute('data-ai-answer-text', fallbackAnswer);
-          echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(fallbackAnswer);
+          echoMsg.innerHTML = '<strong>Charlie Echo:</strong> ' + renderEchoAnswer(fallbackAnswer) + renderCharlieProvenance({ source:'fallback_local_demo', contractVersion:'local-demo', auditId:charlieRequestId() });
           keepChatInView(card, echoMsg);
           var rememberedFallback = rememberChatExchange(code, question, fallbackAnswer);
           updateRoomIntelligence(code, rememberedFallback, focus);
@@ -4651,6 +4692,7 @@ window.jus9DemoLogin = function(form){
     renderDajAnalysisLoading(card, loaded.item.id);
     try {
       var apiPayload = await askCharlieApiPayload('jurista', code, focus, loaded.prompt, room, route);
+      var finalApiPayload = apiPayload;
       var answer = enforceCriticalAnswerGuards(apiPayload.answer, loaded.prompt, route);
       if(shouldRejectDajAnalysisAnswer(answer)){
         var correctionRoute = Object.assign({}, route, { retryCorrection:true, requiredOutput:'LAUDO_DAJ_V1' });
@@ -4662,6 +4704,7 @@ window.jus9DemoLogin = function(form){
           null,
           correctionRoute
         );
+        finalApiPayload = corrected;
         answer = enforceCriticalAnswerGuards(corrected.answer, loaded.prompt, correctionRoute);
       }
       if(!answer || shouldRejectDajAnalysisAnswer(answer)) throw new Error(dajAnalysisRejectReason(answer));
@@ -4673,6 +4716,8 @@ window.jus9DemoLogin = function(form){
       } catch(workflowError) {
         feedbackText = 'Feedback do fluxo DAJ\nA analise foi concluida, mas o registro e o encaminhamento nao puderam ser confirmados no backend. Nenhum envio foi presumido. Tente reenviar este DAJ para uma nova analise.';
       }
+      var provenanceText = formatCharlieProvenance(finalApiPayload);
+      if(provenanceText) feedbackText = provenanceText + '\n\n' + feedbackText;
       saveDajAnalysisRoomResult(code, room.id, requestLabel, answer, feedbackText, workflow);
       renderChatWindow(card, code, focus);
     } catch(error) {

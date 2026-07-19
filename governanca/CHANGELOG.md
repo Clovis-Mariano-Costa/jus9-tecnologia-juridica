@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.13.8 - 2026-07-19
+
+- G1 de proveniencia da Charlie concluido no codigo e nos testes com contrato `1.1.0`.
+- Respostas do proxy passam a declarar origem controlada (`upstream`, `correcao_upstream` ou `fallback_governado`), versao do contrato e `auditId` por resposta.
+- Interface passa a tornar a proveniencia visivel e identifica separadamente o fallback local demonstrativo.
+- Streaming do proxy geral foi preservado; o corpo so e materializado na rota DAJ que ja exige validacao do laudo.
+- Cronograma focado avanca para consolidacao do pipeline de contratos, risco, citacoes, limites e revisao humana.
+
 ## 1.13.7 - 2026-07-19
 
 - Aceite humano do laudo `DAJ-2026-0002` registrado como satisfatorio com ressalva corretiva.

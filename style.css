@@ -1127,6 +1127,18 @@ body.mvp-page .manifesto-card .small{color:#51627a}
     linear-gradient(180deg,#fffaf0 0%,#f8fafc 42%,#eef3f8 100%);
   color:#0b1728;
 }
+
+.charlie-provenance{
+  margin: .65rem 0 0;
+  padding: .45rem .6rem;
+  border-left: 3px solid #8b6f47;
+  border-radius: .35rem;
+  background: rgba(139, 111, 71, .09);
+  color: #5d4a32;
+  font-size: .78rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
 .ecosystem-page .doc-shell,
 .ecosystem-page .section{
   position:relative;

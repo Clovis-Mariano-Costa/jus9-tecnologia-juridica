@@ -4,7 +4,7 @@
   Não armazena dados sensíveis. Não altera login, backend ou rotas protegidas.
 */
 
-const JUS9_CACHE = 'jus9-pwa-v41-2026-07-19-mvp-proof-map';
+const JUS9_CACHE = 'jus9-pwa-v42-2026-07-19-charlie-proveniencia';
 const JUS9_ASSETS = [
   '/',
   '/index.html',

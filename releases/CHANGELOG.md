@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.18.0 - 2026-07-19
+
+- Contrato Charlie Core sobe para `1.1.0` com proveniencia controlada e auditavel.
+- Proxy e frontend correlacionam origem, versao e `auditId` sem interromper streaming nas respostas gerais.
+- Fallback DAJ preserva detalhe legado e passa a usar a origem canonica `fallback_governado`.
+- Interface exibe a origem tecnica e o cache PWA sobe para `jus9-pwa-v42-2026-07-19-charlie-proveniencia`.
+
 ## 1.17.2 - 2026-07-19
 
 - Publicado mapa de provas dos 14 MVPs no painel executivo, com prova, demonstracao minima, aceite e bloqueio por modulo.

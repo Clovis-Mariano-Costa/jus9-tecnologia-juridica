@@ -1,9 +1,10 @@
 import { CHARLIE_CLASSIFICATIONS, CHARLIE_RISK_LEVELS } from "./policies.js";
 import { normalizeCharlieMvpCode } from "./registry.js";
 
-const CONTRACT_VERSION = "1.0.0";
+const CONTRACT_VERSION = "1.1.0";
 const DOCUMENT_ACTIONS = Object.freeze(["create", "save", "export", "revoke_public_link", "delete_test"]);
 const DATAJUD_SEARCH_TYPES = Object.freeze(["numeroProcesso"]);
+export const CHARLIE_RESPONSE_SOURCES = Object.freeze(["upstream", "correcao_upstream", "fallback_governado"]);
 
 function isPlainObject(value) {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
@@ -36,6 +37,8 @@ export function validateChatResponse(value) {
   const errors = [];
   if (!isPlainObject(value)) return result("ChatResponse", ["object_required"]);
   if (!controlledString(value.auditId, 160)) errors.push("auditId_invalid");
+  if (value.contractVersion !== CONTRACT_VERSION) errors.push("contractVersion_invalid");
+  if (!CHARLIE_RESPONSE_SOURCES.includes(value.source)) errors.push("source_invalid");
   if (!controlledString(value.answer, 100_000)) errors.push("answer_invalid");
   if (!CHARLIE_CLASSIFICATIONS.includes(value.classification)) errors.push("classification_invalid");
   if (!CHARLIE_RISK_LEVELS.includes(value.riskLevel)) errors.push("riskLevel_invalid");
@@ -79,5 +82,6 @@ export function validateAuditEvent(value) {
 export const CHARLIE_CONTRACTS = Object.freeze({
   version: CONTRACT_VERSION,
   types: Object.freeze(["ChatRequest", "ChatResponse", "DocumentSaveRequest", "DataJudSearchRequest", "AuditEvent"]),
-  controlledFields: Object.freeze(["auditId", "classification", "riskLevel", "citations", "downloadOptions", "nextActions"])
+  responseSources: CHARLIE_RESPONSE_SOURCES,
+  controlledFields: Object.freeze(["auditId", "contractVersion", "source", "classification", "riskLevel", "citations", "downloadOptions", "nextActions"])
 });

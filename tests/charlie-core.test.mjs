@@ -46,6 +46,8 @@ test("ChatRequest aceita somente MVP e campos controlados", () => {
 test("ChatResponse exige auditoria, classificacao e listas controladas", () => {
   const valid = validateChatResponse({
     auditId: "audit-ficticio-1",
+    contractVersion: "1.1.0",
+    source: "upstream",
     answer: "Resposta ficticia revisavel.",
     classification: "PUBLICO_DEMONSTRATIVO",
     riskLevel: "normal",
@@ -55,6 +57,18 @@ test("ChatResponse exige auditoria, classificacao e listas controladas", () => {
   });
   assert.equal(valid.ok, true);
   assert.equal(validateChatResponse({ answer: "sem auditoria" }).ok, false);
+  const invalidSource = validateChatResponse({
+    auditId: "audit-ficticio-4",
+    contractVersion: "1.1.0",
+    source: "origem_livre",
+    answer: "Resposta ficticia.",
+    classification: "INTERNO",
+    riskLevel: "normal",
+    citations: [],
+    downloadOptions: [],
+    nextActions: []
+  });
+  assert.equal(invalidSource.errors.includes("source_invalid"), true);
 });
 
 test("DocumentSaveRequest bloqueia link publico para sigiloso", () => {
@@ -89,7 +103,9 @@ test("AuditEvent rejeita campos com aparencia de segredo", () => {
 
 test("catalogo de contratos expoe cinco DTOs e campos estaveis", () => {
   assert.equal(CHARLIE_CONTRACTS.types.length, 5);
-  for (const field of ["auditId", "classification", "riskLevel", "citations", "downloadOptions", "nextActions"]) {
+  assert.equal(CHARLIE_CONTRACTS.version, "1.1.0");
+  assert.deepEqual(CHARLIE_CONTRACTS.responseSources, ["upstream", "correcao_upstream", "fallback_governado"]);
+  for (const field of ["auditId", "contractVersion", "source", "classification", "riskLevel", "citations", "downloadOptions", "nextActions"]) {
     assert.equal(CHARLIE_CONTRACTS.controlledFields.includes(field), true);
   }
 });

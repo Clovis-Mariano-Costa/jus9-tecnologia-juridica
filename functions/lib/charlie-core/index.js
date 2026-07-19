@@ -14,6 +14,7 @@ export {
 } from "./policies.js";
 export {
   CHARLIE_CONTRACTS,
+  CHARLIE_RESPONSE_SOURCES,
   validateAuditEvent,
   validateChatRequest,
   validateChatResponse,
