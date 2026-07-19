@@ -1,0 +1,214 @@
+<!--
+  Jus 9 Tecnologia Juridica - software livre, autoria preservada.
+  Painel executivo dos 14 MVPs.
+  DNA de referencia: charlieecho-jus9-tecnologia-juridica
+-->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Painel executivo dos MVPs | Jus 9 Tecnologia Juridica</title>
+  <meta name="description" content="Painel executivo dos 14 MVPs Jus 9, com prontidao, riscos, evidencias, pacotes Mao na Massa, commits e proximas portas de governanca.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
+  <meta name="theme-color" content="#07111f">
+  <link rel="manifest" href="manifest.webmanifest">
+  <style>
+    body{background:#f7f9fc;color:#0b1728}
+    .executive-shell{padding:32px 0 56px}
+    .executive-top{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr);gap:20px;align-items:stretch}
+    .executive-band,.executive-panel,.metric-card,.package-row,.risk-row{border:1px solid rgba(15,23,42,.12);border-radius:8px;background:#fff}
+    .executive-band{padding:24px}
+    .executive-panel{padding:20px}
+    .executive-kicker{margin:0 0 8px;color:#8a5d16;font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+    .executive-title{margin:0;color:#07111f;font-size:clamp(2rem,4vw,3.6rem);line-height:1}
+    .executive-lead{max-width:760px;color:#415269;font-size:1.05rem;line-height:1.65}
+    .metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:18px 0 0}
+    .metric-card{padding:16px;min-height:112px}
+    .metric-card strong{display:block;color:#07111f;font-size:2rem;line-height:1}
+    .metric-card span{display:block;margin-top:8px;color:#51627a;font-size:.9rem}
+    .status-pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:7px 10px;font-size:.74rem;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
+    .status-ok{background:#dcfce7;color:#14532d}.status-warn{background:#fef3c7;color:#854d0e}.status-block{background:#fee2e2;color:#991b1b}.status-ready{background:#e0f2fe;color:#075985}.status-work{background:#ede9fe;color:#5b21b6}
+    .section-compact{margin-top:22px}
+    .section-compact h2{margin:0 0 12px;color:#07111f;font-size:1.45rem}
+    .package-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .package-row{padding:14px;display:grid;gap:8px}
+    .package-row header{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .package-row h3,.risk-row h3{margin:0;color:#07111f;font-size:1rem}
+    .package-row p,.risk-row p{margin:0;color:#51627a;line-height:1.5}
+    .data-table-wrap{overflow:auto;border:1px solid rgba(15,23,42,.12);border-radius:8px;background:#fff}
+    .data-table{width:100%;border-collapse:collapse;font-size:.92rem}
+    .data-table th,.data-table td{padding:11px 12px;border-bottom:1px solid rgba(15,23,42,.08);text-align:left;vertical-align:top}
+    .data-table th{background:#eef2f7;color:#334155;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em}
+    .data-table tr:last-child td{border-bottom:0}
+    .rank-code{font-weight:900;color:#07111f}
+    .score{font-weight:900;color:#8a5d16}
+    .risk-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .risk-row{padding:16px}
+    .link-board{display:flex;flex-wrap:wrap;gap:10px}
+    .link-board a{display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(15,23,42,.14);border-radius:8px;background:#fff;color:#0f172a;padding:10px 12px;font-weight:850;text-decoration:none}
+    .link-board a.primary{background:#07111f;color:#f8fafc}
+    .evidence-list{margin:0;padding-left:1.1rem;color:#415269;line-height:1.7}
+    @media(max-width:980px){.executive-top,.metric-grid,.package-grid,.risk-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:680px){.executive-shell{padding-top:18px}.executive-top,.metric-grid,.package-grid,.risk-grid{grid-template-columns:1fr}.executive-title{font-size:2.1rem}.package-row header{display:grid}}
+  </style>
+</head>
+<body class="mvp-page" data-mvp-executive-panel>
+<div class="jus9-autoria-topo" role="note" style="font-size:.82rem;line-height:1.4;text-align:center;padding:.45rem .75rem;background:rgba(15,23,42,.94);color:#f8fafc;letter-spacing:.01em;">Jus 9 Tecnologia Juridica - software livre, autoria preservada.</div>
+<header class="header">
+  <div class="container nav">
+    <a href="index.html" class="logo"><img src="assets/jus9-logo.svg" alt="Jus 9 Tecnologia Juridica"></a>
+    <nav class="menu">
+      <a href="index.html">Inicio</a>
+      <a href="mvp.html">MVPs</a>
+      <a href="lider-mvp.html">Lider MVP</a>
+      <a href="app-clientes.html">DAJs</a>
+      <a href="app-ia-profissional.html#chat-ia">Charlie Echo</a>
+    </nav>
+    <a class="cta" href="app-clientes.html#consulta-daj">Consultar DAJ</a>
+    <button class="mobile-toggle" aria-label="Abrir menu">?</button>
+  </div>
+</header>
+
+<main class="executive-shell">
+  <div class="container">
+    <section class="executive-top" aria-labelledby="titulo-painel">
+      <div class="executive-band">
+        <p class="executive-kicker">Mao na Massa v3.0.0</p>
+        <h1 id="titulo-painel" class="executive-title">Painel executivo dos 14 MVPs</h1>
+        <p class="executive-lead">Visao de prontidao, riscos, evidencias e proximas portas. Este painel registra o que ja pode seguir com seguranca e o que fica bloqueado ate a reversibilidade do Pacote 1C.</p>
+        <div class="metric-grid" aria-label="Resumo executivo">
+          <div class="metric-card"><strong>14</strong><span>MVPs publicos no catalogo</span></div>
+          <div class="metric-card"><strong>3</strong><span>Prioridades imediatas: DAJ, DED e DIC</span></div>
+          <div class="metric-card"><strong>1C</strong><span>ACEITE_HUMANO_PARCIAL_CONFIRMADO</span></div>
+          <div class="metric-card"><strong>0</strong><span>Dados reais autorizados para demos publicas</span></div>
+        </div>
+      </div>
+      <aside class="executive-panel" aria-label="Marco atual">
+        <p class="executive-kicker">Marco atual</p>
+        <h2 style="margin:0 0 10px;color:#07111f">DAJ-2026-0002</h2>
+        <p style="color:#51627a;line-height:1.55">Confirmado no cadastro oficial em 2026-07-19 13:44:32 BRT, com indice e detalhe gravados. O estado correto segue como <strong>REVERSIBILIDADE_PENDENTE</strong>.</p>
+        <p><span class="status-pill status-warn">ACEITE_HUMANO_PARCIAL_CONFIRMADO</span></p>
+        <ul class="evidence-list">
+          <li>Consulta publicada no commit <code>a142825</code>.</li>
+          <li>Cronograma v3 publicado no commit <code>fcef514</code>.</li>
+          <li>Deploy base: <code>cde1bf89-3d93-4429-a485-be46945bec04</code>.</li>
+          <li>Smoke publico: <code>LIVE_DAJ_SEARCH_SMOKE_OK</code>.</li>
+        </ul>
+      </aside>
+    </section>
+
+    <section class="section-compact" aria-labelledby="pacotes">
+      <h2 id="pacotes">Pacotes Mao na Massa</h2>
+      <div class="package-grid">
+        <article class="package-row" data-package="0" data-package-status="CONCLUIDO">
+          <header><h3>Pacote 0 - Registro do aceite parcial</h3><span class="status-pill status-ok">CONCLUIDO</span></header>
+          <p>Relatorio do DAJ-2026-0002 registrado com limite explicito: reversibilidade ainda pendente.</p>
+        </article>
+        <article class="package-row" data-package="1" data-package-status="CONCLUIDO_PUBLICADO">
+          <header><h3>Pacote 1 - Consulta DAJ completa</h3><span class="status-pill status-ok">CONCLUIDO_PUBLICADO</span></header>
+          <p>Busca por DAJ, nome, CPF exato, numero do processo e detalhes seguros em <a href="app-clientes.html#consulta-daj">app-clientes.html</a>.</p>
+        </article>
+        <article class="package-row" data-package="2" data-package-status="DEPENDENTE_DE_ACAO_HUMANA">
+          <header><h3>Pacote 2 - Fechamento reversivel 1C</h3><span class="status-pill status-warn">DEPENDENTE_DE_ACAO_HUMANA</span></header>
+          <p>Analise Charlie, minimizacao do prompt, exclusao governada, tombstone e ausencia posterior precisam de sessao humana.</p>
+        </article>
+        <article class="package-row" data-package="3" data-package-status="PRONTO_PARA_EXECUCAO_SEGURA">
+          <header><h3>Pacote 3 - DED vitrine editorial</h3><span class="status-pill status-ready">PRONTO_PARA_EXECUCAO_SEGURA</span></header>
+          <p>Proximo pacote seguro para autoria, editora, versoes e revisao humana, sem Drive real.</p>
+        </article>
+        <article class="package-row" data-package="4" data-package-status="PRONTO_PARA_EXECUCAO_SEGURA">
+          <header><h3>Pacote 4 - DIC vitrine social</h3><span class="status-pill status-ready">PRONTO_PARA_EXECUCAO_SEGURA</span></header>
+          <p>Fluxo cidadao com linguagem simples, fontes oficiais, bloqueio de dados pessoais e encaminhamento humano.</p>
+        </article>
+        <article class="package-row" data-package="5" data-package-status="PROXIMO_APOS_VITRINES">
+          <header><h3>Pacote 5 - DEE, DEJI e DPJ</h3><span class="status-pill status-work">PROXIMO_APOS_VITRINES</span></header>
+          <p>Replicar a matriz DAJ para escritorio, juridico interno e pericia com permissao e auditoria.</p>
+        </article>
+        <article class="package-row" data-package="6" data-package-status="BLOQUEADO_ATE_REVERSIBILIDADE_1C">
+          <header><h3>Pacote 6 - Memoria e Drive</h3><span class="status-pill status-block">BLOQUEADO_ATE_REVERSIBILIDADE_1C</span></header>
+          <p>Nao iniciar memoria real, Drive real, reindexacao real ou replicacao persistente ate fechar a reversibilidade 1C.</p>
+        </article>
+        <article class="package-row" data-package="7" data-package-status="CONCLUIDO_PUBLICADO">
+          <header><h3>Pacote 7 - Painel executivo</h3><span class="status-pill status-ok">CONCLUIDO_PUBLICADO</span></header>
+          <p>Esta pagina consolida prontidao, riscos, evidencias, commits, deploys e proximas portas dos 14 MVPs.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-compact" aria-labelledby="ranking">
+      <h2 id="ranking">Ranking operacional dos MVPs</h2>
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>MVP</th>
+              <th>Onda</th>
+              <th>Papel estrategico</th>
+              <th>Score</th>
+              <th>Proxima acao</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td><span class="rank-code">DAJ</span> - Advogado / Defensor Publico</td><td>0</td><td>MVP-mae operacional</td><td class="score">97</td><td>Fechar aceite humano 1C com dado ficticio e manter efeitos reais bloqueados.</td></tr>
+            <tr><td>2</td><td><span class="rank-code">DED</span> - Autor / Editora / Autor-Editor</td><td>1</td><td>Vitrine editorial independente</td><td class="score">90</td><td>Montar demo editorial com briefing, amostra ficticia, revisao humana e sem Drive real.</td></tr>
+            <tr><td>3</td><td><span class="rank-code">DIC</span> - Cidadao / Interessado</td><td>1</td><td>Vitrine social e linguagem cidada</td><td class="score">84</td><td>Criar roteiro social separado do DAJ, com fontes oficiais e bloqueio de dados pessoais.</td></tr>
+            <tr><td>4</td><td><span class="rank-code">DEE</span> - Escritorio Juridico</td><td>2</td><td>Expansao comercial juridica</td><td class="score">82</td><td>Replicar atendimento, tarefas, documentos e auditoria para equipe de escritorio.</td></tr>
+            <tr><td>5</td><td><span class="rank-code">DEJI</span> - Empresa / Juridico Interno</td><td>2</td><td>Produto B2B juridico interno</td><td class="score">78</td><td>Mapear contrato, compliance e workflow de revisao interna ficticios.</td></tr>
+            <tr><td>6</td><td><span class="rank-code">DIP</span> - Investidor / Parceiro</td><td>3</td><td>Captacao e parcerias</td><td class="score">75</td><td>Preparar narrativa de produto e due diligence ficticia sem promessa financeira.</td></tr>
+            <tr><td>7</td><td><span class="rank-code">DAA</span> - Professor / Academia</td><td>3</td><td>Educacao juridica orientada</td><td class="score">74</td><td>Criar fluxo aula, plano, atividade e feedback com avaliacao humana.</td></tr>
+            <tr><td>8</td><td><span class="rank-code">DEJ</span> - Estudante</td><td>3</td><td>Entrada educacional leve</td><td class="score">73</td><td>Consolidar estudo guiado e fichamento sem resposta pronta para fraude academica.</td></tr>
+            <tr><td>9</td><td><span class="rank-code">DPJ</span> - Perito Judicial</td><td>2</td><td>Especializacao tecnica juridica</td><td class="score">71</td><td>Definir laudo ficticio, cadeia de custodia demonstrativa e revisao tecnica humana.</td></tr>
+            <tr><td>10</td><td><span class="rank-code">DOI</span> - Orgao Publico / Instituicao</td><td>4</td><td>Institucional controlado</td><td class="score">65</td><td>Limitar a protocolo demonstrativo e trilha publica sem ato administrativo real.</td></tr>
+            <tr><td>11</td><td><span class="rank-code">DGE</span> - Administrador Jus 9</td><td>4</td><td>Operacao interna e auditoria</td><td class="score">64</td><td>Transformar em console interno de releases, flags, auditoria e permissoes.</td></tr>
+            <tr><td>12</td><td><span class="rank-code">DMP</span> - Promotor / Ministerio Publico</td><td>5</td><td>Alta sensibilidade institucional</td><td class="score">58</td><td>Manter demonstrativo ate termo de limites e revisao juridica especifica.</td></tr>
+            <tr><td>13</td><td><span class="rank-code">DAP</span> - Delegado / Autoridade Policial</td><td>5</td><td>Alta sensibilidade penal</td><td class="score">55</td><td>Restringir a fluxo educativo ficticio com cadeia de revisao humana.</td></tr>
+            <tr><td>14</td><td><span class="rank-code">DMG</span> - Juiz / Magistrado</td><td>5</td><td>Alta sensibilidade decisoria</td><td class="score">51</td><td>Manter conceitual, sem minuta decisoria ou simulacao de jurisdicao.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section-compact" aria-labelledby="portas">
+      <h2 id="portas">Portas de seguranca</h2>
+      <div class="risk-grid">
+        <article class="risk-row">
+          <h3>Dados reais</h3>
+          <p>Todos os MVPs publicos seguem com dados ficticios. CPF integral nao entra em query string, prompt, localStorage, auditoria visivel ou resultado.</p>
+        </article>
+        <article class="risk-row">
+          <h3>Memoria e Drive</h3>
+          <p><strong>BLOQUEADO_ATE_REVERSIBILIDADE_1C</strong>. So volta quando o DAJ ficticio tiver analise, minimizacao, exclusao/tombstone e ausencia posterior comprovadas.</p>
+        </article>
+        <article class="risk-row">
+          <h3>Alta sensibilidade</h3>
+          <p>DMG, DMP e DAP permanecem como demonstracao restrita, sem simular autoridade publica, decisao, investigacao ou medida real.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-compact" aria-labelledby="atalhos">
+      <h2 id="atalhos">Atalhos executivos</h2>
+      <div class="link-board">
+        <a class="primary" href="app-clientes.html#consulta-daj">Consulta governada de DAJs</a>
+        <a href="app-atendimento-inicial.html">Cadastro DAJ ficticio</a>
+        <a href="app-ia-profissional.html#chat-ia">Charlie DAJ</a>
+        <a href="app-demo-autor-editor.html">DED painel</a>
+        <a href="app-ia-autor-editor.html#chat-ia">DED IA Editorial</a>
+        <a href="app-demo-cidadao.html">DIC painel</a>
+        <a href="app-ia-cidadao.html#chat-ia">DIC IA Social</a>
+        <a href="mvp.html">Catalogo MVP</a>
+        <a href="lider-mvp.html">Lider MVP</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="jus9-autoria-rodape" role="contentinfo" style="font-size:.85rem;line-height:1.5;text-align:center;padding:1rem .75rem;margin-top:2rem;background:rgba(15,23,42,.96);color:#f8fafc;">Producao do site: Jus 9 Tecnologia Juridica. Software livre com autoria, origem e direitos autorais preservados.</footer>
+<script src="script.js"></script>
+<script src="assets/js/pwa-install.js"></script>
+</body>
+</html>

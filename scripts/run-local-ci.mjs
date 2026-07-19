@@ -121,6 +121,12 @@ const checks = [
     args: ["scripts/audit-mao-na-massa-v3.mjs"]
   },
   {
+    label: "Painel executivo dos MVPs",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-mvp-executive-panel.mjs"]
+  },
+  {
     label: "Backend local fail closed",
     cwd: path.join(githubRoot, "backend-api-jus9-tecnologia-juridica"),
     command: process.execPath,

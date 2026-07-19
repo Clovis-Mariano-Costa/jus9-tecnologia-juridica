@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.12.7 - 2026-07-19
+
+- Criado `app-painel-mvps.html` como painel executivo dos 14 MVPs, com ranking, pacotes Mao na Massa, riscos, evidencias, commits e deploy base.
+- `mvp.html` e `lider-mvp.html` passam a apontar para o painel executivo.
+- Adicionado auditor do painel executivo ao CI local e regressao publica dos MVPs.
+
 ## 1.12.6 - 2026-07-19
 
 - Registrado aceite humano parcial do `DAJ-2026-0002`, confirmado no cadastro oficial com indice e detalhe gravados.

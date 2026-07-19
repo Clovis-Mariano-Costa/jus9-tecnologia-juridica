@@ -48,6 +48,9 @@ const dajProfilesPage = await fs.readFile(new URL("../app-perfis.html", import.m
 const dajDashboardPage = await fs.readFile(new URL("../app-demo-advogar.html", import.meta.url), "utf8");
 const dajAiPage = await fs.readFile(new URL("../app-ia-profissional.html", import.meta.url), "utf8");
 const dajCleanStyle = await fs.readFile(new URL("../assets/css/daj-clean-ui.css", import.meta.url), "utf8");
+const mvpLandingPage = await fs.readFile(new URL("../mvp.html", import.meta.url), "utf8");
+const leaderMvpPage = await fs.readFile(new URL("../lider-mvp.html", import.meta.url), "utf8");
+const mvpExecutivePanelPage = await fs.readFile(new URL("../app-painel-mvps.html", import.meta.url), "utf8");
 const installPage = await fs.readFile(new URL("../instalar-app.html", import.meta.url), "utf8");
 const pwaInstallScript = await fs.readFile(new URL("../assets/js/pwa-install.js", import.meta.url), "utf8");
 const canonicalServiceWorker = await fs.readFile(new URL("../service-worker.js", import.meta.url), "utf8");
@@ -163,6 +166,16 @@ assert(dajRegistryScript.includes("fetch('/api/daj-process-links?searchType=proc
 assert(dajRegistryScript.includes("searchByDetails") && dajRegistryScript.includes("operational.secrecyLevel") && dajRegistryScript.includes("workflow.destinationProfile"), "consulta de DAJs nao pesquisa detalhes operacionais seguros");
 assert(dajRegistryScript.includes("isValidCpf") && dajRegistryScript.includes("HMAC exato") && dajRegistryScript.includes("sem exposicao de CPF integral"), "consulta de CPF sem validacao/minimizacao explicita");
 assert(dajRegistryScript.includes("textContent") && !dajRegistryScript.includes("item.partyName + '</"), "lista de DAJs nao minimiza risco de injecao ao renderizar dados");
+assert(mvpExecutivePanelPage.includes("data-mvp-executive-panel"), "painel executivo dos MVPs sem marcador principal");
+assert(mvpExecutivePanelPage.includes("DAJ-2026-0002") && mvpExecutivePanelPage.includes("ACEITE_HUMANO_PARCIAL_CONFIRMADO") && mvpExecutivePanelPage.includes("REVERSIBILIDADE_PENDENTE"), "painel executivo nao preserva o estado parcial do DAJ 1C");
+assert(mvpExecutivePanelPage.includes("a142825") && mvpExecutivePanelPage.includes("fcef514") && mvpExecutivePanelPage.includes("cde1bf89-3d93-4429-a485-be46945bec04"), "painel executivo sem evidencias de commit/deploy");
+assert(mvpExecutivePanelPage.includes("BLOQUEADO_ATE_REVERSIBILIDADE_1C") && mvpExecutivePanelPage.includes("DEPENDENTE_DE_ACAO_HUMANA"), "painel executivo sem bloqueios de governanca");
+assert(mvpExecutivePanelPage.includes("app-clientes.html#consulta-daj") && mvpExecutivePanelPage.includes("app-demo-autor-editor.html") && mvpExecutivePanelPage.includes("app-demo-cidadao.html"), "painel executivo sem atalhos DAJ/DED/DIC");
+for (const code of expectedCodes) {
+  assert(mvpExecutivePanelPage.includes(`<span class="rank-code">${code}</span>`), `painel executivo sem codigo ${code}`);
+}
+assert(mvpLandingPage.includes("app-painel-mvps.html"), "mvp.html sem link para painel executivo dos MVPs");
+assert(leaderMvpPage.includes("app-painel-mvps.html"), "lider-mvp.html sem link para painel executivo dos MVPs");
 for (const profile of ["admin_sistema", "advogado_lider", "advogado", "assessor_chefe", "assessor", "secretaria", "estagio", "escritorio", "academia", "estudante", "cidadao", "perito", "parceiro", "empresa", "orgao_publico", "magistrado", "ministerio_publico", "autoridade_policial", "autor_editor"]) {
   assert(dajProfilesPage.includes(`data-auth-profile="${profile}"`), `lista de perfis sem ${profile}`);
 }
