@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Documentacao
 
+## 1.16.3 - 2026-07-19
+
+- Versionamento publico v5.8 registra o mapa de provas dos 14 MVPs.
+- Painel executivo passa a funcionar como roteiro de valor por MVP, nao apenas como ranking.
+- CI local passa a auditar o mapa de provas dos MVPs gerais.
+
 ## 1.16.2 - 2026-07-19
 
 - Documentado hotfix do proxy DAJ: resposta evasiva upstream passa a ser convertida em laudo governado limitado quando houver fonte estruturada minimizada.

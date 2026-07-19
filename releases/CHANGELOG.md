@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.17.2 - 2026-07-19
+
+- Publicado mapa de provas dos 14 MVPs no painel executivo, com prova, demonstracao minima, aceite e bloqueio por modulo.
+- Criado documento governado `MAPA_PROVAS_MVPS_GERAIS_v1.0.0.md`.
+- Adicionado auditor `audit-mvp-proof-map.mjs` ao CI local e cache PWA `jus9-pwa-v41-2026-07-19-mvp-proof-map`.
+
 ## 1.17.1 - 2026-07-19
 
 - Proxy `/api/charlie/respond` passa a recuperar respostas evasivas da rota `LAUDO_DAJ_V1` com laudo governado limitado ao cadastro oficial minimizado.

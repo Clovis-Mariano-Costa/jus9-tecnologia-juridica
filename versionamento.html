@@ -1,6 +1,6 @@
 <!--
   Jus 9 Tecnologia Juridica - software livre, autoria preservada.
-  Versionamento publico atualizado para a versao 5.7.
+  Versionamento publico atualizado para a versao 5.8.
   DNA de referencia: charlieecho-jus9-tecnologia-juridica
 -->
 <!doctype html>
@@ -8,8 +8,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Versionamento Jus 9 - v5.7</title>
-  <meta name="description" content="Versionamento publico da Jus 9 Tecnologia Juridica, com registro da entrada na versao 5.7.">
+  <title>Versionamento Jus 9 - v5.8</title>
+  <meta name="description" content="Versionamento publico da Jus 9 Tecnologia Juridica, com registro da entrada na versao 5.8.">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
@@ -37,8 +37,20 @@
   <div class="container">
     <div class="doc-shell">
       <div class="eyebrow">Versionamento publico</div>
-      <h1>Jus 9 Tecnologia Juridica - versao 5.7</h1>
-      <p class="lead">A versao 5.7 adiciona recuperacao governada no proxy: se a API externa voltar evasiva na rota DAJ, o Worker devolve laudo limitado a partir do cadastro oficial minimizado.</p>
+      <h1>Jus 9 Tecnologia Juridica - versao 5.8</h1>
+      <p class="lead">A versao 5.8 desloca o foco para os MVPs em geral e publica o mapa de provas dos 14 MVPs: o que cada um precisa demonstrar, como aceitar e o que continua bloqueado.</p>
+
+      <section class="version-card">
+        <h2>Versao 5.8 - Mapa de provas dos 14 MVPs</h2>
+        <p><strong>Data:</strong> 19/07/2026</p>
+        <ul>
+          <li><a href="app-painel-mvps.html#mapa-provas">Painel executivo dos MVPs</a> passa a exibir prova, demonstracao minima, aceite e bloqueio para cada um dos 14 MVPs.</li>
+          <li>Criado <code>MAPA_PROVAS_MVPS_GERAIS_v1.0.0.md</code> como documento governado da frente MVPs gerais.</li>
+          <li>Adicionado auditor <code>audit-mvp-proof-map.mjs</code> ao CI local.</li>
+          <li>Service worker atualizado para <code>jus9-pwa-v41-2026-07-19-mvp-proof-map</code>.</li>
+          <li>A frente Charlie/DAJ fica preservada para outro chat; este pacote nao conclui Pacote 2 nem libera Drive/memoria real.</li>
+        </ul>
+      </section>
 
       <section class="version-card">
         <h2>Versao 5.7 - Proxy governado para laudo DAJ</h2>

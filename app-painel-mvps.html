@@ -45,6 +45,8 @@
     .data-table tr:last-child td{border-bottom:0}
     .rank-code{font-weight:900;color:#07111f}
     .score{font-weight:900;color:#8a5d16}
+    .proof-chip{display:inline-flex;align-items:center;border-radius:999px;background:#eef2f7;color:#334155;padding:4px 8px;font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
+    .proof-main{font-weight:850;color:#07111f}
     .risk-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
     .risk-row{padding:16px}
     .link-board{display:flex;flex-wrap:wrap;gap:10px}
@@ -171,6 +173,39 @@
             <tr><td>12</td><td><span class="rank-code">DMP</span> - Promotor / Ministerio Publico</td><td>5</td><td>Alta sensibilidade institucional</td><td class="score">58</td><td>Manter demonstrativo ate termo de limites e revisao juridica especifica.</td></tr>
             <tr><td>13</td><td><span class="rank-code">DAP</span> - Delegado / Autoridade Policial</td><td>5</td><td>Alta sensibilidade penal</td><td class="score">55</td><td>Restringir a fluxo educativo ficticio com cadeia de revisao humana.</td></tr>
             <tr><td>14</td><td><span class="rank-code">DMG</span> - Juiz / Magistrado</td><td>5</td><td>Alta sensibilidade decisoria</td><td class="score">51</td><td>Manter conceitual, sem minuta decisoria ou simulacao de jurisdicao.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section-compact" id="mapa-provas" aria-labelledby="provas" data-mvp-proof-map>
+      <h2 id="provas">Mapa de provas dos 14 MVPs</h2>
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>MVP</th>
+              <th>O que precisa provar</th>
+              <th>Demonstração mínima</th>
+              <th>Aceite</th>
+              <th>Bloqueio</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-proof-code="DAJ"><td><span class="rank-code">DAJ</span><br><span class="proof-chip">Onda 0</span></td><td><span class="proof-main">Rastreabilidade juridica ponta a ponta.</span></td><td>Cadastro ficticio, consulta, analise, vinculo, feedback humano e reversibilidade.</td><td>Humano confirma persistencia, minimizacao e ausencia posterior do teste.</td><td>Sem dado real, Drive real ou memoria real antes do 1C.</td></tr>
+            <tr data-proof-code="DED"><td><span class="rank-code">DED</span><br><span class="proof-chip">Onda 1</span></td><td><span class="proof-main">Autoria/editoria com artefato revisavel.</span></td><td>Briefing ficticio, amostra editorial, checklist de titularidade e download local.</td><td>Separar apoio editorial de publicacao, ISBN, venda e contrato.</td><td>Sem promessa de publicacao ou exploracao comercial.</td></tr>
+            <tr data-proof-code="DIC"><td><span class="rank-code">DIC</span><br><span class="proof-chip">Onda 1</span></td><td><span class="proof-main">Linguagem cidada segura.</span></td><td>Orientacao ficticia com fontes oficiais, triagem social e encaminhamento humano.</td><td>Responder sem coletar CPF, sem substituir advogado e sem tratar emergencia.</td><td>Sem PII, urgencia real ou consulta individual conclusiva.</td></tr>
+            <tr data-proof-code="DEE"><td><span class="rank-code">DEE</span><br><span class="proof-chip">Onda 2</span></td><td><span class="proof-main">Rotina de escritorio com papeis e tarefas.</span></td><td>Cliente ficticio, tarefa, documento, prazo demonstrativo e auditoria por perfil.</td><td>Mostrar dono humano, sigilo e limite de assinatura/protocolo.</td><td>Sem cliente real ou mistura de titularidade.</td></tr>
+            <tr data-proof-code="DEJI"><td><span class="rank-code">DEJI</span><br><span class="proof-chip">Onda 2</span></td><td><span class="proof-main">Juridico interno com matriz de risco.</span></td><td>Contrato/fornecedor ficticio, risco, aprovacao humana e alternativas.</td><td>Separar recomendacao de decisao corporativa vinculante.</td><td>Sem contrato real, segredo empresarial ou aprovacao automatica.</td></tr>
+            <tr data-proof-code="DPJ"><td><span class="rank-code">DPJ</span><br><span class="proof-chip">Onda 2</span></td><td><span class="proof-main">Laudo tecnico demonstrativo verificavel.</span></td><td>Objeto ficticio, metodo, achados possiveis, lacunas e cadeia tecnica.</td><td>Declarar que fato tecnico exige perito humano e evidencias.</td><td>Sem conclusao pericial real ou prova nao examinada.</td></tr>
+            <tr data-proof-code="DIP"><td><span class="rank-code">DIP</span><br><span class="proof-chip">Onda 3</span></td><td><span class="proof-main">Narrativa de parceria sem promessa financeira.</span></td><td>Pitch, due diligence ficticia, perguntas de investidor e riscos publicos.</td><td>Provar clareza institucional sem oferta de investimento.</td><td>Sem retorno financeiro, valuation ou captacao real.</td></tr>
+            <tr data-proof-code="DAA"><td><span class="rank-code">DAA</span><br><span class="proof-chip">Onda 3</span></td><td><span class="proof-main">Apoio docente com avaliacao humana.</span></td><td>Plano de aula, atividade, rubrica e feedback demonstrativo.</td><td>Manter professor humano como avaliador final.</td><td>Sem nota final automatica ou decisao academica real.</td></tr>
+            <tr data-proof-code="DEJ"><td><span class="rank-code">DEJ</span><br><span class="proof-chip">Onda 3</span></td><td><span class="proof-main">Estudo guiado sem fraude academica.</span></td><td>Resumo, exercicios, fichamento e mapa de estudo com fontes.</td><td>Ensinar metodo e negar resposta pronta para avaliacao em andamento.</td><td>Sem cola, plagio ou entrega academica substitutiva.</td></tr>
+            <tr data-proof-code="DOI"><td><span class="rank-code">DOI</span><br><span class="proof-chip">Onda 4</span></td><td><span class="proof-main">Fluxo institucional sem ato oficial.</span></td><td>Protocolo ficticio, responsavel, trilha publica e limites de competencia.</td><td>Separar organizacao demonstrativa de decisao institucional.</td><td>Sem ato administrativo ou autoridade publica simulada.</td></tr>
+            <tr data-proof-code="DGE"><td><span class="rank-code">DGE</span><br><span class="proof-chip">Onda 4</span></td><td><span class="proof-main">Governanca interna e auditoria.</span></td><td>Console demonstrativo de releases, flags, perfis, logs e bloqueios.</td><td>Provar segregacao de perfil antes de poder administrativo real.</td><td>Sem segredo, token, cofre ou permissao real no demo.</td></tr>
+            <tr data-proof-code="DMP"><td><span class="rank-code">DMP</span><br><span class="proof-chip">Onda 5</span></td><td><span class="proof-main">Uso educativo para Ministerio Publico.</span></td><td>Fluxo conceitual ficticio com limites, fontes e revisao juridica.</td><td>Nao simular denuncia, requisicao, medida ou autoridade.</td><td>Sem persecucao penal ou ato ministerial real.</td></tr>
+            <tr data-proof-code="DAP"><td><span class="rank-code">DAP</span><br><span class="proof-chip">Onda 5</span></td><td><span class="proof-main">Organizacao policial apenas demonstrativa.</span></td><td>Checklist ficticio de procedimento, cadeia de revisao e direitos.</td><td>Nao orientar investigacao, coleta de prova real ou diligencia.</td><td>Sem ato policial, urgencia real ou prova sensivel.</td></tr>
+            <tr data-proof-code="DMG"><td><span class="rank-code">DMG</span><br><span class="proof-chip">Onda 5</span></td><td><span class="proof-main">Estudo de gabinete sem decisao judicial.</span></td><td>Mapa conceitual ficticio, pauta demonstrativa e limites de jurisdicao.</td><td>Nao produzir minuta decisoria nem simular autoridade judicial.</td><td>Sem decisao, sentenca, despacho ou competencia publica.</td></tr>
           </tbody>
         </table>
       </div>

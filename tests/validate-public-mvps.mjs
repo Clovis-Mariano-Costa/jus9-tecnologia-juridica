@@ -180,6 +180,7 @@ assert(dajRegistryScript.includes("searchByDetails") && dajRegistryScript.includ
 assert(dajRegistryScript.includes("isValidCpf") && dajRegistryScript.includes("HMAC exato") && dajRegistryScript.includes("sem exposicao de CPF integral"), "consulta de CPF sem validacao/minimizacao explicita");
 assert(dajRegistryScript.includes("textContent") && !dajRegistryScript.includes("item.partyName + '</"), "lista de DAJs nao minimiza risco de injecao ao renderizar dados");
 assert(mvpExecutivePanelPage.includes("data-mvp-executive-panel"), "painel executivo dos MVPs sem marcador principal");
+assert(mvpExecutivePanelPage.includes("data-mvp-proof-map") && mvpExecutivePanelPage.includes("Mapa de provas dos 14 MVPs"), "painel executivo sem mapa de provas dos MVPs");
 assert(mvpExecutivePanelPage.includes("DAJ-2026-0002") && mvpExecutivePanelPage.includes("ACEITE_HUMANO_PARCIAL_CONFIRMADO") && mvpExecutivePanelPage.includes("REVERSIBILIDADE_PENDENTE"), "painel executivo nao preserva o estado parcial do DAJ 1C");
 assert(mvpExecutivePanelPage.includes("a142825") && mvpExecutivePanelPage.includes("fcef514") && mvpExecutivePanelPage.includes("cde1bf89-3d93-4429-a485-be46945bec04"), "painel executivo sem evidencias de commit/deploy");
 assert(mvpExecutivePanelPage.includes("BLOQUEADO_ATE_REVERSIBILIDADE_1C") && mvpExecutivePanelPage.includes("AGUARDANDO_NOVO_TESTE_HUMANO"), "painel executivo sem bloqueios de governanca");
@@ -190,6 +191,7 @@ assert(mvpExecutivePanelPage.includes('data-package="8" data-package-status="PEN
 assert(mvpExecutivePanelPage.includes("app-clientes.html#consulta-daj") && mvpExecutivePanelPage.includes("app-demo-autor-editor.html") && mvpExecutivePanelPage.includes("app-demo-cidadao.html") && mvpExecutivePanelPage.includes("app-demo-escritorio.html") && mvpExecutivePanelPage.includes("app-demo-empresa.html") && mvpExecutivePanelPage.includes("app-demo-perito.html"), "painel executivo sem atalhos DAJ/DED/DIC/DEE/DEJI/DPJ");
 for (const code of expectedCodes) {
   assert(mvpExecutivePanelPage.includes(`<span class="rank-code">${code}</span>`), `painel executivo sem codigo ${code}`);
+  assert(mvpExecutivePanelPage.includes(`data-proof-code="${code}"`), `painel executivo sem prova de valor do codigo ${code}`);
 }
 assert(mvpLandingPage.includes("app-painel-mvps.html"), "mvp.html sem link para painel executivo dos MVPs");
 assert(leaderMvpPage.includes("app-painel-mvps.html"), "lider-mvp.html sem link para painel executivo dos MVPs");
@@ -256,7 +258,7 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v40-2026-07-19-daj-laudo-proxy"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("jus9-pwa-v41-2026-07-19-mvp-proof-map"), "cache PWA principal desatualizado");
 assert(canonicalServiceWorker.includes("/saiba-mais.html"), "cache PWA sem pagina Saiba mais");
 assert(canonicalServiceWorker.includes("/build-week-2026.html"), "cache PWA sem pagina Build Week");
 assert(canonicalServiceWorker.includes("/app-painel-mvps.html"), "cache PWA sem painel executivo dos MVPs");

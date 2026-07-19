@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.13.6 - 2026-07-19
+
+- Criado mapa de provas dos MVPs gerais para orientar continuidade fora da frente Charlie/DAJ.
+- Os 14 MVPs passam a ter prova, demo minima, aceite e bloqueio registrados em documento governado e no painel executivo.
+- A decisao operacional fica `SEGUIR_COM_MVPS_GERAIS_POR_PROVA_DE_VALOR`, mantendo Pacote 2 e Drive/memoria real bloqueados.
+
 ## 1.13.5 - 2026-07-19
 
 - Criado fallback governado de proxy para `LAUDO_DAJ_V1`, sem liberar dado real, Drive real ou memoria real.

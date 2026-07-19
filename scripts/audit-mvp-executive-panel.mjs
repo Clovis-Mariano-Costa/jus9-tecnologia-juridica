@@ -24,6 +24,7 @@ assert(panel.includes("a142825") && panel.includes("fcef514"), "painel executivo
 assert(panel.includes("cde1bf89-3d93-4429-a485-be46945bec04"), "painel executivo sem deploy base");
 assert(panel.includes("LIVE_DAJ_SEARCH_SMOKE_OK"), "painel executivo sem smoke publico");
 assert(panel.includes("CPF integral nao entra em query string, prompt, localStorage, auditoria visivel ou resultado"), "painel executivo sem regra de minimizacao de CPF");
+assert(panel.includes("data-mvp-proof-map") && panel.includes("Mapa de provas dos 14 MVPs"), "painel executivo sem mapa de provas dos MVPs");
 
 const packageStatuses = [
   "CONCLUIDO",
@@ -46,6 +47,7 @@ assert(Array.isArray(entries) && entries.length === 14, "matriz de priorizacao d
 for (const entry of entries) {
   assert(panel.includes(`<span class="rank-code">${entry.code}</span>`), `painel executivo sem codigo ${entry.code}`);
   assert(panel.includes(`>${entry.totalScore}</td>`), `painel executivo sem score ${entry.totalScore} de ${entry.code}`);
+  assert(panel.includes(`data-proof-code="${entry.code}"`), `painel executivo sem prova de valor de ${entry.code}`);
 }
 
 for (const target of [
