@@ -1,7 +1,7 @@
 {
   "metadata": {
     "id": "JUS9-BUILD-WEEK-STATUS-2026-001",
-    "versao": "1.1.1",
+    "versao": "1.1.2",
     "autor": "Codex / Charlie Fox",
     "revisor_responsavel": "Clovis Mariano da Costa",
     "data": "2026-07-19",
@@ -33,7 +33,7 @@
     "operationalPilot": "DAJ",
     "showcasePolicy": "The other 13 MVPs remain governed public showcases with fictional datasets and human-review limits.",
     "nextSharedCore": "Charlie Core v0",
-    "dajAnalysisContract": "Charlie Echo must return a structured Laudo de Analise DAJ before DAJ review feedback is registered.",
+    "dajAnalysisContract": "Charlie Echo must return a structured Laudo de Analise DAJ before DAJ review feedback is registered; the portal proxy can recover evasive upstream responses with a governed laudo from minimized registry data.",
     "package2State": "AGUARDANDO_NOVO_TESTE_HUMANO"
   },
   "claims": {

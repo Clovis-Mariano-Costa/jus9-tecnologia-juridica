@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.13.5 - 2026-07-19
+
+- Criado fallback governado de proxy para `LAUDO_DAJ_V1`, sem liberar dado real, Drive real ou memoria real.
+- `DAJ-2026-0002` permanece em novo teste humano: o proxy pode entregar laudo, mas o aceite ainda depende da verificacao do Fundador/equipe.
+- Auditoria do laudo DAJ passa a cobrir frontend, Worker, cache-buster e bloqueio contra registro prematuro.
+
 ## 1.13.4 - 2026-07-19
 
 - Implementado localmente Charlie Core v0 com registry canonico dos 14 MVPs, aliases, estados, riscos, papeis humanos e limites por modulo.

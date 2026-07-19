@@ -1,6 +1,6 @@
 <!--
   Jus 9 Tecnologia Juridica - software livre, autoria preservada.
-  Versionamento publico atualizado para a versao 5.6.
+  Versionamento publico atualizado para a versao 5.7.
   DNA de referencia: charlieecho-jus9-tecnologia-juridica
 -->
 <!doctype html>
@@ -8,8 +8,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Versionamento Jus 9 - v5.6</title>
-  <meta name="description" content="Versionamento publico da Jus 9 Tecnologia Juridica, com registro da entrada na versao 5.6.">
+  <title>Versionamento Jus 9 - v5.7</title>
+  <meta name="description" content="Versionamento publico da Jus 9 Tecnologia Juridica, com registro da entrada na versao 5.7.">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
@@ -37,8 +37,20 @@
   <div class="container">
     <div class="doc-shell">
       <div class="eyebrow">Versionamento publico</div>
-      <h1>Jus 9 Tecnologia Juridica - versao 5.6</h1>
-      <p class="lead">A versao 5.6 corrige o contrato de analise DAJ: Charlie Echo deve devolver laudo estruturado antes de registrar feedback, mantendo o Pacote 2 em novo teste humano.</p>
+      <h1>Jus 9 Tecnologia Juridica - versao 5.7</h1>
+      <p class="lead">A versao 5.7 adiciona recuperacao governada no proxy: se a API externa voltar evasiva na rota DAJ, o Worker devolve laudo limitado a partir do cadastro oficial minimizado.</p>
+
+      <section class="version-card">
+        <h2>Versao 5.7 - Proxy governado para laudo DAJ</h2>
+        <p><strong>Data:</strong> 19/07/2026</p>
+        <ul>
+          <li>Worker passa a reconhecer <code>LAUDO_DAJ_V1</code> e validar a resposta upstream antes de devolver ao chat.</li>
+          <li>Se a API externa responder com indice, endpoint ou texto evasivo, o proxy monta <code>Laudo de Analise DAJ</code> limitado aos dados oficiais minimizados.</li>
+          <li>O fallback governado marca <code>X-Jus9-Daj-Laudo-Fallback: governado</code> e <code>worker_daj_laudo_governado</code>.</li>
+          <li>Paginas DAJ usam <code>script.js?v=20260719-daj-laudo-v2</code> para evitar cache antigo.</li>
+          <li>Pacote 2 continua exigindo novo teste humano; Pacote 6 continua bloqueado ate reversibilidade 1C.</li>
+        </ul>
+      </section>
 
       <section class="version-card">
         <h2>Versao 5.6 - Laudo obrigatorio na analise DAJ</h2>

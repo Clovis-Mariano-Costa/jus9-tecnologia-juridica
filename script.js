@@ -4500,6 +4500,7 @@ window.jus9DemoLogin = function(form){
   }
 
   function governedDajAnalysisRoute(item){
+    var operational = item.operational || {};
     return {
       id:'daj_analise_governada',
       label:'DAJ - analise oficial isolada',
@@ -4508,6 +4509,22 @@ window.jus9DemoLogin = function(form){
       allowLocalFallback:false,
       localFallback:'',
       dajId:item.id,
+      requiredOutput:'LAUDO_DAJ_V1',
+      dajAnalysisSource:{
+        id:item.id,
+        status:conciseDajValue(item.status, 80),
+        classification:conciseDajValue(item.classification, 100),
+        processLinked:Boolean(item.processLinked),
+        operational:{
+          area:conciseDajValue(operational.area, 120),
+          urgency:conciseDajValue(operational.urgency, 100),
+          attentionReason:conciseDajValue(operational.attentionReason, 180),
+          secrecyLevel:conciseDajValue(operational.secrecyLevel, 100),
+          caseSummary:conciseDajValue(operational.caseSummary, 2600),
+          documentsMentioned:conciseDajValue(operational.documentsMentioned, 1400),
+          attachmentsPendingCount:Number(operational.attachmentsPendingCount || 0)
+        }
+      },
       reason:'handoff governado do DAJ exige sala nova, contexto oficial e resposta especifica'
     };
   }

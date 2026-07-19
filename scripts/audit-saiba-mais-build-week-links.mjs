@@ -53,11 +53,11 @@ for (const asset of ["/saiba-mais.html", "/versionamento.html", "/build-week-202
   assert(serviceWorker.includes(asset), `service worker sem cache publico para ${asset}`);
 }
 
-assert(buildWeekStatus.metadata?.versao === "1.1.1", "manifesto Build Week sem versao 1.1.1");
+assert(buildWeekStatus.metadata?.versao === "1.1.2", "manifesto Build Week sem versao 1.1.2");
 assert(buildWeekStatus.mvpConsolidation?.operationalPilot === "DAJ", "manifesto Build Week sem DAJ como piloto operacional");
 assert(buildWeekStatus.mvpConsolidation?.nextSharedCore === "Charlie Core v0", "manifesto Build Week sem Charlie Core v0 como proximo nucleo");
 assert(buildWeekStatus.mvpConsolidation?.dajAnalysisContract?.includes("Laudo de Analise DAJ"), "manifesto Build Week sem contrato de laudo DAJ");
-assert(versionamento.includes("Versionamento Jus 9 - v5.6") && versionamento.includes("CRONOGRAMA_MAO_NA_MASSA_CHARLIE_ECHO_v3.1.1.md"), "versionamento publico sem registro v5.6/v3.1.1");
+assert(versionamento.includes("Versionamento Jus 9 - v5.7") && versionamento.includes("worker_daj_laudo_governado") && versionamento.includes("CRONOGRAMA_MAO_NA_MASSA_CHARLIE_ECHO_v3.1.1.md"), "versionamento publico sem registro v5.7/proxy/v3.1.1");
 assert(syncScript.includes("'sitemap.xml'"), "Sync-PortalDist nao publica sitemap.xml");
 
 console.log("SAIBA_MAIS_BUILD_WEEK_LINKS_OK links=build-week,saiba-mais,state-map,panel");

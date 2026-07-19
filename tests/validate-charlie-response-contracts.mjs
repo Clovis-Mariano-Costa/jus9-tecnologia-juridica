@@ -30,6 +30,7 @@ const processPage = await fs.readFile(new URL("app-processos.html", root), "utf8
 const intakePage = await fs.readFile(new URL("app-atendimento-inicial.html", root), "utf8");
 const intakeScript = await fs.readFile(new URL("assets/js/daj-intake.js", root), "utf8");
 const datajud = await fs.readFile(new URL("functions/_shared/datajud.js", root), "utf8");
+const worker = await fs.readFile(new URL("worker.js", root), "utf8");
 
 const routeBlock = between(script, "function charlieRouteDecision", "function localFallbackForRoute");
 const submitBlock = between(script, "form.addEventListener('submit'", "document.querySelectorAll('[data-ai-chat]')");
@@ -131,6 +132,10 @@ assertIncludes(script, "Laudo de Analise DAJ", "analise DAJ exige titulo de laud
 assertIncludes(script, "resposta_daj_sem_laudo_obrigatorio", "analise DAJ falha fechada sem laudo");
 assertIncludes(script, "consulta por DAJ deve ser executada", "analise DAJ reconhece resposta evasiva recebida");
 assertIncludes(script, "/api/daj-process-links", "analise DAJ rejeita desvio para vinculo DAJ-processo");
+assertIncludes(script, "dajAnalysisSource", "analise DAJ envia fonte estruturada minimizada ao proxy");
+assertIncludes(worker, "worker_daj_laudo_governado", "proxy DAJ possui fallback governado de laudo");
+assertIncludes(worker, "X-Jus9-Daj-Laudo-Fallback", "proxy DAJ marca fallback governado");
+assertIncludes(worker, "upstream_resposta_evasiva", "proxy DAJ reconhece resposta evasiva upstream");
 assertIncludes(script, "registerDajAnalysisWorkflow", "analise DAJ registra feedback e encaminhamento");
 assertIncludes(script, "Feedback do fluxo DAJ", "analise DAJ sempre apresenta feedback");
 assertOrder(runGovernedDajBlock, "var answer = enforceCriticalAnswerGuards", "if(shouldRejectDajAnalysisAnswer(answer))", "analise DAJ valida a primeira resposta antes de registrar");

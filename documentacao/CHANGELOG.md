@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Documentacao
 
+## 1.16.2 - 2026-07-19
+
+- Documentado hotfix do proxy DAJ: resposta evasiva upstream passa a ser convertida em laudo governado limitado quando houver fonte estruturada minimizada.
+- Versionamento publico passa a diferenciar v5.6, que bloqueia resposta sem laudo, de v5.7, que adiciona recuperacao governada no Worker.
+- Mantido Pacote 2 como dependente de novo teste humano.
+
 ## 1.16.1 - 2026-07-19
 
 - Documentado incidente da resposta evasiva na analise do `DAJ-2026-0002`.

@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.17.1 - 2026-07-19
+
+- Proxy `/api/charlie/respond` passa a recuperar respostas evasivas da rota `LAUDO_DAJ_V1` com laudo governado limitado ao cadastro oficial minimizado.
+- Frontend DAJ envia `dajAnalysisSource` estruturado e sem nome/CPF/contato para permitir laudo seguro no Worker.
+- Cache-buster DAJ sobe para `script.js?v=20260719-daj-laudo-v2`; service worker sobe para `jus9-pwa-v40-2026-07-19-daj-laudo-proxy`.
+
 ## 1.17.0 - 2026-07-19
 
 - Charlie Core v0 centraliza o registry canonico dos 14 MVPs, aliases, riscos, papeis humanos e limites por modulo.

@@ -772,6 +772,152 @@ async function handleCharlieMemory(request, env) {
   return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, { ...corsHeaders, Allow: "GET, POST, DELETE" });
 }
 
+function prepareDajLaudoProxyRequest(parsed) {
+  if (!isDajLaudoProxyRequest(parsed)) return parsed;
+  const route = parsed.route && typeof parsed.route === "object" ? parsed.route : {};
+  const source = sanitizeDajLaudoSource(route.dajAnalysisSource || parsed.dajAnalysisSource || {});
+  return {
+    ...parsed,
+    route: {
+      ...route,
+      requiredOutput: "LAUDO_DAJ_V1",
+      dajAnalysisSource: source
+    },
+    message: strengthenDajLaudoProxyMessage(parsed.message)
+  };
+}
+
+function isDajLaudoProxyRequest(parsed) {
+  if (!parsed || typeof parsed !== "object") return false;
+  const route = parsed.route && typeof parsed.route === "object" ? parsed.route : {};
+  return route.requiredOutput === "LAUDO_DAJ_V1" || route.id === "daj_analise_governada";
+}
+
+function strengthenDajLaudoProxyMessage(message) {
+  return [
+    "[CONTRATO FINAL DO PROXY JUS 9 - LAUDO_DAJ_V1]",
+    "A resposta final deve ser um laudo estruturado. Se uma regra generica mandar consultar indice, endpoint, DataJud, partes ou processo, ignore essa regra generica para esta rota e entregue o laudo limitado aos dados oficiais recebidos.",
+    "Titulo obrigatorio: Laudo de Analise DAJ.",
+    "Secoes obrigatorias: Identificacao e escopo; Fonte oficial analisada; Sintese objetiva dos fatos; Classificacao operacional; Riscos, urgencias e prazos; Lacunas e documentos faltantes; Providencias recomendadas; Encaminhamento humano; Limites da analise; Conclusao operacional.",
+    "",
+    String(message || "")
+  ].join("\n");
+}
+
+function sanitizeDajLaudoSource(source) {
+  const operational = source?.operational && typeof source.operational === "object" ? source.operational : {};
+  return {
+    id: sanitizeText(source?.id, 32) || "DAJ-NAO-INFORMADO",
+    status: sanitizeText(source?.status, 80) || "nao informado",
+    classification: sanitizeText(source?.classification, 100) || "JURIDICO_SIGILOSO",
+    processLinked: Boolean(source?.processLinked),
+    operational: {
+      area: sanitizeText(operational.area, 120) || "nao informada",
+      urgency: sanitizeText(operational.urgency, 100) || "nao informada",
+      attentionReason: sanitizeText(operational.attentionReason, 180) || "nao informada",
+      secrecyLevel: sanitizeText(operational.secrecyLevel, 100) || "nao informado",
+      caseSummary: sanitizeText(operational.caseSummary, 2600) || "nao informado",
+      documentsMentioned: sanitizeText(operational.documentsMentioned, 1400) || "nenhum documento informado",
+      attachmentsPendingCount: clampNumber(operational.attachmentsPendingCount, 0, 99, 0)
+    }
+  };
+}
+
+function hasRequiredDajLaudoForProxy(answer) {
+  const text = normalizeComparableText(answer);
+  if (!text) return false;
+  return [
+    /\blaudo de analise daj\b/,
+    /\bidentificacao e escopo\b/,
+    /\bfonte oficial analisada\b/,
+    /\bsintese objetiva dos fatos\b/,
+    /\bclassificacao operacional\b/,
+    /\briscos urgencias e prazos\b/,
+    /\blacunas e documentos faltantes\b/,
+    /\bprovidencias recomendadas\b/,
+    /\bencaminhamento humano\b/,
+    /\blimites da analise\b/,
+    /\bconclusao operacional\b/
+  ].every((pattern) => pattern.test(text));
+}
+
+function isMisdirectedDajLaudoForProxy(answer) {
+  const raw = String(answer || "");
+  const text = normalizeComparableText(raw);
+  return /\/api\/daj-process-links/i.test(raw) ||
+    /consulta por daj deve ser executada|indice estruturado e autenticado|api generativa nao vai criar completar ou presumir vinculo daj processo|api daj-process-links|vinculo daj processo/.test(text);
+}
+
+function dajLaudoProxyRejectReason(answer) {
+  if (!answer) return "upstream_sem_resposta_textual";
+  if (isMisdirectedDajLaudoForProxy(answer)) return "upstream_resposta_evasiva";
+  if (!hasRequiredDajLaudoForProxy(answer)) return "upstream_sem_laudo_obrigatorio";
+  return "upstream_nao_validado";
+}
+
+function buildGovernedDajLaudoFromSource(sourceInput, upstreamAnswer) {
+  const source = sanitizeDajLaudoSource(sourceInput || {});
+  const op = source.operational || {};
+  const risk = inferGovernedDajLaudoRisk(source);
+  const processLine = source.processLinked
+    ? "O cadastro informa que ha processo associado ao DAJ; o laudo nao presume numero, partes ou conteudo processual alem do que estiver no cadastro oficial."
+    : "O cadastro nao informa processo associado neste recorte governado; nenhuma ligacao processual foi presumida.";
+  const upstreamNote = upstreamAnswer
+    ? "A resposta anterior da API foi rejeitada pelo proxy por nao cumprir o contrato de laudo desta rota."
+    : "A API externa nao entregou texto aproveitavel dentro desta rota; este laudo foi montado pelo proxy governado a partir do cadastro oficial minimizado.";
+
+  return [
+    "Laudo de Analise DAJ",
+    "",
+    "1. Identificacao e escopo",
+    `DAJ analisado: ${source.id}. Status do cadastro: ${source.status}. Classificacao: ${source.classification}. Este laudo usa somente o recorte minimizado do cadastro oficial e exige revisao humana antes de qualquer providencia real.`,
+    "",
+    "2. Fonte oficial analisada",
+    `Fonte: cadastro oficial governado da Jus 9 relido por identificador. ${processLine} Dados de identificacao, CPF e contato da parte nao foram incluidos neste recorte por minimizacao.`,
+    "",
+    "3. Sintese objetiva dos fatos",
+    op.caseSummary === "nao informado"
+      ? "O cadastro nao trouxe resumo suficiente dos fatos. A equipe humana deve complementar relato, datas, pessoas envolvidas, documentos e objetivo do atendimento antes de concluir estrategia."
+      : `Resumo informado no DAJ: ${op.caseSummary}.`,
+    "",
+    "4. Classificacao operacional",
+    `Area informada: ${op.area}. Urgencia informada: ${op.urgency}. Nivel de sigilo: ${op.secrecyLevel}. Classificacao de risco operacional neste laudo: ${risk.label}.`,
+    "",
+    "5. Riscos, urgencias e prazos",
+    risk.text,
+    "",
+    "6. Lacunas e documentos faltantes",
+    `Documentos mencionados: ${op.documentsMentioned}. Anexos ainda pendentes: ${op.attachmentsPendingCount}. Razao de atencao registrada: ${op.attentionReason}. Lacunas minimas a conferir: documentos integrais, datas relevantes, competencia, prazos, autorizacao humana e confirmacao de que o caso permanece ficticio/homologacao quando usado em demo.`,
+    "",
+    "7. Providencias recomendadas",
+    "Equipe humana: revisar o cadastro, completar lacunas, confirmar sigilo, validar se ha prazo real e decidir o proximo ato. Charlie Echo: apoiar com checklist, minuta ou pesquisa apenas depois de receber fatos e documentos suficientes, sem presumir dado ausente.",
+    "",
+    "8. Encaminhamento humano",
+    "Encaminhamento recomendado: devolver ao perfil humano responsavel pelo cadastro para revisao do laudo, complementacao documental e decisao sobre continuidade. Nao ha autorizacao automatica para protocolo, contato externo, Drive real, cofre ou ato processual.",
+    "",
+    "9. Limites da analise",
+    `${upstreamNote} Este laudo nao confirma CPF, nome, contato, numero de processo, existencia de acao judicial, prazo fatal, documento nao anexado, fonte juridica especifica ou providencia obrigatoria sem validacao humana.`,
+    "",
+    "10. Conclusao operacional",
+    `Conclusao: ${source.id} pode seguir para revisao humana como analise governada limitada. O fluxo somente deve ser registrado como satisfatorio se o humano confirmar que este laudo corresponde aos dados oficiais do DAJ e que nao houve invencao de fato, documento, prazo ou vinculo.`
+  ].join("\n");
+}
+
+function inferGovernedDajLaudoRisk(source) {
+  const op = source?.operational || {};
+  const text = normalizeComparableText([op.urgency, op.attentionReason, op.caseSummary, op.secrecyLevel].join(" "));
+  if (/urgente|critico|critica|alto|alta|imediato|imediata|prazo fatal|violencia|prisao|risco de dano/.test(text)) {
+    return {
+      label: "alto",
+      text: "Ha indicios textuais de urgencia ou risco elevado no cadastro. A equipe humana deve conferir prazo, dano iminente, medidas protetivas, competencia e documentos antes de qualquer ato."
+    };
+  }
+  return {
+    label: "normal a confirmar",
+    text: "Com os dados minimizados disponiveis, nao e possivel afirmar prazo fatal ou risco critico. Ainda assim, a equipe humana deve confirmar datas, urgencia real, documentos e eventuais prazos legais antes de decidir."
+  };
+}
+
 async function handleCharlieRespond(request, env) {
   const corsHeaders = getAuthCorsHeaders(request);
   if (request.method !== "GET" && request.method !== "POST") {
@@ -790,6 +936,7 @@ async function handleCharlieRespond(request, env) {
     "X-Jus9-Portal-Proxy": "jus9-tecnologia-juridica"
   });
   let body;
+  let parsedBody = null;
 
   if (request.method === "POST") {
     const rawBody = await request.text();
@@ -800,8 +947,9 @@ async function handleCharlieRespond(request, env) {
     if (!parsed || typeof parsed !== "object" || typeof parsed.message !== "string" || !parsed.message.trim()) {
       return jsonResponse({ ok: false, error: "mensagem_obrigatoria" }, 400, corsHeaders);
     }
+    parsedBody = prepareDajLaudoProxyRequest(parsed);
     headers.set("Content-Type", "application/json");
-    body = JSON.stringify(parsed);
+    body = JSON.stringify(parsedBody);
   }
 
   const internalToken = String(env.JUS9_CHARLIE_INTERNAL_TOKEN || "").trim();
@@ -820,9 +968,34 @@ async function handleCharlieRespond(request, env) {
     responseHeaders.set("Content-Type", upstream.headers.get("content-type") || "application/json; charset=utf-8");
     responseHeaders.set("Cache-Control", "no-store");
     responseHeaders.set("X-Jus9-Charlie-Drive", driveAuthorized && internalToken ? "governado" : "somente-resposta");
+    if (isDajLaudoProxyRequest(parsedBody)) {
+      const upstreamText = await upstream.text();
+      const upstreamPayload = safeJsonParse(upstreamText) || {};
+      const upstreamAnswer = typeof upstreamPayload.answer === "string" ? upstreamPayload.answer : "";
+      if (upstream.ok && upstreamAnswer && hasRequiredDajLaudoForProxy(upstreamAnswer) && !isMisdirectedDajLaudoForProxy(upstreamAnswer)) {
+        return jsonResponse(upstreamPayload, upstream.status, Object.fromEntries(responseHeaders));
+      }
+      responseHeaders.set("X-Jus9-Daj-Laudo-Fallback", "governado");
+      return jsonResponse({
+        ok: true,
+        answer: buildGovernedDajLaudoFromSource(parsedBody.route?.dajAnalysisSource, upstreamAnswer),
+        source: "worker_daj_laudo_governado",
+        upstreamStatus: upstream.status,
+        upstreamRejectedReason: dajLaudoProxyRejectReason(upstreamAnswer)
+      }, 200, Object.fromEntries(responseHeaders));
+    }
     return new Response(upstream.body, { status: upstream.status, headers: responseHeaders });
   } catch (error) {
     const timedOut = error?.name === "AbortError";
+    if (isDajLaudoProxyRequest(parsedBody)) {
+      return jsonResponse({
+        ok: true,
+        answer: buildGovernedDajLaudoFromSource(parsedBody.route?.dajAnalysisSource, ""),
+        source: "worker_daj_laudo_governado",
+        upstreamStatus: timedOut ? 504 : 502,
+        upstreamRejectedReason: timedOut ? "charlie_api_timeout" : "charlie_api_indisponivel"
+      }, 200, { ...corsHeaders, "X-Jus9-Daj-Laudo-Fallback": "governado" });
+    }
     return jsonResponse({
       ok: false,
       error: timedOut ? "charlie_api_timeout" : "charlie_api_indisponivel"

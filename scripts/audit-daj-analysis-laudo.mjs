@@ -26,10 +26,11 @@ function assertOrder(text, first, second, label) {
 
 const root = new URL("../", import.meta.url);
 const script = await fs.readFile(new URL("script.js", root), "utf8");
+const worker = await fs.readFile(new URL("worker.js", root), "utf8");
 const dajBlock = between(script, "function buildGovernedDajPrompt", "function showDajLoadFailure");
 const runDajBlock = between(script, "async function runGovernedDajAnalysis", "function showDajLoadFailure");
 const operativeBlock = between(script, "function dajOperativeDeliveryInstruction", "function buildApiMessage");
-const expectedScriptVersion = "script.js?v=20260719-daj-laudo-v1";
+const expectedScriptVersion = "script.js?v=20260719-daj-laudo-v2";
 
 for (const required of [
   "requiredDajLaudoSections",
@@ -51,8 +52,21 @@ for (const required of [
   "dajLaudoCorrectionInstruction",
   "resposta_daj_sem_laudo_obrigatorio",
   "requiredOutput:'LAUDO_DAJ_V1'",
+  "dajAnalysisSource",
 ]) {
   assertIncludes(script, required, "contrato de laudo DAJ");
+}
+
+for (const required of [
+  "prepareDajLaudoProxyRequest",
+  "isDajLaudoProxyRequest",
+  "buildGovernedDajLaudoFromSource",
+  "worker_daj_laudo_governado",
+  "X-Jus9-Daj-Laudo-Fallback",
+  "upstream_resposta_evasiva",
+  "Laudo de Analise DAJ",
+]) {
+  assertIncludes(worker, required, "proxy de laudo DAJ");
 }
 
 for (const evasiveMarker of [
@@ -70,6 +84,8 @@ assertOrder(runDajBlock, "var answer = enforceCriticalAnswerGuards", "if(shouldR
 assertOrder(runDajBlock, "answer = enforceCriticalAnswerGuards(corrected.answer", "if(!answer || shouldRejectDajAnalysisAnswer(answer))", "resposta corrigida DAJ");
 assertOrder(runDajBlock, "if(!answer || shouldRejectDajAnalysisAnswer(answer))", "registerDajAnalysisWorkflow", "registro do fluxo DAJ");
 assert(!/registerDajAnalysisWorkflow[\s\S]{0,900}shouldRejectDajAnalysisAnswer/.test(runDajBlock), "registro DAJ nao pode vir antes da validacao do laudo");
+assert(worker.indexOf("prepareDajLaudoProxyRequest(parsed)") < worker.indexOf("fetch(CHARLIE_API_URL"), "proxy precisa preparar LAUDO_DAJ_V1 antes da chamada upstream");
+assert(worker.indexOf("hasRequiredDajLaudoForProxy") < worker.indexOf("buildGovernedDajLaudoFromSource(parsedBody.route?.dajAnalysisSource"), "proxy precisa validar upstream antes do fallback governado");
 
 for (const file of [
   "app-ia-profissional.html",
@@ -81,4 +97,4 @@ for (const file of [
   assertIncludes(html, expectedScriptVersion, `${file}: script DAJ versionado`);
 }
 
-console.log("AUDITORIA_DAJ_LAUDO_OK contrato obrigatorio de laudo, bloqueio de resposta evasiva e registro pos-validacao conferidos.");
+console.log("AUDITORIA_DAJ_LAUDO_OK contrato obrigatorio de laudo, proxy governado, bloqueio de resposta evasiva e registro pos-validacao conferidos.");

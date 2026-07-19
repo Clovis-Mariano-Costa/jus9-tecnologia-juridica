@@ -1,6 +1,6 @@
 const baseUrl = "https://jus9tecnologia.com.br";
 const expectedScript = "script.js?v=20260712-charlie-pesquisa-ativa-v1";
-const expectedDajAnalysisScript = "script.js?v=20260719-daj-laudo-v1";
+const expectedDajAnalysisScript = "script.js?v=20260719-daj-laudo-v2";
 
 const pages = [
   "app-ia-profissional.html",

@@ -113,6 +113,13 @@ let proxyAuthorization = "";
 globalThis.fetch = async (url, options = {}) => {
   assert(String(url) === "https://charlieecho.jus9tecnologia.com.br/api/ia", "proxy Charlie chamou destino inesperado");
   proxyAuthorization = new Headers(options.headers).get("authorization") || "";
+  const payload = JSON.parse(String(options.body || "{}"));
+  if (payload.route?.requiredOutput === "LAUDO_DAJ_V1") {
+    return Response.json({
+      ok: true,
+      answer: "A consulta por DAJ deve ser executada no indice estruturado e autenticado do portal Jus 9. Use o endpoint governado /api/daj-process-links."
+    });
+  }
   return Response.json({ ok: true, answer: "Resposta ficticia da Charlie" });
 };
 try {
@@ -139,6 +146,44 @@ try {
   assert(proxyAuthorization === "Bearer token-interno-ficticio", "proxy advogado deveria autorizar Drive com segredo interno");
   assert(response.headers.get("x-jus9-charlie-drive") === "governado", "proxy advogado deveria declarar Drive governado");
   console.log("AUTH_OK charlie-proxy-advogado=drive-governado");
+
+  response = await worker.fetch(new Request("https://jus9.invalid/api/charlie/respond", {
+    method: "POST",
+    headers: {
+      cookie: await cookieFor("advogado"),
+      "content-type": "application/json"
+    },
+    body: JSON.stringify({
+      message: "Analise governada DAJ",
+      mode: "profissional",
+      route: {
+        id: "daj_analise_governada",
+        requiredOutput: "LAUDO_DAJ_V1",
+        dajId: "DAJ-2026-0002",
+        dajAnalysisSource: {
+          id: "DAJ-2026-0002",
+          status: "em_triagem",
+          classification: "JURIDICO_SIGILOSO",
+          processLinked: false,
+          operational: {
+            area: "Familia",
+            urgency: "Importante",
+            attentionReason: "documento faltante",
+            secrecyLevel: "Restrito",
+            caseSummary: "Relato ficticio para teste de laudo DAJ.",
+            documentsMentioned: "Documento ficticio A.",
+            attachmentsPendingCount: 1
+          }
+        }
+      }
+    })
+  }), { ...env, JUS9_CHARLIE_INTERNAL_TOKEN: "token-interno-ficticio" });
+  data = await response.json();
+  assert(response.status === 200, "proxy DAJ deveria responder com fallback governado");
+  assert(data.answer.includes("Laudo de Analise DAJ") && data.answer.includes("10. Conclusao operacional"), "fallback DAJ deveria devolver laudo completo");
+  assert(data.source === "worker_daj_laudo_governado" && data.upstreamRejectedReason === "upstream_resposta_evasiva", "fallback DAJ deveria registrar motivo da recuperacao");
+  assert(response.headers.get("x-jus9-daj-laudo-fallback") === "governado", "fallback DAJ deveria declarar cabecalho governado");
+  console.log("AUTH_OK charlie-proxy-daj-laudo-fallback=200");
 } finally {
   globalThis.fetch = originalCharlieProxyFetch;
 }

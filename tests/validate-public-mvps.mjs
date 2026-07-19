@@ -239,6 +239,7 @@ assert(workerSource.includes('originalUrl.pathname === "/api/judicial/pdpj/readi
 assert(workerSource.includes('originalUrl.pathname === "/api/judicial/parties/search"'), "worker sem pesquisa estruturada de partes");
 assert(workerSource.includes('originalUrl.pathname === "/api/dajs"'), "worker sem cadastro DAJ autenticado");
 assert(workerSource.includes('originalUrl.pathname === "/api/dajs/review"'), "worker sem registro da analise DAJ");
+assert(workerSource.includes("worker_daj_laudo_governado") && workerSource.includes("X-Jus9-Daj-Laudo-Fallback"), "worker sem fallback governado para laudo DAJ");
 assert(workerSource.includes('originalUrl.pathname === "/api/dajs/inbox"'), "worker sem caixa de encaminhamentos DAJ");
 assert(workerSource.includes("registra_analise_e_encaminhamento_daj") && workerSource.includes("automaticSupervisionForIntern"), "worker sem auditoria e supervisao do fluxo DAJ");
 assert(workerSource.includes("dajPersistenceReceipt") && workerSource.includes('storage: "JUS9_DAJ_PROCESS_LINKS"'), "worker sem comprovante explicito de persistencia DAJ");
@@ -255,7 +256,7 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v39-2026-07-19-daj-laudo"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("jus9-pwa-v40-2026-07-19-daj-laudo-proxy"), "cache PWA principal desatualizado");
 assert(canonicalServiceWorker.includes("/saiba-mais.html"), "cache PWA sem pagina Saiba mais");
 assert(canonicalServiceWorker.includes("/build-week-2026.html"), "cache PWA sem pagina Build Week");
 assert(canonicalServiceWorker.includes("/app-painel-mvps.html"), "cache PWA sem painel executivo dos MVPs");
@@ -295,7 +296,7 @@ for (const [code, page] of Object.entries(priorityAiPages)) {
   assert(html.includes("data-ai-chat"), `${code}: chat ausente em ${page}`);
   assert(html.includes(`data-ai-code="${code}"`), `${code}: codigo incorreto em ${page}`);
   const expectedAiScript = code === "DAJ"
-    ? 'script.js?v=20260719-daj-laudo-v1'
+    ? 'script.js?v=20260719-daj-laudo-v2'
     : 'script.js?v=20260712-charlie-pesquisa-ativa-v1';
   assert(html.includes(expectedAiScript), `${code}: script sem versao em ${page}`);
   assert(html.includes('charlie-mvp-shell'), `${code}: pagina da Charlie sem shell visual em ${page}`);
@@ -307,7 +308,7 @@ for (const page of catalog.profiles.map((profile) => profile.entry_page)) {
   const expectedScript = page === "app-demo-autor-editor.html"
     ? "script.js?v=20260621-demo14"
     : page === "app-demo-advogar.html"
-      ? "script.js?v=20260719-daj-laudo-v1"
+      ? "script.js?v=20260719-daj-laudo-v2"
       : "script.js?v=20260531-team-v1";
   assert(html.includes(expectedScript), `painel sem versao esperada de script: ${page}`);
 }

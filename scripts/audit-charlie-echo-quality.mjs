@@ -97,7 +97,7 @@ const checks = [
   {
     name: "service worker nao prende MVP antigo",
     file: "service-worker.js",
-    patterns: ["jus9-pwa-v39-2026-07-19-daj-laudo", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
+    patterns: ["jus9-pwa-v40-2026-07-19-daj-laudo-proxy", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
   },
   {
     name: "casa propria da Charlie Echo publicada",
@@ -136,7 +136,7 @@ if (sharedScript.includes("jus9DajInitialAttendanceDraftV1") || sharedScript.inc
 for (const file of appIaFiles) {
   const html = read(file);
   const requiredScriptVersion = file === "app-ia-profissional.html"
-    ? "script.js?v=20260719-daj-laudo-v1"
+    ? "script.js?v=20260719-daj-laudo-v2"
     : expectedScriptVersion;
   if (!html.includes(requiredScriptVersion)) {
     failures.push(`${file}: versao de script diferente de ${requiredScriptVersion}`);

@@ -4,7 +4,7 @@
   Não armazena dados sensíveis. Não altera login, backend ou rotas protegidas.
 */
 
-const JUS9_CACHE = 'jus9-pwa-v39-2026-07-19-daj-laudo';
+const JUS9_CACHE = 'jus9-pwa-v40-2026-07-19-daj-laudo-proxy';
 const JUS9_ASSETS = [
   '/',
   '/index.html',
