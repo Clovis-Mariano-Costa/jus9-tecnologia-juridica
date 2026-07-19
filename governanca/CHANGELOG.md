@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.12.3 - 2026-07-19
+
+- Criada matriz de priorizacao dos 14 MVPs com criterios ponderados, ranking, ondas de execucao e proximas acoes.
+- Registrado DAJ como porta operacional, DED e DIC como vitrines estrategicas, e DMG/DMP/DAP como alta sensibilidade demonstrativa.
+- Adicionado auditor automatico da matriz ao CI local.
+
 ## 1.12.2 - 2026-07-18
 
 - Criado kit de aceite humano do Pacote 1C com dataset ficticio, roteiro de evidencias, condicoes de parada e decisao final.

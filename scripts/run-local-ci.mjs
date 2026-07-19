@@ -43,6 +43,12 @@ const checks = [
     args: ["scripts/audit-charlie-mvp-inventory.mjs"]
   },
   {
+    label: "Matriz de priorizacao dos MVPs",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-mvp-prioritization-matrix.mjs"]
+  },
+  {
     label: "Estrutura versionada de governanca",
     cwd: portalRoot,
     command: process.execPath,

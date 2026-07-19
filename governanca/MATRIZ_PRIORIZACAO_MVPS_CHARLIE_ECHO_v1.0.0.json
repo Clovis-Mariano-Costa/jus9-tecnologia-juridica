@@ -1,0 +1,372 @@
+{
+  "metadata": {
+    "id": "GOV-CHARLIE-MATRIZ-PRIORIZACAO-MVPS-001",
+    "versao": "1.0.0",
+    "autor": "Codex / Charlie Juris",
+    "revisor_responsavel": "Clovis Mariano da Costa",
+    "data": "2026-07-19",
+    "status": "ativo",
+    "classificacao": "PUBLICO-INSTITUCIONAL / SEM DADOS REAIS",
+    "hash": "calcular-na-release-aprovada"
+  },
+  "schema": "jus9.mvp.prioritization.v1",
+  "source": "data-publica/mvp-perfis.json",
+  "decisionDate": "2026-07-19",
+  "premises": [
+    "DAJ e o MVP-mae operacional e deve concluir o aceite humano do Pacote 1C antes de efeitos reais em memoria, Drive, indice ou replicacao.",
+    "DED e DIC sao vitrines estrategicas para provar que a matriz Charlie Echo replica personalidade, linguagem, fontes e limites sem contaminar dominios.",
+    "Todos os MVPs permanecem demonstrativos e usam somente dados ficticios ate aceite humano, revisao juridica e governanca de permissao.",
+    "DMG, DMP e DAP ficam em demonstracao restrita por envolverem autoridade publica, persecucao penal ou risco institucional elevado."
+  ],
+  "criteria": [
+    {
+      "id": "potencial_comercial",
+      "label": "Potencial comercial",
+      "weight": 20,
+      "scale": "1 baixo, 5 alto"
+    },
+    {
+      "id": "dor_clara",
+      "label": "Dor clara do usuario",
+      "weight": 20,
+      "scale": "1 baixa, 5 alta"
+    },
+    {
+      "id": "prova_ecossistema",
+      "label": "Prova de diversidade do ecossistema",
+      "weight": 15,
+      "scale": "1 baixa, 5 alta"
+    },
+    {
+      "id": "prontidao_demo",
+      "label": "Prontidao demonstrativa atual",
+      "weight": 15,
+      "scale": "1 baixa, 5 alta"
+    },
+    {
+      "id": "governanca_controlada",
+      "label": "Governanca e risco controlados",
+      "weight": 15,
+      "scale": "1 risco alto sem controle suficiente, 5 risco baixo ou bem controlado"
+    },
+    {
+      "id": "reaproveitamento_daj",
+      "label": "Reaproveitamento da matriz DAJ",
+      "weight": 15,
+      "scale": "1 baixo, 5 alto"
+    }
+  ],
+  "scoringFormula": "sum(criteria_score * weight / 5)",
+  "recommendedWaves": [
+    {
+      "wave": "0",
+      "name": "Porta operacional",
+      "codes": ["DAJ"],
+      "exitGate": "Aceite humano do Pacote 1C com DAJ ficticio criado, retomado, pesquisado, vinculado, analisado e removido."
+    },
+    {
+      "wave": "1",
+      "name": "Vitrines de portfolio",
+      "codes": ["DED", "DIC"],
+      "exitGate": "Demos publicas com IA dedicada, linguagem propria, limites visiveis e kit de aceite sem dados reais."
+    },
+    {
+      "wave": "2",
+      "name": "Comercial juridico B2B",
+      "codes": ["DEE", "DEJI", "DPJ"],
+      "exitGate": "Replicacao do padrao DAJ para times juridicos, empresa e pericia com permissao, auditoria e documentos ficticios."
+    },
+    {
+      "wave": "3",
+      "name": "Educacao e captacao",
+      "codes": ["DIP", "DAA", "DEJ"],
+      "exitGate": "Fluxos de ensino, estudo e parceria com mensagens claras de demonstracao e sem promessa financeira."
+    },
+    {
+      "wave": "4",
+      "name": "Governanca e instituicoes",
+      "codes": ["DOI", "DGE"],
+      "exitGate": "Uso interno/institucional com escopo, auditoria e titularidade definidos."
+    },
+    {
+      "wave": "5",
+      "name": "Alta sensibilidade institucional",
+      "codes": ["DMP", "DAP", "DMG"],
+      "exitGate": "Somente demonstrativo ate revisao juridica especifica, controle de autoridade publica e termo de limites aprovado."
+    }
+  ],
+  "entries": [
+    {
+      "rank": 1,
+      "code": "DAJ",
+      "label": "Advogado / Defensor Publico",
+      "dossier": "Dossie Administrativo Juridico",
+      "wave": "0",
+      "strategicRole": "MVP-mae operacional",
+      "scores": {
+        "potencial_comercial": 5,
+        "dor_clara": 5,
+        "prova_ecossistema": 5,
+        "prontidao_demo": 5,
+        "governanca_controlada": 4,
+        "reaproveitamento_daj": 5
+      },
+      "totalScore": 97,
+      "nextAction": "Executar aceite humano do Pacote 1C com dados ficticios e manter os pacotes dependentes bloqueados para efeitos reais.",
+      "primaryRisk": "Dado juridico real ou CPF integral antes da porta humana."
+    },
+    {
+      "rank": 2,
+      "code": "DED",
+      "label": "Autor / Editora / Autor-Editor",
+      "dossier": "Dossie Editorial Demonstrativo",
+      "wave": "1",
+      "strategicRole": "Vitrine editorial independente",
+      "scores": {
+        "potencial_comercial": 5,
+        "dor_clara": 4,
+        "prova_ecossistema": 5,
+        "prontidao_demo": 5,
+        "governanca_controlada": 4,
+        "reaproveitamento_daj": 4
+      },
+      "totalScore": 90,
+      "nextAction": "Montar kit de demo editorial com briefing, amostra ficticia, revisao humana e artefato baixavel sem Drive real.",
+      "primaryRisk": "Confundir autoria, revisao editorial e publicacao como servico final sem contrato."
+    },
+    {
+      "rank": 3,
+      "code": "DIC",
+      "label": "Cidadao / Interessado",
+      "dossier": "Dossie Informativo do Cidadao",
+      "wave": "1",
+      "strategicRole": "Vitrine social e linguagem cidadã",
+      "scores": {
+        "potencial_comercial": 4,
+        "dor_clara": 5,
+        "prova_ecossistema": 5,
+        "prontidao_demo": 4,
+        "governanca_controlada": 4,
+        "reaproveitamento_daj": 3
+      },
+      "totalScore": 84,
+      "nextAction": "Criar roteiro social separado do DAJ, com fontes oficiais, encaminhamento humano e bloqueio de dados pessoais.",
+      "primaryRisk": "Parecer consulta juridica individual ou atendimento emergencial sem humano."
+    },
+    {
+      "rank": 4,
+      "code": "DEE",
+      "label": "Escritorio Juridico",
+      "dossier": "Dossie de Escritorio Juridico",
+      "wave": "2",
+      "strategicRole": "Expansao comercial juridica",
+      "scores": {
+        "potencial_comercial": 5,
+        "dor_clara": 5,
+        "prova_ecossistema": 3,
+        "prontidao_demo": 3,
+        "governanca_controlada": 3,
+        "reaproveitamento_daj": 5
+      },
+      "totalScore": 82,
+      "nextAction": "Replicar atendimento, tarefas, documentos e auditoria do DAJ para equipe de escritorio com perfis ficticios.",
+      "primaryRisk": "Misturar cliente, escritorio e titularidade sem RLS explicito."
+    },
+    {
+      "rank": 5,
+      "code": "DEJI",
+      "label": "Empresa / Juridico Interno",
+      "dossier": "Dossie Empresarial Juridico Interno",
+      "wave": "2",
+      "strategicRole": "Produto B2B juridico interno",
+      "scores": {
+        "potencial_comercial": 5,
+        "dor_clara": 4,
+        "prova_ecossistema": 4,
+        "prontidao_demo": 3,
+        "governanca_controlada": 3,
+        "reaproveitamento_daj": 4
+      },
+      "totalScore": 78,
+      "nextAction": "Mapear contrato, compliance, financeiro ficticio e workflow de revisao interna antes de memoria real.",
+      "primaryRisk": "Expor dado empresarial, contrato real ou informacao de fornecedor."
+    },
+    {
+      "rank": 6,
+      "code": "DIP",
+      "label": "Investidor / Parceiro",
+      "dossier": "Dossie de Investimento e Parceria",
+      "wave": "3",
+      "strategicRole": "Captacao e parcerias",
+      "scores": {
+        "potencial_comercial": 5,
+        "dor_clara": 4,
+        "prova_ecossistema": 4,
+        "prontidao_demo": 4,
+        "governanca_controlada": 3,
+        "reaproveitamento_daj": 2
+      },
+      "totalScore": 75,
+      "nextAction": "Preparar narrativa de produto, evidencias publicas e due diligence ficticia sem promessa financeira.",
+      "primaryRisk": "Transformar demonstracao em oferta de investimento ou promessa de retorno."
+    },
+    {
+      "rank": 7,
+      "code": "DAA",
+      "label": "Professor / Academia",
+      "dossier": "Dossie Academico de Aula / Aluno",
+      "wave": "3",
+      "strategicRole": "Educacao juridica orientada",
+      "scores": {
+        "potencial_comercial": 4,
+        "dor_clara": 4,
+        "prova_ecossistema": 4,
+        "prontidao_demo": 3,
+        "governanca_controlada": 4,
+        "reaproveitamento_daj": 3
+      },
+      "totalScore": 74,
+      "nextAction": "Criar fluxo aula-plano-atividade-feedback com fontes e avaliacao humana.",
+      "primaryRisk": "Confundir apoio didatico com avaliacao academica automatica final."
+    },
+    {
+      "rank": 8,
+      "code": "DEJ",
+      "label": "Estudante",
+      "dossier": "Dossie de Estudos Juridicos",
+      "wave": "3",
+      "strategicRole": "Entrada educacional leve",
+      "scores": {
+        "potencial_comercial": 3,
+        "dor_clara": 4,
+        "prova_ecossistema": 4,
+        "prontidao_demo": 4,
+        "governanca_controlada": 4,
+        "reaproveitamento_daj": 3
+      },
+      "totalScore": 73,
+      "nextAction": "Consolidar estudo guiado, fichamento e trilha de fontes sem substituir professor.",
+      "primaryRisk": "Gerar resposta pronta para fraude academica."
+    },
+    {
+      "rank": 9,
+      "code": "DPJ",
+      "label": "Perito Judicial",
+      "dossier": "Dossie Pericial Judicial",
+      "wave": "2",
+      "strategicRole": "Especializacao tecnica juridica",
+      "scores": {
+        "potencial_comercial": 4,
+        "dor_clara": 4,
+        "prova_ecossistema": 3,
+        "prontidao_demo": 3,
+        "governanca_controlada": 3,
+        "reaproveitamento_daj": 4
+      },
+      "totalScore": 71,
+      "nextAction": "Definir laudo ficticio, cadeia de custodia demonstrativa e revisao tecnica humana.",
+      "primaryRisk": "Parecer pericia real ou conclusao tecnica sem exame humano."
+    },
+    {
+      "rank": 10,
+      "code": "DOI",
+      "label": "Orgao Publico / Instituicao",
+      "dossier": "Dossie de Orgao ou Instituicao",
+      "wave": "4",
+      "strategicRole": "Institucional controlado",
+      "scores": {
+        "potencial_comercial": 4,
+        "dor_clara": 4,
+        "prova_ecossistema": 3,
+        "prontidao_demo": 3,
+        "governanca_controlada": 2,
+        "reaproveitamento_daj": 3
+      },
+      "totalScore": 65,
+      "nextAction": "Limitar a protocolo demonstrativo, ouvidoria ficticia e trilha publica sem ato administrativo real.",
+      "primaryRisk": "Induzir ato institucional, autoridade ou decisao publica sem competencia."
+    },
+    {
+      "rank": 11,
+      "code": "DGE",
+      "label": "Administrador Jus 9",
+      "dossier": "Dossie de Governanca do Ecossistema",
+      "wave": "4",
+      "strategicRole": "Operacao interna e auditoria",
+      "scores": {
+        "potencial_comercial": 3,
+        "dor_clara": 4,
+        "prova_ecossistema": 2,
+        "prontidao_demo": 3,
+        "governanca_controlada": 3,
+        "reaproveitamento_daj": 4
+      },
+      "totalScore": 64,
+      "nextAction": "Transformar em console interno de governanca, releases, flags, auditoria e permissoes.",
+      "primaryRisk": "Expor controle administrativo antes de segregacao real de perfis."
+    },
+    {
+      "rank": 12,
+      "code": "DMP",
+      "label": "Promotor / Ministerio Publico",
+      "dossier": "Dossie Demonstrativo do Ministerio Publico",
+      "wave": "5",
+      "strategicRole": "Alta sensibilidade institucional",
+      "scores": {
+        "potencial_comercial": 3,
+        "dor_clara": 4,
+        "prova_ecossistema": 2,
+        "prontidao_demo": 3,
+        "governanca_controlada": 2,
+        "reaproveitamento_daj": 3
+      },
+      "totalScore": 58,
+      "nextAction": "Manter demonstrativo e preparar termo de limites antes de qualquer fluxo institucional.",
+      "primaryRisk": "Simular atuacao do Ministerio Publico ou orientar persecutio/medida real."
+    },
+    {
+      "rank": 13,
+      "code": "DAP",
+      "label": "Delegado / Autoridade Policial",
+      "dossier": "Dossie Demonstrativo de Autoridade Policial",
+      "wave": "5",
+      "strategicRole": "Alta sensibilidade penal",
+      "scores": {
+        "potencial_comercial": 3,
+        "dor_clara": 4,
+        "prova_ecossistema": 2,
+        "prontidao_demo": 3,
+        "governanca_controlada": 2,
+        "reaproveitamento_daj": 2
+      },
+      "totalScore": 55,
+      "nextAction": "Restringir a fluxo educativo ficticio e cadeia de revisao humana antes de qualquer demo aprofundada.",
+      "primaryRisk": "Parecer investigacao, orientacao policial ou coleta de prova real."
+    },
+    {
+      "rank": 14,
+      "code": "DMG",
+      "label": "Juiz / Magistrado",
+      "dossier": "Dossie Demonstrativo de Magistratura",
+      "wave": "5",
+      "strategicRole": "Alta sensibilidade decisoria",
+      "scores": {
+        "potencial_comercial": 3,
+        "dor_clara": 3,
+        "prova_ecossistema": 2,
+        "prontidao_demo": 3,
+        "governanca_controlada": 2,
+        "reaproveitamento_daj": 2
+      },
+      "totalScore": 51,
+      "nextAction": "Manter apenas como demonstracao conceitual com limites claros, sem minuta decisoria ou simulacao de jurisdicao.",
+      "primaryRisk": "Simular decisao judicial, competencia publica ou autoridade estatal."
+    }
+  ],
+  "immediateExecution": [
+    "Concluir ou registrar bloqueio do aceite humano do Pacote 1C DAJ em 2026-07-19.",
+    "Preparar kit demonstrativo do DED com dados editoriais ficticios e sem Drive real.",
+    "Preparar kit demonstrativo do DIC com linguagem cidada, fontes oficiais e encaminhamento humano.",
+    "Depois do aceite 1C, iniciar replicacao controlada para DEE, DEJI e DPJ."
+  ]
+}
