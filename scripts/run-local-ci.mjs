@@ -145,6 +145,12 @@ const checks = [
     args: ["scripts/audit-mao-na-massa-final-reminders.mjs"]
   },
   {
+    label: "Revisao geral Mao na Massa",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-mao-na-massa-general-review.mjs"]
+  },
+  {
     label: "Painel executivo dos MVPs",
     cwd: portalRoot,
     command: process.execPath,

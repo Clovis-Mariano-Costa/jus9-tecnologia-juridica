@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.13.1 - 2026-07-19
+
+- Registrada revisao geral do Mao na Massa cobrindo Pacotes 0 a 8.
+- Revisao preserva Pacote 2 como `DEPENDENTE_DE_ACAO_HUMANA`, Pacote 6 como `BLOQUEADO_ATE_REVERSIBILIDADE_1C` e Video/ZIP como pendentes.
+- Adicionado auditor da revisao geral ao CI local.
+
 ## 1.13.0 - 2026-07-19
 
 - Publicado Pacote 5 com vitrines `DEE`, `DEJI` e `DPJ`, cada uma com dataset ficticio, checklist governado, pacote de prompts e guardrails de revisao humana.
