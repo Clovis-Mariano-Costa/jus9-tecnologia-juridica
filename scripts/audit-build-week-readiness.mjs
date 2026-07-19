@@ -103,6 +103,7 @@ check(/<html\s+lang="en">/i.test(reviewerPage), "reviewer page language", "Revie
 check(/id="live-flow"/.test(reviewerPage) && /id="evidence"/.test(reviewerPage) && /id="safety"/.test(reviewerPage), "reviewer page sections", "Reviewer page is missing live flow, evidence, or safety sections");
 check(/id="mvp-scope"/.test(reviewerPage) && /data-build-week-mvp-scope/.test(reviewerPage), "reviewer MVP scope section", "Reviewer page is missing the MVP scope section");
 check(/Codex development model/.test(reviewerPage) && /gpt-5\.6-sol/.test(reviewerPage), "reviewer Codex Sol disclosure", "Reviewer page does not disclose the verified Codex development model");
+check(/id="codex-sol-evidence"/.test(reviewerPage) && reviewerPage.includes(status.claims.codexGpt56SolDevelopment.evidenceFingerprintSha256), "self-contained public Codex Sol evidence", "Reviewer page must expose the sanitized Codex Sol evidence without requiring repository access");
 check(/app-atendimento-inicial\.html/.test(reviewerPage) && /app-ia-profissional\.html/.test(reviewerPage) && /app-processos\.html/.test(reviewerPage), "reviewer workflow links", "Reviewer page does not link the complete DAJ flow");
 check(/saiba-mais\.html/.test(reviewerPage) && /mvp-o-que-ja-funciona\.html/.test(reviewerPage) && /app-painel-mvps\.html/.test(reviewerPage), "reviewer ecosystem links", "Reviewer page does not link Saiba mais, state map, and executive panel");
 check(/@media \(max-width:760px\)/.test(reviewerCss), "reviewer mobile layout", "Reviewer CSS has no mobile layout");
