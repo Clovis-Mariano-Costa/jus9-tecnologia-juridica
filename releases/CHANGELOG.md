@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.21.3 - 2026-07-20
+
+- Release documental G5 consolida governanca DataJud/PDPJ sem alterar runtime ou credenciais.
+- Onze capacidades e quinze cenarios ficticios passam a ter auditoria automatizada.
+- Cronograma Charlie/CNJ sobe para v1.7.0 com G5 concluido e CNJ ainda aguardando resposta.
+- Worker publico permanece na release operacional `1.21.2`; homologacao real PDPJ continua bloqueada.
+
 ## 1.21.2 - 2026-07-20
 
 - Publicada a Pesquisa Jus 9 no menu principal do portal.

@@ -1,0 +1,38 @@
+{
+  "metadata": {
+    "id": "API-CATALOGO-CNJ-GOVERNADO-001",
+    "versao": "1.0.0",
+    "autor": "Codex / Charlie Juris",
+    "revisor_responsavel": "Clovis Mariano da Costa",
+    "data": "2026-07-20",
+    "status": "ativo-sem-credenciais",
+    "classificacao": "INTERNO",
+    "hash": "calcular-na-release-aprovada"
+  },
+  "schemaVersion": "1.0.0",
+  "catalogVersion": "1.0.0",
+  "updatedAt": "2026-07-20",
+  "defaultDecision": "deny",
+  "institutionalState": "blocked-institutional-onboarding",
+  "externalDependency": "CNJ_SEM_RESPOSTA_ATE_2026-07-20",
+  "rules": {
+    "silenceIsAuthorization": false,
+    "realCredentialsInRepository": false,
+    "realCallsInFixtures": false,
+    "humanReviewForLegalUse": true,
+    "productionRequiresSeparateApproval": true
+  },
+  "capabilities": [
+    {"id":"datajud.readiness","provider":"CNJ/DataJud","mode":"read_only","state":"enabled","dataClasses":["PUBLICO_INSTITUCIONAL"],"legalEffect":"none","humanApproval":"not_required","credential":"none","audit":"minimized","rollback":"disable-route"},
+    {"id":"datajud.search.process_number","provider":"CNJ/DataJud","mode":"read_only","state":"conditionally_enabled","dataClasses":["DADO_PROCESSUAL_PUBLICO"],"legalEffect":"none","humanApproval":"required_before_real_use","credential":"APIKey-server-side","audit":"no-query-no-hash-no-raw","rollback":"disable-route-and-purge-cache"},
+    {"id":"datajud.search.party_name","provider":"CNJ/DataJud","mode":"read_only","state":"blocked","dataClasses":["DADO_PESSOAL_PROCESSUAL"],"legalEffect":"none","humanApproval":"required","credential":"authorized-connector-required","audit":"not-applicable-while-blocked","rollback":"keep-disabled"},
+    {"id":"datajud.search.party_cpf","provider":"CNJ/DataJud","mode":"read_only","state":"blocked","dataClasses":["DADO_PESSOAL_IDENTIFICADOR"],"legalEffect":"none","humanApproval":"required","credential":"authorized-connector-required","audit":"not-applicable-while-blocked","rollback":"keep-disabled"},
+    {"id":"pdpj.readiness","provider":"CNJ/PDPJ-Br","mode":"readiness_only","state":"enabled","dataClasses":["PUBLICO_INSTITUCIONAL"],"legalEffect":"none","humanApproval":"not_required","credential":"none","audit":"status-only","rollback":"disable-route"},
+    {"id":"pdpj.sso.token_test","provider":"CNJ/PDPJ-Br","mode":"homologation","state":"blocked_until_onboarding","dataClasses":["SEGREDO_AUTENTICACAO"],"legalEffect":"none","humanApproval":"required","credential":"client-secret-provider-vault","audit":"no-token-no-secret","rollback":"revoke-client-and-disable"},
+    {"id":"pdpj.discovery.lookup","provider":"CNJ/PDPJ-Br","mode":"homologation","state":"blocked_until_onboarding","dataClasses":["INTERNO_TECNICO"],"legalEffect":"none","humanApproval":"required","credential":"access-token-server-side","audit":"service-status-only","rollback":"disable-and-revoke"},
+    {"id":"pdpj.domicilio.list_communications","provider":"CNJ/PDPJ-Br","mode":"negotiated_read","state":"blocked","dataClasses":["JURIDICO_SIGILOSO","DADO_PESSOAL_PROCESSUAL"],"legalEffect":"potential","humanApproval":"required_per_operation","credential":"institutional-credential","audit":"operation-id-without-content","rollback":"disable-and-incident-review"},
+    {"id":"pdpj.domicilio.register_science","provider":"CNJ/PDPJ-Br","mode":"transactional","state":"prohibited_current_phase","dataClasses":["JURIDICO_SIGILOSO"],"legalEffect":"high","humanApproval":"insufficient_without_new_release","credential":"not-accepted","audit":"blocked-attempt-only","rollback":"keep-route-absent"},
+    {"id":"pdpj.petition.submit","provider":"CNJ/PDPJ-Br","mode":"transactional","state":"prohibited_current_phase","dataClasses":["JURIDICO_SIGILOSO","DOCUMENTO_PROCESSUAL"],"legalEffect":"high","humanApproval":"insufficient_without_new_release","credential":"not-accepted","audit":"blocked-attempt-only","rollback":"keep-route-absent"},
+    {"id":"pdpj.mni.execute","provider":"CNJ/PDPJ-Br","mode":"transactional","state":"prohibited_current_phase","dataClasses":["JURIDICO_SIGILOSO","DADO_PESSOAL_PROCESSUAL"],"legalEffect":"high","humanApproval":"insufficient_without_new_release","credential":"not-accepted","audit":"blocked-attempt-only","rollback":"keep-route-absent"}
+  ]
+}

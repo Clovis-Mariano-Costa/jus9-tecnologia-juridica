@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "id": "API-FIXTURE-CNJ-HOMOLOGACAO-001",
+    "versao": "1.0.0",
+    "autor": "Codex / Charlie Juris",
+    "revisor_responsavel": "Clovis Mariano da Costa",
+    "data": "2026-07-20",
+    "status": "ativo-ficticio-sem-rede",
+    "classificacao": "INTERNO",
+    "hash": "calcular-na-release-aprovada"
+  },
+  "fixtureVersion": "1.0.0",
+  "fictionalOnly": true,
+  "networkCalls": false,
+  "scenarios": [
+    {"id":"DJ-001","capability":"datajud.search.process_number","condition":"valid-cnj-number-api-key-server-side","expected":"allow_read_only"},
+    {"id":"DJ-002","capability":"datajud.search.party_name","condition":"public-datajud-only","expected":"deny_authorized_connector_required"},
+    {"id":"DJ-003","capability":"datajud.search.party_cpf","condition":"public-datajud-only","expected":"deny_authorized_connector_required"},
+    {"id":"DJ-004","capability":"datajud.search.process_number","condition":"missing-api-key","expected":"fail_closed_501"},
+    {"id":"DJ-005","capability":"datajud.search.process_number","condition":"global-rate-exhausted","expected":"fail_closed_429"},
+    {"id":"DJ-006","capability":"datajud.search.process_number","condition":"response-over-2mb","expected":"fail_closed_502"},
+    {"id":"PDPJ-001","capability":"pdpj.readiness","condition":"no-credentials","expected":"allow_status_only"},
+    {"id":"PDPJ-002","capability":"pdpj.sso.token_test","condition":"gecli-not-approved","expected":"deny_501"},
+    {"id":"PDPJ-003","capability":"pdpj.sso.token_test","condition":"unofficial-token-url","expected":"deny_501"},
+    {"id":"PDPJ-004","capability":"pdpj.sso.token_test","condition":"production-without-separate-approval","expected":"deny_501"},
+    {"id":"PDPJ-005","capability":"pdpj.discovery.lookup","condition":"cnj-no-response","expected":"deny_onboarding_required"},
+    {"id":"PDPJ-006","capability":"pdpj.domicilio.list_communications","condition":"read-request-before-onboarding","expected":"deny_capability_blocked"},
+    {"id":"PDPJ-007","capability":"pdpj.domicilio.register_science","condition":"any-current-request","expected":"deny_route_absent"},
+    {"id":"PDPJ-008","capability":"pdpj.petition.submit","condition":"any-current-request","expected":"deny_route_absent"},
+    {"id":"PDPJ-009","capability":"pdpj.mni.execute","condition":"any-current-request","expected":"deny_route_absent"}
+  ]
+}

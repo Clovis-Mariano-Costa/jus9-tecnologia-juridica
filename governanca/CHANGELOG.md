@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.16.3 - 2026-07-20
+
+- G5 de governanca das APIs CNJ concluido sem credenciais e sem chamadas reais.
+- Catalogo unificado classifica 11 capacidades e fixture cobre 15 cenarios ficticios.
+- Runbook cobre credenciais, rotacao, revogacao, indisponibilidade, incidente e mudanca de termos.
+- Cronograma avanca para `CRONOGRAMA_CHARLIE_GOVERNANCA_CNJ_CONEXOES_v1.7.0.md`; homologacao real continua bloqueada.
+
 ## 1.16.2 - 2026-07-20
 
 - Publicacao dos nomes de repositorios restritos como metadados foi confirmada pelo Fundador.

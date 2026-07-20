@@ -139,6 +139,18 @@ const checks = [
     args: ["scripts/audit-cronograma-charlie-cnj-v1-6.mjs"]
   },
   {
+    label: "G5 governanca e homologacao simulada CNJ",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-g5-governanca-apis-cnj.mjs"]
+  },
+  {
+    label: "Cronograma Charlie CNJ v1.7",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-cronograma-charlie-cnj-v1-7.mjs"]
+  },
+  {
     label: "Qualidade da interface Charlie Echo",
     cwd: portalRoot,
     command: process.execPath,

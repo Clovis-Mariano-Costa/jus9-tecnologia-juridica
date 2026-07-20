@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - APIs
 
+## 1.4.0 - 2026-07-20
+
+- Criado catalogo governado unificado com 11 capacidades DataJud/PDPJ.
+- Criada fixture ficticia com 15 cenarios de homologacao simulada e zero chamadas de rede.
+- Ciencia, peticionamento e MNI permanecem proibidos; nome/CPF permanecem bloqueados na API Publica DataJud.
+- PDPJ permanece `blocked-institutional-onboarding` enquanto o CNJ nao responde e o onboarding nao e comprovado.
+
 ## 1.11.0 - 2026-07-14
 
 - `POST /api/dajs` adiciona recibo `persistence` para indice e detalhe.
