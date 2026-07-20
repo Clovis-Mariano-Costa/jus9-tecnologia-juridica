@@ -35,7 +35,7 @@ Esta release nao configura CNPJ, credencial, certificado, tenant, perfil, lotaca
 - Manifesto PWA: HTTP 200 nos dominios oficial e workers.dev.
 - Commit fonte apos integracao da Onda 2: `e89b4d8`.
 - Release: `governanca-1.21.0-pdpj-onboarding-guard-1.0`.
-- Versao ativa do Worker: `a6e08202-101d-4c23-a418-70cec649c878`.
+- Versao ativa do Worker apos integracao da Onda 2: `a23bff4b-e507-4b8c-a949-95b4207a8e0f`.
 
 ## Rollback
 
