@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.21.10 - 2026-07-20
+
+- Release documental registra o Cronograma Mao na Massa dos MVPs gerais v4.0.0.
+- Oito pacotes organizam reconciliacao canonica, portfolio V2, nucleo comum, baseline transversal, ondas, repositorios, publicacao e fechamento final.
+- Pagina Equipe fica fora do escopo executivo deste Chat; DGE permanece como governanca tecnica com dependencia externa por contrato.
+- Worker permanece na release operacional `1.21.8`; nenhuma pagina publica, permissao, dado, Video ou ZIP foi alterado.
+
 ## 1.21.9 - 2026-07-20
 
 - Release documental publica o registro canonico de capacidades Charlie v2.0.0.

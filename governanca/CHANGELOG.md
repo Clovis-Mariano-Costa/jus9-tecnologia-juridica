@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.16.10 - 2026-07-20
+
+- Cronograma Mao na Massa dos MVPs gerais sobe para v4.0.0 apos varredura do Chat, portal e repositorios relacionados.
+- Linha de base registra 14 MVPs, Pagina Equipe sob responsabilidade de Mariana e oito pacotes V4.
+- Pacote V4-01 passa a priorizar a reconciliacao de estados superados sobre 1C, Memoria/Drive, Charlie Core e contratos JSON.
+- Revisao geral, Video e ZIP permanecem obrigatoriamente no ultimo pacote e continuam deferidos.
+
 ## 1.16.9 - 2026-07-20
 
 - G6B cria registro canonico v2 com 20 capacidades da Charlie e regra de falha fechada por divergencia.

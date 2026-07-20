@@ -259,6 +259,12 @@ const checks = [
     args: ["scripts/audit-pacote8-fechamento.mjs"]
   },
   {
+    label: "Cronograma geral dos MVPs v4",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-cronograma-mvps-v4.mjs"]
+  },
+  {
     label: "Painel executivo dos MVPs",
     cwd: portalRoot,
     command: process.execPath,
