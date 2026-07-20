@@ -4,7 +4,7 @@ versao: 1.20.0
 autor: Codex / Charlie Juris
 revisor_responsavel: Clovis Mariano da Costa
 data: 2026-07-19
-status: preparada-para-publicacao-controlada
+status: publicada-controlada
 classificacao: PUBLICO-INSTITUCIONAL
 hash: calcular-na-release-aprovada
 ---
@@ -29,13 +29,21 @@ hash: calcular-na-release-aprovada
 - Nenhum ato processual, PDPJ, MNI, Domicilio ou peticionamento foi habilitado.
 - Nenhuma ampliacao de Drive ou memoria foi realizada.
 
-## Validacao planejada
+## Validacao executada
 
-- auditor DataJud dedicado;
-- regressao completa do Worker;
-- CI local integral;
-- dry-run do Wrangler;
-- health e smoke de producao apos publicacao.
+- auditor DataJud dedicado: aprovado;
+- regressao completa do Worker: aprovada;
+- CI local integral: aprovado;
+- tipos, startup e dry-run do Wrangler: aprovados;
+- health e smoke de producao: `ready` nos dominios oficial e workers.dev;
+- readiness: 91 aliases, 120 requisicoes/minuto, 2 tentativas, 2 MB e uso comercial nao autorizado.
+
+## Publicacao
+
+- Commit fonte: `1ccb82a`.
+- Release: `governanca-1.20.0-datajud-governado-1.0`.
+- Versao ativa do Worker: `ea966e92-6c25-4445-8dbe-393f632a3c68`.
+- Consulta a processo real durante o smoke: nao realizada.
 
 ## Rollback
 
