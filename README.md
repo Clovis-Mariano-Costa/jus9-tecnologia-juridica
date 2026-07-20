@@ -220,7 +220,7 @@ The current authorization and evidence matrix is maintained at:
 
 [`documentacao/hackathon/MATRIZ_INTEGRACOES_TERCEIROS_BUILD_WEEK_2026.md`](documentacao/hackathon/MATRIZ_INTEGRACOES_TERCEIROS_BUILD_WEEK_2026.md)
 
-DataJud must remain read-only. Its official terms require special review before public or commercial use of information derived from the API. No real case data should appear in the submission video.
+DataJud must remain read-only. Term of Use v1.2 limits the API to legal, authorized, non-commercial purposes, caps use at 120 requests per minute per user or key without written authorization, and requires notice to CNJ when derived material is made public. No commercial authorization is claimed, and no real case data should appear in the submission video.
 
 ## Security and privacy
 

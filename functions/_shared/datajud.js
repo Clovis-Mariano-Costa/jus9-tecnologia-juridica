@@ -3,6 +3,10 @@ const DATAJUD_CACHE_TTL_SECONDS = 300;
 const DATAJUD_AUDIT_TTL_SECONDS = 30 * 24 * 60 * 60;
 const DATAJUD_DEFAULT_TIMEOUT_MS = 12_000;
 const DATAJUD_DEFAULT_RATE_PER_MINUTE = 120;
+const DATAJUD_MAX_RESPONSE_BYTES = 2_000_000;
+const DATAJUD_MAX_ATTEMPTS = 2;
+const DATAJUD_TERMS_VERSION = "1.2";
+const DATAJUD_TERMS_URL = "https://formularios.cnj.jus.br/wp-content/uploads/2023/11/Termos-de-uso-api-publica-V1.2.pdf";
 
 export const DATAJUD_ALIASES = {
   stj: { alias: "api_publica_stj", name: "Superior Tribunal de Justica" },
@@ -52,6 +56,28 @@ for (let i = 1; i <= 24; i += 1) {
   };
 }
 
+const ELECTORAL_TRIBUNALS = {
+  ac: "Acre", al: "Alagoas", am: "Amazonas", ap: "Amapa", ba: "Bahia", ce: "Ceara",
+  dft: "Distrito Federal", es: "Espirito Santo", go: "Goias", ma: "Maranhao", mg: "Minas Gerais",
+  ms: "Mato Grosso do Sul", mt: "Mato Grosso", pa: "Para", pb: "Paraiba", pe: "Pernambuco",
+  pi: "Piaui", pr: "Parana", rj: "Rio de Janeiro", rn: "Rio Grande do Norte", ro: "Rondonia",
+  rr: "Roraima", rs: "Rio Grande do Sul", sc: "Santa Catarina", se: "Sergipe", sp: "Sao Paulo",
+  to: "Tocantins",
+};
+
+for (const [state, name] of Object.entries(ELECTORAL_TRIBUNALS)) {
+  DATAJUD_ALIASES[`tre${state}`] = {
+    alias: `api_publica_tre-${state}`,
+    name: `Tribunal Regional Eleitoral de ${name}`,
+  };
+}
+
+Object.assign(DATAJUD_ALIASES, {
+  tjmmg: { alias: "api_publica_tjmmg", name: "Tribunal de Justica Militar de Minas Gerais" },
+  tjmrs: { alias: "api_publica_tjmrs", name: "Tribunal de Justica Militar do Rio Grande do Sul" },
+  tjmsp: { alias: "api_publica_tjmsp", name: "Tribunal de Justica Militar de Sao Paulo" },
+});
+
 const STATE_TRIBUNAL_BY_CNJ_CODE = {
   "01": "tjac",
   "02": "tjal",
@@ -85,8 +111,8 @@ const STATE_TRIBUNAL_BY_CNJ_CODE = {
 export function missingDataJudConfig(env) {
   const missing = [];
   const hasApiKey = Boolean(String(env.DATAJUD_API_KEY || "").trim());
-  const hasBasic = Boolean(String(env.DATAJUD_USERNAME || "").trim() && String(env.DATAJUD_PASSWORD || "").trim());
-  if (!hasApiKey && !hasBasic) missing.push("DATAJUD_API_KEY ou DATAJUD_USERNAME/DATAJUD_PASSWORD");
+  if (!hasApiKey) missing.push("DATAJUD_API_KEY");
+  if (!env.JUS9_DATAJUD_CACHE) missing.push("JUS9_DATAJUD_CACHE");
   return missing;
 }
 
@@ -98,6 +124,11 @@ export function publicDataJudStatus(env) {
     configured: missingDataJudConfig(env).length === 0,
     gatewayTokenConfigured: Boolean(String(env.JUS9_TRIBUNAIS_GATEWAY_TOKEN || "").trim()),
     cacheConfigured: Boolean(env.JUS9_DATAJUD_CACHE),
+    terms: {
+      version: DATAJUD_TERMS_VERSION,
+      url: DATAJUD_TERMS_URL,
+      reviewStatus: "revisado_operacionalmente_sem_autorizacao_comercial",
+    },
     supportedSearchTypes: [
       { type: "numeroProcesso", label: "Numero CNJ", support: "datajud_publico" },
       { type: "nome", label: "Nome da parte", support: "requer_conector_autorizado_de_partes" },
@@ -112,6 +143,8 @@ export function publicDataJudStatus(env) {
       "Somente leitura de metadados, capas e movimentacoes publicas.",
       "Nao acessa inteiro teor sigiloso, partes protegidas, peticionamento ou protocolo.",
       "Busca por nome ou CPF nao e exposta pela API Publica DataJud; exige conector autorizado do tribunal/parceiro e finalidade legitima.",
+      "Termo v1.2 limita o uso a fins legais, autorizados e nao comerciais e exige ciencia ao CNJ sobre material disponibilizado ao publico.",
+      "Limite oficial: no maximo 120 requisicoes por minuto por usuario ou chave, salvo autorizacao expressa por escrito do CNJ.",
       "Uso real exige revisao humana e conferencia no tribunal competente.",
     ],
   };
@@ -133,6 +166,15 @@ export function dataJudReadiness(env) {
     timeoutMs: dataJudTimeoutMs(env),
     maxResultsPerQuery: 20,
     rateLimitPerMinute: dataJudRateLimit(env),
+    rateLimitScope: "global_por_chave_best_effort_kv",
+    maxAttempts: DATAJUD_MAX_ATTEMPTS,
+    maxResponseBytes: DATAJUD_MAX_RESPONSE_BYTES,
+    terms: {
+      version: DATAJUD_TERMS_VERSION,
+      url: DATAJUD_TERMS_URL,
+      commercialUseAuthorized: false,
+      publicDisclosureNoticeConfirmed: false,
+    },
     evidenceStatus: "official-public-metadata",
     rawAvailable: false
   };
@@ -215,9 +257,6 @@ export function normalizeDataJudTribunal(value) {
 function dataJudAuthHeaders(env) {
   const apiKey = String(env.DATAJUD_API_KEY || "").trim();
   if (apiKey) return { Authorization: `APIKey ${apiKey}` };
-  const username = String(env.DATAJUD_USERNAME || "").trim();
-  const password = String(env.DATAJUD_PASSWORD || "").trim();
-  if (username && password) return { Authorization: `Basic ${btoa(`${username}:${password}`)}` };
   return {};
 }
 
@@ -282,6 +321,10 @@ export function buildDataJudSearch(body) {
     url: `${DATAJUD_BASE_URL}/${meta.alias}/_search`,
     payload: {
       size: clampSize(body?.size),
+      _source: [
+        "id", "tribunal", "numeroProcesso", "dataAjuizamento", "grau", "nivelSigilo",
+        "formato", "sistema", "classe", "assuntos", "orgaoJulgador", "movimentos",
+      ],
       query: {
         match: {
           numeroProcesso,
@@ -332,24 +375,10 @@ export async function searchDataJud(env, body) {
     };
   }
 
-  if (!(await consumeDataJudRateLimit(env, search.tribunal))) {
-    await auditDataJud(env, { queryId, queryHash: queryHash.slice(0, 16), tribunal: search.tribunal, result: "rate_limited", total: 0, durationMs: 0 });
-    return {
-      ok: false,
-      status: 429,
-      payload: {
-        ok: false,
-        error: "datajud_limite_temporario",
-        tribunal: search.tribunal,
-        alias: search.alias,
-      },
-    };
-  }
-
   const startedAt = Date.now();
   try {
-    const response = await fetchDataJudWithRetry(env, search);
-    const data = await response.json().catch(() => null);
+    const upstream = await fetchDataJudWithRetry(env, search);
+    const response = upstream.response;
     if (!response.ok) {
       await auditDataJud(env, {
         queryId,
@@ -357,6 +386,7 @@ export async function searchDataJud(env, body) {
         tribunal: search.tribunal,
         result: "upstream_error",
         upstreamStatus: response.status,
+        attempts: upstream.attempts,
         total: 0,
         durationMs: Date.now() - startedAt
       });
@@ -373,6 +403,8 @@ export async function searchDataJud(env, body) {
       };
     }
 
+    const data = await readBoundedJsonResponse(response);
+
     const normalized = {
       ...normalizeDataJudResponse(search, data),
       queryId,
@@ -385,26 +417,30 @@ export async function searchDataJud(env, body) {
       queryHash: queryHash.slice(0, 16),
       tribunal: search.tribunal,
       result: "success",
+      attempts: upstream.attempts,
       total: normalized.total,
       durationMs: Date.now() - startedAt
     });
     return { ok: true, status: 200, payload: normalized };
   } catch (error) {
     const timedOut = error?.name === "AbortError";
+    const rateLimited = error?.name === "DataJudRateLimitError";
+    const responseTooLarge = error?.name === "DataJudResponseTooLargeError";
+    const invalidResponse = error?.name === "DataJudInvalidResponseError";
     await auditDataJud(env, {
       queryId,
       queryHash: queryHash.slice(0, 16),
       tribunal: search.tribunal,
-      result: timedOut ? "timeout" : "request_failed",
+      result: timedOut ? "timeout" : rateLimited ? "rate_limited" : responseTooLarge ? "response_too_large" : invalidResponse ? "invalid_response" : "request_failed",
       total: 0,
       durationMs: Date.now() - startedAt
     });
     return {
       ok: false,
-      status: timedOut ? 504 : 502,
+      status: rateLimited ? 429 : timedOut ? 504 : 502,
       payload: {
         ok: false,
-        error: timedOut ? "datajud_timeout" : "falha_datajud",
+        error: rateLimited ? "datajud_limite_temporario" : timedOut ? "datajud_timeout" : responseTooLarge ? "datajud_resposta_excedeu_limite" : invalidResponse ? "datajud_resposta_invalida" : "falha_datajud",
         tribunal: search.tribunal,
         alias: search.alias
       }
@@ -414,9 +450,13 @@ export async function searchDataJud(env, body) {
 
 async function fetchDataJudWithRetry(env, search) {
   let lastResponse;
-  for (let attempt = 0; attempt < 2; attempt += 1) {
+  const deadline = Date.now() + dataJudTimeoutMs(env);
+  for (let attempt = 1; attempt <= DATAJUD_MAX_ATTEMPTS; attempt += 1) {
+    if (!(await consumeDataJudRateLimit(env))) throw namedError("DataJudRateLimitError", "datajud request limit reached");
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), dataJudTimeoutMs(env));
+    const remainingMs = deadline - Date.now();
+    if (remainingMs <= 0) throw namedError("AbortError", "datajud request deadline reached");
+    const timeout = setTimeout(() => controller.abort(), remainingMs);
     try {
       lastResponse = await fetch(search.url, {
         method: "POST",
@@ -430,10 +470,60 @@ async function fetchDataJudWithRetry(env, search) {
     } finally {
       clearTimeout(timeout);
     }
-    if (![429, 500, 502, 503, 504].includes(lastResponse.status) || attempt === 1) return lastResponse;
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    if (![429, 500, 502, 503, 504].includes(lastResponse.status) || attempt === DATAJUD_MAX_ATTEMPTS) {
+      return { response: lastResponse, attempts: attempt };
+    }
+    const delayMs = retryDelayMs(lastResponse, attempt);
+    if (Date.now() + delayMs >= deadline) return { response: lastResponse, attempts: attempt };
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
   }
-  return lastResponse;
+  return { response: lastResponse, attempts: DATAJUD_MAX_ATTEMPTS };
+}
+
+function retryDelayMs(response, attempt) {
+  const retryAfter = String(response.headers.get("Retry-After") || "").trim();
+  if (/^\d+$/.test(retryAfter)) return Math.min(Number(retryAfter) * 1_000, 2_000);
+  const retryAt = Date.parse(retryAfter);
+  if (Number.isFinite(retryAt)) return Math.max(0, Math.min(retryAt - Date.now(), 2_000));
+  return Math.min(250 * (2 ** (attempt - 1)), 2_000);
+}
+
+async function readBoundedJsonResponse(response) {
+  const declaredLength = Number(response.headers.get("Content-Length"));
+  if (Number.isFinite(declaredLength) && declaredLength > DATAJUD_MAX_RESPONSE_BYTES) {
+    throw namedError("DataJudResponseTooLargeError", "datajud response exceeds declared limit");
+  }
+  const reader = response.body?.getReader();
+  if (!reader) throw namedError("DataJudInvalidResponseError", "datajud response has no body");
+  const chunks = [];
+  let totalBytes = 0;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    totalBytes += value.byteLength;
+    if (totalBytes > DATAJUD_MAX_RESPONSE_BYTES) {
+      await reader.cancel().catch(() => null);
+      throw namedError("DataJudResponseTooLargeError", "datajud response exceeds streamed limit");
+    }
+    chunks.push(value);
+  }
+  const bytes = new Uint8Array(totalBytes);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  try {
+    return JSON.parse(new TextDecoder().decode(bytes));
+  } catch {
+    throw namedError("DataJudInvalidResponseError", "datajud response is not valid JSON");
+  }
+}
+
+function namedError(name, message) {
+  const error = new Error(message);
+  error.name = name;
+  return error;
 }
 
 function dataJudTimeoutMs(env) {
@@ -446,10 +536,10 @@ function dataJudRateLimit(env) {
   return Number.isFinite(configured) ? Math.max(10, Math.min(configured, 600)) : DATAJUD_DEFAULT_RATE_PER_MINUTE;
 }
 
-async function consumeDataJudRateLimit(env, tribunal) {
+async function consumeDataJudRateLimit(env) {
   if (!env?.JUS9_DATAJUD_CACHE) return true;
   const minute = Math.floor(Date.now() / 60_000);
-  const key = `datajud:rate:v1:${tribunal}:${minute}`;
+  const key = `datajud:rate:v2:global:${minute}`;
   const current = Number(await env.JUS9_DATAJUD_CACHE.get(key).catch(() => 0)) || 0;
   if (current >= dataJudRateLimit(env)) return false;
   await env.JUS9_DATAJUD_CACHE.put(key, String(current + 1), { expirationTtl: 120 }).catch(() => null);
@@ -471,12 +561,12 @@ async function auditDataJud(env, event) {
     eventType: "datajud_query",
     occurredAt: new Date().toISOString(),
     queryId: String(event.queryId || "").slice(0, 80),
-    queryHash: String(event.queryHash || "").slice(0, 20),
     tribunal: normalizeDataJudTribunal(event.tribunal),
     result: safeString(event.result),
     upstreamStatus: Number(event.upstreamStatus || 0) || null,
     total: Math.max(0, Number(event.total || 0)),
     durationMs: Math.max(0, Number(event.durationMs || 0)),
+    attempts: Math.max(0, Math.min(Number(event.attempts || 0), DATAJUD_MAX_ATTEMPTS)),
     rawStored: false
   };
   console.log(JSON.stringify(safeEvent));

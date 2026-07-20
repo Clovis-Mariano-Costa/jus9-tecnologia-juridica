@@ -1,0 +1,93 @@
+---
+id: API-DATAJUD-GOVERNADO-JUS9-001
+versao: 1.0.0
+autor: Codex / Charlie Juris
+revisor_responsavel: Clovis Mariano da Costa
+data: 2026-07-19
+status: homologacao-tecnica-condicionada
+classificacao: INTERNO
+hash: calcular-na-release-aprovada
+---
+
+fonte:
+  provedor: CNJ/DataJud API Publica
+  documentacao: https://datajud-wiki.cnj.jus.br/api-publica/
+  termo_uso:
+    versao: "1.2"
+    data: 2023-11-27
+    url: https://formularios.cnj.jus.br/wp-content/uploads/2023/11/Termos-de-uso-api-publica-V1.2.pdf
+    revisao: operacional-concluida
+    autorizacao_comercial: nao-comprovada
+    ciencia_divulgacao_publica: nao-comprovada
+
+escopo:
+  modo: read_only
+  busca_externa_permitida: numero-processo-cnj
+  dados: metadados-de-processos-publicos
+  raw_disponivel_ao_cliente: false
+  busca_nome_cpf: bloqueada-na-api-publica
+  atos_processuais: bloqueados
+  revisao_humana: obrigatoria-antes-de-uso-real
+
+seguranca:
+  autenticacao_upstream: APIKey
+  basic_auth: proibido-na-ausencia-de-documentacao-oficial
+  segredo_no_navegador: false
+  gateway_interno: obrigatorio
+  allowlist:
+    fonte: endpoints-oficiais-datajud-wiki
+    total: 91
+    categorias:
+      tribunais_superiores: 4
+      trfs: 6
+      tjs: 27
+      trts: 24
+      tres: 27
+      tjms: 3
+  resposta_maxima_bytes: 2000000
+
+resiliencia:
+  timeout_total_padrao_ms: 12000
+  timeout_total_minimo_ms: 3000
+  timeout_total_maximo_ms: 30000
+  tentativas_maximas: 2
+  retry_status: [429, 500, 502, 503, 504]
+  retry_after: respeitado-com-teto-de-2000-ms
+  backoff_padrao_ms: [250]
+  cache_ttl_segundos: 300
+  cache_raw: false
+
+limites:
+  oficial_requisicoes_por_minuto: 120
+  escopo: global-por-chave
+  contabilizacao: cada-tentativa-upstream
+  armazenamento_contador: JUS9_DATAJUD_CACHE
+  sem_cache: falha-fechada
+  observacao: KV-fornece-barreira-conservadora-best-effort; autorizacao-escrita-e-necessaria-para-superar-120
+
+auditoria:
+  evento: datajud_query
+  retencao_segundos: 2592000
+  registra:
+    - queryId-aleatorio
+    - tribunal-allowlisted
+    - resultado
+    - status-upstream
+    - total
+    - duracao
+    - tentativas
+  nao_registra:
+    - numero-processo
+    - hash-do-numero-processo
+    - chave-api
+    - corpo-da-consulta
+    - resposta-bruta
+    - nomes
+    - cpf
+
+condicoes_de_uso:
+  - finalidade-legal-autorizada-e-nao-comercial
+  - nao-coletar-informacoes-pessoais-de-terceiros
+  - nao-divulgar-material-derivado-sem-dar-ciencia-ao-cnj
+  - conferir-no-tribunal-competente
+  - interromper-se-o-cnj-alterar-chave-termo-ou-disponibilidade

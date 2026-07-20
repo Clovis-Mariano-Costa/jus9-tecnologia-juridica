@@ -103,6 +103,12 @@ const checks = [
     args: ["scripts/audit-charlie-response-pipeline.mjs"]
   },
   {
+    label: "DataJud governado e Termo CNJ",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-datajud-governance.mjs"]
+  },
+  {
     label: "Qualidade da interface Charlie Echo",
     cwd: portalRoot,
     command: process.execPath,

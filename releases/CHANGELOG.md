@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.20.0 - 2026-07-19
+
+- DataJud sincronizado com os 91 aliases oficiais, incluindo TREs e TJMs.
+- Autenticacao upstream restrita a APIKey; Basic Auth legado removido.
+- Limite de 120 requisicoes passa a ser global por chave e contado por tentativa, com falha fechada sem KV.
+- Timeout total, backoff com `Retry-After`, resposta maxima de 2 MB, `_source` minimizado e auditoria sem hash processual.
+- Termo v1.2 revisado operacionalmente; uso comercial continua sem autorizacao comprovada.
+
 ## 1.19.0 - 2026-07-19
 
 - Charlie Core sobe para contrato `1.2.0` com pipeline governado de resposta.

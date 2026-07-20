@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.15.0 - 2026-07-19
+
+- G3 tecnico do DataJud concluido com allowlist oficial de 91 endpoints.
+- APIKey exclusiva, cache obrigatorio, timeout total, backoff, limite global por chave e resposta limitada a 2 MB.
+- Auditoria deixa de registrar hash do numero processual e conserva apenas metadados operacionais minimizados.
+- Termo de Uso v1.2 confrontado; finalidade nao comercial e ciencia de divulgacao publica permanecem condicoes humanas externas.
+- Cronograma focado avanca para onboarding documental da PDPJ-Br, sem ativar capacidade transacional.
+
 ## 1.14.0 - 2026-07-19
 
 - G2 interno consolidado em um pipeline unico da Charlie Core, com contrato `1.2.0`.

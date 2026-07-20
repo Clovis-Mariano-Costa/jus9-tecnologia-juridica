@@ -807,6 +807,9 @@ data = await response.json();
 assert(response.status === 200 && data.gateway === "tribunais-datajud", "status DataJud deveria responder");
 assert(data.configured === false && data.gatewayTokenConfigured === false, "status DataJud deveria ocultar segredos e indicar pendencias");
 assert(data.supportedAliases.some((item) => item.code === "tjsc" && item.alias === "api_publica_tjsc"), "aliases DataJud deveriam incluir TJSC");
+assert(data.supportedAliases.some((item) => item.code === "tresc" && item.alias === "api_publica_tre-sc"), "allowlist DataJud deveria incluir TRE-SC oficial");
+assert(data.supportedAliases.some((item) => item.code === "tjmsp" && item.alias === "api_publica_tjmsp"), "allowlist DataJud deveria incluir TJM-SP oficial");
+assert(data.terms?.version === "1.2" && data.terms.reviewStatus === "revisado_operacionalmente_sem_autorizacao_comercial", "status DataJud deveria declarar Termo vigente e limite comercial");
 assert(data.supportedSearchTypes.some((item) => item.type === "numeroProcesso" && item.support === "datajud_publico"), "DataJud deveria declarar busca por numero CNJ");
 assert(data.supportedSearchTypes.some((item) => item.type === "nome" && item.support === "requer_conector_autorizado_de_partes"), "DataJud deveria governar busca por nome");
 assert(data.supportedSearchTypes.some((item) => item.type === "cpf" && item.support === "requer_conector_autorizado_de_partes"), "DataJud deveria governar busca por CPF");
@@ -815,12 +818,14 @@ console.log("AUTH_OK datajud-status=200");
 response = await request("/api/judicial/datajud/readiness");
 data = await response.json();
 assert(response.status === 200 && data.status === "missing-credentials", "readiness canonico DataJud deveria declarar credencial pendente");
-assert(data.aliases >= 60 && data.cache.configured === false, "readiness DataJud deveria expor aliases e cache sem segredo");
+assert(data.aliases === 91 && data.cache.configured === false, "readiness DataJud deveria expor os 91 aliases oficiais e cache sem segredo");
+assert(data.rateLimitPerMinute === 120 && data.rateLimitScope === "global_por_chave_best_effort_kv", "readiness DataJud deveria declarar teto global do Termo");
+assert(data.maxAttempts === 2 && data.maxResponseBytes === 2000000, "readiness DataJud deveria declarar backoff e limite de resposta");
 console.log("AUTH_OK datajud-readiness=200");
 
 response = await request("/api/judicial/datajud/tribunais");
 data = await response.json();
-assert(response.status === 200 && data.total >= 60 && data.tribunais.some((item) => item.code === "tjsc"), "rota canonica de tribunais deveria listar aliases");
+assert(response.status === 200 && data.total === 91 && data.tribunais.some((item) => item.code === "tjsc"), "rota canonica de tribunais deveria listar a allowlist oficial completa");
 console.log("AUTH_OK datajud-tribunais=200");
 
 response = await request("/api/judicial/pdpj/readiness");
@@ -850,6 +855,18 @@ response = await worker.fetch(
 data = await response.json();
 assert(response.status === 501 && data.error === "datajud_configuracao_pendente", "DataJud sem credencial deveria declarar configuracao pendente");
 console.log("AUTH_OK datajud-credencial-pendente=501");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/tribunais/datajud/search", {
+    method: "POST",
+    headers: { "content-type": "application/json", "x-jus9-internal-token": "token-interno" },
+    body: JSON.stringify({ tribunal: "tjsc", numeroProcesso: "0000000-00.2024.8.24.0000" })
+  }),
+  { ...dataJudEnvWithoutKey, DATAJUD_USERNAME: "legado", DATAJUD_PASSWORD: "nao-suportado", JUS9_DATAJUD_CACHE: memoryKv() }
+);
+data = await response.json();
+assert(response.status === 501 && data.missing.includes("DATAJUD_API_KEY"), "DataJud nao deveria aceitar Basic Auth ausente da documentacao oficial");
+console.log("AUTH_OK datajud-basic-auth-recusado=501");
 
 response = await worker.fetch(
   new Request("https://jus9.invalid/api/tribunais/datajud/search", {
@@ -929,6 +946,75 @@ try {
   assert(dataJudFetchCalls === 1, "cache DataJud deveria evitar segunda chamada ao CNJ");
   assert([...dataJudCache._store.keys()].some((key) => key.startsWith("datajud:audit:v1:")), "DataJud deveria registrar auditoria sem conteudo bruto");
   console.log("AUTH_OK datajud-processo-cache=200");
+} finally {
+  globalThis.fetch = originalFetch;
+}
+
+const dataJudRetryCache = memoryKv();
+let dataJudRetryCalls = 0;
+globalThis.fetch = async () => {
+  dataJudRetryCalls += 1;
+  if (dataJudRetryCalls === 1) return Response.json({ error: "temporario" }, { status: 503 });
+  return Response.json({ hits: { total: { value: 0 }, hits: [] } });
+};
+try {
+  response = await worker.fetch(
+    new Request("https://jus9.invalid/api/tribunais/datajud/search", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-jus9-internal-token": "token-interno" },
+      body: JSON.stringify({ tribunal: "tre-sc", numeroProcesso: "0000000-00.2025.6.24.0000" })
+    }),
+    { ...dataJudEnvWithoutKey, DATAJUD_API_KEY: "chave-publica-ficticia", JUS9_DATAJUD_CACHE: dataJudRetryCache }
+  );
+  data = await response.json();
+  const rateKey = [...dataJudRetryCache._store.keys()].find((key) => key.startsWith("datajud:rate:v2:global:"));
+  assert(response.status === 200 && data.alias === "api_publica_tre-sc", "retry DataJud deveria preservar allowlist oficial do TRE-SC");
+  assert(dataJudRetryCalls === 2 && dataJudRetryCache._store.get(rateKey) === "2", "cada tentativa upstream deveria consumir o limite global da chave");
+  console.log("AUTH_OK datajud-backoff-rate-global=200");
+} finally {
+  globalThis.fetch = originalFetch;
+}
+
+const dataJudLimitedCache = memoryKv();
+await dataJudLimitedCache.put(`datajud:rate:v2:global:${Math.floor(Date.now() / 60_000)}`, "120");
+let dataJudLimitedFetchCalled = false;
+globalThis.fetch = async () => {
+  dataJudLimitedFetchCalled = true;
+  return Response.json({ hits: { total: { value: 0 }, hits: [] } });
+};
+try {
+  response = await worker.fetch(
+    new Request("https://jus9.invalid/api/tribunais/datajud/search", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-jus9-internal-token": "token-interno" },
+      body: JSON.stringify({ tribunal: "tjsc", numeroProcesso: "0000000-00.2026.8.24.0000" })
+    }),
+    { ...dataJudEnvWithoutKey, DATAJUD_API_KEY: "chave-publica-ficticia", JUS9_DATAJUD_CACHE: dataJudLimitedCache }
+  );
+  data = await response.json();
+  assert(response.status === 429 && data.error === "datajud_limite_temporario", "DataJud deveria falhar fechado no teto global de 120 requisicoes");
+  assert(dataJudLimitedFetchCalled === false, "limite local nao deveria gerar a 121a requisicao ao CNJ");
+  console.log("AUTH_OK datajud-rate-global=429");
+} finally {
+  globalThis.fetch = originalFetch;
+}
+
+globalThis.fetch = async () => new Response("{}", {
+  status: 200,
+  headers: { "Content-Type": "application/json", "Content-Length": "2000001" }
+});
+try {
+  response = await worker.fetch(
+    new Request("https://jus9.invalid/api/tribunais/datajud/search", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-jus9-internal-token": "token-interno" },
+      body: JSON.stringify({ tribunal: "tjsc", numeroProcesso: "0000000-00.2027.8.24.0000" })
+    }),
+    { ...dataJudEnvWithoutKey, DATAJUD_API_KEY: "chave-publica-ficticia", JUS9_DATAJUD_CACHE: memoryKv() }
+  );
+  data = await response.json();
+  assert(response.status === 502 && data.error === "datajud_resposta_excedeu_limite", "DataJud deveria rejeitar resposta upstream acima de 2 MB");
+  console.log("AUTH_OK datajud-response-limit=502");
 } finally {
   globalThis.fetch = originalFetch;
 }
