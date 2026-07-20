@@ -4,7 +4,7 @@ versao: 1.21.2
 autor: Codex / Charlie Juris
 revisor_responsavel: Clovis Mariano da Costa
 data: 2026-07-20
-status: pronta-para-publicacao
+status: publicada-controlada
 classificacao: PUBLICO-INSTITUCIONAL
 hash: gerar-na-versao-final
 ---
@@ -12,7 +12,7 @@ hash: gerar-na-versao-final
 # Release v1.21.2 - Pesquisa Jus 9
 
 Data: 20/07/2026
-Status: PRONTO_PARA_PUBLICACAO
+Status: PUBLICADA_CONTROLADA
 Classificacao: PUBLICO / METADADOS GOVERNADOS
 
 ## Entrega
