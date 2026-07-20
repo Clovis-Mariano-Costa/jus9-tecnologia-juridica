@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Documentacao
 
+## 1.17.5 - 2026-07-20
+
+- Versionamento publico v5.13 registra a Onda 4 DOI+DGE como prova de valor executavel.
+- Painel executivo ganha roteiro de 22 minutos com aceite e condicoes de parada.
+- Paginas DOI e DGE passam a orientar a prova direta sem ato oficial, permissao real, segredo, Drive real ou memoria real.
+
 ## 1.17.4 - 2026-07-20
 
 - Versionamento publico v5.12 registra a Pesquisa Jus 9 no menu principal.

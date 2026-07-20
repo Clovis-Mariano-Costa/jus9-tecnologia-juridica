@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.21.4 - 2026-07-20
+
+- Publicada Onda 4 dos MVPs gerais com prova DOI+DGE em 22 minutos.
+- Painel executivo recebe `data-onda4-doi-dge-proof`; DOI e DGE recebem runbooks publicos proprios.
+- Criado documento governado `PACOTE_ONDA4_DOI_DGE_PROVA_VALOR_2026-07-19_v1.0.0.md` e auditor `audit-onda4-doi-dge-proof-package.mjs`.
+- Cache PWA sobe para `jus9-pwa-v48-2026-07-20-onda4-doi-dge`.
+- Pesquisa federada, G5 documental, Onda 3 e guard PDPJ-Br permanecem preservados.
+
 ## 1.21.3 - 2026-07-20
 
 - Release documental G5 consolida governanca DataJud/PDPJ sem alterar runtime ou credenciais.

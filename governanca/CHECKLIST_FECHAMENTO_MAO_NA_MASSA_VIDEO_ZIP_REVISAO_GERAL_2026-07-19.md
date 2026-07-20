@@ -30,7 +30,7 @@ Estado: `PENDENTE_FECHAMENTO_GERAL`.
 Requisitos:
 
 - Video publico com ate tres minutos.
-- Mostrar painel executivo, DAJ, DED, DIC, DEE, DEJI e DPJ.
+- Mostrar painel executivo, DAJ, DED, DIC, DEE, DEJI, DPJ, DIP, DAA, DEJ, DOI e DGE.
 - Explicar que o Pacote 1C segue com `REVERSIBILIDADE_PENDENTE`.
 - Nao mostrar conta, token, CPF, documento real, processo real, Drive real ou dado sensivel.
 
@@ -59,6 +59,7 @@ Pacotes a revisar:
 - Pacote 4 - DIC vitrine social.
 - Pacote 5 - DEE, DEJI e DPJ.
 - Pacote 5A - DIP, DAA e DEJ.
+- Pacote 5B - DOI e DGE.
 - Pacote 6 - Memoria e Drive.
 - Pacote 7 - Painel executivo dos 14 MVPs.
 - Pacote 8 - Revisao geral, Video e ZIP.

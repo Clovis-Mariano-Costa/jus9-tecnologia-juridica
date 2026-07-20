@@ -97,7 +97,7 @@ const checks = [
   {
     name: "service worker nao prende MVP antigo",
     file: "service-worker.js",
-    patterns: ["jus9-pwa-v47-2026-07-20-pesquisa-repositorios", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
+    patterns: ["jus9-pwa-v48-2026-07-20-onda4-doi-dge", "isFreshMvpAsset", "app-ia-[^/]+\\.html", "networkFirst", "cache: 'reload'", "SKIP_WAITING"],
   },
   {
     name: "casa propria da Charlie Echo publicada",

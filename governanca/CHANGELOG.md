@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.16.4 - 2026-07-20
+
+- Publicado pacote Onda 4 DOI+DGE como prova de valor executavel em 22 minutos.
+- Painel executivo, DOI e DGE passam a exibir roteiro, aceite humano e condicoes de parada especificas.
+- Criado documento governado `PACOTE_ONDA4_DOI_DGE_PROVA_VALOR_2026-07-19_v1.0.0.md` e auditor dedicado no CI local.
+- PDPJ-Br permanece bloqueado por onboarding institucional; nenhuma capacidade transacional foi ativada.
+
 ## 1.16.3 - 2026-07-20
 
 - G5 de governanca das APIs CNJ concluido sem credenciais e sem chamadas reais.

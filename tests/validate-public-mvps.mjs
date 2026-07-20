@@ -64,6 +64,8 @@ const dpjAiShowcasePage = await fs.readFile(new URL("../app-ia-perito.html", imp
 const dipDashboardPage = await fs.readFile(new URL("../app-demo-investidor.html", import.meta.url), "utf8");
 const daaDashboardPage = await fs.readFile(new URL("../app-demo-professor.html", import.meta.url), "utf8");
 const dejDashboardPage = await fs.readFile(new URL("../app-demo-estudante.html", import.meta.url), "utf8");
+const doiDashboardPage = await fs.readFile(new URL("../app-demo-orgao-publico.html", import.meta.url), "utf8");
+const dgeDashboardPage = await fs.readFile(new URL("../app-demo-administrador.html", import.meta.url), "utf8");
 const finalChecklistPage = await fs.readFile(new URL("../governanca/CHECKLIST_FECHAMENTO_MAO_NA_MASSA_VIDEO_ZIP_REVISAO_GERAL_2026-07-19.md", import.meta.url), "utf8");
 const installPage = await fs.readFile(new URL("../instalar-app.html", import.meta.url), "utf8");
 const pwaInstallScript = await fs.readFile(new URL("../assets/js/pwa-install.js", import.meta.url), "utf8");
@@ -187,6 +189,7 @@ assert(mvpExecutivePanelPage.includes("data-mvp-proof-map") && mvpExecutivePanel
 assert(mvpExecutivePanelPage.includes("data-onda1-ded-dic-proof") && mvpExecutivePanelPage.includes("Onda 1 - prova DED + DIC"), "painel executivo sem prova Onda 1 DED+DIC");
 assert(mvpExecutivePanelPage.includes("data-onda2-dee-deji-dpj-proof") && mvpExecutivePanelPage.includes("Onda 2 - prova DEE + DEJI + DPJ"), "painel executivo sem prova Onda 2 DEE+DEJI+DPJ");
 assert(mvpExecutivePanelPage.includes("data-onda3-dip-daa-dej-proof") && mvpExecutivePanelPage.includes("Onda 3 - prova DIP + DAA + DEJ"), "painel executivo sem prova Onda 3 DIP+DAA+DEJ");
+assert(mvpExecutivePanelPage.includes("data-onda4-doi-dge-proof") && mvpExecutivePanelPage.includes("Onda 4 - prova DOI + DGE"), "painel executivo sem prova Onda 4 DOI+DGE");
 assert(mvpExecutivePanelPage.includes("DAJ-2026-0002") && mvpExecutivePanelPage.includes("ACEITE_HUMANO_PARCIAL_CONFIRMADO") && mvpExecutivePanelPage.includes("REVERSIBILIDADE_PENDENTE"), "painel executivo nao preserva o estado parcial do DAJ 1C");
 assert(mvpExecutivePanelPage.includes("a142825") && mvpExecutivePanelPage.includes("fcef514") && mvpExecutivePanelPage.includes("cde1bf89-3d93-4429-a485-be46945bec04"), "painel executivo sem evidencias de commit/deploy");
 assert(mvpExecutivePanelPage.includes("BLOQUEADO_ATE_REVERSIBILIDADE_1C") && mvpExecutivePanelPage.includes("AGUARDANDO_NOVO_TESTE_HUMANO"), "painel executivo sem bloqueios de governanca");
@@ -194,8 +197,9 @@ assert(mvpExecutivePanelPage.includes('data-package="3" data-package-status="CON
 assert(mvpExecutivePanelPage.includes('data-package="4" data-package-status="CONCLUIDO_PUBLICADO"'), "painel executivo nao marca DIC como Pacote 4 publicado");
 assert(mvpExecutivePanelPage.includes('data-package="5" data-package-status="CONCLUIDO_PUBLICADO"'), "painel executivo nao marca Pacote 5 como publicado");
 assert(mvpExecutivePanelPage.includes('data-package="5A" data-package-status="CONCLUIDO_PUBLICADO"'), "painel executivo nao marca Pacote 5A como publicado");
+assert(mvpExecutivePanelPage.includes('data-package="5B" data-package-status="CONCLUIDO_PUBLICADO"'), "painel executivo nao marca Pacote 5B como publicado");
 assert(mvpExecutivePanelPage.includes('data-package="8" data-package-status="PENDENTE_FECHAMENTO_GERAL"'), "painel executivo sem pacote final de revisao/video/zip");
-assert(mvpExecutivePanelPage.includes("app-clientes.html#consulta-daj") && mvpExecutivePanelPage.includes("app-demo-autor-editor.html") && mvpExecutivePanelPage.includes("app-demo-cidadao.html") && mvpExecutivePanelPage.includes("app-demo-escritorio.html") && mvpExecutivePanelPage.includes("app-demo-empresa.html") && mvpExecutivePanelPage.includes("app-demo-perito.html") && mvpExecutivePanelPage.includes("app-demo-investidor.html") && mvpExecutivePanelPage.includes("app-demo-professor.html") && mvpExecutivePanelPage.includes("app-demo-estudante.html"), "painel executivo sem atalhos DAJ/DED/DIC/DEE/DEJI/DPJ/DIP/DAA/DEJ");
+assert(mvpExecutivePanelPage.includes("app-clientes.html#consulta-daj") && mvpExecutivePanelPage.includes("app-demo-autor-editor.html") && mvpExecutivePanelPage.includes("app-demo-cidadao.html") && mvpExecutivePanelPage.includes("app-demo-escritorio.html") && mvpExecutivePanelPage.includes("app-demo-empresa.html") && mvpExecutivePanelPage.includes("app-demo-perito.html") && mvpExecutivePanelPage.includes("app-demo-investidor.html") && mvpExecutivePanelPage.includes("app-demo-professor.html") && mvpExecutivePanelPage.includes("app-demo-estudante.html") && mvpExecutivePanelPage.includes("app-demo-orgao-publico.html#prova-doi") && mvpExecutivePanelPage.includes("app-demo-administrador.html#prova-dge"), "painel executivo sem atalhos DAJ/DED/DIC/DEE/DEJI/DPJ/DIP/DAA/DEJ/DOI/DGE");
 for (const code of expectedCodes) {
   assert(mvpExecutivePanelPage.includes(`<span class="rank-code">${code}</span>`), `painel executivo sem codigo ${code}`);
   assert(mvpExecutivePanelPage.includes(`data-proof-code="${code}"`), `painel executivo sem prova de valor do codigo ${code}`);
@@ -230,6 +234,10 @@ assert(daaDashboardPage.includes("data-daa-proof-runbook") && daaDashboardPage.i
 assert(daaDashboardPage.includes("Sem aluno real") && daaDashboardPage.includes("Sem nota automatica") && daaDashboardPage.includes("Sem fonte inventada"), "painel DAA sem limites academicos");
 assert(dejDashboardPage.includes("data-dej-proof-runbook") && dejDashboardPage.includes("DEJ-MODELO-VITRINE-2026") && dejDashboardPage.includes("CONCLUIR_DEMO_DEJ"), "painel DEJ sem runbook de prova Onda 3");
 assert(dejDashboardPage.includes("Sem cola") && dejDashboardPage.includes("Sem plagio") && dejDashboardPage.includes("Sem trabalho pronto"), "painel DEJ sem limites anti-fraude");
+assert(doiDashboardPage.includes("data-doi-proof-runbook") && doiDashboardPage.includes("DOI-MODELO-VITRINE-2026") && doiDashboardPage.includes("CONCLUIR_DEMO_DOI"), "painel DOI sem runbook de prova Onda 4");
+assert(doiDashboardPage.includes("Sem ato oficial") && doiDashboardPage.includes("Sem autoridade real") && doiDashboardPage.includes("Sem protocolo real"), "painel DOI sem limites institucionais");
+assert(dgeDashboardPage.includes("data-dge-proof-runbook") && dgeDashboardPage.includes("DGE-MODELO-VITRINE-2026") && dgeDashboardPage.includes("CONCLUIR_DEMO_DGE"), "painel DGE sem runbook de prova Onda 4");
+assert(dgeDashboardPage.includes("Sem permissao real") && dgeDashboardPage.includes("Sem token") && dgeDashboardPage.includes("Sem cofre real") && dgeDashboardPage.includes("Sem segredo"), "painel DGE sem limites de governanca");
 assert(finalChecklistPage.includes("O ultimo pacote do Mao na Massa e sempre a revisao geral de todos os pacotes") && finalChecklistPage.includes("Video") && finalChecklistPage.includes("ZIP"), "checklist final sem revisao geral, video e ZIP");
 for (const profile of ["admin_sistema", "advogado_lider", "advogado", "assessor_chefe", "assessor", "secretaria", "estagio", "escritorio", "academia", "estudante", "cidadao", "perito", "parceiro", "empresa", "orgao_publico", "magistrado", "ministerio_publico", "autoridade_policial", "autor_editor"]) {
   assert(dajProfilesPage.includes(`data-auth-profile="${profile}"`), `lista de perfis sem ${profile}`);
@@ -276,7 +284,7 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v47-2026-07-20-pesquisa-repositorios"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("jus9-pwa-v48-2026-07-20-onda4-doi-dge"), "cache PWA principal desatualizado");
 assert(canonicalServiceWorker.includes("/saiba-mais.html"), "cache PWA sem pagina Saiba mais");
 assert(canonicalServiceWorker.includes("/build-week-2026.html"), "cache PWA sem pagina Build Week");
 assert(canonicalServiceWorker.includes("/app-painel-mvps.html"), "cache PWA sem painel executivo dos MVPs");
