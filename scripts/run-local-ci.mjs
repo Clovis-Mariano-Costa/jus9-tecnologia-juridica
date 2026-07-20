@@ -163,6 +163,12 @@ const checks = [
     args: ["scripts/audit-g6-governanca-charlie.mjs"]
   },
   {
+    label: "G6B registro canonico capacidades Charlie",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-g6b-registro-canonico-charlie.mjs"]
+  },
+  {
     label: "Qualidade da interface Charlie Echo",
     cwd: portalRoot,
     command: process.execPath,

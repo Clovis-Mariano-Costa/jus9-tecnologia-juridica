@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.16.9 - 2026-07-20
+
+- G6B cria registro canonico v2 com 20 capacidades da Charlie e regra de falha fechada por divergencia.
+- Cada capacidade passa a declarar rota, ator, permissao, dado, efeito, evidencia, revisao humana, limite, rollback e pendencia.
+- Memoria, feedback DAJ e Drive recebem tres achados P0 de granularidade de permissao para G6C.
+- Nenhuma permissao, runtime, credencial ou capacidade CNJ/PDPJ foi alterada.
+
 ## 1.16.8 - 2026-07-20
 
 - Pacote 8 executa o fechamento tecnico do Mao na Massa sem declarar submissao final.

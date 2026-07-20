@@ -1,0 +1,435 @@
+{
+  "metadata": {
+    "id": "API-CHARLIE-REGISTRO-CANONICO-002",
+    "versao": "2.0.0",
+    "autor": "Codex / Charlie Juris",
+    "revisor_responsavel": "Clovis Mariano da Costa",
+    "data": "2026-07-20",
+    "status": "fonte-canonica-documental-aguardando-aceite-humano",
+    "classificacao": "PUBLICO-INSTITUCIONAL",
+    "hash": "calcular-na-release-aprovada",
+    "substitui_fonte_operacional": [
+      "governanca/MATRIZ_CAPACIDADES_CHARLIE_ECHO_v1.1.0.json",
+      "apis/FEATURE_FLAGS_CAPACIDADES_CHARLIE_ECHO_v1.3.0.json",
+      "apis/CONTRATO_BACKEND_GOVERNADO_CHARLIE_ECHO_v1.3.0.yaml"
+    ],
+    "preserva_historico": true
+  },
+  "regra_de_precedencia": {
+    "descricao": "O registro declara o estado governado; o runtime aplica o bloqueio tecnico. Divergencia entre registro, codigo, health, teste ou permissao resulta em falha fechada e revisao humana.",
+    "promocao_exige": [
+      "evidencia_no_codigo",
+      "teste_automatizado",
+      "health_quando_aplicavel",
+      "permissao_explicita",
+      "revisao_humana",
+      "release",
+      "rollback"
+    ],
+    "democao_em_incidente": "pode_ser_imediata_com_registro_e_revisao_posterior",
+    "silencio_externo_autoriza": false,
+    "default_deny": true
+  },
+  "estados_validos": [
+    "ATIVO_PUBLICO_LIMITADO",
+    "ATIVO_GOVERNADO",
+    "ATIVO_GOVERNADO_COM_PENDENCIA",
+    "ATIVO_LOCAL_DEMONSTRATIVO",
+    "READINESS_ONLY",
+    "BLOQUEADO_DEPENDENCIA_EXTERNA",
+    "BLOQUEADO_POR_SEGURANCA",
+    "PLANEJADO"
+  ],
+  "regras_globais": {
+    "dados_reais_em_demo_publico": "proibido",
+    "segredo_em_prompt_log_repositorio": "proibido",
+    "efeito_juridico_autonomo": "proibido",
+    "revisao_humana_uso_sensivel": "obrigatoria",
+    "memoria_temporaria_promocao_automatica": "proibida",
+    "fonte_nao_conferida": "declarar_pendencia",
+    "pdpj_transacional": "bloqueado",
+    "datajud_nome_cpf_externo": "bloqueado",
+    "credencial": "somente_provedor_seguro_fora_do_repositorio"
+  },
+  "papeis": {
+    "charlie": {
+      "pode": ["classificar", "responder", "resumir", "preparar_minuta", "recomendar", "encaminhar_para_revisao"],
+      "nao_pode": ["aprovar_propria_resposta_sensivel", "praticar_ato_juridico", "enviar_contato_externo", "alterar_permissao", "registrar_ciencia", "peticionar"]
+    },
+    "advogado_lider": {
+      "natureza": "decisor_humano_no_escopo_das_permissoes_explicitas",
+      "nao_implica": ["autorizacao_universal", "bypass_de_seguranca", "pdpj_habilitada", "permissao_fora_do_modulo"]
+    },
+    "anonimo_demo": {
+      "natureza": "acesso_publico_limitado_sem_persistencia_identificada",
+      "nao_pode": ["usar_dado_real", "acessar_memoria_usuario", "usar_drive_privilegiado", "acessar_daj"]
+    }
+  },
+  "capacidades": [
+    {
+      "id": "CHARLIE-CAP-001",
+      "nome": "Health e estado publico minimizado",
+      "estado": "ATIVO_PUBLICO_LIMITADO",
+      "rotas": [{"path": "/api/health", "methods": ["GET"]}],
+      "atores": ["anonimo_demo", "usuario_autenticado"],
+      "permissoes": [],
+      "dados": ["estado_de_componentes", "versoes", "readiness"],
+      "efeito": "leitura_sem_mutacao",
+      "revisao_humana": "nao_exigida_para_leitura",
+      "evidencias": ["worker.js", "tests/validate-worker-auth.mjs"],
+      "limites": ["nao_expor_segredos", "nao_declarar_readiness_como_autorizacao"],
+      "rollback": "retirar_componente_do_health_ou_marcar_degraded",
+      "pendencias": []
+    },
+    {
+      "id": "CHARLIE-CAP-002",
+      "nome": "Contexto autenticado e permissoes",
+      "estado": "ATIVO_GOVERNADO",
+      "rotas": [
+        {"path": "/api/auth/me", "methods": ["GET"]},
+        {"path": "/api/auth/permissions", "methods": ["GET"]},
+        {"path": "/api/auth/context", "methods": ["GET"]}
+      ],
+      "atores": ["usuario_autenticado"],
+      "permissoes": ["sessao_valida"],
+      "dados": ["perfil", "permissoes", "contexto_de_modulo", "email_hash"],
+      "efeito": "leitura_de_identidade_governada",
+      "revisao_humana": "exigida_para_promocao_de_perfil",
+      "evidencias": ["worker.js", "functions/_shared/permissions.js", "tests/validate-worker-auth.mjs"],
+      "limites": ["perfil_nao_cria_permissao_transitiva", "modulo_restringe_escopo"],
+      "rollback": "revogar_sessao_ou_rebaixar_perfil_por_fluxo_auditado",
+      "pendencias": []
+    },
+    {
+      "id": "CHARLIE-CAP-003",
+      "nome": "Gestao governada de perfis",
+      "estado": "ATIVO_GOVERNADO",
+      "rotas": [
+        {"path": "/api/profile-requests", "methods": ["GET", "POST"]},
+        {"path": "/api/profile-requests/action", "methods": ["POST"]},
+        {"path": "/api/profile-requests/audit", "methods": ["GET"]},
+        {"path": "/api/governed-profiles", "methods": ["GET"]}
+      ],
+      "atores": ["solicitante_autenticado", "gestor_de_perfil"],
+      "permissoes": ["profiles:request", "profiles:read", "profiles:manage", "escopo_de_modulo"],
+      "dados": ["solicitacao_de_perfil", "decisao", "auditoria_minimizada"],
+      "efeito": "solicitar_aprovar_ou_rejeitar_perfil",
+      "revisao_humana": "obrigatoria_para_decisao",
+      "evidencias": ["worker.js", "functions/_shared/permissions.js", "tests/validate-rls-controlled-matrix.mjs"],
+      "limites": ["advogado_lider_nao_e_autorizacao_universal", "gestao_limitada_ao_modulo"],
+      "rollback": "nova_decisao_governada_com_auditoria",
+      "pendencias": []
+    },
+    {
+      "id": "CHARLIE-CAP-004",
+      "nome": "Resposta governada da Charlie",
+      "estado": "ATIVO_PUBLICO_LIMITADO",
+      "rotas": [{"path": "/api/charlie/respond", "methods": ["GET", "POST"]}],
+      "atores": ["anonimo_demo", "usuario_autenticado"],
+      "permissoes": [],
+      "dados": ["mensagem", "modo", "rota", "classificacao_governada"],
+      "efeito": "resposta_sem_ato_externo",
+      "revisao_humana": "obrigatoria_em_uso_sensivel",
+      "evidencias": ["worker.js", "functions/lib/charlie-core/response-pipeline.js", "scripts/audit-charlie-response-pipeline.mjs"],
+      "limites": ["payload_limitado", "timeout", "no_store", "efeitos_autonomos_bloqueados"],
+      "rollback": "fallback_governado_ou_indisponibilidade_fechada",
+      "pendencias": ["anonimo_deve_usar_somente_dados_ficticios"]
+    },
+    {
+      "id": "CHARLIE-CAP-005",
+      "nome": "Laudo DAJ governado",
+      "estado": "ATIVO_GOVERNADO",
+      "rotas": [{"path": "/api/charlie/respond", "methods": ["POST"], "contract": "LAUDO_DAJ_V1"}],
+      "atores": ["usuario_com_contexto_daj"],
+      "permissoes": ["fonte_daj_governada_no_fluxo_de_origem"],
+      "dados": ["recorte_minimizado_do_daj"],
+      "efeito": "laudo_com_dez_secoes_e_encaminhamento_humano",
+      "revisao_humana": "obrigatoria",
+      "evidencias": ["worker.js", "scripts/audit-daj-analysis-laudo.mjs", "governanca/RELATORIO_ACEITE_E_REVERSIBILIDADE_PACOTE_1C_DAJ_2026-07-19.md"],
+      "limites": ["sem_presumir_processo", "sem_identidade_cpf_contato", "sem_ato_automatico"],
+      "rollback": "fallback_governado_limitado_ou_rejeicao_da_resposta",
+      "pendencias": []
+    },
+    {
+      "id": "CHARLIE-CAP-006",
+      "nome": "Extracao temporaria de anexos",
+      "estado": "ATIVO_PUBLICO_LIMITADO",
+      "rotas": [{"path": "/api/attachments/extract", "methods": ["POST"]}],
+      "atores": ["anonimo_demo", "usuario_autenticado"],
+      "permissoes": ["auth:read_quando_ha_sessao"],
+      "dados": ["arquivo_temporario", "texto_extraido"],
+      "efeito": "extracao_sem_persistencia",
+      "revisao_humana": "obrigatoria_antes_de_usar_como_evidencia",
+      "evidencias": ["worker.js", "scripts/audit-charlie-echo-quality.mjs"],
+      "limites": ["numero_e_tamanho_de_arquivos", "retencao_somente_resposta_atual", "ocr_pode_errar"],
+      "rollback": "rejeitar_upload_e_exigir_conversao_ou_revisao_no_original",
+      "pendencias": ["dados_reais_proibidos_no_demo_publico"]
+    },
+    {
+      "id": "CHARLIE-CAP-007",
+      "nome": "Memoria persistente isolada por usuario",
+      "estado": "ATIVO_GOVERNADO_COM_PENDENCIA",
+      "rotas": [{"path": "/api/charlie/memory", "methods": ["GET", "POST", "DELETE"]}],
+      "atores": ["usuario_autenticado"],
+      "permissoes": ["auth:read"],
+      "dados": ["memoria_do_proprio_usuario"],
+      "efeito": "ler_gravar_ou_excluir_memoria_isolada",
+      "revisao_humana": "obrigatoria_para_promocao_permanente",
+      "evidencias": ["worker.js", "memoria/POLITICA_MEMORIA_CHARLIE_ECHO_v1.0.0.md", "tests/validate-worker-auth.mjs"],
+      "limites": ["sessao_obrigatoria", "isolamento_por_usuario", "sem_promocao_automatica"],
+      "rollback": "DELETE_do_proprio_registro_e_revogacao_da_sessao",
+      "pendencias": ["G6C_criar_memory:read", "G6C_criar_memory:write", "G6C_criar_memory:delete", "G6D_definir_retencao_consentimento_exportacao_tombstone"]
+    },
+    {
+      "id": "CHARLIE-CAP-008",
+      "nome": "Drive privilegiado via proxy Charlie",
+      "estado": "ATIVO_GOVERNADO",
+      "rotas": [{"path": "/api/charlie/respond", "methods": ["POST"], "mode": "drive_privilegiado"}],
+      "atores": ["usuario_autenticado_com_escopo"],
+      "permissoes": ["drive:write", "sessao_valida", "token_interno_no_worker"],
+      "dados": ["artefato_classificado", "instrucao_de_destino"],
+      "efeito": "delegacao_governada_ao_backend_autorizado",
+      "revisao_humana": "obrigatoria_para_publicacao_revogacao_ou_exclusao",
+      "evidencias": ["worker.js", "scripts/audit-charlie-echo-quality.mjs", "tests/validate-worker-auth.mjs"],
+      "limites": ["token_nunca_no_frontend", "nao_inventar_file_id_ou_download_url"],
+      "rollback": "retirar_drive_write_ou_token_interno_e_retornar_somente_resposta",
+      "pendencias": ["G6C_catalogar_operacoes_drive_individuais"]
+    },
+    {
+      "id": "CHARLIE-CAP-009",
+      "nome": "Cadastro governado de DAJ",
+      "estado": "ATIVO_GOVERNADO",
+      "rotas": [
+        {"path": "/api/dajs/readiness", "methods": ["GET"]},
+        {"path": "/api/dajs", "methods": ["GET", "POST", "DELETE"]}
+      ],
+      "atores": ["equipe_juridica_autenticada"],
+      "permissoes": ["dajs:read", "dajs:write", "audit:write_para_exclusao_de_homologacao"],
+      "dados": ["daj", "indice_minimizado", "cpf_hmac"],
+      "efeito": "ler_gravar_ou_remover_somente_registro_ficticio_de_homologacao",
+      "revisao_humana": "obrigatoria",
+      "evidencias": ["worker.js", "tests/validate-daj-homologation.mjs", "governanca/RELATORIO_ACEITE_E_REVERSIBILIDADE_PACOTE_1C_DAJ_2026-07-19.md"],
+      "limites": ["payload_limitado", "no_store", "delete_somente_teste", "tombstone_sem_dado_da_parte"],
+      "rollback": "tombstone_e_ausencia_posterior_comprovada",
+      "pendencias": ["reversibilidade_1C_deve_permanecer_com_evidencia_humana"]
+    },
+    {
+      "id": "CHARLIE-CAP-010",
+      "nome": "Feedback e caixa de revisao DAJ",
+      "estado": "ATIVO_GOVERNADO_COM_PENDENCIA",
+      "rotas": [
+        {"path": "/api/dajs/review", "methods": ["POST"]},
+        {"path": "/api/dajs/inbox", "methods": ["GET"]}
+      ],
+      "atores": ["equipe_juridica_autenticada", "advogado_lider"],
+      "permissoes": ["dajs:read"],
+      "dados": ["feedback", "encaminhamento", "estado_de_revisao"],
+      "efeito": "gravar_feedback_e_encaminhar_revisao",
+      "revisao_humana": "intrinseca_ao_fluxo",
+      "evidencias": ["worker.js", "scripts/audit-daj-analysis-laudo.mjs"],
+      "limites": ["no_store", "sem_ato_juridico_automatico"],
+      "rollback": "novo_evento_de_revisao_sem_apagar_historico",
+      "pendencias": ["G6C_separar_permissao_dajs_review_write_de_dajs_read"]
+    },
+    {
+      "id": "CHARLIE-CAP-011",
+      "nome": "Vinculo DAJ-processo",
+      "estado": "ATIVO_GOVERNADO",
+      "rotas": [
+        {"path": "/api/daj-process-links/readiness", "methods": ["GET"]},
+        {"path": "/api/daj-process-links", "methods": ["GET", "POST"]}
+      ],
+      "atores": ["equipe_juridica_autenticada"],
+      "permissoes": ["dajs:read_ou_processes:read_para_leitura", "dajs:write_e_processes:read_para_escrita"],
+      "dados": ["daj_id", "numero_processual_minimizado_no_retorno", "metadados_de_vinculo"],
+      "efeito": "criar_ou_ler_vinculo_interno",
+      "revisao_humana": "obrigatoria_para_escrita",
+      "evidencias": ["worker.js", "tests/validate-worker-auth.mjs", "tests/validate-daj-homologation.mjs"],
+      "limites": ["um_daj_um_processo_conforme_contrato", "cpf_integral_nao_persistido"],
+      "rollback": "correcao_governada_sem_presumir_vinculo",
+      "pendencias": []
+    },
+    {
+      "id": "CHARLIE-CAP-012",
+      "nome": "Pesquisa interna de partes no indice DAJ",
+      "estado": "ATIVO_GOVERNADO",
+      "rotas": [
+        {"path": "/api/judicial/parties/readiness", "methods": ["GET"]},
+        {"path": "/api/judicial/parties/search", "methods": ["POST"]}
+      ],
+      "atores": ["usuario_autenticado_com_dajs_read"],
+      "permissoes": ["dajs:read"],
+      "dados": ["nome", "cpf_em_requisicao", "hash_hmac", "resultado_minimizado"],
+      "efeito": "consulta_interna_sem_mutacao",
+      "revisao_humana": "obrigatoria_para_uso_juridico",
+      "evidencias": ["worker.js", "tests/validate-worker-auth.mjs", "tests/validate-daj-homologation.mjs"],
+      "limites": ["rate_limit", "no_llm_no_invented_results", "cpf_integral_nao_persistido", "sem_fallback_por_finais"],
+      "rollback": "falha_fechada_sem_indice_ou_chave_hmac",
+      "pendencias": ["conector_externo_nome_cpf_bloqueado"]
+    },
+    {
+      "id": "CHARLIE-CAP-013",
+      "nome": "Estado e catalogo DataJud",
+      "estado": "ATIVO_PUBLICO_LIMITADO",
+      "rotas": [
+        {"path": "/api/tribunais/datajud/status", "methods": ["GET"]},
+        {"path": "/api/judicial/datajud/readiness", "methods": ["GET"]},
+        {"path": "/api/judicial/datajud/tribunais", "methods": ["GET"]}
+      ],
+      "atores": ["anonimo_demo", "usuario_autenticado"],
+      "permissoes": [],
+      "dados": ["readiness", "aliases_oficiais", "limites_publicos"],
+      "efeito": "leitura_sem_consulta_processual",
+      "revisao_humana": "nao_exigida_para_readiness",
+      "evidencias": ["worker.js", "scripts/audit-datajud-governance.mjs"],
+      "limites": ["nao_expor_api_key", "readiness_nao_e_resultado_processual"],
+      "rollback": "marcar_degraded_ou_indisponivel",
+      "pendencias": []
+    },
+    {
+      "id": "CHARLIE-CAP-014",
+      "nome": "Consulta DataJud por numero CNJ",
+      "estado": "ATIVO_GOVERNADO",
+      "rotas": [
+        {"path": "/api/judicial/datajud/search", "methods": ["POST"]},
+        {"path": "/api/judicial/datajud/processos/{numero}", "methods": ["GET"]}
+      ],
+      "atores": ["gateway_interno_autorizado"],
+      "permissoes": ["x-jus9-internal-token_valido"],
+      "dados": ["numero_processo_cnj", "alias_tribunal", "metadados_publicos_minimizados"],
+      "efeito": "consulta_oficial_somente_leitura",
+      "revisao_humana": "obrigatoria_antes_de_uso_juridico",
+      "evidencias": ["worker.js", "apis/CONTRATO_DATAJUD_GOVERNADO_v1.0.0.yaml", "scripts/audit-datajud-governance.mjs"],
+      "limites": ["api_key_upstream", "allowlist_91", "cache", "timeout", "backoff", "rate_limit_global", "2MB", "sem_nome_cpf"],
+      "rollback": "desabilitar_gateway_ou_chave_e_falhar_fechado",
+      "pendencias": []
+    },
+    {
+      "id": "CHARLIE-CAP-015",
+      "nome": "Readiness PDPJ",
+      "estado": "READINESS_ONLY",
+      "rotas": [{"path": "/api/judicial/pdpj/readiness", "methods": ["GET"]}],
+      "atores": ["anonimo_demo", "usuario_autenticado"],
+      "permissoes": [],
+      "dados": ["gates_publicos_de_configuracao"],
+      "efeito": "leitura_sem_token_ou_transacao",
+      "revisao_humana": "obrigatoria_para_qualquer_promocao",
+      "evidencias": ["worker.js", "scripts/audit-pdpj-onboarding.mjs", "governanca/CRONOGRAMA_CHARLIE_GOVERNANCA_CNJ_CONEXOES_v1.8.0.md"],
+      "limites": ["configured_false", "silencio_nao_autoriza"],
+      "rollback": "manter_readiness_only",
+      "pendencias": ["resposta_cnj", "entidade_cnpj", "responsavel", "finalidade", "termo", "gecli", "ambiente", "credenciais"]
+    },
+    {
+      "id": "CHARLIE-CAP-016",
+      "nome": "Teste de token PDPJ",
+      "estado": "BLOQUEADO_DEPENDENCIA_EXTERNA",
+      "rotas": [{"path": "/api/judicial/pdpj/token/test", "methods": ["POST"]}],
+      "atores": ["gateway_interno_autorizado_apos_onboarding"],
+      "permissoes": ["x-jus9-internal-token_valido", "onboarding_institucional_completo"],
+      "dados": ["credencial_em_custodia_segura"],
+      "efeito": "teste_tecnico_nao_transacional",
+      "revisao_humana": "obrigatoria_antes_e_depois",
+      "evidencias": ["worker.js", "scripts/audit-pdpj-onboarding.mjs"],
+      "limites": ["nao_executar_sem_gates", "nao_logar_token", "producao_separada"],
+      "rollback": "revogar_credencial_e_desabilitar_configuracao",
+      "pendencias": ["todos_os_gates_M6_do_cronograma_v1.8"]
+    },
+    {
+      "id": "CHARLIE-CAP-017",
+      "nome": "Google Calendar governado",
+      "estado": "ATIVO_GOVERNADO",
+      "rotas": [
+        {"path": "/api/calendar/status", "methods": ["GET"]},
+        {"path": "/api/calendar/events", "methods": ["GET", "POST"]},
+        {"path": "/api/calendar/disconnect", "methods": ["POST"]}
+      ],
+      "atores": ["usuario_autenticado"],
+      "permissoes": ["calendar:read", "calendar:write"],
+      "dados": ["estado_oauth", "eventos_do_usuario", "evento_solicitado"],
+      "efeito": "ler_criar_evento_ou_desconectar_calendario",
+      "revisao_humana": "obrigatoria_para_escrita_externa",
+      "evidencias": ["worker.js", "tests/validate-worker-auth.mjs"],
+      "limites": ["sessao", "escopos", "nao_expor_token", "acao_externa_explicita"],
+      "rollback": "desconectar_e_revogar_token_no_provedor",
+      "pendencias": ["G6C_catalogar_idempotencia_e_cancelamento"]
+    },
+    {
+      "id": "CHARLIE-CAP-018",
+      "nome": "Downloads locais PDF DOCX ZIP",
+      "estado": "ATIVO_LOCAL_DEMONSTRATIVO",
+      "rotas": [],
+      "atores": ["usuario_no_navegador"],
+      "permissoes": ["acao_local_do_usuario"],
+      "dados": ["resposta_renderizada", "artefato_local"],
+      "efeito": "download_local_sem_persistencia_de_servidor",
+      "revisao_humana": "obrigatoria_para_documento_sensivel",
+      "evidencias": ["script.js", "scripts/audit-charlie-echo-quality.mjs"],
+      "limites": ["download_nao_prova_drive", "nao_pronto_para_protocolo"],
+      "rollback": "nao_gerar_artefato_ou_descartar_download_local",
+      "pendencias": []
+    },
+    {
+      "id": "CHARLIE-CAP-019",
+      "nome": "Pesquisa externa de parte por nome ou CPF",
+      "estado": "BLOQUEADO_DEPENDENCIA_EXTERNA",
+      "rotas": [],
+      "atores": [],
+      "permissoes": [],
+      "dados": ["nome", "cpf"],
+      "efeito": "nenhum",
+      "revisao_humana": "obrigatoria_se_futuramente_autorizada",
+      "evidencias": ["worker.js", "apis/CATALOGO_CAPACIDADES_CNJ_GOVERNADO_v1.0.0.json"],
+      "limites": ["datajud_publico_nao_fornece_esta_capacidade", "nenhum_resultado_externo_pode_ser_inventado"],
+      "rollback": "permanecer_bloqueado",
+      "pendencias": ["orientacao_oficial", "base_legal", "conector_autorizado", "credenciais"]
+    },
+    {
+      "id": "CHARLIE-CAP-020",
+      "nome": "Atos judiciais ou administrativos autonomos",
+      "estado": "BLOQUEADO_POR_SEGURANCA",
+      "rotas": [],
+      "atores": [],
+      "permissoes": [],
+      "dados": [],
+      "efeito": "nenhum",
+      "revisao_humana": "nao_suficiente_sem_capacidade_institucional_especifica",
+      "evidencias": ["prompts/seguranca/POLITICA_RISCOS_CHARLIE_ECHO_v1.2.0.yaml", "apis/CATALOGO_CAPACIDADES_CNJ_GOVERNADO_v1.0.0.json"],
+      "limites": ["sem_ciencia", "sem_peticionamento", "sem_mni", "sem_ordem", "sem_contato_externo_automatico"],
+      "rollback": "bloqueio_permanente_nesta_fase",
+      "pendencias": []
+    }
+  ],
+  "lacunas_p0_para_g6c": [
+    {
+      "id": "G6C-P0-001",
+      "capacidade": "CHARLIE-CAP-007",
+      "problema": "GET POST e DELETE de memoria compartilham auth:read",
+      "tratamento": "separar memory:read memory:write memory:delete antes de promover a politica"
+    },
+    {
+      "id": "G6C-P0-002",
+      "capacidade": "CHARLIE-CAP-010",
+      "problema": "POST de feedback DAJ grava estado com dajs:read",
+      "tratamento": "criar dajs:review:write e preservar leitura separada"
+    },
+    {
+      "id": "G6C-P0-003",
+      "capacidade": "CHARLIE-CAP-008",
+      "problema": "drive:write agrega operacoes com efeitos distintos",
+      "tratamento": "separar criar salvar publicar revogar e excluir com aprovacao por efeito"
+    }
+  ],
+  "resumo": {
+    "total": 20,
+    "ativos_publicos_limitados": 4,
+    "ativos_governados": 9,
+    "ativos_governados_com_pendencia": 2,
+    "ativos_locais_demonstrativos": 1,
+    "readiness_only": 1,
+    "bloqueados_dependencia_externa": 2,
+    "bloqueados_seguranca": 1,
+    "altera_runtime": false,
+    "habilita_transacoes_cnj": false
+  },
+  "proxima_acao_unica": "G6C_MATRIZ_AUTORIDADE_E_FERRAMENTAS"
+}

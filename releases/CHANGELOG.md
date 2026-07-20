@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.21.9 - 2026-07-20
+
+- Release documental publica o registro canonico de capacidades Charlie v2.0.0.
+- Vinte capacidades recebem estado verificavel e tres lacunas P0 seguem para G6C.
+- Documentos v1.1.0 e v1.3.0 permanecem preservados como historico, mas deixam de ser fonte operacional isolada.
+- Worker permanece na release operacional `1.21.8`; nenhuma integracao ou permissao foi alterada.
+
 ## 1.21.8 - 2026-07-20
 
 - Publicado Pacote 8 como fechamento tecnico do Mao na Massa, com revisao geral executada e gates humanos preservados.
