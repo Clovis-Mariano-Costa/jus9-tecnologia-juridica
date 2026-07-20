@@ -151,6 +151,12 @@ const checks = [
     args: ["scripts/audit-cronograma-charlie-cnj-v1-7.mjs"]
   },
   {
+    label: "Cronograma Charlie CNJ v1.8",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-cronograma-charlie-cnj-v1-8.mjs"]
+  },
+  {
     label: "Qualidade da interface Charlie Echo",
     cwd: portalRoot,
     command: process.execPath,

@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.16.6 - 2026-07-20
+
+- Cronograma Charlie/CNJ avanca para v1.8.0 com marcos, datas, responsaveis, entradas, saidas e condicoes de parada.
+- Observacao somente leitura do portal fica organizada entre 20 e 23/07/2026.
+- Registro inicial M1 confirma home, Pesquisa, catalogo com 31 repositorios e health operacional, sem encerrar a janela de 72 horas.
+- Acompanhamento do CNJ permanece em 22/07/2026 as 10h, com bifurcacao explicita entre resposta e ausencia de resposta.
+- Reiteracao exige aprovacao humana; silencio nao autoriza homologacao ou capacidade transacional.
+
 ## 1.16.5 - 2026-07-20
 
 - Publicado pacote Onda 5 DMP+DAP+DMG como prova de valor executavel em 32 minutos.

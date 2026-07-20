@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.21.6 - 2026-07-20
+
+- Release documental reorganiza o cronograma Charlie/CNJ em marcos executaveis ate a decisao humana de 24/07/2026.
+- Janela de observacao de 72 horas e acompanhamento do CNJ em 22/07/2026 as 10h passam a ter criterios de pronto.
+- Checagem inicial M1 registra home, Pesquisa, catalogo e health em somente leitura.
+- Resposta e ausencia de resposta do CNJ recebem fluxos separados, ambos com falha fechada.
+- Worker permanece na release operacional `1.21.5`; nenhuma integracao real ou credencial foi habilitada.
+
 ## 1.21.5 - 2026-07-20
 
 - Publicada Onda 5 dos MVPs gerais com prova DMP+DAP+DMG em 32 minutos.
