@@ -32,7 +32,7 @@ Nesta revisao, nenhum pacote dependente de acao humana foi convertido em conclui
 | 5C | DMP, DAP e DMG | `CONCLUIDO_PUBLICADO` | Onda 5 publicada com prova governada DMP/DAP/DMG |
 | 6 | Memoria e Drive | `BLOQUEADO_ATE_REVERSIBILIDADE_1C` | Bloqueado enquanto o Pacote 2 nao fechar |
 | 7 | Painel executivo dos 14 MVPs | `CONCLUIDO_PUBLICADO` | `app-painel-mvps.html`, commit `63a32c4` |
-| 8 | Revisao geral, Video e ZIP | `REVISAO_EXECUTADA / VIDEO_ZIP_PENDENTES` | Este relatorio e checklist final |
+| 8 | Revisao geral, Video e ZIP | `REVISAO_GERAL_EXECUTADA / VIDEO_ZIP_PENDENTES / GATES_HUMANOS` | Este relatorio, checklist final e Pacote 8 v1.0.0 |
 
 ## Publicacoes validadas
 
@@ -56,8 +56,9 @@ Nesta revisao, nenhum pacote dependente de acao humana foi convertido em conclui
 
 - `LOCAL_CI_OK build-week,portal,rls,sql-homologacao,worker-auth,backend-local,charlie-echo,instalacao-publica,qr-codes`.
 - `PACKAGE5_SHOWCASES_OK modules=DEE,DEJI,DPJ status=CONCLUIDO_PUBLICADO`.
-- `FINAL_REMINDERS_OK video=pendente zip=pendente revisao-geral=pendente`.
-- `MVP_EXECUTIVE_PANEL_OK mvps=14 pacotes=12 onda1=DED_DIC onda2=DEE_DEJI_DPJ onda3=DIP_DAA_DEJ onda4=DOI_DGE onda5=DMP_DAP_DMG status=CONCLUIDO_PUBLICADO fechamento=PENDENTE_FECHAMENTO_GERAL`.
+- `FINAL_REMINDERS_OK video=pendente zip=pendente revisao-geral=executada`.
+- `MVP_EXECUTIVE_PANEL_OK mvps=14 pacotes=12 onda1=DED_DIC onda2=DEE_DEJI_DPJ onda3=DIP_DAA_DEJ onda4=DOI_DGE onda5=DMP_DAP_DMG status=CONCLUIDO_PUBLICADO fechamento=REVISAO_GERAL_EXECUTADA_VIDEO_ZIP_PENDENTES`.
+- `PACOTE8_FECHAMENTO_OK revisao=executada video=pendente zip=pendente gates=humanos`.
 
 ## Pendencias que nao podem ser puladas
 
@@ -106,4 +107,4 @@ Motivo:
 
 - Pacotes publicos seguros foram executados e validados.
 - Pacotes com efeito real permanecem corretamente bloqueados.
-- Video e ZIP foram lembrados e registrados, mas ainda nao devem ser tratados como finalizados antes do fechamento humano.
+- Video e ZIP foram lembrados, roteirizados e registrados, mas ainda nao devem ser tratados como finalizados antes do fechamento humano.

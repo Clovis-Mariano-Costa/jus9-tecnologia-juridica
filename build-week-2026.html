@@ -30,6 +30,7 @@ Software livre com autoria preservada.
         <a href="#mvp-scope">MVP scope</a>
         <a href="#live-flow">Live flow</a>
         <a href="#evidence">Evidence</a>
+        <a href="#final-package">Final package</a>
         <a href="#safety">Safety and limits</a>
         <a href="#architecture">Architecture</a>
         <a href="#source">Source review</a>
@@ -88,7 +89,7 @@ Software livre com autoria preservada.
           <div class="status-row" role="row"><strong role="cell">DAJ pilot</strong><span class="state verified" role="cell">Active pilot</span><span role="cell">Fictional intake, DAJ registry, mandatory laudo analysis, review routing, and read-only public metadata.</span></div>
           <div class="status-row" role="row"><strong role="cell">13 MVP expansions</strong><span class="state limited" role="cell">Governed demos</span><span role="cell">Public showcase pages use fictional datasets and explicit human-review limits.</span></div>
           <div class="status-row" role="row"><strong role="cell">Charlie Core v0</strong><span class="state pending" role="cell">Next package</span><span role="cell">Policies, module registry, risk classification, contracts, downloads, and audit should become shared code/config.</span></div>
-          <div class="status-row" role="row"><strong role="cell">Drive, memory, ZIP, video</strong><span class="state blocked" role="cell">Deferred</span><span role="cell">Real Drive/memory remain blocked until DAJ reversibility closes; final ZIP and video stay last-package tasks.</span></div>
+          <div class="status-row" role="row"><strong role="cell">Drive, memory, ZIP, video</strong><span class="state blocked" role="cell">Human gates remain</span><span role="cell">Real Drive/memory remain blocked until DAJ reversibility closes; Pacote8_REVISAO_EXECUTADA_GATES_HUMANOS prepares the final package without declaring video or ZIP ready.</span></div>
         </div>
       </section>
 
@@ -152,6 +153,23 @@ node scripts/audit-build-week-readiness.mjs --strict</code></pre>
               <p>The full task identifier is retained privately. This verifies <code>gpt-5.6-sol</code> for Codex development only; it does not attest the Charlie Echo production runtime.</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section class="reviewer-section" id="final-package" data-build-week-final-package>
+        <div class="section-heading">
+          <p class="reviewer-eyebrow">Pacote 8 closeout</p>
+          <h2>Final package gate</h2>
+          <p>The technical closeout review is prepared, but the project must not be submitted as final until the human gates below are resolved.</p>
+        </div>
+        <div class="status-table" role="table" aria-label="Final package gate status">
+          <div class="status-row status-head" role="row"><span role="columnheader">Gate</span><span role="columnheader">State</span><span role="columnheader">Required human action</span></div>
+          <div class="status-row" role="row"><strong role="cell">General review</strong><span class="state verified" role="cell">REVISAO_GERAL_EXECUTADA</span><span role="cell">Keep the review record and audit output attached to the final package.</span></div>
+          <div class="status-row" role="row"><strong role="cell">Eligibility</strong><span class="state blocked" role="cell">Clarification pending</span><span role="cell">Obtain written confirmation before submitting as a Brazil resident.</span></div>
+          <div class="status-row" role="row"><strong role="cell">Judge sandbox</strong><span class="state pending" role="cell">Private setup pending</span><span role="cell">Provide a least-privilege session with synthetic data only.</span></div>
+          <div class="status-row" role="row"><strong role="cell">Asset rights</strong><span class="state pending" role="cell">Owner signoff pending</span><span role="cell">Complete the declaration before using screenshots, marks, cards, or narration.</span></div>
+          <div class="status-row" role="row"><strong role="cell">Demo video</strong><span class="state pending" role="cell">VIDEO_PENDENTE_GRAVACAO_HUMANA</span><span role="cell">Record under three minutes without real data, secrets, accounts, CPFs, process records, or private Drive files.</span></div>
+          <div class="status-row" role="row"><strong role="cell">Final ZIP</strong><span class="state pending" role="cell">ZIP_PENDENTE_CONGELAMENTO_HUMANO</span><span role="cell">Freeze only after scan, open-check, exclusions, and SHA-256 hash.</span></div>
         </div>
       </section>
 

@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.16.8 - 2026-07-20
+
+- Pacote 8 executa o fechamento tecnico do Mao na Massa sem declarar submissao final.
+- Revisao geral fica registrada como `REVISAO_GERAL_EXECUTADA`; video e ZIP seguem como gates humanos.
+- Criados documento governado do Pacote 8, guia humano Build Week, roteiro de video e manifesto pendente do ZIP.
+- Build Week passa a expor a secao `final-package` com bloqueios humanos antes de qualquer submissao.
+- Pacote 2 segue aguardando novo teste humano e Pacote 6 segue bloqueado ate reversibilidade 1C.
+
 ## 1.16.7 - 2026-07-20
 
 - Diagnostico G6 confronta governanca documentada e runtime atual da Charlie.

@@ -32,8 +32,9 @@ for (const phrase of [
 }
 
 assert(panel.includes('data-package="8" data-package-status="PENDENTE_FECHAMENTO_GERAL"'), "painel sem pacote final de revisao/video/zip");
+assert(panel.includes("data-pacote8-fechamento") && panel.includes("REVISAO_GERAL_EXECUTADA"), "painel sem revisao tecnica executada no Pacote 8");
 assert(panel.includes("Ultimo pacote obrigatorio"), "painel sem regra de ultimo pacote");
 assert(cronograma.includes("Pacote 8 - Revisao geral, Video e ZIP"), "cronograma sem Pacote 8");
 assert(cronograma.includes("O ultimo pacote e sempre a revisao de todos os pacotes"), "cronograma sem regra do ultimo pacote");
 
-console.log("FINAL_REMINDERS_OK video=pendente zip=pendente revisao-geral=pendente");
+console.log("FINAL_REMINDERS_OK video=pendente zip=pendente revisao-geral=executada");

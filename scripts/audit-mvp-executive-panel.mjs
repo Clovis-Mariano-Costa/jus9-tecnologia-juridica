@@ -30,6 +30,8 @@ assert(panel.includes("data-onda2-dee-deji-dpj-proof") && panel.includes("Onda 2
 assert(panel.includes("data-onda3-dip-daa-dej-proof") && panel.includes("Onda 3 - prova DIP + DAA + DEJ"), "painel executivo sem prova Onda 3 DIP+DAA+DEJ");
 assert(panel.includes("data-onda4-doi-dge-proof") && panel.includes("Onda 4 - prova DOI + DGE"), "painel executivo sem prova Onda 4 DOI+DGE");
 assert(panel.includes("data-onda5-dmp-dap-dmg-proof") && panel.includes("Onda 5 - prova DMP + DAP + DMG"), "painel executivo sem prova Onda 5 DMP+DAP+DMG");
+assert(panel.includes("data-pacote8-fechamento") && panel.includes("REVISAO_GERAL_EXECUTADA"), "painel executivo sem fechamento tecnico do Pacote 8");
+assert(panel.includes("VIDEO_PENDENTE_GRAVACAO_HUMANA") && panel.includes("ZIP_PENDENTE_CONGELAMENTO_HUMANO"), "painel executivo sem gates humanos de video/ZIP");
 
 const packageStatuses = [
   "CONCLUIDO",
@@ -83,4 +85,4 @@ for (const target of [
 assert(mvpPage.includes("app-painel-mvps.html"), "mvp.html sem link para painel executivo");
 assert(leaderPage.includes("app-painel-mvps.html"), "lider-mvp.html sem link para painel executivo");
 
-console.log("MVP_EXECUTIVE_PANEL_OK mvps=14 pacotes=12 onda1=DED_DIC onda2=DEE_DEJI_DPJ onda3=DIP_DAA_DEJ onda4=DOI_DGE onda5=DMP_DAP_DMG status=CONCLUIDO_PUBLICADO fechamento=PENDENTE_FECHAMENTO_GERAL");
+console.log("MVP_EXECUTIVE_PANEL_OK mvps=14 pacotes=12 onda1=DED_DIC onda2=DEE_DEJI_DPJ onda3=DIP_DAA_DEJ onda4=DOI_DGE onda5=DMP_DAP_DMG status=CONCLUIDO_PUBLICADO fechamento=REVISAO_GERAL_EXECUTADA_VIDEO_ZIP_PENDENTES");

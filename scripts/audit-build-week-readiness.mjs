@@ -26,7 +26,11 @@ const requiredFiles = [
   "documentacao/hackathon/EVIDENCIAS_BUILD_WEEK_2026.md",
   "documentacao/hackathon/EVIDENCIA_CODEX_SOL_BUILD_WEEK_2026_v1.0.0.md",
   "documentacao/hackathon/MATRIZ_INTEGRACOES_TERCEIROS_BUILD_WEEK_2026.md",
-  "documentacao/hackathon/RELATORIO_CONFORMIDADE_OPENAI_BUILD_WEEK_2026_v1.1.0.md"
+  "documentacao/hackathon/RELATORIO_CONFORMIDADE_OPENAI_BUILD_WEEK_2026_v1.1.0.md",
+  "documentacao/hackathon/FECHAMENTO_HUMANO_BUILD_WEEK_2026.md",
+  "documentacao/hackathon/VIDEO_ROTEIRO_BUILD_WEEK_2026.md",
+  "documentacao/hackathon/ZIP_FINAL_MANIFESTO_PENDENTE_2026.md",
+  "governanca/PACOTE8_REVISAO_GERAL_VIDEO_ZIP_BUILD_WEEK_2026-07-20_v1.0.0.md"
 ];
 
 const errors = [];
@@ -76,6 +80,7 @@ const codexSolEvidence = read("documentacao/hackathon/EVIDENCIA_CODEX_SOL_BUILD_
 const integrationMatrix = read("documentacao/hackathon/MATRIZ_INTEGRACOES_TERCEIROS_BUILD_WEEK_2026.md");
 
 check(status.schemaVersion === "1.0.0", "status manifest schema", "Unexpected Build Week status schema");
+check(status.metadata?.versao === "1.3.0", "status manifest closeout version", "Build Week status must be version 1.3.0 for Package 8 closeout");
 check(status.project?.track === "Work and Productivity", "competition track", "Track must be Work and Productivity");
 check(status.project?.reviewerUrl === "https://jus9tecnologia.com.br/build-week-2026.html", "canonical reviewer URL", "Reviewer URL does not match the public page");
 check(status.mvpConsolidation?.stateMapUrl === "https://jus9tecnologia.com.br/mvp-o-que-ja-funciona.html", "MVP state-map URL", "Build Week status does not point to the public MVP state map");
@@ -84,6 +89,7 @@ check(status.mvpConsolidation?.ecosystemMapUrl === "https://jus9tecnologia.com.b
 check(status.mvpConsolidation?.operationalPilot === "DAJ", "DAJ operational pilot", "Build Week status must keep DAJ as the operational pilot");
 check(status.mvpConsolidation?.dajAnalysisContract?.includes("Laudo de Analise DAJ"), "DAJ laudo contract", "Build Week status must preserve the DAJ laudo contract");
 check(status.mvpConsolidation?.package2State === "AGUARDANDO_NOVO_TESTE_HUMANO", "Package 2 human retest state", "Build Week status must preserve Package 2 human retest state");
+check(status.mvpConsolidation?.finalPackageState === "PACOTE8_REVISAO_EXECUTADA_GATES_HUMANOS", "Package 8 closeout state", "Build Week status must preserve Package 8 human-gated closeout state");
 check(status.claims?.significantExtensionAfterStart?.state === "verified", "significant-extension claim", "Significant extension is not marked verified");
 check(status.claims?.codexCollaboration?.state === "verified", "Codex collaboration status", "Codex collaboration must be supported by evidence");
 check(status.claims?.codexCollaboration?.sessionId === "attached_privately", "Codex task identification retained privately", "Codex task identification must be retained privately");
@@ -95,13 +101,15 @@ check(status.claims?.gpt56Runtime?.state === "unverified", "GPT-5.6 claim remain
 check(status.claims?.entrantEligibility?.state === "blocked_pending_official_clarification", "eligibility remains explicitly blocked", "Eligibility must not be presented as approved without written clarification");
 check(status.integrations?.externalPartySearch?.state === "unavailable_fail_closed", "party search fails closed", "External party search must remain unavailable and fail closed");
 check(status.integrations?.datajud?.state.includes("read_only"), "DataJud remains read-only", "DataJud must remain read-only in the competition package");
-check(status.submissionArtifacts?.finalZip?.state === "deferred_until_technical_freeze", "final ZIP is explicitly deferred", "Final ZIP deferral was lost");
-check(status.submissionArtifacts?.demoVideo?.state === "deferred_until_technical_freeze", "demo video is explicitly deferred", "Demo video deferral was lost");
+check(status.submissionArtifacts?.package8Closeout?.state === "review_executed_human_gates_pending", "Package 8 closeout prepared", "Package 8 closeout must be prepared without final submission claim");
+check(status.submissionArtifacts?.finalZip?.state === "deferred_until_human_freeze", "final ZIP is explicitly deferred to human freeze", "Final ZIP deferral was lost");
+check(status.submissionArtifacts?.demoVideo?.state === "deferred_until_human_recording", "demo video is explicitly deferred to human recording", "Demo video deferral was lost");
 check(status.submissionArtifacts?.repositoryHygiene?.state === "blocked_tracked_legacy_zip_extraction", "tracked legacy ZIP extraction is declared", "Repository hygiene status does not declare the tracked legacy ZIP extraction");
 
 check(/<html\s+lang="en">/i.test(reviewerPage), "reviewer page language", "Reviewer page must declare English");
 check(/id="live-flow"/.test(reviewerPage) && /id="evidence"/.test(reviewerPage) && /id="safety"/.test(reviewerPage), "reviewer page sections", "Reviewer page is missing live flow, evidence, or safety sections");
 check(/id="mvp-scope"/.test(reviewerPage) && /data-build-week-mvp-scope/.test(reviewerPage), "reviewer MVP scope section", "Reviewer page is missing the MVP scope section");
+check(/id="final-package"/.test(reviewerPage) && /data-build-week-final-package/.test(reviewerPage) && /Human gates remain/.test(reviewerPage), "reviewer final package section", "Reviewer page is missing the Package 8 final package gate");
 check(/Codex development model/.test(reviewerPage) && /gpt-5\.6-sol/.test(reviewerPage), "reviewer Codex Sol disclosure", "Reviewer page does not disclose the verified Codex development model");
 check(/id="codex-sol-evidence"/.test(reviewerPage) && reviewerPage.includes(status.claims.codexGpt56SolDevelopment.evidenceFingerprintSha256), "self-contained public Codex Sol evidence", "Reviewer page must expose the sanitized Codex Sol evidence without requiring repository access");
 check(/app-atendimento-inicial\.html/.test(reviewerPage) && /app-ia-profissional\.html/.test(reviewerPage) && /app-processos\.html/.test(reviewerPage), "reviewer workflow links", "Reviewer page does not link the complete DAJ flow");

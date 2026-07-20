@@ -1,17 +1,17 @@
 {
   "metadata": {
     "id": "JUS9-BUILD-WEEK-STATUS-2026-001",
-    "versao": "1.2.0",
+    "versao": "1.3.0",
     "autor": "Codex / Charlie Fox",
     "revisor_responsavel": "Clovis Mariano da Costa",
-    "data": "2026-07-19",
+    "data": "2026-07-20",
     "status": "ativo-controlado",
     "classificacao": "PUBLICO-INSTITUCIONAL",
     "hash": "gerar-na-versao-final"
   },
   "schemaVersion": "1.0.0",
   "documentId": "JUS9-BUILD-WEEK-STATUS-2026-001",
-  "updatedAt": "2026-07-19T19:32:13-03:00",
+  "updatedAt": "2026-07-20T15:26:55-03:00",
   "owner": "Clovis Mariano da Costa / Aeon Primevo",
   "reviewer": "Codex / Charlie Fox",
   "classification": "PUBLICO-INSTITUCIONAL",
@@ -34,7 +34,9 @@
     "showcasePolicy": "The other 13 MVPs remain governed public showcases with fictional datasets and human-review limits.",
     "nextSharedCore": "Charlie Core v0",
     "dajAnalysisContract": "Charlie Echo must return a structured Laudo de Analise DAJ before DAJ review feedback is registered; the portal proxy can recover evasive upstream responses with a governed laudo from minimized registry data.",
-    "package2State": "AGUARDANDO_NOVO_TESTE_HUMANO"
+    "package2State": "AGUARDANDO_NOVO_TESTE_HUMANO",
+    "finalPackageState": "PACOTE8_REVISAO_EXECUTADA_GATES_HUMANOS",
+    "finalPackagePublicAnchor": "https://jus9tecnologia.com.br/build-week-2026.html#final-package"
   },
   "claims": {
     "significantExtensionAfterStart": {
@@ -128,13 +130,21 @@
       "state": "blocked_tracked_legacy_zip_extraction",
       "note": "The original ZIP extraction remains tracked under tmp and must be removed from the final public HEAD by an explicit owner-approved cleanup"
     },
+    "package8Closeout": {
+      "state": "review_executed_human_gates_pending",
+      "governanceDocument": "governanca/PACOTE8_REVISAO_GERAL_VIDEO_ZIP_BUILD_WEEK_2026-07-20_v1.0.0.md",
+      "publicGuide": "documentacao/hackathon/FECHAMENTO_HUMANO_BUILD_WEEK_2026.md",
+      "videoScript": "documentacao/hackathon/VIDEO_ROTEIRO_BUILD_WEEK_2026.md",
+      "zipManifest": "documentacao/hackathon/ZIP_FINAL_MANIFESTO_PENDENTE_2026.md",
+      "note": "Technical closeout review is prepared; final submission remains blocked by human gates"
+    },
     "finalZip": {
-      "state": "deferred_until_technical_freeze",
-      "note": "Owner requested that ZIP finalization happen at the end"
+      "state": "deferred_until_human_freeze",
+      "note": "Owner must authorize final freeze, scan, open-check, and SHA-256 hash"
     },
     "demoVideo": {
-      "state": "deferred_until_technical_freeze",
-      "note": "Owner requested that recording and publication happen at the end"
+      "state": "deferred_until_human_recording",
+      "note": "Owner must record or approve the public video under three minutes"
     }
   },
   "strictSubmissionBlockers": [

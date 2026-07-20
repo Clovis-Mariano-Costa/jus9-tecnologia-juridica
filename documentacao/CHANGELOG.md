@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Documentacao
 
+## 1.17.7 - 2026-07-20
+
+- Versionamento publico v5.15 registra o Pacote 8 como fechamento tecnico com gates humanos.
+- Build Week recebe a secao publica de fechamento `final-package`.
+- Documentados guia humano, roteiro de video e manifesto pendente de ZIP para orientar a submissao final.
+- Manifesto `BUILD_WEEK_STATUS_2026.json` sobe para versao `1.3.0` sem marcar video, ZIP ou elegibilidade como concluidos.
+
 ## 1.17.6 - 2026-07-20
 
 - Versionamento publico v5.14 registra a Onda 5 DMP+DAP+DMG como prova de valor executavel.

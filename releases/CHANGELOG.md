@@ -11,6 +11,15 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.21.8 - 2026-07-20
+
+- Publicado Pacote 8 como fechamento tecnico do Mao na Massa, com revisao geral executada e gates humanos preservados.
+- Build Week recebe secao `final-package` para orientar elegibilidade, sandbox, direitos de ativos, video e ZIP.
+- Criados guias `FECHAMENTO_HUMANO_BUILD_WEEK_2026.md`, `VIDEO_ROTEIRO_BUILD_WEEK_2026.md` e `ZIP_FINAL_MANIFESTO_PENDENTE_2026.md`.
+- Criado documento governado `PACOTE8_REVISAO_GERAL_VIDEO_ZIP_BUILD_WEEK_2026-07-20_v1.0.0.md` e auditor `audit-pacote8-fechamento.mjs`.
+- Cache PWA sobe para `jus9-pwa-v50-2026-07-20-pacote8-fechamento`.
+- Pacote 2, Pacote 6, video, ZIP e elegibilidade permanecem sem conclusao por presuncao.
+
 ## 1.21.7 - 2026-07-20
 
 - Release documental publica o diagnostico G6 da governanca operacional da Charlie.

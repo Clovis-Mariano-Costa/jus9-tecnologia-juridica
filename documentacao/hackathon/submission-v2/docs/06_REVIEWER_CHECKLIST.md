@@ -27,6 +27,8 @@ hash: nao-aplicavel-pacote-candidato
 - [ ] Video under three minutes, in English or with English translation.
 - [ ] No unlicensed music or third-party trademark use.
 - [ ] Final archive scanned, opened, and hashed.
+- [x] Package 8 technical closeout prepared.
+- [ ] Package 8 human gates resolved.
 
 ## Do not submit when
 
@@ -35,4 +37,5 @@ hash: nao-aplicavel-pacote-candidato
 - a judge cannot run or view the demonstrated flow;
 - a screenshot is a mockup presented as production;
 - the package contains real legal or personal data;
-- an external integration is described beyond its actual authorization or capability.
+- an external integration is described beyond its actual authorization or capability;
+- Package 8 remains at `VIDEO_PENDENTE_GRAVACAO_HUMANA` or `ZIP_PENDENTE_CONGELAMENTO_HUMANO`.

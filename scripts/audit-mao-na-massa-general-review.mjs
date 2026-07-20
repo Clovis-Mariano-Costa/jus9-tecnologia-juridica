@@ -17,7 +17,7 @@ for (const phrase of [
   "nenhum pacote dependente de acao humana foi convertido em concluido por presuncao",
   "DEPENDENTE_DE_ACAO_HUMANA",
   "BLOQUEADO_ATE_REVERSIBILIDADE_1C",
-  "REVISAO_EXECUTADA / VIDEO_ZIP_PENDENTES",
+  "REVISAO_GERAL_EXECUTADA / VIDEO_ZIP_PENDENTES / GATES_HUMANOS",
   "VIDEO_ZIP_PENDENTES",
   "MANTER_MAO_NA_MASSA_ABERTO_COM_PACOTES_SEGUROS_CONCLUIDOS",
 ]) {
@@ -48,4 +48,4 @@ for (const url of [
   assert(review.includes(url), `revisao geral sem URL publicada: ${url}`);
 }
 
-console.log("MAO_NA_MASSA_GENERAL_REVIEW_OK pacotes=12 pendencias=humanas-video-zip");
+console.log("MAO_NA_MASSA_GENERAL_REVIEW_OK pacotes=12 pacote8=revisao-executada pendencias=humanas-video-zip");

@@ -13,14 +13,15 @@ hash: nao-aplicavel-pacote-candidato
 
 ## Status
 
-This is a **candidate review package**, not the final submission archive.
+This is a **candidate review package**, not the final submission archive. Package 8 has prepared the technical closeout, but the human gates remain open.
 
 It remains blocked by:
 
 - official eligibility clarification for an individual resident in Brazil;
 - a least-privilege judge account or sandbox;
 - real, sanitized product screenshots;
-- final third-party and asset-rights review.
+- final third-party and asset-rights review;
+- human approval for the public video URL and final ZIP SHA-256.
 
 The full Codex task identification is ready for private submission and is intentionally absent from this public package. Sanitized local metadata verifies `gpt-5.6-sol` for the development task; no GPT-5.6 claim is made for the Charlie Echo production runtime.
 
@@ -49,8 +50,11 @@ The first package was primarily an investment and governance presentation. This 
 4. `docs/04_THIRD_PARTY_AND_SAFETY.md`
 5. `docs/05_GOVERNANCE_SUMMARY.md`
 6. `docs/06_REVIEWER_CHECKLIST.md`
-7. `media/11_charlie_echo_governance_card.jpg`
-8. `media/14_governance_hierarchy.jpg`
+7. `../FECHAMENTO_HUMANO_BUILD_WEEK_2026.md`
+8. `../VIDEO_ROTEIRO_BUILD_WEEK_2026.md`
+9. `../ZIP_FINAL_MANIFESTO_PENDENTE_2026.md`
+10. `media/11_charlie_echo_governance_card.jpg`
+11. `media/14_governance_hierarchy.jpg`
 
 ## Public links
 
@@ -69,3 +73,5 @@ The original ZIP is preserved separately with SHA-256:
 `309F6655D5C92E0EB0F061485875B1088BC58F1163A8A727BF70FC2C2AC4FC93`
 
 It must not be overwritten or submitted as the final package.
+
+Package 8 status: `REVISAO_GERAL_EXECUTADA`, with `VIDEO_PENDENTE_GRAVACAO_HUMANA` and `ZIP_PENDENTE_CONGELAMENTO_HUMANO`.

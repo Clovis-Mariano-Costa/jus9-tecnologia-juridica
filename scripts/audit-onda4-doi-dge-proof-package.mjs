@@ -95,17 +95,17 @@ for (const phrase of [
 }
 
 for (const phrase of [
-  "Versionamento Jus 9 - v5.14",
+  "Versionamento Jus 9 - v5.15",
   "PACOTE_ONDA4_DOI_DGE_PROVA_VALOR_2026-07-19_v1.0.0.md",
   "audit-onda4-doi-dge-proof-package.mjs",
-  "jus9-pwa-v49-2026-07-20-onda5-dmp-dap-dmg",
+  "jus9-pwa-v50-2026-07-20-pacote8-fechamento",
   "Versao 5.11 - Onda 3 DIP + DAA + DEJ",
 ]) {
   includes(versionamento, phrase, "versionamento publico");
 }
 
-includes(serviceWorker, "jus9-pwa-v49-2026-07-20-onda5-dmp-dap-dmg", "service worker");
-includes(wranglerConfig, "governanca-1.21.5-onda5-dmp-dap-dmg-1.0", "wrangler release");
+includes(serviceWorker, "jus9-pwa-v50-2026-07-20-pacote8-fechamento", "service worker");
+includes(wranglerConfig, "governanca-1.21.8-pacote8-fechamento-1.0", "wrangler release");
 includes(release, "Release v1.21.4 - Onda 4 DOI + DGE", "release Onda 4");
 
 console.log("ONDA4_DOI_DGE_PROOF_PACKAGE_OK roteiro=22min mvps=DOI,DGE status=PUBLICADO_CONTROLADO");

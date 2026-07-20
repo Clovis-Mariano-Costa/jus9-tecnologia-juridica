@@ -247,6 +247,12 @@ const checks = [
     args: ["scripts/audit-mao-na-massa-general-review.mjs"]
   },
   {
+    label: "Pacote 8 fechamento tecnico",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-pacote8-fechamento.mjs"]
+  },
+  {
     label: "Painel executivo dos MVPs",
     cwd: portalRoot,
     command: process.execPath,
