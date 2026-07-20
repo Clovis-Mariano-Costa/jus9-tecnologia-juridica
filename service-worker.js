@@ -4,12 +4,13 @@
   Não armazena dados sensíveis. Não altera login, backend ou rotas protegidas.
 */
 
-const JUS9_CACHE = 'jus9-pwa-v46-2026-07-19-onda3-dip-daa-dej';
+const JUS9_CACHE = 'jus9-pwa-v47-2026-07-20-pesquisa-repositorios';
 const JUS9_ASSETS = [
   '/',
   '/index.html',
   '/saiba-mais.html',
   '/versionamento.html',
+  '/pesquisa-repositorios.html',
   '/build-week-2026.html',
   '/mvp.html',
   '/mvp-o-que-ja-funciona.html',
@@ -41,13 +42,15 @@ const JUS9_ASSETS = [
   '/assets/js/daj-intake.js',
   '/assets/js/daj-registry-list.js',
   '/assets/js/governed-team-directory.js',
+  '/assets/js/pesquisa-repositorios.js',
   '/assets/favicon.svg',
   '/assets/jus9-logo.svg',
   '/assets/clovis-founder-portrait.png',
   '/assets/clovis-founder-context.png',
   '/assets/css/visual-jus9-fase-final.css',
   '/assets/css/daj-clean-ui.css',
-  '/assets/css/build-week-reviewer.css'
+  '/assets/css/build-week-reviewer.css',
+  '/data-publica/repositorios-jus9.json'
 ];
 
 self.addEventListener('install', (event) => {

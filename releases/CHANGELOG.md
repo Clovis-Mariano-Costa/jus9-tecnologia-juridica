@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.21.2 - 2026-07-20
+
+- Publicada a Pesquisa Jus 9 no menu principal do portal.
+- Catalogo governado registra 31 repositorios relacionados, incluindo nomes restritos autorizados pelo Fundador apenas como metadados.
+- Conteudo privado e credenciais continuam fora do portal; o GitHub aplica as permissoes da sessao do usuario.
+- Portal sobe para v5.12 e cache PWA para `jus9-pwa-v47-2026-07-20-pesquisa-repositorios`.
+- Onda 3 e guard PDPJ-Br permanecem preservados.
+
 ## 1.21.1 - 2026-07-19
 
 - Publicada Onda 3 dos MVPs gerais com prova DIP+DAA+DEJ em 33 minutos.

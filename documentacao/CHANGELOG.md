@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Documentacao
 
+## 1.17.4 - 2026-07-20
+
+- Versionamento publico v5.12 registra a Pesquisa Jus 9 no menu principal.
+- Catalogo publico versionado documenta 31 repositorios relacionados e seus limites de acesso.
+- Sitemap, rota semantica, distribuicao, cache PWA e auditoria automatizada foram atualizados.
+
 ## 1.17.3 - 2026-07-19
 
 - Versionamento publico v5.11 registra a Onda 3 DIP+DAA+DEJ como prova de valor executavel.

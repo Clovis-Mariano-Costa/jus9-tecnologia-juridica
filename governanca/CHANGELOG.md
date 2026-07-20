@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.16.2 - 2026-07-20
+
+- Publicacao dos nomes de repositorios restritos como metadados foi confirmada pelo Fundador.
+- Pesquisa federada nao replica conteudo privado e nao recebe token ou credencial GitHub.
+- Acesso efetivo a repositorios restritos permanece sob controle do GitHub.
+- PDPJ-Br permanece bloqueada por onboarding institucional e resposta do CNJ.
+- Cronograma focado avanca para `CRONOGRAMA_CHARLIE_GOVERNANCA_CNJ_CONEXOES_v1.6.0.md`, com G5 interno sem credenciais e lembrete de acompanhamento em 22/07/2026.
+
 ## 1.16.1 - 2026-07-19
 
 - Publicado pacote Onda 3 DIP+DAA+DEJ como prova de valor executavel em 33 minutos.

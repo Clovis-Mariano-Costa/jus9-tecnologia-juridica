@@ -14,8 +14,10 @@ $files = @(
   'script.js',
   'style.css',
   '_headers',
+  '_redirects',
   'manifest.webmanifest',
   'versionamento.html',
+  'pesquisa-repositorios.html',
   'saiba-mais.html',
   'nossa-historia.html',
   'mvp.html',
@@ -29,9 +31,11 @@ $files = @(
   'assets\js\daj-intake.js',
   'assets\js\daj-registry-list.js',
   'assets\js\governed-team-directory.js',
+  'assets\js\pesquisa-repositorios.js',
   'assets\css\daj-clean-ui.css',
   'assets\css\build-week-reviewer.css',
   'data-publica\mvp-perfis.json',
+  'data-publica\repositorios-jus9.json',
   'assets\clovis-founder-portrait.png',
   'assets\clovis-founder-context.png'
 )

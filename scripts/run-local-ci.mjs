@@ -31,6 +31,12 @@ const checks = [
     args: ["scripts/audit-saiba-mais-build-week-links.mjs"]
   },
   {
+    label: "Pesquisa federada de repositorios Jus 9",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-pesquisa-repositorios.mjs"]
+  },
+  {
     label: "Portal publico e 14 MVPs",
     cwd: portalRoot,
     command: process.execPath,
@@ -125,6 +131,12 @@ const checks = [
     cwd: portalRoot,
     command: process.execPath,
     args: ["scripts/audit-pdpj-onboarding.mjs"]
+  },
+  {
+    label: "Cronograma Charlie CNJ v1.6",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-cronograma-charlie-cnj-v1-6.mjs"]
   },
   {
     label: "Qualidade da interface Charlie Echo",

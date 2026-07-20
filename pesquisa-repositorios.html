@@ -1,0 +1,64 @@
+<!--
+  Jus 9 Tecnologia Juridica - software livre, autoria preservada.
+  Pesquisa federada de repositorios GitHub - versao 1.0.0.
+-->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Pesquisa Jus 9 - Repositorios GitHub</title>
+  <meta name="description" content="Pesquisa governada dos repositorios GitHub relacionados a Jus 9 Tecnologia Juridica.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css?v=20260719-pesquisa-repositorios-v1">
+  <link rel="manifest" href="manifest.webmanifest">
+  <style>
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.repository-search-shell{max-width:1080px;margin:0 auto;padding:3rem 1rem 5rem}.repository-search-panel{background:rgba(15,23,42,.92);border:1px solid rgba(212,175,55,.35);border-radius:22px;padding:clamp(1.25rem,3vw,2.25rem);color:#f8fafc}.repository-search-form{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,.35fr) auto;gap:.75rem;margin:1.5rem 0}.repository-search-form input,.repository-search-form select{width:100%;min-height:48px;border-radius:12px;border:1px solid rgba(148,163,184,.55);background:#fff;color:#0f172a;padding:.75rem}.repository-search-results{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-top:1.25rem}.repository-card{background:#fff;color:#0f172a;border-radius:16px;padding:1.1rem;box-shadow:0 12px 30px rgba(2,6,23,.18)}.repository-card h2{font-size:1rem;overflow-wrap:anywhere}.repository-card a{color:#805b08;font-weight:700}.repository-card a+a{display:block;margin-top:.65rem}.repository-meta{color:#475569;text-transform:capitalize}.repository-governance{margin-top:1.5rem;padding:1rem;border-left:4px solid #d4af37;background:rgba(255,255,255,.08)}@media(max-width:760px){.repository-search-form{grid-template-columns:1fr}.repository-search-form .btn{width:100%}}
+  </style>
+</head>
+<body>
+<div class="jus9-autoria-topo" role="note" style="font-size:.82rem;line-height:1.4;text-align:center;padding:.45rem .75rem;background:rgba(15,23,42,.94);color:#f8fafc;">Jus 9 Tecnologia Juridica - software livre, autoria preservada.</div>
+<header class="header">
+  <div class="container nav">
+    <a href="index.html" class="logo" aria-label="Jus 9"><img src="assets/jus9-logo.svg" alt="Jus 9"></a>
+    <nav class="menu" aria-label="Navegacao principal">
+      <a href="index.html">Inicio</a>
+      <a href="pesquisa-repositorios.html" aria-current="page">Pesquisa</a>
+      <a href="versionamento.html">Versionamento</a>
+      <a href="saiba-mais.html">Saiba mais</a>
+      <a href="index.html#contato">Contato</a>
+    </nav>
+    <a class="cta" href="https://github.com/Clovis-Mariano-Costa" target="_blank" rel="noopener noreferrer">GitHub Jus 9</a>
+    <button class="mobile-toggle" aria-label="Abrir menu">&#9776;</button>
+  </div>
+</header>
+<main class="repository-search-shell">
+  <section class="repository-search-panel" aria-labelledby="repository-search-title">
+    <div class="eyebrow">Pesquisa federada e governada</div>
+    <h1 id="repository-search-title">Repositorios GitHub ligados a Jus 9</h1>
+    <p class="lead">Pesquise o catalogo institucional por nome ou area. Para pesquisar arquivos e codigo, use o GitHub: repositorios restritos somente aparecerao para uma sessao que ja tenha permissao.</p>
+    <form class="repository-search-form" data-repository-search-form role="search">
+      <label class="sr-only" for="repository-query">Termo de pesquisa</label>
+      <input id="repository-query" data-repository-search-input type="search" placeholder="Ex.: governanca, Charlie Echo, API, livros" autocomplete="off">
+      <label class="sr-only" for="repository-visibility">Visibilidade</label>
+      <select id="repository-visibility" data-repository-visibility>
+        <option value="all">Todos os acessos</option>
+        <option value="public">Publicos</option>
+        <option value="restricted">Restritos</option>
+      </select>
+      <button class="btn primary" type="submit">Pesquisar catalogo</button>
+    </form>
+    <div class="hero-actions">
+      <a class="btn" data-github-search href="https://github.com/search?q=user%3AClovis-Mariano-Costa&type=code" target="_blank" rel="noopener noreferrer">Pesquisar conteudo no GitHub</a>
+    </div>
+    <p data-repository-summary aria-live="polite">Carregando catalogo versionado...</p>
+    <div class="repository-search-results" data-repository-results></div>
+    <aside class="repository-governance">
+      <strong>Limite de governanca:</strong> esta pagina nao copia conteudo privado e nao recebe credenciais GitHub. O catalogo registra metadados; o acesso efetivo continua sendo decidido pelo GitHub.
+    </aside>
+  </section>
+</main>
+<script src="assets/js/pesquisa-repositorios.js?v=1.0.0" defer></script>
+<script src="script.js?v=20260719-pesquisa-repositorios-v1" defer></script>
+</body>
+</html>
