@@ -109,7 +109,7 @@ const checks = [
     args: ["scripts/audit-charlie-governance-backend-contracts.mjs"]
   },
   {
-    label: "Charlie Core v0 e contratos JSON",
+    label: "Charlie Core 1.2.0 e contratos JSON",
     cwd: portalRoot,
     command: process.execPath,
     args: ["--test", "tests/charlie-core.test.mjs"]
@@ -263,6 +263,36 @@ const checks = [
     cwd: portalRoot,
     command: process.execPath,
     args: ["scripts/audit-cronograma-mvps-v4.mjs"]
+  },
+  {
+    label: "Portfolio canonico dos MVPs v2",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-portfolio-mvps-v2.mjs"]
+  },
+  {
+    label: "Contratos e baseline transversal dos MVPs",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-mvp-contracts-baseline.mjs"]
+  },
+  {
+    label: "Revalidacao e mapa de repositorios dos MVPs",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-mvp-revalidation-repositories.mjs"]
+  },
+  {
+    label: "Release Mao na Massa dos MVPs v4",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-mao-na-massa-mvps-v4-release.mjs"]
+  },
+  {
+    label: "Revisao final dos pacotes MVPs v4",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-mvp-v4-final-review.mjs"]
   },
   {
     label: "Painel executivo dos MVPs",

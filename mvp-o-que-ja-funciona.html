@@ -41,7 +41,7 @@
         <div class="eyebrow">Mapa publico de estados</div>
         <h1 class="mvp-title">O que ja funciona nos MVPs da Jus 9.</h1>
         <p class="mvp-lead">Este mapa separa o que esta ativo, o que e vitrine demonstrativa, o que esta planejado e o que fica bloqueado por governanca. A leitura publica deve continuar honesta: usar somente dados ficticios.</p>
-        <p class="mvp-lead"><strong>Direcao atual:</strong> DAJ como piloto operacional; os demais 13 MVPs como vitrines governadas ate o nucleo compartilhado provar valor com testes e revisao humana.</p>
+        <p class="mvp-lead"><strong>Direcao atual:</strong> DAJ como piloto operacional; os demais 13 MVPs como vitrines governadas. Charlie Core e contratos JSON ja estao implementados e seguem sujeitos a testes por risco e revisao humana.</p>
         <div class="hero-actions">
           <a class="btn primary" href="build-week-2026.html">Abrir Build Week</a>
           <a class="ghost-button" href="app-painel-mvps.html">Painel executivo</a>
@@ -92,10 +92,10 @@
     <div class="container">
       <article class="manifesto-card">
         <div class="eyebrow">PLANEJADO</div>
-        <h2 style="color:#0b1728">Proximos pacotes seguros sugeridos pelo briefing.</h2>
+        <h2 style="color:#0b1728">Nucleo implementado e proxima camada de verificacao.</h2>
         <div class="mvp-grid cols-3" style="margin-top:1rem">
-          <article class="mvp-card"><h3>Charlie Core v0</h3><p>Extrair politicas, registry dos MVPs, classificacao de risco, contratos de resposta, downloads e auditoria para nucleo compartilhado versionado.</p></article>
-          <article class="mvp-card"><h3>Contratos JSON</h3><p>Padronizar ChatRequest, ChatResponse, DocumentSaveRequest, DataJudSearchRequest e AuditEvent entre frontend, Worker e backend.</p></article>
+          <article class="mvp-card"><h3>Charlie Core 1.2.0</h3><p>Nucleo compartilhado implementado com politicas, registro dos MVPs, classificacao de risco, proveniencia, limites, revisao humana e auditoria minimizada.</p></article>
+          <article class="mvp-card"><h3>Contratos JSON</h3><p>ChatRequest, ChatResponse, DocumentSaveRequest, DataJudSearchRequest e AuditEvent possuem contrato comum entre frontend, Worker e backend.</p></article>
           <article class="mvp-card"><h3>Suites por risco</h3><p>Testar frase-passe, dados sensiveis, DPJ/DAP, fontes, anexos, OCR, Drive Saver, emergencia social e DataJud sem inventar resultado.</p></article>
         </div>
       </article>
@@ -106,10 +106,10 @@
     <div class="container">
       <article class="manifesto-card">
         <div class="eyebrow">BLOQUEADO POR GOVERNANCA</div>
-        <h2 style="color:#0b1728">O que ainda nao deve ser apresentado como efeito real.</h2>
+        <h2 style="color:#0b1728">Gates atuais e limites de efeito real.</h2>
         <div class="mvp-grid cols-3" style="margin-top:1rem">
-          <article class="mvp-card"><h3>Pacote 2 - Reversibilidade 1C</h3><p>Depende de sessao humana autorizada para refazer a analise do DAJ-2026-0002, confirmar que o laudo saiu satisfatorio, verificar minimizacao, excluir teste, conferir tombstone e ausencia posterior.</p></article>
-          <article class="mvp-card"><h3>Memoria e Drive real</h3><p>Continuam bloqueados ate o fechamento reversivel do 1C. Nenhum Drive real, cofre, token, arquivo ou dado sensivel entra em demo publica.</p></article>
+          <article class="mvp-card"><h3>Pacote 2 concluido</h3><p>O aceite, a exclusao, o tombstone e a ausencia posterior foram confirmados. A ressalva corretiva foi coberta por regressao do fixture e proveniencia no contrato 1.2.0.</p></article>
+          <article class="mvp-card"><h3>Memoria e Drive controlados</h3><p>Autorizados apenas para revisao e homologacao controlada com dado ficticio. Nenhum cofre, token, arquivo real ou dado sensivel entra em demo publica ou producao.</p></article>
           <article class="mvp-card"><h3>Video e ZIP final</h3><p>Ficam para o ultimo pacote, sempre apos revisao geral de todos os pacotes, scan de segredos e congelamento hashado.</p></article>
         </div>
       </article>

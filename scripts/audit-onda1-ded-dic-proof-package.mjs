@@ -87,7 +87,7 @@ for (const phrase of [
 }
 
 for (const phrase of [
-  "Versionamento Jus 9 - v5.15",
+  "Versionamento Jus 9 - v5.16",
   "PACOTE_ONDA1_DED_DIC_PROVA_VALOR_2026-07-19_v1.0.0.md",
   "audit-onda1-ded-dic-proof-package.mjs",
   "Versao 5.9 - Onda 1 DED + DIC",
@@ -95,8 +95,8 @@ for (const phrase of [
   includes(versionamento, phrase, "versionamento publico");
 }
 
-includes(serviceWorker, "jus9-pwa-v50-2026-07-20-pacote8-fechamento", "service worker atual");
-includes(wranglerConfig, "governanca-1.21.8-pacote8-fechamento-1.0", "wrangler release atual");
+includes(serviceWorker, "jus9-pwa-v51-2026-07-20-mvps-v4", "service worker atual");
+includes(wranglerConfig, "governanca-1.21.11-mvps-v4-1.0", "wrangler release atual");
 includes(release, "Release v1.18.1 - Onda 1 DED + DIC", "release Onda 1");
 
 console.log("ONDA1_DED_DIC_PROOF_PACKAGE_OK roteiro=30min mvps=DED,DIC status=PUBLICADO_CONTROLADO");

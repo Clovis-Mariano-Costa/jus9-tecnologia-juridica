@@ -36,7 +36,7 @@ for (const packageNumber of ["0", "1", "2A", "2B", "2C", "2D", "3", "4", "5", "6
 assert(cronograma.indexOf("| 12 | Revisao geral, video e ZIP final") > cronograma.indexOf("| 11 | DataJud read-only e validacao humana"), "Pacote 12 precisa permanecer por ultimo");
 assert(incidente.includes("resposta_daj_sem_laudo_obrigatorio"), "incidente sem marcador tecnico de falha fechada");
 assert(incidente.includes("/api/daj-process-links"), "incidente sem endpoint evasivo documentado");
-assert(panel.includes('data-package="2" data-package-status="AGUARDANDO_NOVO_TESTE_HUMANO"'), "painel executivo sem novo estado humano do Pacote 2");
+assert(panel.includes('data-package="2" data-package-status="CONCLUIDO_COM_RESSALVA_CORRETIVA"'), "painel executivo corrente sem fechamento reconciliado do Pacote 2");
 
 if (failures.length) {
   console.error("Falhas no Mao na Massa v3.1.1:");
@@ -44,4 +44,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("MAO_NA_MASSA_V3_1_1_OK incidente=DAJ-laudo pacote2=novo-teste-humano final=video-zip-revisao");
+console.log("MAO_NA_MASSA_V3_1_1_OK historico=incidente-DAJ-laudo corrente=pacote2-concluido-com-ressalva final=video-zip-revisao");

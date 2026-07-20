@@ -15,11 +15,11 @@ const [panel, mvpPage, leaderPage, matrix] = await Promise.all([
 
 assert(panel.includes("data-mvp-executive-panel"), "painel executivo sem marcador principal");
 assert(panel.includes("Painel executivo dos 14 MVPs"), "painel executivo sem titulo canonico");
-assert(panel.includes("Mao na Massa v3.1.1"), "painel executivo sem referencia ao cronograma v3.1.1");
+assert(panel.includes("Mao na Massa MVPs v4.0.0"), "painel executivo sem referencia ao cronograma v4.0.0");
 assert(panel.includes("DAJ-2026-0002"), "painel executivo sem DAJ de referencia");
-assert(panel.includes("2026-07-19 13:44:32 BRT"), "painel executivo sem data/hora concreta do aceite parcial");
-assert(panel.includes("ACEITE_HUMANO_PARCIAL_CONFIRMADO"), "painel executivo nao preserva aceite parcial");
-assert(panel.includes("REVERSIBILIDADE_PENDENTE"), "painel executivo nao preserva reversibilidade pendente");
+assert(panel.includes("2026-07-19 13:44:32 BRT"), "painel executivo sem data/hora concreta do marco DAJ");
+assert(panel.includes("CONCLUIDO_COM_RESSALVA_CORRETIVA"), "painel executivo nao preserva o fechamento reconciliado do Pacote 2");
+assert(panel.includes("AUTORIZADO_APENAS_PARA_REVISAO_E_HOMOLOGACAO_CONTROLADA"), "painel executivo nao preserva o limite de Memoria e Drive");
 assert(panel.includes("a142825") && panel.includes("fcef514"), "painel executivo sem commits de referencia");
 assert(panel.includes("cde1bf89-3d93-4429-a485-be46945bec04"), "painel executivo sem deploy base");
 assert(panel.includes("LIVE_DAJ_SEARCH_SMOKE_OK"), "painel executivo sem smoke publico");
@@ -36,8 +36,8 @@ assert(panel.includes("VIDEO_PENDENTE_GRAVACAO_HUMANA") && panel.includes("ZIP_P
 const packageStatuses = [
   "CONCLUIDO",
   "CONCLUIDO_PUBLICADO",
-  "AGUARDANDO_NOVO_TESTE_HUMANO",
-  "BLOQUEADO_ATE_REVERSIBILIDADE_1C",
+  "CONCLUIDO_COM_RESSALVA_CORRETIVA",
+  "AUTORIZADO_APENAS_PARA_REVISAO_E_HOMOLOGACAO_CONTROLADA",
   "PENDENTE_FECHAMENTO_GERAL",
 ];
 

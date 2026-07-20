@@ -1,0 +1,94 @@
+{
+  "metadata": {
+    "id": "GOV-JUS9-PORTFOLIO-MVPS-002",
+    "versao": "2.0.0",
+    "autor": "Codex / Charlie Juris",
+    "revisor_responsavel": "Clovis Mariano da Costa",
+    "data": "2026-07-20",
+    "status": "homologacao-tecnica",
+    "classificacao": "PUBLICO-INSTITUCIONAL / SEM DADOS REAIS",
+    "hash": "calcular-na-release-aprovada"
+  },
+  "schema": "jus9.mvp.portfolio.v2",
+  "canonicalProfileSource": "data-publica/mvp-perfis.json",
+  "governanceSchedule": "governanca/CRONOGRAMA_MAO_NA_MASSA_MVPS_GERAIS_v4.0.0.md",
+  "teamPageBoundary": {
+    "state": "RESPONSABILIDADE_EXTERNA",
+    "owner": "Mariana e Codex da Mariana",
+    "localScope": "Somente contrato de identidade, perfil, permissao, responsavel e revisor consumido pelos MVPs"
+  },
+  "portfolioPolicy": {
+    "realDataInPublicDemo": false,
+    "autonomousLegalEffect": false,
+    "humanReviewRequired": true,
+    "sharedCore": "charlie-core@1.2.0",
+    "productOwnerDefault": "PENDENTE_DESIGNACAO_HUMANA",
+    "technicalOwnerDefault": "PENDENTE_DESIGNACAO_HUMANA"
+  },
+  "stateDefinitions": {
+    "PILOTO_OPERACIONAL_DADOS_FICTICIOS": "Fluxo operacional publicado, reversivel e limitado a dados ficticios.",
+    "DEMO_PUBLICA_GOVERNADA": "Prova de valor publica sem efeito juridico, institucional ou transacional real.",
+    "DEMO_PUBLICA_RESTRITA_ALTA_SENSIBILIDADE": "Demonstracao ficticia com bloqueios reforcados e sem decisao, investigacao ou ato real."
+  },
+  "baselineRequirements": [
+    {"id":"MVP-IAM","name":"Identidade e acesso","minimum":"Autenticacao, menor privilegio, segregacao de perfis e negacao por padrao.","reference":"Contrato externo da Pagina Equipe; OWASP ASVS 5.0.0"},
+    {"id":"MVP-SEC","name":"Seguranca","minimum":"ASVS proporcional ao risco, segredo fora do codigo, validacao de entrada, rate limit e fail closed.","reference":"https://owasp.org/www-project-application-security-verification-standard/"},
+    {"id":"MVP-LGPD","name":"Privacidade e LGPD","minimum":"Finalidade, minimizacao, base autorizativa, retencao, direitos e resposta a incidente.","reference":"https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709compilado.htm"},
+    {"id":"MVP-ETH","name":"Etica e limites","minimum":"Nao prometer resultado, nao substituir profissional e nao criar efeito externo autonomo.","reference":"Politicas governadas Jus 9"},
+    {"id":"MVP-AI","name":"IA governada","minimum":"Proveniencia, citacoes quando cabiveis, limites, risco, revisao humana e protecao contra prompt injection.","reference":"OWASP LLM Top 10 2025; NIST AI RMF"},
+    {"id":"MVP-AUD","name":"Auditoria","minimum":"Evento estruturado, identificador, ator, decisao, resultado e minimizacao sem conteudo sensivel.","reference":"charlie-core@1.2.0"},
+    {"id":"MVP-DAT","name":"Dados","minimum":"Dados ficticios por padrao, classificacao, retencao, exclusao, tombstone e reversibilidade testada.","reference":"Relatorio de reversibilidade 1C"},
+    {"id":"MVP-UX","name":"UX e acessibilidade","minimum":"Estados claros, navegacao previsivel, responsividade, teclado e conformidade WCAG 2.2 AA como alvo.","reference":"https://www.w3.org/TR/WCAG22/"},
+    {"id":"MVP-TST","name":"Testes","minimum":"Contrato, unidade, integracao, regressao por risco, falha fechada e aceite humano documentado.","reference":"scripts/run-local-ci.mjs"},
+    {"id":"MVP-OPS","name":"Operacao","minimum":"Versionamento, observabilidade minimizada, rollback, runbook, health check e resposta a incidente.","reference":"Governanca e releases Jus 9"}
+  ],
+  "mvps": [
+    {
+      "code":"DAJ","name":"Dossie Administrativo Juridico","audience":"Advogado / Defensor Publico","slug":"advogado-defensor","state":"PILOTO_OPERACIONAL_DADOS_FICTICIOS","risk":"alto","problem":"Organizar atendimento, triagem e acompanhamento juridico sem perder contexto e governanca.","value":"Reduzir retrabalho com dossie rastreavel, laudo estruturado e revisao humana.","publicScope":"Cadastro ficticio, consulta DAJ, laudo, feedback, vinculo processual somente leitura e reversibilidade.","exclusions":["dado real","peticionamento","ato processual","decisao automatica"],"dataPolicy":"Somente dados ficticios na demonstracao publica.","dependencies":["charlie-core@1.2.0","Worker autenticado","indice DAJ governado","revisao humana"],"evidence":"app-clientes.html#consulta-daj","productOwner":"PENDENTE_DESIGNACAO_HUMANA","technicalOwner":"PENDENTE_DESIGNACAO_HUMANA"
+    },
+    {
+      "code":"DAA","name":"Dossie Academico de Aula / Aluno","audience":"Professor / Academia","slug":"professor-academia","state":"DEMO_PUBLICA_GOVERNADA","risk":"moderado","problem":"Organizar planos, materiais e acompanhamento academico juridico.","value":"Dar continuidade verificavel ao ensino sem inventar fonte ou avaliacao.","publicScope":"Plano e material ficticios com fontes e revisao docente.","exclusions":["nota real","prontuario academico","autoria inventada"],"dataPolicy":"Conteudo e pessoas ficticios.","dependencies":["charlie-core@1.2.0","fontes verificaveis","revisao docente"],"evidence":"app-demo-professor.html#prova-daa","productOwner":"PENDENTE_DESIGNACAO_HUMANA","technicalOwner":"PENDENTE_DESIGNACAO_HUMANA"
+    },
+    {
+      "code":"DEJ","name":"Dossie de Estudos Juridicos","audience":"Estudante","slug":"estudante","state":"DEMO_PUBLICA_GOVERNADA","risk":"moderado","problem":"Estruturar estudo juridico e distinguir aprendizado de aconselhamento profissional.","value":"Orientar estudo com fontes, lacunas e plano de revisao.","publicScope":"Caso didatico e trilha de estudo ficticios.","exclusions":["consulta juridica pessoal","resposta de prova","fonte inexistente"],"dataPolicy":"Casos e perfis ficticios.","dependencies":["charlie-core@1.2.0","fontes oficiais","revisao educacional"],"evidence":"app-demo-estudante.html#prova-dej","productOwner":"PENDENTE_DESIGNACAO_HUMANA","technicalOwner":"PENDENTE_DESIGNACAO_HUMANA"
+    },
+    {
+      "code":"DIC","name":"Dossie Informativo do Cidadao","audience":"Cidadao / Interessado","slug":"cidadao-interessado","state":"DEMO_PUBLICA_GOVERNADA","risk":"alto","problem":"Traduzir caminhos juridicos e servicos publicos em linguagem compreensivel.","value":"Aumentar orientacao inicial sem substituir advogado, Defensoria ou orgao competente.","publicScope":"Roteiro informativo ficticio com fontes oficiais e encaminhamento humano.","exclusions":["urgencia real","dado pessoal","promessa de direito","protocolo automatico"],"dataPolicy":"Sem dado pessoal; somente cenario ficticio.","dependencies":["charlie-core@1.2.0","fontes oficiais","rotas de emergencia"],"evidence":"app-demo-cidadao.html#prova-dic","productOwner":"PENDENTE_DESIGNACAO_HUMANA","technicalOwner":"PENDENTE_DESIGNACAO_HUMANA"
+    },
+    {
+      "code":"DPJ","name":"Dossie Pericial Judicial","audience":"Perito Judicial","slug":"perito-judicial","state":"DEMO_PUBLICA_GOVERNADA","risk":"alto","problem":"Organizar quesitos, evidencias e lacunas de uma analise pericial.","value":"Melhorar rastreabilidade tecnica sem concluir materia pericial automaticamente.","publicScope":"Checklist e estrutura de laudo inteiramente ficticios.","exclusions":["laudo real","assinatura","conclusao pericial","cadeia de custodia real"],"dataPolicy":"Artefatos tecnicos ficticios.","dependencies":["charlie-core@1.2.0","revisao pericial","trilha de auditoria"],"evidence":"app-demo-perito.html#prova-dpj","productOwner":"PENDENTE_DESIGNACAO_HUMANA","technicalOwner":"PENDENTE_DESIGNACAO_HUMANA"
+    },
+    {
+      "code":"DIP","name":"Dossie de Investimento e Parceria","audience":"Investidor / Parceiro","slug":"investidor-parceiro","state":"DEMO_PUBLICA_GOVERNADA","risk":"moderado","problem":"Organizar tese, diligencias e proximas decisoes de parceria.","value":"Dar visibilidade aos riscos e pendencias sem recomendacao financeira automatica.","publicScope":"Tese e checklist de diligencia ficticios.","exclusions":["oferta real","promessa de retorno","dado financeiro real"],"dataPolicy":"Indicadores e partes ficticios.","dependencies":["charlie-core@1.2.0","revisao financeira e juridica"],"evidence":"app-demo-investidor.html#prova-dip","productOwner":"PENDENTE_DESIGNACAO_HUMANA","technicalOwner":"PENDENTE_DESIGNACAO_HUMANA"
+    },
+    {
+      "code":"DEE","name":"Dossie de Escritorio Juridico","audience":"Escritorio Juridico","slug":"escritorio-juridico","state":"DEMO_PUBLICA_GOVERNADA","risk":"alto","problem":"Padronizar entrada, distribuicao e acompanhamento interno de demandas.","value":"Aumentar consistencia operacional com segregacao e revisao profissional.","publicScope":"Fluxo de escritorio e cliente inteiramente ficticios.","exclusions":["cliente real","segredo profissional","protocolo","cobranca real"],"dataPolicy":"Equipe, cliente e demanda ficticios.","dependencies":["charlie-core@1.2.0","IAM por escritorio","RLS","revisao profissional"],"evidence":"app-demo-escritorio.html#prova-dee","productOwner":"PENDENTE_DESIGNACAO_HUMANA","technicalOwner":"PENDENTE_DESIGNACAO_HUMANA"
+    },
+    {
+      "code":"DEJI","name":"Dossie Empresarial Juridico Interno","audience":"Empresa / Juridico Interno","slug":"empresa-juridico-interno","state":"DEMO_PUBLICA_GOVERNADA","risk":"alto","problem":"Integrar solicitacoes empresariais, compliance e juridico interno.","value":"Organizar risco e responsabilidade sem aprovar ato corporativo automaticamente.","publicScope":"Solicitacao, matriz de risco e parecer preliminar ficticios.","exclusions":["contrato real","dado de empregado","decisao corporativa","assinatura"],"dataPolicy":"Empresa, pessoas e documentos ficticios.","dependencies":["charlie-core@1.2.0","IAM empresarial","RLS","revisao juridica"],"evidence":"app-demo-empresa.html#prova-deji","productOwner":"PENDENTE_DESIGNACAO_HUMANA","technicalOwner":"PENDENTE_DESIGNACAO_HUMANA"
+    },
+    {
+      "code":"DOI","name":"Dossie de Orgao ou Instituicao","audience":"Orgao Publico / Instituicao","slug":"orgao-publico-instituicao","state":"DEMO_PUBLICA_GOVERNADA","risk":"alto","problem":"Organizar protocolo e acompanhamento institucional com limites de competencia.","value":"Melhorar rastreabilidade sem simular ato oficial valido.","publicScope":"Protocolo e trilha institucional ficticios.","exclusions":["ato oficial","protocolo real","assinatura publica","integracao PDPJ transacional"],"dataPolicy":"Orgao, servidor e processo ficticios.","dependencies":["charlie-core@1.2.0","onboarding institucional","revisao competente"],"evidence":"app-demo-orgao-publico.html#prova-doi","productOwner":"PENDENTE_DESIGNACAO_HUMANA","technicalOwner":"PENDENTE_DESIGNACAO_HUMANA"
+    },
+    {
+      "code":"DGE","name":"Dossie de Governanca do Ecossistema","audience":"Administrador Jus 9","slug":"administrador-jus9","state":"DEMO_PUBLICA_GOVERNADA","risk":"alto","problem":"Governar versoes, perfis, logs, flags, incidentes e rollback do ecossistema.","value":"Transformar controles tecnicos em decisoes auditaveis e reversiveis.","publicScope":"Console demonstrativo sem permissao real.","exclusions":["credencial","segredo","alteracao produtiva","elevacao de privilegio"],"dataPolicy":"Metadados ficticios e logs minimizados.","dependencies":["charlie-core@1.2.0","IAM administrativo","observabilidade","rollback"],"evidence":"app-demo-administrador.html#prova-dge","productOwner":"PENDENTE_DESIGNACAO_HUMANA","technicalOwner":"PENDENTE_DESIGNACAO_HUMANA"
+    },
+    {
+      "code":"DMG","name":"Dossie Demonstrativo de Magistratura","audience":"Juiz / Magistrado","slug":"juiz-magistrado","state":"DEMO_PUBLICA_RESTRITA_ALTA_SENSIBILIDADE","risk":"critico","problem":"Organizar estudo de gabinete sem interferir na independencia decisoria.","value":"Estruturar fontes, pontos controvertidos e lacunas para revisao humana exclusiva.","publicScope":"Estudo de gabinete ficticio, informativo e nao decisorio.","exclusions":["sentenca","despacho","decisao","minuta decisoria","processo real"],"dataPolicy":"Caso, partes e autoridade ficticios.","dependencies":["charlie-core@1.2.0","sandbox isolado","revisao humana obrigatoria"],"evidence":"app-demo-juiz.html#prova-dmg","productOwner":"PENDENTE_DESIGNACAO_HUMANA","technicalOwner":"PENDENTE_DESIGNACAO_HUMANA"
+    },
+    {
+      "code":"DMP","name":"Dossie Demonstrativo do Ministerio Publico","audience":"Promotor / Ministerio Publico","slug":"promotor-ministerio-publico","state":"DEMO_PUBLICA_RESTRITA_ALTA_SENSIBILIDADE","risk":"critico","problem":"Organizar triagem educativa sem criar noticia de fato ou medida ministerial.","value":"Explicitar competencia, lacunas e encaminhamento sem efeito institucional.","publicScope":"Triagem inteiramente ficticia e educativa.","exclusions":["denuncia","requisicao","investigacao","medida real","dados de vitima"],"dataPolicy":"Pessoas, fatos e orgaos ficticios.","dependencies":["charlie-core@1.2.0","sandbox isolado","revisao humana obrigatoria"],"evidence":"app-demo-promotor.html#prova-dmp","productOwner":"PENDENTE_DESIGNACAO_HUMANA","technicalOwner":"PENDENTE_DESIGNACAO_HUMANA"
+    },
+    {
+      "code":"DAP","name":"Dossie Demonstrativo de Autoridade Policial","audience":"Delegado / Autoridade Policial","slug":"delegado-autoridade-policial","state":"DEMO_PUBLICA_RESTRITA_ALTA_SENSIBILIDADE","risk":"critico","problem":"Organizar cenario policial sem iniciar investigacao, diligencia ou cadeia de custodia.","value":"Demonstrar classificacao e limites com interrupcao diante de risco real.","publicScope":"Cenario policial ficticio, educativo e sem efeito.","exclusions":["investigacao","diligencia","prova","mandado","dados de vitima ou testemunha"],"dataPolicy":"Fatos, pessoas e evidencias ficticios.","dependencies":["charlie-core@1.2.0","sandbox isolado","revisao humana obrigatoria"],"evidence":"app-demo-delegado.html#prova-dap","productOwner":"PENDENTE_DESIGNACAO_HUMANA","technicalOwner":"PENDENTE_DESIGNACAO_HUMANA"
+    },
+    {
+      "code":"DED","name":"Dossie Editorial Demonstrativo","audience":"Autor / Editora / Autor-Editor","slug":"autor-editor","state":"DEMO_PUBLICA_GOVERNADA","risk":"moderado","problem":"Organizar briefing, edicao, revisao e publicacao editorial.","value":"Dar continuidade ao fluxo editorial com autoria, licenca e aprovacao humanas.","publicScope":"Briefing, amostra e checklist ficticios.","exclusions":["publicacao automatica","obra sem direito","autoria inventada","Drive real"],"dataPolicy":"Obra, autor e editora ficticios.","dependencies":["charlie-core@1.2.0","revisao editorial","declaracao de direitos"],"evidence":"app-demo-autor-editor.html#prova-ded","productOwner":"PENDENTE_DESIGNACAO_HUMANA","technicalOwner":"PENDENTE_DESIGNACAO_HUMANA"
+    }
+  ],
+  "backlogCandidates": {
+    "policy": "Nao integram os 14 MVPs ate decisao humana e novo versionamento do portfolio.",
+    "items": []
+  }
+}
+

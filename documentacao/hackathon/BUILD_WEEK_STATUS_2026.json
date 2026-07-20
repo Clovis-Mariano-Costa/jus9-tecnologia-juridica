@@ -1,7 +1,7 @@
 {
   "metadata": {
     "id": "JUS9-BUILD-WEEK-STATUS-2026-001",
-    "versao": "1.3.0",
+    "versao": "1.4.0",
     "autor": "Codex / Charlie Fox",
     "revisor_responsavel": "Clovis Mariano da Costa",
     "data": "2026-07-20",
@@ -11,7 +11,7 @@
   },
   "schemaVersion": "1.0.0",
   "documentId": "JUS9-BUILD-WEEK-STATUS-2026-001",
-  "updatedAt": "2026-07-20T15:26:55-03:00",
+  "updatedAt": "2026-07-20T19:56:40-03:00",
   "owner": "Clovis Mariano da Costa / Aeon Primevo",
   "reviewer": "Codex / Charlie Fox",
   "classification": "PUBLICO-INSTITUCIONAL",
@@ -32,9 +32,10 @@
     "ecosystemMapUrl": "https://jus9tecnologia.com.br/saiba-mais.html",
     "operationalPilot": "DAJ",
     "showcasePolicy": "The other 13 MVPs remain governed public showcases with fictional datasets and human-review limits.",
-    "nextSharedCore": "Charlie Core v0",
+    "sharedCore": "Charlie Core 1.2.0 implemented and covered by automated tests",
     "dajAnalysisContract": "Charlie Echo must return a structured Laudo de Analise DAJ before DAJ review feedback is registered; the portal proxy can recover evasive upstream responses with a governed laudo from minimized registry data.",
-    "package2State": "AGUARDANDO_NOVO_TESTE_HUMANO",
+    "package2State": "CONCLUIDO_COM_RESSALVA_CORRETIVA",
+    "package6State": "AUTORIZADO_APENAS_PARA_REVISAO_E_HOMOLOGACAO_CONTROLADA",
     "finalPackageState": "PACOTE8_REVISAO_EXECUTADA_GATES_HUMANOS",
     "finalPackagePublicAnchor": "https://jus9tecnologia.com.br/build-week-2026.html#final-package"
   },

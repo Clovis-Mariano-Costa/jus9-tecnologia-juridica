@@ -103,7 +103,7 @@ for (const phrase of [
   "id=\"final-package\"",
   "data-build-week-final-package",
   "Final package gate",
-  "Human gates remain",
+  "Final human gates",
   "Pacote8_REVISAO_EXECUTADA_GATES_HUMANOS",
 ]) {
   includes(buildWeek, phrase, "Build Week Pacote 8");
@@ -111,14 +111,14 @@ for (const phrase of [
 
 includes(saibaMais, "build-week-2026.html#final-package", "Saiba Mais fechamento Build Week");
 
-assert(status.metadata?.versao === "1.3.0", "status Build Week precisa estar na versao 1.3.0");
+assert(status.metadata?.versao === "1.4.0", "status Build Week precisa estar na versao 1.4.0");
 assert(status.mvpConsolidation?.finalPackageState === "PACOTE8_REVISAO_EXECUTADA_GATES_HUMANOS", "status Build Week sem estado final do Pacote 8");
 assert(status.submissionArtifacts?.package8Closeout?.state === "review_executed_human_gates_pending", "status Build Week sem closeout do Pacote 8");
 assert(status.submissionArtifacts?.finalZip?.state === "deferred_until_human_freeze", "ZIP final nao deve ser declarado pronto");
 assert(status.submissionArtifacts?.demoVideo?.state === "deferred_until_human_recording", "video final nao deve ser declarado pronto");
 
 for (const phrase of [
-  "Versionamento Jus 9 - v5.15",
+  "Versionamento Jus 9 - v5.16",
   "Versao 5.15 - Pacote 8 fechamento tecnico",
   "RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.21.8.md",
   "jus9-pwa-v50-2026-07-20-pacote8-fechamento",
@@ -126,8 +126,8 @@ for (const phrase of [
   includes(versionamento, phrase, "versionamento Pacote 8");
 }
 
-includes(serviceWorker, "jus9-pwa-v50-2026-07-20-pacote8-fechamento", "service worker Pacote 8");
-includes(wranglerConfig, "governanca-1.21.8-pacote8-fechamento-1.0", "wrangler Pacote 8");
+includes(serviceWorker, "jus9-pwa-v51-2026-07-20-mvps-v4", "service worker corrente apos Pacote 8");
+includes(wranglerConfig, "governanca-1.21.11-mvps-v4-1.0", "wrangler corrente apos Pacote 8");
 includes(release, "Release v1.21.8 - Pacote 8 fechamento tecnico", "release Pacote 8");
 
 console.log("PACOTE8_FECHAMENTO_OK revisao=executada video=pendente zip=pendente gates=humanos");

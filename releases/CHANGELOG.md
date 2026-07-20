@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.21.11 - 2026-07-20
+
+- Release publica consolida os Pacotes V4-01 a V4-08 do Mao na Massa dos MVPs.
+- Portal sobe para v5.16 e cache PWA para `jus9-pwa-v51-2026-07-20-mvps-v4`.
+- Estados 1C/Drive/Memoria sao reconciliados; Portfolio V2, contratos, baseline, revalidacao e mapa de repositorios tornam-se auditaveis.
+- Revisao geral V4-08 foi executada; Video e ZIP continuam deferidos e nenhuma capacidade produtiva, permissao ou dado real foi autorizada.
+
 ## 1.21.10 - 2026-07-20
 
 - Release documental registra o Cronograma Mao na Massa dos MVPs gerais v4.0.0.

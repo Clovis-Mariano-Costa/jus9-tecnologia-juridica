@@ -106,7 +106,7 @@ for (const phrase of [
 }
 
 for (const phrase of [
-  "Versionamento Jus 9 - v5.15",
+  "Versionamento Jus 9 - v5.16",
   "PACOTE_ONDA2_DEE_DEJI_DPJ_PROVA_VALOR_2026-07-19_v1.0.0.md",
   "audit-onda2-dee-deji-dpj-proof-package.mjs",
   "Versao 5.10 - Onda 2 DEE + DEJI + DPJ",
@@ -114,8 +114,8 @@ for (const phrase of [
   includes(versionamento, phrase, "versionamento publico");
 }
 
-includes(serviceWorker, "jus9-pwa-v50-2026-07-20-pacote8-fechamento", "service worker");
-includes(wranglerConfig, "governanca-1.21.8-pacote8-fechamento-1.0", "wrangler release");
+includes(serviceWorker, "jus9-pwa-v51-2026-07-20-mvps-v4", "service worker");
+includes(wranglerConfig, "governanca-1.21.11-mvps-v4-1.0", "wrangler release");
 includes(release, "Release v1.20.1 - Onda 2 DEE + DEJI + DPJ", "release Onda 2");
 
 console.log("ONDA2_DEE_DEJI_DPJ_PROOF_PACKAGE_OK roteiro=35min mvps=DEE,DEJI,DPJ status=PUBLICADO_CONTROLADO");

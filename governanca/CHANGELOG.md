@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.16.11 - 2026-07-20
+
+- Pacotes V4-01 a V4-08 reconciliam o estado corrente, criam Portfolio Canonico V2, matriz transversal e revisao geral dos 14 MVPs.
+- Charlie Core 1.2.0 e cinco DTOs sao confirmados por testes; IAM, LGPD, seguranca, acessibilidade e operacao preservam seus gates humanos.
+- Cinco ondas e kit DAJ sao revalidados; 31 repositorios recebem mapa de fontes sem acao destrutiva.
+- Pagina Equipe permanece sob Mariana e seu Codex; a revisao V4-08 foi executada e Video/ZIP continuam deferidos no ultimo pacote.
+
 ## 1.16.10 - 2026-07-20
 
 - Cronograma Mao na Massa dos MVPs gerais sobe para v4.0.0 apos varredura do Chat, portal e repositorios relacionados.

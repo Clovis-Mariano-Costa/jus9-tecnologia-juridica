@@ -194,9 +194,9 @@ assert(mvpExecutivePanelPage.includes("data-onda2-dee-deji-dpj-proof") && mvpExe
 assert(mvpExecutivePanelPage.includes("data-onda3-dip-daa-dej-proof") && mvpExecutivePanelPage.includes("Onda 3 - prova DIP + DAA + DEJ"), "painel executivo sem prova Onda 3 DIP+DAA+DEJ");
 assert(mvpExecutivePanelPage.includes("data-onda4-doi-dge-proof") && mvpExecutivePanelPage.includes("Onda 4 - prova DOI + DGE"), "painel executivo sem prova Onda 4 DOI+DGE");
 assert(mvpExecutivePanelPage.includes("data-onda5-dmp-dap-dmg-proof") && mvpExecutivePanelPage.includes("Onda 5 - prova DMP + DAP + DMG"), "painel executivo sem prova Onda 5 DMP+DAP+DMG");
-assert(mvpExecutivePanelPage.includes("DAJ-2026-0002") && mvpExecutivePanelPage.includes("ACEITE_HUMANO_PARCIAL_CONFIRMADO") && mvpExecutivePanelPage.includes("REVERSIBILIDADE_PENDENTE"), "painel executivo nao preserva o estado parcial do DAJ 1C");
+assert(mvpExecutivePanelPage.includes("DAJ-2026-0002") && mvpExecutivePanelPage.includes("CONCLUIDO_COM_RESSALVA_CORRETIVA") && mvpExecutivePanelPage.includes("tombstone"), "painel executivo nao preserva o estado reconciliado do DAJ 1C");
 assert(mvpExecutivePanelPage.includes("a142825") && mvpExecutivePanelPage.includes("fcef514") && mvpExecutivePanelPage.includes("cde1bf89-3d93-4429-a485-be46945bec04"), "painel executivo sem evidencias de commit/deploy");
-assert(mvpExecutivePanelPage.includes("BLOQUEADO_ATE_REVERSIBILIDADE_1C") && mvpExecutivePanelPage.includes("AGUARDANDO_NOVO_TESTE_HUMANO"), "painel executivo sem bloqueios de governanca");
+assert(mvpExecutivePanelPage.includes("AUTORIZADO_APENAS_PARA_REVISAO_E_HOMOLOGACAO_CONTROLADA") && mvpExecutivePanelPage.includes('data-package="2" data-package-status="CONCLUIDO_COM_RESSALVA_CORRETIVA"'), "painel executivo sem estados reconciliados de governanca");
 assert(mvpExecutivePanelPage.includes('data-package="3" data-package-status="CONCLUIDO_PUBLICADO"'), "painel executivo nao marca DED como Pacote 3 publicado");
 assert(mvpExecutivePanelPage.includes('data-package="4" data-package-status="CONCLUIDO_PUBLICADO"'), "painel executivo nao marca DIC como Pacote 4 publicado");
 assert(mvpExecutivePanelPage.includes('data-package="5" data-package-status="CONCLUIDO_PUBLICADO"'), "painel executivo nao marca Pacote 5 como publicado");
@@ -296,7 +296,7 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v50-2026-07-20-pacote8-fechamento"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("jus9-pwa-v51-2026-07-20-mvps-v4"), "cache PWA principal desatualizado");
 assert(canonicalServiceWorker.includes("/saiba-mais.html"), "cache PWA sem pagina Saiba mais");
 assert(canonicalServiceWorker.includes("/build-week-2026.html"), "cache PWA sem pagina Build Week");
 assert(canonicalServiceWorker.includes("/app-painel-mvps.html"), "cache PWA sem painel executivo dos MVPs");

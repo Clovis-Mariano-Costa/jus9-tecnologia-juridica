@@ -80,7 +80,7 @@ const codexSolEvidence = read("documentacao/hackathon/EVIDENCIA_CODEX_SOL_BUILD_
 const integrationMatrix = read("documentacao/hackathon/MATRIZ_INTEGRACOES_TERCEIROS_BUILD_WEEK_2026.md");
 
 check(status.schemaVersion === "1.0.0", "status manifest schema", "Unexpected Build Week status schema");
-check(status.metadata?.versao === "1.3.0", "status manifest closeout version", "Build Week status must be version 1.3.0 for Package 8 closeout");
+check(status.metadata?.versao === "1.4.0", "status manifest MVP reconciliation version", "Build Week status must be version 1.4.0 for the MVP reconciliation release");
 check(status.project?.track === "Work and Productivity", "competition track", "Track must be Work and Productivity");
 check(status.project?.reviewerUrl === "https://jus9tecnologia.com.br/build-week-2026.html", "canonical reviewer URL", "Reviewer URL does not match the public page");
 check(status.mvpConsolidation?.stateMapUrl === "https://jus9tecnologia.com.br/mvp-o-que-ja-funciona.html", "MVP state-map URL", "Build Week status does not point to the public MVP state map");
@@ -88,7 +88,8 @@ check(status.mvpConsolidation?.executivePanelUrl === "https://jus9tecnologia.com
 check(status.mvpConsolidation?.ecosystemMapUrl === "https://jus9tecnologia.com.br/saiba-mais.html", "ecosystem map URL", "Build Week status does not point to Saiba mais");
 check(status.mvpConsolidation?.operationalPilot === "DAJ", "DAJ operational pilot", "Build Week status must keep DAJ as the operational pilot");
 check(status.mvpConsolidation?.dajAnalysisContract?.includes("Laudo de Analise DAJ"), "DAJ laudo contract", "Build Week status must preserve the DAJ laudo contract");
-check(status.mvpConsolidation?.package2State === "AGUARDANDO_NOVO_TESTE_HUMANO", "Package 2 human retest state", "Build Week status must preserve Package 2 human retest state");
+check(status.mvpConsolidation?.package2State === "CONCLUIDO_COM_RESSALVA_CORRETIVA", "Package 2 reconciled state", "Build Week status must preserve the completed Package 2 state with corrective caveat");
+check(status.mvpConsolidation?.package6State === "AUTORIZADO_APENAS_PARA_REVISAO_E_HOMOLOGACAO_CONTROLADA", "Package 6 controlled-review state", "Build Week status must not present Drive or memory as production-ready");
 check(status.mvpConsolidation?.finalPackageState === "PACOTE8_REVISAO_EXECUTADA_GATES_HUMANOS", "Package 8 closeout state", "Build Week status must preserve Package 8 human-gated closeout state");
 check(status.claims?.significantExtensionAfterStart?.state === "verified", "significant-extension claim", "Significant extension is not marked verified");
 check(status.claims?.codexCollaboration?.state === "verified", "Codex collaboration status", "Codex collaboration must be supported by evidence");
@@ -109,7 +110,7 @@ check(status.submissionArtifacts?.repositoryHygiene?.state === "blocked_tracked_
 check(/<html\s+lang="en">/i.test(reviewerPage), "reviewer page language", "Reviewer page must declare English");
 check(/id="live-flow"/.test(reviewerPage) && /id="evidence"/.test(reviewerPage) && /id="safety"/.test(reviewerPage), "reviewer page sections", "Reviewer page is missing live flow, evidence, or safety sections");
 check(/id="mvp-scope"/.test(reviewerPage) && /data-build-week-mvp-scope/.test(reviewerPage), "reviewer MVP scope section", "Reviewer page is missing the MVP scope section");
-check(/id="final-package"/.test(reviewerPage) && /data-build-week-final-package/.test(reviewerPage) && /Human gates remain/.test(reviewerPage), "reviewer final package section", "Reviewer page is missing the Package 8 final package gate");
+check(/id="final-package"/.test(reviewerPage) && /data-build-week-final-package/.test(reviewerPage) && /Final human gates/.test(reviewerPage), "reviewer final package section", "Reviewer page is missing the Package 8 final package gate");
 check(/Codex development model/.test(reviewerPage) && /gpt-5\.6-sol/.test(reviewerPage), "reviewer Codex Sol disclosure", "Reviewer page does not disclose the verified Codex development model");
 check(/id="codex-sol-evidence"/.test(reviewerPage) && reviewerPage.includes(status.claims.codexGpt56SolDevelopment.evidenceFingerprintSha256), "self-contained public Codex Sol evidence", "Reviewer page must expose the sanitized Codex Sol evidence without requiring repository access");
 check(/app-atendimento-inicial\.html/.test(reviewerPage) && /app-ia-profissional\.html/.test(reviewerPage) && /app-processos\.html/.test(reviewerPage), "reviewer workflow links", "Reviewer page does not link the complete DAJ flow");
