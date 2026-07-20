@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.16.1 - 2026-07-19
+
+- Publicado pacote Onda 3 DIP+DAA+DEJ como prova de valor executavel em 33 minutos.
+- Painel executivo, DIP, DAA e DEJ passam a exibir roteiro, aceite humano e condicoes de parada especificas.
+- Criado documento governado `PACOTE_ONDA3_DIP_DAA_DEJ_PROVA_VALOR_2026-07-19_v1.0.0.md` e auditor dedicado no CI local.
+- PDPJ-Br permanece bloqueado por onboarding institucional; nenhuma capacidade transacional foi ativada.
+
 ## 1.16.0 - 2026-07-19
 
 - Preparacao documental da PDPJ-Br concluida com contrato de onboarding e matriz de capacidades.

@@ -235,6 +235,12 @@ const checks = [
     args: ["scripts/audit-onda2-dee-deji-dpj-proof-package.mjs"]
   },
   {
+    label: "Onda 3 DIP, DAA e DEJ",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-onda3-dip-daa-dej-proof-package.mjs"]
+  },
+  {
     label: "Backend local fail closed",
     cwd: path.join(githubRoot, "backend-api-jus9-tecnologia-juridica"),
     command: process.execPath,

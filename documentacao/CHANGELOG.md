@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Documentacao
 
+## 1.17.3 - 2026-07-19
+
+- Versionamento publico v5.11 registra a Onda 3 DIP+DAA+DEJ como prova de valor executavel.
+- Painel executivo ganha roteiro de 33 minutos com aceite e condicoes de parada.
+- Paginas DIP, DAA e DEJ passam a orientar a prova direta sem promessa financeira, nota automatica, cola, plagio, Drive real ou memoria real.
+
 ## 1.17.2 - 2026-07-19
 
 - Versionamento publico v5.10 registra a Onda 2 DEE+DEJI+DPJ como prova de valor executavel.

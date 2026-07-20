@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.21.1 - 2026-07-19
+
+- Publicada Onda 3 dos MVPs gerais com prova DIP+DAA+DEJ em 33 minutos.
+- Painel executivo recebe `data-onda3-dip-daa-dej-proof`; DIP, DAA e DEJ recebem runbooks publicos proprios.
+- Criado documento governado `PACOTE_ONDA3_DIP_DAA_DEJ_PROVA_VALOR_2026-07-19_v1.0.0.md` e auditor `audit-onda3-dip-daa-dej-proof-package.mjs`.
+- Cache PWA sobe para `jus9-pwa-v46-2026-07-19-onda3-dip-daa-dej`.
+- Guard PDPJ-Br `1.21.0` permanece preservado.
+
 ## 1.21.0 - 2026-07-19
 
 - Readiness PDPJ passa a exigir onboarding institucional, aceite e aprovacao GeCli.

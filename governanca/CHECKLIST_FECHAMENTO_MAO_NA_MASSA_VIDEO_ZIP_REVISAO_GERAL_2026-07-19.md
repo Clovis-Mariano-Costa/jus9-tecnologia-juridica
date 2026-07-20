@@ -58,6 +58,7 @@ Pacotes a revisar:
 - Pacote 3 - DED vitrine editorial.
 - Pacote 4 - DIC vitrine social.
 - Pacote 5 - DEE, DEJI e DPJ.
+- Pacote 5A - DIP, DAA e DEJ.
 - Pacote 6 - Memoria e Drive.
 - Pacote 7 - Painel executivo dos 14 MVPs.
 - Pacote 8 - Revisao geral, Video e ZIP.
