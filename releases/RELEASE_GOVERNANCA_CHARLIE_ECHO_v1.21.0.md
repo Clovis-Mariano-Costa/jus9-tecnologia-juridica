@@ -33,7 +33,7 @@ Esta release nao configura CNPJ, credencial, certificado, tenant, perfil, lotaca
 - Readiness PDPJ: `blocked-institutional-onboarding`, `gecliApproved=false`, `tokenTest=false`.
 - DataJud preservado: 91 aliases e Termo v1.2.
 - Manifesto PWA: HTTP 200 nos dominios oficial e workers.dev.
-- Commit fonte: `f63929c`.
+- Commit fonte apos integracao da Onda 2: `e89b4d8`.
 - Release: `governanca-1.21.0-pdpj-onboarding-guard-1.0`.
 - Versao ativa do Worker: `a6e08202-101d-4c23-a418-70cec649c878`.
 

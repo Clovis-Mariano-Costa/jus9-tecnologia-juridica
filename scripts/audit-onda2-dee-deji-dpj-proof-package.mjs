@@ -115,7 +115,7 @@ for (const phrase of [
 }
 
 includes(serviceWorker, "jus9-pwa-v45-2026-07-19-onda2-dee-deji-dpj", "service worker");
-includes(wranglerConfig, "governanca-1.20.1-onda2-dee-deji-dpj-1.0", "wrangler release");
+includes(wranglerConfig, "governanca-1.21.0-pdpj-onboarding-guard-1.0", "wrangler release");
 includes(release, "Release v1.20.1 - Onda 2 DEE + DEJI + DPJ", "release Onda 2");
 
 console.log("ONDA2_DEE_DEJI_DPJ_PROOF_PACKAGE_OK roteiro=35min mvps=DEE,DEJI,DPJ status=PUBLICADO_CONTROLADO");
