@@ -1,31 +1,84 @@
 const PDPJ_DEFAULT_TIMEOUT_MS = 10_000;
+const PDPJ_MAX_TOKEN_RESPONSE_BYTES = 64_000;
+const PDPJ_OFFICIAL_TOKEN_URLS = Object.freeze({
+  homologacao: "https://sso.stg.cloud.pje.jus.br/auth/realms/pje/protocol/openid-connect/token",
+  producao: "https://sso.cloud.pje.jus.br/auth/realms/pje/protocol/openid-connect/token",
+});
+
+function isConfirmed(value) {
+  return String(value || "").trim().toLowerCase() === "true";
+}
+
+function pdpjEnvironment(env) {
+  const value = String(env?.PDPJ_ENVIRONMENT || "").trim().toLowerCase();
+  return Object.hasOwn(PDPJ_OFFICIAL_TOKEN_URLS, value) ? value : "";
+}
+
+function institutionalChecklist(env) {
+  const environment = pdpjEnvironment(env);
+  const gecliRequestStatus = safeToken(env?.PDPJ_GECLI_REQUEST_STATUS || "not_started");
+  const officialTokenUrl = environment ? PDPJ_OFFICIAL_TOKEN_URLS[environment] : "";
+  const configuredTokenUrl = String(env?.PDPJ_TOKEN_URL || "").trim();
+  return {
+    responsibleConfirmed: isConfirmed(env?.PDPJ_INSTITUTIONAL_RESPONSIBLE_CONFIRMED),
+    termsAccepted: isConfirmed(env?.PDPJ_TERMS_ACCEPTED),
+    gecliRequestStatus,
+    gecliApproved: gecliRequestStatus === "approved",
+    environment,
+    environmentAllowed: Boolean(environment),
+    officialTokenUrl,
+    tokenUrlOfficial: Boolean(officialTokenUrl && configuredTokenUrl === officialTokenUrl),
+    productionAccessApproved: environment !== "producao" || isConfirmed(env?.PDPJ_PRODUCTION_ACCESS_APPROVED),
+  };
+}
 
 export function missingPdpjConfig(env) {
-  return [
+  const checklist = institutionalChecklist(env);
+  const missing = [
     ["PDPJ_TOKEN_URL", env?.PDPJ_TOKEN_URL],
     ["PDPJ_CLIENT_ID", env?.PDPJ_CLIENT_ID],
     ["PDPJ_CLIENT_SECRET", env?.PDPJ_CLIENT_SECRET]
   ].filter(([, value]) => !String(value || "").trim()).map(([name]) => name);
+  if (!checklist.responsibleConfirmed) missing.push("PDPJ_INSTITUTIONAL_RESPONSIBLE_CONFIRMED=true");
+  if (!checklist.termsAccepted) missing.push("PDPJ_TERMS_ACCEPTED=true");
+  if (!checklist.gecliApproved) missing.push("PDPJ_GECLI_REQUEST_STATUS=approved");
+  if (!checklist.environmentAllowed) missing.push("PDPJ_ENVIRONMENT=homologacao|producao");
+  if (String(env?.PDPJ_TOKEN_URL || "").trim() && !checklist.tokenUrlOfficial) missing.push("PDPJ_TOKEN_URL_OFICIAL_DO_AMBIENTE");
+  if (!checklist.productionAccessApproved) missing.push("PDPJ_PRODUCTION_ACCESS_APPROVED=true");
+  return missing;
 }
 
 export function publicPdpjReadiness(env) {
   const missing = missingPdpjConfig(env);
+  const checklist = institutionalChecklist(env);
   return {
     ok: true,
     provider: "PDPJ-Br",
-    status: missing.length ? "missing-credentials" : "configured",
+    status: missing.length ? "blocked-institutional-onboarding" : "homologation-token-ready",
     configured: missing.length === 0,
     missing,
-    environment: safeToken(env?.PDPJ_ENVIRONMENT || "nao_configurado"),
+    environment: checklist.environment || "nao_configurado",
+    onboarding: {
+      responsibleConfirmed: checklist.responsibleConfirmed,
+      termsAccepted: checklist.termsAccepted,
+      gecliRequestStatus: checklist.gecliRequestStatus,
+      gecliApproved: checklist.gecliApproved,
+      tokenUrlOfficial: checklist.tokenUrlOfficial,
+      productionAccessApproved: checklist.productionAccessApproved,
+      cnpjRequiredExternally: true,
+      purposeRequiredExternally: true,
+      certificateRequiredForDomicilioCnpjRegistration: true,
+      gecliUrl: "https://gestao-clientes.pdpj.jus.br",
+    },
     capabilities: {
       oauthReadiness: true,
-      tokenTest: true,
+      tokenTest: missing.length === 0,
       mni: false,
       domicilioJudicial: false,
       petitioning: false,
       proceduralNotice: false
     },
-    governance: "Somente readiness e teste OAuth2. Nenhum ato processual e executado."
+    governance: "Somente readiness e teste OAuth2 institucional aprovado. Nenhum ato processual e executado."
   };
 }
 
@@ -35,10 +88,9 @@ export async function testPdpjToken(env) {
     return { ok: false, status: 501, payload: { ok: false, error: "pdpj_configuracao_pendente", missing } };
   }
 
+  const checklist = institutionalChecklist(env);
   const tokenUrl = String(env.PDPJ_TOKEN_URL).trim();
-  if (!/^https:\/\//i.test(tokenUrl)) {
-    return { ok: false, status: 400, payload: { ok: false, error: "pdpj_token_url_https_obrigatoria" } };
-  }
+  if (!checklist.tokenUrlOfficial) return { ok: false, status: 400, payload: { ok: false, error: "pdpj_token_url_oficial_obrigatoria" } };
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), pdpjTimeoutMs(env));
@@ -57,7 +109,7 @@ export async function testPdpjToken(env) {
       body,
       signal: controller.signal
     });
-    const data = await response.json().catch(() => ({}));
+    const data = await readBoundedTokenResponse(response);
     if (!response.ok || !data?.access_token) {
       return {
         ok: false,
@@ -95,6 +147,44 @@ export async function testPdpjToken(env) {
   } finally {
     clearTimeout(timeout);
   }
+}
+
+async function readBoundedTokenResponse(response) {
+  const declaredLength = Number(response.headers.get("Content-Length"));
+  if (Number.isFinite(declaredLength) && declaredLength > PDPJ_MAX_TOKEN_RESPONSE_BYTES) {
+    throw namedError("PdpjResponseTooLargeError", "pdpj token response exceeds declared limit");
+  }
+  const reader = response.body?.getReader();
+  if (!reader) return {};
+  const chunks = [];
+  let totalBytes = 0;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    totalBytes += value.byteLength;
+    if (totalBytes > PDPJ_MAX_TOKEN_RESPONSE_BYTES) {
+      await reader.cancel().catch(() => null);
+      throw namedError("PdpjResponseTooLargeError", "pdpj token response exceeds streamed limit");
+    }
+    chunks.push(value);
+  }
+  const bytes = new Uint8Array(totalBytes);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  try {
+    return JSON.parse(new TextDecoder().decode(bytes));
+  } catch {
+    return {};
+  }
+}
+
+function namedError(name, message) {
+  const error = new Error(message);
+  error.name = name;
+  return error;
 }
 
 function pdpjTimeoutMs(env) {

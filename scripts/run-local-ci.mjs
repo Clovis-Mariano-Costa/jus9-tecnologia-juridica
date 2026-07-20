@@ -121,6 +121,12 @@ const checks = [
     args: ["scripts/audit-datajud-governance.mjs"]
   },
   {
+    label: "Onboarding institucional PDPJ-Br",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-pdpj-onboarding.mjs"]
+  },
+  {
     label: "Qualidade da interface Charlie Echo",
     cwd: portalRoot,
     command: process.execPath,

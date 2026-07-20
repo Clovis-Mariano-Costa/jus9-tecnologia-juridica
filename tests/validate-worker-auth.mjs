@@ -830,7 +830,8 @@ console.log("AUTH_OK datajud-tribunais=200");
 
 response = await request("/api/judicial/pdpj/readiness");
 data = await response.json();
-assert(response.status === 200 && data.status === "missing-credentials", "PDPJ readiness deveria declarar credenciais pendentes");
+assert(response.status === 200 && data.status === "blocked-institutional-onboarding", "PDPJ readiness deveria declarar onboarding institucional pendente");
+assert(data.onboarding.gecliApproved === false && data.onboarding.cnpjRequiredExternally === true, "PDPJ deveria declarar GeCli e CNPJ como pre-requisitos externos");
 assert(data.capabilities.petitioning === false && data.capabilities.proceduralNotice === false, "PDPJ readiness nao deve habilitar atos transacionais");
 console.log("AUTH_OK pdpj-readiness=200");
 
@@ -1033,7 +1034,7 @@ console.log("AUTH_OK pdpj-token-pendente=501");
 let pdpjFetchCalls = 0;
 globalThis.fetch = async (url, options = {}) => {
   pdpjFetchCalls += 1;
-  assert(String(url) === "https://pdpj.invalid/realms/test/protocol/openid-connect/token", "PDPJ chamou token URL inesperada");
+  assert(String(url) === "https://sso.stg.cloud.pje.jus.br/auth/realms/pje/protocol/openid-connect/token", "PDPJ chamou token URL nao oficial");
   const form = new URLSearchParams(String(options.body || ""));
   assert(form.get("grant_type") === "client_credentials", "PDPJ deveria usar client_credentials");
   assert(form.get("client_id") === "client-ficticio" && form.get("client_secret") === "secret-ficticio", "PDPJ deveria enviar credenciais somente ao token endpoint");
@@ -1047,10 +1048,13 @@ try {
     }),
     {
       ...dataJudEnvWithoutKey,
-      PDPJ_TOKEN_URL: "https://pdpj.invalid/realms/test/protocol/openid-connect/token",
+      PDPJ_TOKEN_URL: "https://sso.stg.cloud.pje.jus.br/auth/realms/pje/protocol/openid-connect/token",
       PDPJ_CLIENT_ID: "client-ficticio",
       PDPJ_CLIENT_SECRET: "secret-ficticio",
-      PDPJ_ENVIRONMENT: "homologacao"
+      PDPJ_ENVIRONMENT: "homologacao",
+      PDPJ_INSTITUTIONAL_RESPONSIBLE_CONFIRMED: "true",
+      PDPJ_TERMS_ACCEPTED: "true",
+      PDPJ_GECLI_REQUEST_STATUS: "approved"
     }
   );
   data = await response.json();
@@ -1061,6 +1065,26 @@ try {
 } finally {
   globalThis.fetch = originalFetch;
 }
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/judicial/pdpj/token/test", {
+    method: "POST",
+    headers: { "x-jus9-internal-token": "token-interno" }
+  }),
+  {
+    ...dataJudEnvWithoutKey,
+    PDPJ_TOKEN_URL: "https://pdpj.invalid/realms/test/protocol/openid-connect/token",
+    PDPJ_CLIENT_ID: "client-ficticio",
+    PDPJ_CLIENT_SECRET: "secret-ficticio",
+    PDPJ_ENVIRONMENT: "homologacao",
+    PDPJ_INSTITUTIONAL_RESPONSIBLE_CONFIRMED: "true",
+    PDPJ_TERMS_ACCEPTED: "true",
+    PDPJ_GECLI_REQUEST_STATUS: "approved"
+  }
+);
+data = await response.json();
+assert(response.status === 501 && data.missing.includes("PDPJ_TOKEN_URL_OFICIAL_DO_AMBIENTE"), "PDPJ deveria bloquear token URL fora do SSO oficial");
+console.log("AUTH_OK pdpj-token-url-nao-oficial=501");
 
 let partySearchFetchCalled = false;
 globalThis.fetch = async () => {

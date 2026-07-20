@@ -1,0 +1,83 @@
+---
+id: API-PDPJ-ONBOARDING-JUS9-001
+versao: 1.0.0
+autor: Codex / Charlie Juris
+revisor_responsavel: Clovis Mariano da Costa
+data: 2026-07-19
+status: preparacao-documental-bloqueada-externamente
+classificacao: INTERNO
+hash: calcular-na-release-aprovada
+---
+
+fontes_oficiais:
+  documentacao: https://docs.pdpj.jus.br/
+  sso: https://docs.pdpj.jus.br/servicos-estruturantes/autenticacao-sso/
+  discovery_gateway: https://docs.pdpj.jus.br/servicos-estruturantes/discovery-gateway/
+  gecli: https://docs.pdpj.jus.br/servicos-negociais/GeCli/
+  domicilio: https://docs.pdpj.jus.br/servicos-negociais/domicilio-judicial-eletronico/
+  padroes_api: https://docs.pdpj.jus.br/desenvolvendo-para-a-pdpj/padroes-de-api/
+
+onboarding_institucional:
+  obrigatorio:
+    - entidade-solicitante-identificada-por-cnpj
+    - razao-social-e-endereco-fiscal
+    - responsavel-institucional-e-tecnico
+    - finalidade-e-justificativa-de-uso
+    - ambiente-homologacao-ou-producao
+    - termo-e-politica-aceitos-por-humano-competente
+    - solicitacao-gecli-aprovada
+    - cliente-e-secret-fornecidos-pelo-cnj
+  nao_persistir_no_repositorio:
+    - cnpj
+    - cpf-responsavel
+    - certificado-digital
+    - client-secret
+    - access-token
+    - refresh-token
+
+sso:
+  protocolo: OAuth2-Keycloak
+  grant_homologado_neste_gateway: client_credentials
+  token_homologacao: https://sso.stg.cloud.pje.jus.br/auth/realms/pje/protocol/openid-connect/token
+  token_producao: https://sso.cloud.pje.jus.br/auth/realms/pje/protocol/openid-connect/token
+  token_exposto: false
+  resposta_maxima_bytes: 64000
+  producao_exige_confirmacao_separada: true
+
+discovery_gateway:
+  gateway_homologacao: https://gateway.stg.cloud.pje.jus.br
+  discovery_homologacao: https://discovery.stg.cloud.pje.jus.br
+  registro_discovery:
+    obrigatorio_para_servico-publicado-na-pdpj: true
+    nao_presumido_para-consumidor-api: true
+
+matriz_capacidades:
+  - capacidade: readiness-publico-sem-segredos
+    estado: habilitado
+    efeito_juridico: nenhum
+  - capacidade: teste-token-interno
+    estado: bloqueado-ate-gecli-aprovado-e-termo-aceito
+    efeito_juridico: nenhum
+  - capacidade: consulta-api-negocial
+    estado: bloqueado
+    efeito_juridico: potencial
+  - capacidade: domicilio-listar-comunicacoes
+    estado: bloqueado
+    efeito_juridico: potencial
+  - capacidade: domicilio-registrar-ciencia
+    estado: proibido-nesta-fase
+    efeito_juridico: alto
+  - capacidade: peticionamento
+    estado: proibido-nesta-fase
+    efeito_juridico: alto
+  - capacidade: mni
+    estado: proibido-nesta-fase
+    efeito_juridico: alto
+
+condicoes_de_parada:
+  - ausencia-de-aprovacao-gecli
+  - url-sso-fora-da-allowlist-oficial
+  - ambiente-nao-identificado
+  - producao-sem-aprovacao-separada
+  - tentativa-de-expor-token-ou-secret
+  - tentativa-de-ciencia-peticionamento-mni-ou-domicilio

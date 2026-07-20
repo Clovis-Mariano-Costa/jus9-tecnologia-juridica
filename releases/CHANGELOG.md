@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.21.0 - 2026-07-19
+
+- Readiness PDPJ passa a exigir onboarding institucional, aceite e aprovacao GeCli.
+- Teste de token aceita somente SSO oficial do ambiente e producao exige aprovacao separada.
+- Resposta OAuth limitada a 64 KB; token, secret e credenciais institucionais nao sao expostos.
+- Domicilio, ciencia, peticionamento, MNI e demais APIs negociais continuam bloqueados.
+
 ## 1.20.1 - 2026-07-19
 
 - Publicada Onda 2 dos MVPs gerais com prova DEE+DEJI+DPJ em 35 minutos.

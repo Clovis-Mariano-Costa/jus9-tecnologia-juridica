@@ -96,7 +96,7 @@ for (const phrase of [
 }
 
 includes(serviceWorker, "jus9-pwa-v45-2026-07-19-onda2-dee-deji-dpj", "service worker atual");
-includes(wranglerConfig, "governanca-1.20.1-onda2-dee-deji-dpj-1.0", "wrangler release atual");
+includes(wranglerConfig, "governanca-1.21.0-pdpj-onboarding-guard-1.0", "wrangler release atual");
 includes(release, "Release v1.18.1 - Onda 1 DED + DIC", "release Onda 1");
 
 console.log("ONDA1_DED_DIC_PROOF_PACKAGE_OK roteiro=30min mvps=DED,DIC status=PUBLICADO_CONTROLADO");

@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.16.0 - 2026-07-19
+
+- Preparacao documental da PDPJ-Br concluida com contrato de onboarding e matriz de capacidades.
+- Readiness deixa de declarar integracao configurada apenas pela presenca de client/secret.
+- Responsavel, termo, GeCli aprovado, ambiente e URL SSO oficial tornam-se gates verificaveis.
+- Onboarding real permanece dependente do Fundador e do CNJ; nenhuma solicitacao ou transacao foi executada.
+
 ## 1.15.1 - 2026-07-19
 
 - Publicado pacote Onda 2 DEE+DEJI+DPJ como prova de valor executavel em 35 minutos.
