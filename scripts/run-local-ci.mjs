@@ -157,6 +157,12 @@ const checks = [
     args: ["scripts/audit-cronograma-charlie-cnj-v1-8.mjs"]
   },
   {
+    label: "G6 governanca operacional Charlie",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-g6-governanca-charlie.mjs"]
+  },
+  {
     label: "Qualidade da interface Charlie Echo",
     cwd: portalRoot,
     command: process.execPath,

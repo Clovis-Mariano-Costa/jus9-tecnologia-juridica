@@ -1,0 +1,102 @@
+{
+  "metadata": {
+    "id": "GOV-CHARLIE-RECONCILIACAO-G6-001",
+    "versao": "1.0.0",
+    "autor": "Codex / Charlie Juris",
+    "revisor_responsavel": "Clovis Mariano da Costa",
+    "data": "2026-07-20",
+    "status": "linha-base-documental",
+    "classificacao": "PUBLICO-INSTITUCIONAL",
+    "hash": "calcular-na-release-aprovada"
+  },
+  "regra": "Nenhuma capacidade e promovida apenas por declaracao; codigo, health, teste, papel humano, rollback e documento devem concordar.",
+  "estados": [
+    "comprovado",
+    "parcial",
+    "documentacao_defasada",
+    "bloqueado",
+    "planejado"
+  ],
+  "controles": [
+    {
+      "id": "G6-CTRL-001",
+      "dominio": "classificacao_e_risco",
+      "estado": "comprovado",
+      "evidencias": ["functions/lib/charlie-core/response-pipeline.js", "scripts/audit-charlie-response-pipeline.mjs"],
+      "proxima_acao": "incorporar ao registro canonico v2"
+    },
+    {
+      "id": "G6-CTRL-002",
+      "dominio": "proveniencia_e_fallback",
+      "estado": "comprovado",
+      "evidencias": ["worker.js", "scripts/audit-charlie-response-pipeline.mjs"],
+      "proxima_acao": "declarar estados e motivos no registro canonico v2"
+    },
+    {
+      "id": "G6-CTRL-003",
+      "dominio": "revisao_humana_e_efeitos",
+      "estado": "comprovado",
+      "evidencias": ["functions/lib/charlie-core/contracts.js", "governanca/RELATORIO_ACEITE_E_REVERSIBILIDADE_PACOTE_1C_DAJ_2026-07-19.md"],
+      "proxima_acao": "vincular papeis e efeitos permitidos"
+    },
+    {
+      "id": "G6-CTRL-004",
+      "dominio": "matriz_de_capacidades_e_flags",
+      "estado": "documentacao_defasada",
+      "evidencias": ["governanca/MATRIZ_CAPACIDADES_CHARLIE_ECHO_v1.1.0.json", "apis/FEATURE_FLAGS_CAPACIDADES_CHARLIE_ECHO_v1.3.0.json", "worker.js"],
+      "proxima_acao": "criar registro canonico de capacidades v2 sem sobrescrever historico"
+    },
+    {
+      "id": "G6-CTRL-005",
+      "dominio": "identidade_papeis_e_autorizacao",
+      "estado": "parcial",
+      "evidencias": ["tests/validate-worker-auth.mjs", "tests/validate-rls-controlled-matrix.mjs"],
+      "proxima_acao": "consolidar matriz RBAC e aprovacao, incluindo advogado_lider"
+    },
+    {
+      "id": "G6-CTRL-006",
+      "dominio": "ferramentas_e_conectores",
+      "estado": "parcial",
+      "evidencias": ["apis/CATALOGO_CAPACIDADES_CNJ_GOVERNADO_v1.0.0.json", "apis/CONTRATO_DATAJUD_GOVERNADO_v1.0.0.yaml", "worker.js"],
+      "proxima_acao": "catalogo Charlie default deny para leitura, escrita, dado, efeito, credencial e aprovacao"
+    },
+    {
+      "id": "G6-CTRL-007",
+      "dominio": "memoria_e_retencao",
+      "estado": "parcial",
+      "evidencias": ["memoria/POLITICA_MEMORIA_CHARLIE_ECHO_v1.0.0.md", "worker.js"],
+      "proxima_acao": "definir prazos, consentimento, exportacao, exclusao e tombstone por classe"
+    },
+    {
+      "id": "G6-CTRL-008",
+      "dominio": "fontes_e_citacoes",
+      "estado": "parcial",
+      "evidencias": ["functions/lib/charlie-core/response-pipeline.js", "prompts/governanca/CONTRATOS_MODOS_CHARLIE_ECHO_v1.1.0.yaml"],
+      "proxima_acao": "separar citada, localizada, conferida e inaplicavel"
+    },
+    {
+      "id": "G6-CTRL-009",
+      "dominio": "auditoria_e_incidentes",
+      "estado": "parcial",
+      "evidencias": ["logs/AUDITORIA_GOVERNANCA_CHARLIE_ECHO_2026-07-12.md", "governanca/RELATORIO_INCIDENTE_ANALISE_DAJ_RESPOSTA_EVASIVA_2026-07-19.md"],
+      "proxima_acao": "definir retencao, acesso, alertas, integridade e descarte"
+    },
+    {
+      "id": "G6-CTRL-010",
+      "dominio": "avaliacao_adversarial",
+      "estado": "parcial",
+      "evidencias": ["testes/SUITE_GOVERNANCA_RISCOS_CHARLIE_ECHO_v1.2.0.json", "scripts/audit-charlie-governance-risk-suite.mjs"],
+      "proxima_acao": "cobrir prompt injection, exfiltracao, escalada de papel, tool misuse e bypass humano"
+    },
+    {
+      "id": "G6-CTRL-011",
+      "dominio": "pdpj_transacional",
+      "estado": "bloqueado",
+      "evidencias": ["governanca/CRONOGRAMA_CHARLIE_GOVERNANCA_CNJ_CONEXOES_v1.8.0.md", "scripts/audit-pdpj-onboarding.mjs"],
+      "proxima_acao": "aguardar resposta e onboarding institucional; silencio nao autoriza"
+    }
+  ],
+  "proxima_acao_unica": "G6B_REGISTRO_CANONICO_CAPACIDADES_CHARLIE_V2",
+  "altera_runtime": false,
+  "habilita_transacoes": false
+}

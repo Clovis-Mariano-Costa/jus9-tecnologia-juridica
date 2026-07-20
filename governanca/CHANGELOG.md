@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.16.7 - 2026-07-20
+
+- Diagnostico G6 confronta governanca documentada e runtime atual da Charlie.
+- Matriz de reconciliacao classifica 11 dominios entre comprovado, parcial, documentacao defasada e bloqueado.
+- Proxima acao unica passa a ser o registro canonico de capacidades v2, sem alterar runtime.
+- PDPJ, efeitos externos e promocao de documentos fundadores permanecem bloqueados pelos respectivos gates humanos e institucionais.
+
 ## 1.16.6 - 2026-07-20
 
 - Cronograma Charlie/CNJ avanca para v1.8.0 com marcos, datas, responsaveis, entradas, saidas e condicoes de parada.

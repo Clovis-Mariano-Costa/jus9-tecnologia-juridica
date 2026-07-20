@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.21.7 - 2026-07-20
+
+- Release documental publica o diagnostico G6 da governanca operacional da Charlie.
+- Onze dominios de controle recebem estado, evidencia e proxima acao.
+- Divergencia entre documentos fundadores e runtime passa a ser tratada como prioridade P0.
+- Nenhum runtime, conector, segredo ou efeito transacional foi alterado.
+
 ## 1.21.6 - 2026-07-20
 
 - Release documental reorganiza o cronograma Charlie/CNJ em marcos executaveis ate a decisao humana de 24/07/2026.
