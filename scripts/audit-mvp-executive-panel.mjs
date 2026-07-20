@@ -29,6 +29,7 @@ assert(panel.includes("data-onda1-ded-dic-proof") && panel.includes("Onda 1 - pr
 assert(panel.includes("data-onda2-dee-deji-dpj-proof") && panel.includes("Onda 2 - prova DEE + DEJI + DPJ"), "painel executivo sem prova Onda 2 DEE+DEJI+DPJ");
 assert(panel.includes("data-onda3-dip-daa-dej-proof") && panel.includes("Onda 3 - prova DIP + DAA + DEJ"), "painel executivo sem prova Onda 3 DIP+DAA+DEJ");
 assert(panel.includes("data-onda4-doi-dge-proof") && panel.includes("Onda 4 - prova DOI + DGE"), "painel executivo sem prova Onda 4 DOI+DGE");
+assert(panel.includes("data-onda5-dmp-dap-dmg-proof") && panel.includes("Onda 5 - prova DMP + DAP + DMG"), "painel executivo sem prova Onda 5 DMP+DAP+DMG");
 
 const packageStatuses = [
   "CONCLUIDO",
@@ -42,7 +43,7 @@ for (const status of packageStatuses) {
   assert(panel.includes(status), `painel executivo sem status ${status}`);
 }
 
-for (const packageNumber of ["0", "1", "2", "3", "4", "5", "5A", "5B", "6", "7", "8"]) {
+for (const packageNumber of ["0", "1", "2", "3", "4", "5", "5A", "5B", "5C", "6", "7", "8"]) {
   assert(panel.includes(`data-package="${packageNumber}"`), `painel executivo sem Pacote ${packageNumber}`);
 }
 
@@ -70,6 +71,9 @@ for (const target of [
   "app-demo-estudante.html#prova-dej",
   "app-demo-orgao-publico.html#prova-doi",
   "app-demo-administrador.html#prova-dge",
+  "app-demo-promotor.html#prova-dmp",
+  "app-demo-delegado.html#prova-dap",
+  "app-demo-juiz.html#prova-dmg",
   "mvp.html",
   "lider-mvp.html",
 ]) {
@@ -79,4 +83,4 @@ for (const target of [
 assert(mvpPage.includes("app-painel-mvps.html"), "mvp.html sem link para painel executivo");
 assert(leaderPage.includes("app-painel-mvps.html"), "lider-mvp.html sem link para painel executivo");
 
-console.log("MVP_EXECUTIVE_PANEL_OK mvps=14 pacotes=11 onda1=DED_DIC onda2=DEE_DEJI_DPJ onda3=DIP_DAA_DEJ onda4=DOI_DGE status=CONCLUIDO_PUBLICADO fechamento=PENDENTE_FECHAMENTO_GERAL");
+console.log("MVP_EXECUTIVE_PANEL_OK mvps=14 pacotes=12 onda1=DED_DIC onda2=DEE_DEJI_DPJ onda3=DIP_DAA_DEJ onda4=DOI_DGE onda5=DMP_DAP_DMG status=CONCLUIDO_PUBLICADO fechamento=PENDENTE_FECHAMENTO_GERAL");

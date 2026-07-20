@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.16.5 - 2026-07-20
+
+- Publicado pacote Onda 5 DMP+DAP+DMG como prova de valor executavel em 32 minutos.
+- Painel executivo, DMP, DAP e DMG passam a exibir roteiro, aceite humano e condicoes de parada especificas.
+- Criado documento governado `PACOTE_ONDA5_DMP_DAP_DMG_PROVA_VALOR_2026-07-20_v1.0.0.md` e auditor dedicado no CI local.
+- Os 14 MVPs gerais passam a ter prova publica demonstrativa; Pacote 2 e Pacote 6 seguem bloqueados por decisao humana/governanca.
+
 ## 1.16.4 - 2026-07-20
 
 - Publicado pacote Onda 4 DOI+DGE como prova de valor executavel em 22 minutos.

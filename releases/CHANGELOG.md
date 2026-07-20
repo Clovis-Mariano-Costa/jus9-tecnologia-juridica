@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.21.5 - 2026-07-20
+
+- Publicada Onda 5 dos MVPs gerais com prova DMP+DAP+DMG em 32 minutos.
+- Painel executivo recebe `data-onda5-dmp-dap-dmg-proof`; DMP, DAP e DMG recebem runbooks publicos proprios.
+- Criado documento governado `PACOTE_ONDA5_DMP_DAP_DMG_PROVA_VALOR_2026-07-20_v1.0.0.md` e auditor `audit-onda5-dmp-dap-dmg-proof-package.mjs`.
+- Cache PWA sobe para `jus9-pwa-v49-2026-07-20-onda5-dmp-dap-dmg`.
+- Pesquisa federada, G5 documental, Onda 4 e guard PDPJ-Br permanecem preservados.
+
 ## 1.21.4 - 2026-07-20
 
 - Publicada Onda 4 dos MVPs gerais com prova DOI+DGE em 22 minutos.

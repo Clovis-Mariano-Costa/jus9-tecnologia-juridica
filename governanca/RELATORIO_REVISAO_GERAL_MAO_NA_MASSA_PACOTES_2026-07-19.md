@@ -29,6 +29,7 @@ Nesta revisao, nenhum pacote dependente de acao humana foi convertido em conclui
 | 5 | DEE, DEJI e DPJ | `CONCLUIDO_PUBLICADO` | Commit `5151409`, smoke vivo DEE/DEJI/DPJ |
 | 5A | DIP, DAA e DEJ | `CONCLUIDO_PUBLICADO` | Onda 3 publicada com prova governada DIP/DAA/DEJ |
 | 5B | DOI e DGE | `CONCLUIDO_PUBLICADO` | Onda 4 publicada com prova governada DOI/DGE |
+| 5C | DMP, DAP e DMG | `CONCLUIDO_PUBLICADO` | Onda 5 publicada com prova governada DMP/DAP/DMG |
 | 6 | Memoria e Drive | `BLOQUEADO_ATE_REVERSIBILIDADE_1C` | Bloqueado enquanto o Pacote 2 nao fechar |
 | 7 | Painel executivo dos 14 MVPs | `CONCLUIDO_PUBLICADO` | `app-painel-mvps.html`, commit `63a32c4` |
 | 8 | Revisao geral, Video e ZIP | `REVISAO_EXECUTADA / VIDEO_ZIP_PENDENTES` | Este relatorio e checklist final |
@@ -47,13 +48,16 @@ Nesta revisao, nenhum pacote dependente de acao humana foi convertido em conclui
 - DEJ: `https://jus9tecnologia.com.br/app-demo-estudante.html` e `https://jus9tecnologia.com.br/app-ia-estudante.html`.
 - DOI: `https://jus9tecnologia.com.br/app-demo-orgao-publico.html` e `https://jus9tecnologia.com.br/app-ia-orgao-publico.html`.
 - DGE: `https://jus9tecnologia.com.br/app-demo-administrador.html` e `https://jus9tecnologia.com.br/app-ia-administrador.html`.
+- DMP: `https://jus9tecnologia.com.br/app-demo-promotor.html` e `https://jus9tecnologia.com.br/app-ia-promotor.html`.
+- DAP: `https://jus9tecnologia.com.br/app-demo-delegado.html` e `https://jus9tecnologia.com.br/app-ia-delegado.html`.
+- DMG: `https://jus9tecnologia.com.br/app-demo-juiz.html` e `https://jus9tecnologia.com.br/app-ia-juiz.html`.
 
 ## Validacoes executadas
 
 - `LOCAL_CI_OK build-week,portal,rls,sql-homologacao,worker-auth,backend-local,charlie-echo,instalacao-publica,qr-codes`.
 - `PACKAGE5_SHOWCASES_OK modules=DEE,DEJI,DPJ status=CONCLUIDO_PUBLICADO`.
 - `FINAL_REMINDERS_OK video=pendente zip=pendente revisao-geral=pendente`.
-- `MVP_EXECUTIVE_PANEL_OK mvps=14 pacotes=11 onda1=DED_DIC onda2=DEE_DEJI_DPJ onda3=DIP_DAA_DEJ onda4=DOI_DGE status=CONCLUIDO_PUBLICADO fechamento=PENDENTE_FECHAMENTO_GERAL`.
+- `MVP_EXECUTIVE_PANEL_OK mvps=14 pacotes=12 onda1=DED_DIC onda2=DEE_DEJI_DPJ onda3=DIP_DAA_DEJ onda4=DOI_DGE onda5=DMP_DAP_DMG status=CONCLUIDO_PUBLICADO fechamento=PENDENTE_FECHAMENTO_GERAL`.
 
 ## Pendencias que nao podem ser puladas
 

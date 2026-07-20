@@ -13,7 +13,7 @@
     "AUTH_PUBLIC_GOOGLE_ENABLED": "true",
     "AUTH_PUBLIC_GOOGLE_PROFILE": "cidadao",
     "GOOGLE_CALENDAR_OAUTH_ENABLED": "false",
-    "JUS9_RELEASE": "governanca-1.21.4-onda4-doi-dge-1.0"
+    "JUS9_RELEASE": "governanca-1.21.5-onda5-dmp-dap-dmg-1.0"
   },
   "observability": {
     "enabled": true,

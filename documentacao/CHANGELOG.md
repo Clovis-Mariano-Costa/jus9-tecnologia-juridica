@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Documentacao
 
+## 1.17.6 - 2026-07-20
+
+- Versionamento publico v5.14 registra a Onda 5 DMP+DAP+DMG como prova de valor executavel.
+- Painel executivo ganha roteiro de 32 minutos com aceite e condicoes de parada.
+- Paginas DMP, DAP e DMG passam a orientar a prova direta sem denuncia real, investigacao real, decisao judicial, ato oficial, Drive real ou memoria real.
+
 ## 1.17.5 - 2026-07-20
 
 - Versionamento publico v5.13 registra a Onda 4 DOI+DGE como prova de valor executavel.
