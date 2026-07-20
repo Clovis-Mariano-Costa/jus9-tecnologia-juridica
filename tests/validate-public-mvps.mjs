@@ -182,6 +182,7 @@ assert(dajRegistryScript.includes("textContent") && !dajRegistryScript.includes(
 assert(mvpExecutivePanelPage.includes("data-mvp-executive-panel"), "painel executivo dos MVPs sem marcador principal");
 assert(mvpExecutivePanelPage.includes("data-mvp-proof-map") && mvpExecutivePanelPage.includes("Mapa de provas dos 14 MVPs"), "painel executivo sem mapa de provas dos MVPs");
 assert(mvpExecutivePanelPage.includes("data-onda1-ded-dic-proof") && mvpExecutivePanelPage.includes("Onda 1 - prova DED + DIC"), "painel executivo sem prova Onda 1 DED+DIC");
+assert(mvpExecutivePanelPage.includes("data-onda2-dee-deji-dpj-proof") && mvpExecutivePanelPage.includes("Onda 2 - prova DEE + DEJI + DPJ"), "painel executivo sem prova Onda 2 DEE+DEJI+DPJ");
 assert(mvpExecutivePanelPage.includes("DAJ-2026-0002") && mvpExecutivePanelPage.includes("ACEITE_HUMANO_PARCIAL_CONFIRMADO") && mvpExecutivePanelPage.includes("REVERSIBILIDADE_PENDENTE"), "painel executivo nao preserva o estado parcial do DAJ 1C");
 assert(mvpExecutivePanelPage.includes("a142825") && mvpExecutivePanelPage.includes("fcef514") && mvpExecutivePanelPage.includes("cde1bf89-3d93-4429-a485-be46945bec04"), "painel executivo sem evidencias de commit/deploy");
 assert(mvpExecutivePanelPage.includes("BLOQUEADO_ATE_REVERSIBILIDADE_1C") && mvpExecutivePanelPage.includes("AGUARDANDO_NOVO_TESTE_HUMANO"), "painel executivo sem bloqueios de governanca");
@@ -210,10 +211,13 @@ assert(dicAiShowcasePage.includes("data-dic-prompt-pack") && dicAiShowcasePage.i
 assert(dicAiShowcasePage.includes("Charlie nao substitui advogado, Defensoria, orgao publico, saude, policia, emergencia ou decisao humana"), "IA DIC sem limite humano completo");
 assert(!dicDashboardPage.includes("Digite seu CPF") && !dicAiShowcasePage.includes("envie documento real"), "DIC ainda sugere coleta de dado real");
 assert(deeDashboardPage.includes("data-dee-showcase") && deeDashboardPage.includes("DEE-MODELO-VITRINE-2026") && deeDashboardPage.includes("CLIENTE-FICTICIO-SEM-DADOS"), "DEE sem vitrine e dataset ficticio");
+assert(deeDashboardPage.includes("data-dee-proof-runbook") && deeDashboardPage.includes("CONCLUIR_DEMO_DEE"), "painel DEE sem runbook de prova Onda 2");
 assert(deeAiShowcasePage.includes("data-dee-prompt-pack") && deeAiShowcasePage.includes("data-dee-guardrails") && deeAiShowcasePage.includes("Charlie nao assina, nao protocola, nao decide estrategia final"), "IA DEE sem guardrails");
 assert(dejiDashboardPage.includes("data-deji-showcase") && dejiDashboardPage.includes("DEJI-MODELO-VITRINE-2026") && dejiDashboardPage.includes("Fornecedor Demonstrativo Sem Dados Reais"), "DEJI sem vitrine e dataset ficticio");
+assert(dejiDashboardPage.includes("data-deji-proof-runbook") && dejiDashboardPage.includes("CONCLUIR_DEMO_DEJI"), "painel DEJI sem runbook de prova Onda 2");
 assert(dejiAiShowcasePage.includes("data-deji-prompt-pack") && dejiAiShowcasePage.includes("data-deji-guardrails") && dejiAiShowcasePage.includes("Charlie nao aprova fornecedor"), "IA DEJI sem guardrails");
 assert(dpjDashboardPage.includes("data-dpj-showcase") && dpjDashboardPage.includes("DPJ-MODELO-VITRINE-2026") && dpjDashboardPage.includes("Perito Delta Ficticio"), "DPJ sem vitrine e dataset ficticio");
+assert(dpjDashboardPage.includes("data-dpj-proof-runbook") && dpjDashboardPage.includes("CONCLUIR_DEMO_DPJ"), "painel DPJ sem runbook de prova Onda 2");
 assert(dpjAiShowcasePage.includes("data-dpj-prompt-pack") && dpjAiShowcasePage.includes("data-dpj-guardrails") && dpjAiShowcasePage.includes("Charlie nao conclui fato tecnico sem evidencia"), "IA DPJ sem guardrails");
 assert(finalChecklistPage.includes("O ultimo pacote do Mao na Massa e sempre a revisao geral de todos os pacotes") && finalChecklistPage.includes("Video") && finalChecklistPage.includes("ZIP"), "checklist final sem revisao geral, video e ZIP");
 for (const profile of ["admin_sistema", "advogado_lider", "advogado", "assessor_chefe", "assessor", "secretaria", "estagio", "escritorio", "academia", "estudante", "cidadao", "perito", "parceiro", "empresa", "orgao_publico", "magistrado", "ministerio_publico", "autoridade_policial", "autor_editor"]) {
@@ -261,7 +265,7 @@ assert(installPage.includes("style.css?v=20260601-jus9-verde-card"), "pagina de 
 assert(pwaInstallScript.includes("register('/service-worker.js')"), "script PWA legado nao registra worker canonico");
 assert(!pwaInstallScript.includes("register('/sw.js')"), "script PWA legado ainda registra worker duplicado");
 assert(legacyServiceWorker.includes("importScripts('/service-worker.js')"), "ponte legada /sw.js ausente");
-assert(canonicalServiceWorker.includes("jus9-pwa-v44-2026-07-19-charlie-pipeline"), "cache PWA principal desatualizado");
+assert(canonicalServiceWorker.includes("jus9-pwa-v45-2026-07-19-onda2-dee-deji-dpj"), "cache PWA principal desatualizado");
 assert(canonicalServiceWorker.includes("/saiba-mais.html"), "cache PWA sem pagina Saiba mais");
 assert(canonicalServiceWorker.includes("/build-week-2026.html"), "cache PWA sem pagina Build Week");
 assert(canonicalServiceWorker.includes("/app-painel-mvps.html"), "cache PWA sem painel executivo dos MVPs");

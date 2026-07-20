@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Documentacao
 
+## 1.17.2 - 2026-07-19
+
+- Versionamento publico v5.10 registra a Onda 2 DEE+DEJI+DPJ como prova de valor executavel.
+- Painel executivo ganha roteiro de 35 minutos com aceite e condicoes de parada.
+- Paginas DEE, DEJI e DPJ passam a orientar a prova direta sem cliente real, contrato real, evidencia real, Drive real ou memoria real.
+
 ## 1.17.1 - 2026-07-19
 
 - Versionamento publico v5.9 registra a Onda 1 DED+DIC como prova de valor executavel.

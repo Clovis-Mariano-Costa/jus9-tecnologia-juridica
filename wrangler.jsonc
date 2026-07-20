@@ -13,7 +13,7 @@
     "AUTH_PUBLIC_GOOGLE_ENABLED": "true",
     "AUTH_PUBLIC_GOOGLE_PROFILE": "cidadao",
     "GOOGLE_CALENDAR_OAUTH_ENABLED": "false",
-    "JUS9_RELEASE": "governanca-1.20.0-datajud-governado-1.0"
+    "JUS9_RELEASE": "governanca-1.20.1-onda2-dee-deji-dpj-1.0"
   },
   "observability": {
     "enabled": true,

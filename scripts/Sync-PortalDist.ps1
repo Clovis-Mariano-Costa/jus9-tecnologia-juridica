@@ -14,6 +14,7 @@ $files = @(
   'script.js',
   'style.css',
   '_headers',
+  'manifest.webmanifest',
   'versionamento.html',
   'saiba-mais.html',
   'nossa-historia.html',

@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.20.1 - 2026-07-19
+
+- Publicada Onda 2 dos MVPs gerais com prova DEE+DEJI+DPJ em 35 minutos.
+- Painel executivo recebe `data-onda2-dee-deji-dpj-proof`; DEE, DEJI e DPJ recebem runbooks publicos proprios.
+- Criado documento governado `PACOTE_ONDA2_DEE_DEJI_DPJ_PROVA_VALOR_2026-07-19_v1.0.0.md` e auditor `audit-onda2-dee-deji-dpj-proof-package.mjs`.
+- Cache PWA sobe para `jus9-pwa-v45-2026-07-19-onda2-dee-deji-dpj`.
+
 ## 1.20.0 - 2026-07-19
 
 - DataJud sincronizado com os 91 aliases oficiais, incluindo TREs e TJMs.

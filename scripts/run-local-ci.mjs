@@ -1,9 +1,21 @@
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { existsSync } from "node:fs";
 import path from "node:path";
 
 const portalRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const githubRoot = path.resolve(portalRoot, "..");
+const defaultGithubRoot = path.resolve(portalRoot, "..");
+const configuredGithubRoot = process.env.JUS9_GITHUB_ROOT
+  ? path.resolve(process.env.JUS9_GITHUB_ROOT)
+  : null;
+const fallbackGithubRoot = path.resolve(process.env.USERPROFILE || process.env.HOME || defaultGithubRoot, "Documents", "GitHub");
+const hasSiblingRepos = (candidateRoot) =>
+  existsSync(path.join(candidateRoot, "backend-api-jus9-tecnologia-juridica"))
+  && existsSync(path.join(candidateRoot, "charlieecho-jus9-tecnologia-juridica"))
+  && existsSync(path.join(candidateRoot, "investimentos-jus9-tecnologia-juridica"));
+const githubRoot = [configuredGithubRoot, defaultGithubRoot, fallbackGithubRoot]
+  .filter(Boolean)
+  .find(hasSiblingRepos) || defaultGithubRoot;
 
 const checks = [
   {
@@ -211,6 +223,12 @@ const checks = [
     args: ["scripts/audit-onda1-ded-dic-proof-package.mjs"]
   },
   {
+    label: "Onda 2 DEE, DEJI e DPJ",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-onda2-dee-deji-dpj-proof-package.mjs"]
+  },
+  {
     label: "Backend local fail closed",
     cwd: path.join(githubRoot, "backend-api-jus9-tecnologia-juridica"),
     command: process.execPath,
@@ -238,6 +256,10 @@ const checks = [
 
 for (const check of checks) {
   console.log(`\n=== ${check.label} ===`);
+  if (!existsSync(check.cwd)) {
+    console.error(`LOCAL_CI_FAIL ${check.label}: diretorio nao encontrado ${check.cwd}`);
+    process.exit(1);
+  }
   const result = spawnSync(check.command, check.args, {
     cwd: check.cwd,
     encoding: "utf8",

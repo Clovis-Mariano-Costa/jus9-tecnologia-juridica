@@ -26,6 +26,7 @@ assert(panel.includes("LIVE_DAJ_SEARCH_SMOKE_OK"), "painel executivo sem smoke p
 assert(panel.includes("CPF integral nao entra em query string, prompt, localStorage, auditoria visivel ou resultado"), "painel executivo sem regra de minimizacao de CPF");
 assert(panel.includes("data-mvp-proof-map") && panel.includes("Mapa de provas dos 14 MVPs"), "painel executivo sem mapa de provas dos MVPs");
 assert(panel.includes("data-onda1-ded-dic-proof") && panel.includes("Onda 1 - prova DED + DIC"), "painel executivo sem prova Onda 1 DED+DIC");
+assert(panel.includes("data-onda2-dee-deji-dpj-proof") && panel.includes("Onda 2 - prova DEE + DEJI + DPJ"), "painel executivo sem prova Onda 2 DEE+DEJI+DPJ");
 
 const packageStatuses = [
   "CONCLUIDO",
@@ -71,4 +72,4 @@ for (const target of [
 assert(mvpPage.includes("app-painel-mvps.html"), "mvp.html sem link para painel executivo");
 assert(leaderPage.includes("app-painel-mvps.html"), "lider-mvp.html sem link para painel executivo");
 
-console.log("MVP_EXECUTIVE_PANEL_OK mvps=14 pacotes=9 onda1=DED_DIC status=CONCLUIDO_PUBLICADO fechamento=PENDENTE_FECHAMENTO_GERAL");
+console.log("MVP_EXECUTIVE_PANEL_OK mvps=14 pacotes=9 onda1=DED_DIC onda2=DEE_DEJI_DPJ status=CONCLUIDO_PUBLICADO fechamento=PENDENTE_FECHAMENTO_GERAL");

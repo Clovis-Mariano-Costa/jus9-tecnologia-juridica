@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.15.1 - 2026-07-19
+
+- Publicado pacote Onda 2 DEE+DEJI+DPJ como prova de valor executavel em 35 minutos.
+- Painel executivo, DEE, DEJI e DPJ passam a exibir roteiro, aceite humano e condicoes de parada especificas.
+- Criado documento governado `PACOTE_ONDA2_DEE_DEJI_DPJ_PROVA_VALOR_2026-07-19_v1.0.0.md` e auditor dedicado no CI local.
+
 ## 1.15.0 - 2026-07-19
 
 - G3 tecnico do DataJud concluido com allowlist oficial de 91 endpoints.
