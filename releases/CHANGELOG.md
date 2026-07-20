@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.19.0 - 2026-07-19
+
+- Charlie Core sobe para contrato `1.2.0` com pipeline governado de resposta.
+- Proxy correlaciona classificacao, risco, citacoes, limites, revisao humana, efeitos bloqueados, origem e auditoria.
+- Evento `charlie.response.governed` e registrado de forma estruturada e minimizada nos Workers Logs.
+- Frontend passa a exibir o envelope governado e a aceitar os cabecalhos do Worker como autoridade.
+- Cache PWA sobe para `jus9-pwa-v44-2026-07-19-charlie-pipeline`.
+
 ## 1.18.1 - 2026-07-19
 
 - Publicada Onda 1 dos MVPs gerais com prova DED+DIC em 30 minutos.

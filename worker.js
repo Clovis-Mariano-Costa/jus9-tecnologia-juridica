@@ -48,12 +48,16 @@ import {
 } from "./functions/_shared/pdpj.js";
 import {
   CHARLIE_CONTRACTS,
+  buildCharlieResponseAuditEvent,
+  buildCharlieResponseGovernance,
   buildProfileDirectoryModules,
-  getCharlieMvpRegistrySummary
+  getCharlieMvpRegistrySummary,
+  validateAuditEvent
 } from "./functions/lib/charlie-core/index.js";
 
 const CHARLIE_API_URL = "https://charlieecho.jus9tecnologia.com.br/api/ia";
 const CHARLIE_PROXY_MAX_BODY_BYTES = 300_000;
+const CHARLIE_DAJ_UPSTREAM_MAX_BODY_BYTES = 500_000;
 const PROFILE_DIRECTORY_MODULES = buildProfileDirectoryModules();
 const PROFILE_DIRECTORY_ACCESS = Object.freeze({
   advogado_lider: ["DAJ", "DEE"],
@@ -855,6 +859,28 @@ function dajLaudoProxyRejectReason(answer) {
   return "upstream_nao_validado";
 }
 
+async function readResponseTextBounded(response, maxBytes) {
+  const declaredLength = Number(response.headers.get("content-length") || 0);
+  if (declaredLength > maxBytes) return { text: "", tooLarge: true };
+  if (!response.body) return { text: "", tooLarge: false };
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let totalBytes = 0;
+  let text = "";
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    totalBytes += value.byteLength;
+    if (totalBytes > maxBytes) {
+      await reader.cancel("response_body_limit_exceeded");
+      return { text: "", tooLarge: true };
+    }
+    text += decoder.decode(value, { stream: true });
+  }
+  text += decoder.decode();
+  return { text, tooLarge: false };
+}
+
 function buildGovernedDajLaudoFromSource(sourceInput, upstreamAnswer) {
   const source = sanitizeDajLaudoSource(sourceInput || {});
   const op = source.operational || {};
@@ -918,22 +944,97 @@ function inferGovernedDajLaudoRisk(source) {
   };
 }
 
+function charlieGovernanceInputFromRequest(parsed) {
+  const input = parsed?.governance && typeof parsed.governance === "object" ? parsed.governance : {};
+  const inferredMvpCode = isDajLaudoProxyRequest(parsed) ? "DAJ" : "";
+  return {
+    mvpCode: sanitizeToken(input.mvpCode || parsed?.mvpCode || inferredMvpCode, 16).toUpperCase(),
+    classification: sanitizeText(input.classification || parsed?.classification, 80),
+    message: String(input.message || "").slice(0, 20_000),
+    hasAttachment: input.hasAttachment === true,
+    route: parsed?.route && typeof parsed.route === "object" ? parsed.route : {}
+  };
+}
+
+function charlieGovernancePayload(governance) {
+  return {
+    auditId: governance.auditId,
+    contractVersion: governance.contractVersion,
+    source: governance.source,
+    mvpCode: governance.mvpCode,
+    routeId: governance.routeId,
+    classification: governance.classification,
+    riskLevel: governance.riskLevel,
+    humanReviewRequired: governance.humanReviewRequired,
+    blockedAutonomousEffects: governance.blockedAutonomousEffects,
+    citations: governance.citations,
+    citationStatus: governance.citationStatus,
+    limits: governance.limits,
+    humanRole: governance.humanRole
+  };
+}
+
+function charlieGovernanceHeaders(governance, base = {}) {
+  const headers = new Headers(base);
+  headers.set("X-Jus9-Charlie-Source", governance.source);
+  headers.set("X-Jus9-Charlie-Contract-Version", governance.contractVersion);
+  headers.set("X-Jus9-Charlie-Audit-Id", governance.auditId);
+  headers.set("X-Jus9-Charlie-Classification", governance.classification);
+  headers.set("X-Jus9-Charlie-Risk-Level", governance.riskLevel);
+  headers.set("X-Jus9-Charlie-Human-Review", governance.humanReviewRequired ? "required" : "not-required");
+  headers.set("X-Jus9-Charlie-Citation-Status", governance.citationStatus);
+  headers.set("X-Jus9-Charlie-Blocked-Effects", governance.blockedAutonomousEffects ? "true" : "false");
+  headers.set("X-Jus9-Charlie-Limits", governance.limits.join(","));
+  return headers;
+}
+
+function logCharlieGovernanceEvent(governance, input) {
+  const event = buildCharlieResponseAuditEvent(governance, input);
+  const validation = validateAuditEvent(event);
+  if (!validation.ok) {
+    console.error(JSON.stringify({
+      eventType: "charlie.response.audit_rejected",
+      auditId: governance.auditId,
+      errors: validation.errors
+    }));
+    return;
+  }
+  console.log(JSON.stringify(event));
+}
+
 async function handleCharlieRespond(request, env) {
   const corsHeaders = getAuthCorsHeaders(request);
   const auditId = crypto.randomUUID();
-  const provenanceHeaders = (source, base = corsHeaders) => ({
-    ...base,
-    "X-Jus9-Charlie-Source": source,
-    "X-Jus9-Charlie-Contract-Version": CHARLIE_CONTRACTS.version,
-    "X-Jus9-Charlie-Audit-Id": auditId
+  const startedAt = Date.now();
+  let governanceInput = {};
+  let parsedBody = null;
+  const governanceFor = (source, citations = []) => buildCharlieResponseGovernance({
+    ...governanceInput,
+    auditId,
+    source,
+    citations,
+    route: parsedBody?.route || governanceInput.route
   });
+  const governedJson = (payload, status, source, extraHeaders = {}, auditResult = "responded", upstreamStatus = null, citations = []) => {
+    const governance = governanceFor(source, citations);
+    logCharlieGovernanceEvent(governance, {
+      result: auditResult,
+      upstreamStatus,
+      durationMs: Date.now() - startedAt
+    });
+    return jsonResponse(
+      { ...payload, ...charlieGovernancePayload(governance) },
+      status,
+      Object.fromEntries(charlieGovernanceHeaders(governance, { ...corsHeaders, ...extraHeaders }))
+    );
+  };
   if (request.method !== "GET" && request.method !== "POST") {
-    return jsonResponse({ ok: false, error: "metodo_nao_permitido", auditId }, 405, provenanceHeaders("fallback_governado", { ...corsHeaders, Allow: "GET, POST" }));
+    return governedJson({ ok: false, error: "metodo_nao_permitido" }, 405, "fallback_governado", { Allow: "GET, POST" }, "rejected_method");
   }
 
   const contentLength = Number(request.headers.get("content-length") || 0);
   if (contentLength > CHARLIE_PROXY_MAX_BODY_BYTES) {
-    return jsonResponse({ ok: false, error: "payload_muito_grande", auditId }, 413, provenanceHeaders("fallback_governado"));
+    return governedJson({ ok: false, error: "payload_muito_grande" }, 413, "fallback_governado", {}, "rejected_payload");
   }
 
   const session = await getSession(request, env).catch(() => null);
@@ -943,18 +1044,18 @@ async function handleCharlieRespond(request, env) {
     "X-Jus9-Portal-Proxy": "jus9-tecnologia-juridica"
   });
   let body;
-  let parsedBody = null;
-
   if (request.method === "POST") {
     const rawBody = await request.text();
     if (new TextEncoder().encode(rawBody).byteLength > CHARLIE_PROXY_MAX_BODY_BYTES) {
-      return jsonResponse({ ok: false, error: "payload_muito_grande", auditId }, 413, provenanceHeaders("fallback_governado"));
+      return governedJson({ ok: false, error: "payload_muito_grande" }, 413, "fallback_governado", {}, "rejected_payload");
     }
     const parsed = safeJsonParse(rawBody);
     if (!parsed || typeof parsed !== "object" || typeof parsed.message !== "string" || !parsed.message.trim()) {
-      return jsonResponse({ ok: false, error: "mensagem_obrigatoria", auditId }, 400, provenanceHeaders("fallback_governado"));
+      return governedJson({ ok: false, error: "mensagem_obrigatoria" }, 400, "fallback_governado", {}, "rejected_contract");
     }
-    parsedBody = prepareDajLaudoProxyRequest(parsed);
+    governanceInput = charlieGovernanceInputFromRequest(parsed);
+    const { governance: _governance, ...upstreamParsed } = parsed;
+    parsedBody = prepareDajLaudoProxyRequest(upstreamParsed);
     headers.set("Content-Type", "application/json");
     body = JSON.stringify(parsedBody);
   }
@@ -971,64 +1072,64 @@ async function handleCharlieRespond(request, env) {
       body,
       signal: controller.signal
     });
-    const responseHeaders = new Headers(corsHeaders);
+    let responseHeaders = new Headers(corsHeaders);
     responseHeaders.set("Content-Type", upstream.headers.get("content-type") || "application/json; charset=utf-8");
     responseHeaders.set("Cache-Control", "no-store");
     responseHeaders.set("X-Jus9-Charlie-Drive", driveAuthorized && internalToken ? "governado" : "somente-resposta");
     const upstreamSource = parsedBody?.route?.retryCorrection === true || parsedBody?.route?.retryCompacto === true
       ? "correcao_upstream"
       : "upstream";
-    responseHeaders.set("X-Jus9-Charlie-Source", upstreamSource);
-    responseHeaders.set("X-Jus9-Charlie-Contract-Version", CHARLIE_CONTRACTS.version);
-    responseHeaders.set("X-Jus9-Charlie-Audit-Id", auditId);
     if (isDajLaudoProxyRequest(parsedBody)) {
-      const upstreamText = await upstream.text();
+      const boundedUpstream = await readResponseTextBounded(upstream, CHARLIE_DAJ_UPSTREAM_MAX_BODY_BYTES);
+      const upstreamText = boundedUpstream.text;
       const upstreamPayload = safeJsonParse(upstreamText) || {};
       const upstreamAnswer = typeof upstreamPayload.answer === "string" ? upstreamPayload.answer : "";
       if (upstream.ok && upstreamAnswer && hasRequiredDajLaudoForProxy(upstreamAnswer) && !isMisdirectedDajLaudoForProxy(upstreamAnswer)) {
-        return jsonResponse({
+        return governedJson({
           ...upstreamPayload,
-          source: upstreamSource,
-          contractVersion: CHARLIE_CONTRACTS.version,
-          auditId,
           upstreamStatus: upstream.status
-        }, upstream.status, Object.fromEntries(responseHeaders));
+        }, upstream.status, upstreamSource, {
+          "Content-Type": responseHeaders.get("Content-Type"),
+          "Cache-Control": "no-store",
+          "X-Jus9-Charlie-Drive": responseHeaders.get("X-Jus9-Charlie-Drive")
+        }, "daj_upstream_validated", upstream.status, upstreamPayload.citations);
       }
-      responseHeaders.set("X-Jus9-Daj-Laudo-Fallback", "governado");
-      responseHeaders.set("X-Jus9-Charlie-Source", "fallback_governado");
-      return jsonResponse({
+      return governedJson({
         ok: true,
         answer: buildGovernedDajLaudoFromSource(parsedBody.route?.dajAnalysisSource, upstreamAnswer),
-        source: "fallback_governado",
         sourceDetail: "worker_daj_laudo_governado",
-        contractVersion: CHARLIE_CONTRACTS.version,
-        auditId,
         upstreamStatus: upstream.status,
-        upstreamRejectedReason: dajLaudoProxyRejectReason(upstreamAnswer)
-      }, 200, Object.fromEntries(responseHeaders));
+        upstreamRejectedReason: boundedUpstream.tooLarge ? "upstream_resposta_muito_grande" : dajLaudoProxyRejectReason(upstreamAnswer)
+      }, 200, "fallback_governado", {
+        "Content-Type": "application/json; charset=utf-8",
+        "Cache-Control": "no-store",
+        "X-Jus9-Charlie-Drive": responseHeaders.get("X-Jus9-Charlie-Drive"),
+        "X-Jus9-Daj-Laudo-Fallback": "governado"
+      }, "daj_fallback_governado", upstream.status);
     }
+    const governance = governanceFor(upstreamSource);
+    logCharlieGovernanceEvent(governance, {
+      result: upstream.ok ? "upstream_streamed" : "upstream_error_streamed",
+      upstreamStatus: upstream.status,
+      durationMs: Date.now() - startedAt
+    });
+    responseHeaders = charlieGovernanceHeaders(governance, responseHeaders);
     return new Response(upstream.body, { status: upstream.status, headers: responseHeaders });
   } catch (error) {
     const timedOut = error?.name === "AbortError";
     if (isDajLaudoProxyRequest(parsedBody)) {
-      return jsonResponse({
+      return governedJson({
         ok: true,
         answer: buildGovernedDajLaudoFromSource(parsedBody.route?.dajAnalysisSource, ""),
-        source: "fallback_governado",
         sourceDetail: "worker_daj_laudo_governado",
-        contractVersion: CHARLIE_CONTRACTS.version,
-        auditId,
         upstreamStatus: timedOut ? 504 : 502,
         upstreamRejectedReason: timedOut ? "charlie_api_timeout" : "charlie_api_indisponivel"
-      }, 200, provenanceHeaders("fallback_governado", { ...corsHeaders, "X-Jus9-Daj-Laudo-Fallback": "governado" }));
+      }, 200, "fallback_governado", { "X-Jus9-Daj-Laudo-Fallback": "governado" }, timedOut ? "daj_timeout_fallback" : "daj_unavailable_fallback", timedOut ? 504 : 502);
     }
-    return jsonResponse({
+    return governedJson({
       ok: false,
-      error: timedOut ? "charlie_api_timeout" : "charlie_api_indisponivel",
-      source: "fallback_governado",
-      contractVersion: CHARLIE_CONTRACTS.version,
-      auditId
-    }, timedOut ? 504 : 502, provenanceHeaders("fallback_governado"));
+      error: timedOut ? "charlie_api_timeout" : "charlie_api_indisponivel"
+    }, timedOut ? 504 : 502, "fallback_governado", {}, timedOut ? "upstream_timeout" : "upstream_unavailable", timedOut ? 504 : 502);
   } finally {
     clearTimeout(timeout);
   }
@@ -1744,7 +1845,7 @@ function getAuthCorsHeaders(request) {
     "Access-Control-Allow-Credentials": "true",
     "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Idempotency-Key, X-Jus9-Internal-Token",
-    "Access-Control-Expose-Headers": "X-Jus9-Charlie-Source, X-Jus9-Charlie-Contract-Version, X-Jus9-Charlie-Audit-Id, X-Jus9-Charlie-Drive, X-Jus9-Daj-Laudo-Fallback",
+    "Access-Control-Expose-Headers": "X-Jus9-Charlie-Source, X-Jus9-Charlie-Contract-Version, X-Jus9-Charlie-Audit-Id, X-Jus9-Charlie-Classification, X-Jus9-Charlie-Risk-Level, X-Jus9-Charlie-Human-Review, X-Jus9-Charlie-Citation-Status, X-Jus9-Charlie-Blocked-Effects, X-Jus9-Charlie-Limits, X-Jus9-Charlie-Drive, X-Jus9-Daj-Laudo-Fallback",
     "Vary": "Origin"
   };
 }

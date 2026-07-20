@@ -3,6 +3,8 @@ import assert from "node:assert/strict";
 import {
   CHARLIE_CONTRACTS,
   CHARLIE_MVP_REGISTRY,
+  buildCharlieResponseAuditEvent,
+  buildCharlieResponseGovernance,
   buildCharlieGovernedPrompt,
   buildProfileDirectoryModules,
   classifyCharlieRisk,
@@ -46,12 +48,14 @@ test("ChatRequest aceita somente MVP e campos controlados", () => {
 test("ChatResponse exige auditoria, classificacao e listas controladas", () => {
   const valid = validateChatResponse({
     auditId: "audit-ficticio-1",
-    contractVersion: "1.1.0",
+    contractVersion: "1.2.0",
     source: "upstream",
     answer: "Resposta ficticia revisavel.",
     classification: "PUBLICO_DEMONSTRATIVO",
     riskLevel: "normal",
+    humanReviewRequired: false,
     citations: [],
+    limits: ["human_review_required"],
     downloadOptions: [],
     nextActions: ["Revisar humanamente"]
   });
@@ -59,12 +63,14 @@ test("ChatResponse exige auditoria, classificacao e listas controladas", () => {
   assert.equal(validateChatResponse({ answer: "sem auditoria" }).ok, false);
   const invalidSource = validateChatResponse({
     auditId: "audit-ficticio-4",
-    contractVersion: "1.1.0",
+    contractVersion: "1.2.0",
     source: "origem_livre",
     answer: "Resposta ficticia.",
     classification: "INTERNO",
     riskLevel: "normal",
+    humanReviewRequired: false,
     citations: [],
+    limits: [],
     downloadOptions: [],
     nextActions: []
   });
@@ -101,11 +107,30 @@ test("AuditEvent rejeita campos com aparencia de segredo", () => {
   assert.equal(result.errors.includes("secret_like_field_forbidden"), true);
 });
 
+test("pipeline de resposta consolida risco, citacoes, limites e revisao", () => {
+  const governance = buildCharlieResponseGovernance({
+    auditId: "audit-pipeline-1",
+    source: "upstream",
+    mvpCode: "DAJ",
+    message: "Pesquise jurisprudencia para processo real urgente.",
+    route: { id: "jurisprudencia_produto_daj" }
+  });
+  assert.equal(governance.contractVersion, "1.2.0");
+  assert.equal(governance.classification, "JURIDICO_SIGILOSO");
+  assert.equal(governance.riskLevel, "high");
+  assert.equal(governance.humanReviewRequired, true);
+  assert.equal(governance.citationStatus, "required_unverified");
+  assert.equal(governance.limits.includes("official_daj_source_required"), true);
+  const event = buildCharlieResponseAuditEvent(governance, { result: "responded", upstreamStatus: 200, durationMs: 25 });
+  assert.equal(validateAuditEvent(event).ok, true);
+  assert.equal(JSON.stringify(event).includes("processo real urgente"), false);
+});
+
 test("catalogo de contratos expoe cinco DTOs e campos estaveis", () => {
   assert.equal(CHARLIE_CONTRACTS.types.length, 5);
-  assert.equal(CHARLIE_CONTRACTS.version, "1.1.0");
+  assert.equal(CHARLIE_CONTRACTS.version, "1.2.0");
   assert.deepEqual(CHARLIE_CONTRACTS.responseSources, ["upstream", "correcao_upstream", "fallback_governado"]);
-  for (const field of ["auditId", "contractVersion", "source", "classification", "riskLevel", "citations", "downloadOptions", "nextActions"]) {
+  for (const field of ["auditId", "contractVersion", "source", "classification", "riskLevel", "humanReviewRequired", "citations", "limits", "downloadOptions", "nextActions"]) {
     assert.equal(CHARLIE_CONTRACTS.controlledFields.includes(field), true);
   }
 });

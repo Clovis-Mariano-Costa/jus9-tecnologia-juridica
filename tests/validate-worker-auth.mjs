@@ -73,7 +73,7 @@ assert(response.status === 200 && data.service === "jus9-tecnologia-juridica", "
 assert(data.status === "degraded" && data.checks?.assets?.configured === true, "health local deveria informar readiness parcial");
 assert(data.checks?.charlieApiProxy?.configured === true && data.checks.charlieApiProxy.privilegedDriveConfigured === false, "health deveria expor proxy Charlie sem segredo local");
 assert(data.checks?.charlieCore?.configured === true && data.checks.charlieCore.mvps === 14, "health deveria expor Charlie Core com 14 MVPs");
-assert(data.checks?.charlieCore?.contractVersion === "1.1.0", "health deveria expor versao dos contratos Charlie Core");
+assert(data.checks?.charlieCore?.contractVersion === "1.2.0", "health deveria expor versao dos contratos Charlie Core");
 console.log("AUTH_OK health=200");
 
 response = await request("/api/auth/permissions");
@@ -126,15 +126,23 @@ try {
   response = await worker.fetch(new Request("https://jus9.invalid/api/charlie/respond", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ message: "O que e peticao?", mode: "profissional" })
+    body: JSON.stringify({
+      message: "O que e peticao?",
+      mode: "profissional",
+      governance: { mvpCode: "DAJ", classification: "JURIDICO_SIGILOSO", message: "O que e peticao?" }
+    })
   }), { ...env, JUS9_CHARLIE_INTERNAL_TOKEN: "token-interno-ficticio" });
   data = await response.json();
   assert(response.status === 200 && data.answer === "Resposta ficticia da Charlie", "proxy Charlie anonimo deveria responder");
   assert(proxyAuthorization === "", "proxy anonimo nao deve autorizar escrita no Drive");
   assert(response.headers.get("x-jus9-charlie-drive") === "somente-resposta", "proxy anonimo deveria declarar somente resposta");
   assert(response.headers.get("x-jus9-charlie-source") === "upstream", "proxy deveria declarar origem upstream");
-  assert(response.headers.get("x-jus9-charlie-contract-version") === "1.1.0", "proxy deveria declarar versao do contrato");
+  assert(response.headers.get("x-jus9-charlie-contract-version") === "1.2.0", "proxy deveria declarar versao do contrato");
   assert(Boolean(response.headers.get("x-jus9-charlie-audit-id")), "proxy deveria declarar auditoria por resposta");
+  assert(response.headers.get("x-jus9-charlie-classification") === "JURIDICO_SIGILOSO", "proxy deveria declarar classificacao governada");
+  assert(response.headers.get("x-jus9-charlie-risk-level") === "high", "proxy DAJ deveria declarar risco padrao alto");
+  assert(response.headers.get("x-jus9-charlie-human-review") === "required", "proxy DAJ deveria exigir revisao humana");
+  assert(response.headers.get("x-jus9-charlie-limits").includes("official_daj_source_required"), "proxy deveria declarar limites do modulo");
   console.log("AUTH_OK charlie-proxy-anonymous=answer-only");
 
   response = await worker.fetch(new Request("https://jus9.invalid/api/charlie/respond", {
@@ -193,7 +201,9 @@ try {
   assert(response.status === 200, "proxy DAJ deveria responder com fallback governado");
   assert(data.answer.includes("Laudo de Analise DAJ") && data.answer.includes("10. Conclusao operacional"), "fallback DAJ deveria devolver laudo completo");
   assert(data.source === "fallback_governado" && data.sourceDetail === "worker_daj_laudo_governado" && data.upstreamRejectedReason === "upstream_resposta_evasiva", "fallback DAJ deveria registrar origem e motivo da recuperacao");
-  assert(data.contractVersion === "1.1.0" && data.auditId === response.headers.get("x-jus9-charlie-audit-id"), "fallback DAJ deveria correlacionar contrato e auditoria");
+  assert(data.contractVersion === "1.2.0" && data.auditId === response.headers.get("x-jus9-charlie-audit-id"), "fallback DAJ deveria correlacionar contrato e auditoria");
+  assert(data.classification === "JURIDICO_SIGILOSO" && data.riskLevel === "high" && data.humanReviewRequired === true, "fallback DAJ deveria carregar envelope governado completo");
+  assert(Array.isArray(data.limits) && data.limits.includes("pii_minimization_required"), "fallback DAJ deveria carregar limites controlados");
   assert(response.headers.get("x-jus9-daj-laudo-fallback") === "governado", "fallback DAJ deveria declarar cabecalho governado");
   assert(response.headers.get("x-jus9-charlie-source") === "fallback_governado", "fallback DAJ deveria declarar proveniencia controlada");
   console.log("AUTH_OK charlie-proxy-daj-laudo-fallback=200");

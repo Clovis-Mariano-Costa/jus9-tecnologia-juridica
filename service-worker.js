@@ -4,7 +4,7 @@
   Não armazena dados sensíveis. Não altera login, backend ou rotas protegidas.
 */
 
-const JUS9_CACHE = 'jus9-pwa-v43-2026-07-19-onda1-ded-dic';
+const JUS9_CACHE = 'jus9-pwa-v44-2026-07-19-charlie-pipeline';
 const JUS9_ASSETS = [
   '/',
   '/index.html',

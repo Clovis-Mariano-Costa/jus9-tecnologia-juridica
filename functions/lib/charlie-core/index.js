@@ -21,3 +21,8 @@ export {
   validateDataJudSearchRequest,
   validateDocumentSaveRequest
 } from "./contracts.js";
+export {
+  CHARLIE_CITATION_STATUSES,
+  buildCharlieResponseAuditEvent,
+  buildCharlieResponseGovernance
+} from "./response-pipeline.js";

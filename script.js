@@ -874,7 +874,12 @@ window.jus9DemoLogin = function(form){
     return {
       source: source,
       contractVersion: String(data.contractVersion || (source === 'fallback_local_demo' ? 'local-demo' : '')).slice(0, 40),
-      auditId: String(data.auditId || '').slice(0, 160)
+      auditId: String(data.auditId || '').slice(0, 160),
+      classification: String(data.classification || '').slice(0, 80),
+      riskLevel: String(data.riskLevel || '').slice(0, 24),
+      humanReviewRequired: data.humanReviewRequired === true,
+      citationStatus: String(data.citationStatus || '').slice(0, 40),
+      blockedAutonomousEffects: data.blockedAutonomousEffects === true
     };
   }
 
@@ -893,7 +898,12 @@ window.jus9DemoLogin = function(form){
     return [
       'Origem tecnica: ' + charlieProvenanceLabel(provenance.source),
       provenance.contractVersion ? 'contrato ' + provenance.contractVersion : '',
-      provenance.auditId ? 'auditoria ' + provenance.auditId : ''
+      provenance.auditId ? 'auditoria ' + provenance.auditId : '',
+      provenance.classification ? 'classificacao ' + provenance.classification : '',
+      provenance.riskLevel ? 'risco ' + provenance.riskLevel : '',
+      provenance.humanReviewRequired ? 'revisao humana obrigatoria' : '',
+      provenance.citationStatus && provenance.citationStatus !== 'not_required' ? 'citacoes ' + provenance.citationStatus : '',
+      provenance.blockedAutonomousEffects ? 'efeitos autonomos bloqueados' : ''
     ].filter(Boolean).join(' | ');
   }
 
@@ -2335,9 +2345,21 @@ window.jus9DemoLogin = function(form){
       });
       var data = await response.json().catch(function(){ return null; });
       if(data && typeof data === 'object'){
-        data.source = data.source || response.headers.get('x-jus9-charlie-source') || '';
-        data.contractVersion = data.contractVersion || response.headers.get('x-jus9-charlie-contract-version') || '';
-        data.auditId = data.auditId || response.headers.get('x-jus9-charlie-audit-id') || '';
+        var governedSource = response.headers.get('x-jus9-charlie-source');
+        var governedContract = response.headers.get('x-jus9-charlie-contract-version');
+        var governedAuditId = response.headers.get('x-jus9-charlie-audit-id');
+        var governedClassification = response.headers.get('x-jus9-charlie-classification');
+        var governedRisk = response.headers.get('x-jus9-charlie-risk-level');
+        var governedCitationStatus = response.headers.get('x-jus9-charlie-citation-status');
+        if(governedSource) data.source = governedSource;
+        if(governedContract) data.contractVersion = governedContract;
+        if(governedAuditId) data.auditId = governedAuditId;
+        if(governedClassification) data.classification = governedClassification;
+        if(governedRisk) data.riskLevel = governedRisk;
+        data.humanReviewRequired = response.headers.get('x-jus9-charlie-human-review') === 'required';
+        data.citationStatus = Array.isArray(data.citations) && data.citations.length ? 'provided_unverified' : (governedCitationStatus || '');
+        data.blockedAutonomousEffects = response.headers.get('x-jus9-charlie-blocked-effects') === 'true';
+        data.limits = String(response.headers.get('x-jus9-charlie-limits') || '').split(',').filter(Boolean);
       }
       return { response:response, data:data };
     } catch (error) {
@@ -2354,6 +2376,16 @@ window.jus9DemoLogin = function(form){
 
   function successfulCharlieApiPayload(response, data){
     return response && response.ok && data && typeof data.answer === 'string' && data.answer.trim();
+  }
+
+  function charlieGovernanceRequest(code, question, room, routeDecision){
+    var routeSource = routeDecision && routeDecision.dajAnalysisSource || {};
+    return {
+      mvpCode: String(code || '').toUpperCase().slice(0, 16),
+      classification: String(routeSource.classification || (room && room.governanceClass) || (code === 'DAJ' ? 'JURIDICO_SIGILOSO' : 'PUBLICO_DEMONSTRATIVO')).slice(0, 80),
+      message: plainQuestionText(question).slice(0, 20000),
+      hasAttachment: /\[ANEXOS DO USUARIO - UPLOAD LOCAL GOVERNADO\]/i.test(String(question || ''))
+    };
   }
 
   async function askCharlieApiPayload(mode, code, focus, question, room, routeDecision){
@@ -2383,6 +2415,7 @@ window.jus9DemoLogin = function(form){
       requestId: requestId,
       mode: apiModeFor(mode),
       route: routeDecision,
+      governance: charlieGovernanceRequest(code, question, room, routeDecision),
       message: buildApiMessage(mode, code, focus, question, identityContext, routeDecision),
       room: apiRoom
     };
@@ -2397,6 +2430,7 @@ window.jus9DemoLogin = function(form){
         requestId: requestId,
         mode: apiModeFor(mode),
         route: Object.assign({}, routeDecision, { retryCompacto:true }),
+        governance: charlieGovernanceRequest(code, question, room, routeDecision),
         message: buildApiMessage(mode, code, focus, compactQuestion, identityContext, routeDecision),
         room: null
       }, 45000);

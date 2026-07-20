@@ -97,6 +97,12 @@ const checks = [
     args: ["--test", "tests/charlie-core.test.mjs"]
   },
   {
+    label: "Pipeline governado de respostas Charlie",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-charlie-response-pipeline.mjs"]
+  },
+  {
     label: "Qualidade da interface Charlie Echo",
     cwd: portalRoot,
     command: process.execPath,

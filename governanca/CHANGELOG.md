@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.14.0 - 2026-07-19
+
+- G2 interno consolidado em um pipeline unico da Charlie Core, com contrato `1.2.0`.
+- Classificacao, risco, citacoes, limites, revisao humana, bloqueio de efeitos autonomos e proveniencia passam a compor o mesmo envelope governado.
+- Worker publica o envelope em cabecalhos controlados, injeta-o no corpo DAJ e registra evento estruturado minimizado no observability, sem pergunta, resposta, CPF, processo ou identidade.
+- Frontend trata os cabecalhos do Worker como fonte autoritativa e mostra risco, classificacao, revisao, citacoes e bloqueios junto da proveniencia.
+- DataJud, PDPJ, Drive e memoria nao foram ampliados por este pacote.
+
 ## 1.13.9 - 2026-07-19
 
 - Publicado pacote Onda 1 DED+DIC como prova de valor executavel em 30 minutos.

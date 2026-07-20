@@ -95,8 +95,8 @@ for (const phrase of [
   includes(versionamento, phrase, "versionamento publico");
 }
 
-includes(serviceWorker, "jus9-pwa-v43-2026-07-19-onda1-ded-dic", "service worker");
-includes(wranglerConfig, "governanca-1.18.1-onda1-ded-dic-1.0", "wrangler release");
+includes(serviceWorker, "jus9-pwa-v44-2026-07-19-charlie-pipeline", "service worker atual");
+includes(wranglerConfig, "governanca-1.19.0-charlie-pipeline-governado-1.0", "wrangler release atual");
 includes(release, "Release v1.18.1 - Onda 1 DED + DIC", "release Onda 1");
 
 console.log("ONDA1_DED_DIC_PROOF_PACKAGE_OK roteiro=30min mvps=DED,DIC status=PUBLICADO_CONTROLADO");
