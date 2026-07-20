@@ -4,7 +4,7 @@ versao: 1.21.0
 autor: Codex / Charlie Juris
 revisor_responsavel: Clovis Mariano da Costa
 data: 2026-07-19
-status: preparada-para-publicacao-controlada
+status: publicada-controlada
 classificacao: PUBLICO-INSTITUCIONAL
 hash: calcular-na-release-aprovada
 ---
@@ -23,6 +23,19 @@ hash: calcular-na-release-aprovada
 ## Sem ativacao
 
 Esta release nao configura CNPJ, credencial, certificado, tenant, perfil, lotacao, API negocial ou endpoint transacional. Nao chama o CNJ e nao submete solicitacao GeCli.
+
+## Validacao e publicacao
+
+- Auditor PDPJ e regressao do Worker: aprovados.
+- CI local: controles locais aprovados; verificador publico de instalacao repetido e aprovado apos uma oscilacao causada por deploy concorrente.
+- Types e dry-run Wrangler: aprovados.
+- Health oficial: `ready`.
+- Readiness PDPJ: `blocked-institutional-onboarding`, `gecliApproved=false`, `tokenTest=false`.
+- DataJud preservado: 91 aliases e Termo v1.2.
+- Manifesto PWA: HTTP 200 nos dominios oficial e workers.dev.
+- Commit fonte: `f63929c`.
+- Release: `governanca-1.21.0-pdpj-onboarding-guard-1.0`.
+- Versao ativa do Worker: `a6e08202-101d-4c23-a418-70cec649c878`.
 
 ## Rollback
 
