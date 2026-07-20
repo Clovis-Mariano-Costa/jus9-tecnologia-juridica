@@ -9,7 +9,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Saiba mais - Ecossistema Jus 9</title>
-  <meta name="description" content="Mapa publico do ecossistema Jus 9 Tecnologia Juridica: MVPs, Charlie Echo, Universidade do Futuro, Equipe, Jus9 Verde, governanca e canais oficiais.">
+  <meta name="description" content="Mapa publico do ecossistema Jus 9 Tecnologia Juridica: MVPs, Charlie Echo, documentacao Google OAuth, governanca, seguranca e canais oficiais.">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css?v=20260621-visual-fundador">
   <link rel="manifest" href="manifest.webmanifest">
@@ -99,13 +99,56 @@
         <a class="doc-link" href="documentos/cookies.html">Politica de Cookies</a>
       </div>
     </section>
+
+    <section class="section alt" id="documentacao-google">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Google OAuth</div>
+          <h2>Documentacao publica para verificacao Google</h2>
+        </div>
+        <p>Indice dos documentos publicos usados para explicar login Google, escopo Calendar, privacidade, seguranca, consentimento e revogacao. Nenhum segredo, token, senha ou credencial de teste e publicado aqui.</p>
+      </div>
+      <div class="grid cols-3">
+        <a class="card ecosystem-link" href="index.html"><h3>Pagina inicial</h3><p>Identidade publica da Jus 9, dominio oficial, proposta institucional e caminhos principais do app.</p><span class="tag">homepage</span></a>
+        <a class="card ecosystem-link" href="documentos/login-google.html"><h3>Login Google</h3><p>Explica o login basico com `openid`, `email` e `profile`, separado da autorizacao de Calendar.</p><span class="tag">signin</span></a>
+        <a class="card ecosystem-link" href="documentos/google-calendar.html"><h3>Uso da Google Agenda</h3><p>Documento especifico do escopo `calendar.events.owned`, dados acessados, finalidade, limites e revogacao.</p><span class="tag">calendar</span></a>
+        <a class="card ecosystem-link" href="documentos/privacidade.html"><h3>Privacidade Google</h3><p>Politica publica com dados Google, uso limitado, protecao, retencao, exclusao e IA/ML.</p><span class="tag">privacy</span></a>
+        <a class="card ecosystem-link" href="documentos/termos.html"><h3>Termos de uso</h3><p>Condicoes gerais de uso do ambiente, limites do MVP, responsabilidade humana e uso demonstrativo.</p><span class="tag">terms</span></a>
+        <a class="card ecosystem-link" href="documentos/seguranca.html"><h3>Seguranca</h3><p>Medidas publicas de protecao, separacao de ambiente, minimizacao de dados e cuidado com segredos.</p><span class="tag">security</span></a>
+        <a class="card ecosystem-link" href="documentos/cookies.html"><h3>Cookies</h3><p>Uso de cookies necessarios, preferenciais e governanca de consentimento no portal.</p><span class="tag">cookies</span></a>
+        <a class="card ecosystem-link" href="documentos/aviso-mvp.html"><h3>Aviso de MVP</h3><p>Declara que o ambiente publico e demonstrativo e nao deve receber dados reais sensiveis.</p><span class="tag">mvp</span></a>
+        <a class="card ecosystem-link" href="documentos/compromisso-sigilo.html"><h3>Sigilo e segredo</h3><p>Compromisso publico com sigilo, segredo de justica, revisao humana e restricoes de publicacao.</p><span class="tag">sigilo</span></a>
+        <a class="card ecosystem-link" href="app-agenda.html"><h3>Agenda Jus 9</h3><p>Tela do app que demonstra a funcionalidade Calendar governada e o botao de desvincular Agenda.</p><span class="tag">app</span></a>
+        <a class="card ecosystem-link" href="mvp.html"><h3>Ambiente MVP</h3><p>Contexto demonstrativo do produto, perfis publicos e limites do acesso por usuario `cidadao`.</p><span class="tag">demo</span></a>
+        <a class="card ecosystem-link" href="https://myaccount.google.com/connections" target="_blank" rel="noopener"><h3>Revogacao no Google</h3><p>Caminho externo oficial para a pessoa usuaria revisar ou remover conexoes de apps na Conta Google.</p><span class="tag">revogacao</span></a>
+      </div>
+    </section>
+
+    <section class="section" id="pendencias-google">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Continuidade Google</div>
+          <h2>Pendencias atuais</h2>
+        </div>
+        <p>Ultima revisao publica: 2026-07-20. Esta lista orienta o proximo ciclo de verificacao sem expor informacoes confidenciais.</p>
+      </div>
+      <div class="docs-list">
+        <span class="doc-link">Enviar novo video demonstrativo ao Google mostrando fluxo OAuth completo e funcionalidade Calendar.</span>
+        <span class="doc-link">Manter o unico escopo sensivel/confidencial como `https://www.googleapis.com/auth/calendar.events.owned`.</span>
+        <span class="doc-link">Nao adicionar Gmail, Drive, Contacts, arquivos ou escopos restritos nesta fase Calendar.</span>
+        <span class="doc-link">Usar somente conta governada/de teste e dados ficticios durante a gravacao.</span>
+        <span class="doc-link">Se `GOOGLE_CALENDAR_OAUTH_ENABLED` precisar ser ligado para gravar, desligar novamente depois do teste controlado.</span>
+        <span class="doc-link">Substituir `[NEW_VIDEO_URL]` na resposta ao Google pelo link nao listado do novo video.</span>
+        <span class="doc-link">Enviar credenciais de teste somente por canal privado, se o Google solicitar.</span>
+      </div>
+    </section>
   </div>
 </main>
 
 <footer class="footer">
   <div class="container footer-grid">
     <div><img src="assets/jus9-logo.svg" alt="Jus 9 Tecnologia Juridica" style="height:56px"><p>Tecnologia, conhecimento e proposito conectando o meio juridico.</p></div>
-    <div><strong>Documentos</strong><p><a href="politica-de-privacidade.html">Privacidade</a><br><a href="documentos/seguranca.html">Seguranca</a><br><a href="documentos/compromisso-sigilo.html">Sigilo e Segredo de Justica</a><br><a href="build-week-2026.html">Build Week 2026</a></p></div>
+    <div><strong>Documentos</strong><p><a href="politica-de-privacidade.html">Privacidade</a><br><a href="documentos/google-calendar.html">Google Calendar</a><br><a href="documentos/login-google.html">Login Google</a><br><a href="documentos/seguranca.html">Seguranca</a><br><a href="documentos/compromisso-sigilo.html">Sigilo e Segredo de Justica</a><br><a href="build-week-2026.html">Build Week 2026</a></p></div>
     <div><strong>Jus 9</strong><p>© <span data-year></span> Jus 9 Tecnologia Juridica.<br>Todos os direitos reservados.</p></div>
   </div>
 </footer>
