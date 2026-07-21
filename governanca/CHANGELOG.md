@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.21.17 - 21/07/2026
+
+- Evidencia temporal publica passa a calcular somente tempo corrido desde a ativacao verificada do Codex Sol.
+- Governanca proibe converter o contador em alegacao de processamento continuo ou runtime GPT-5.6 da Charlie Echo.
+- Timestamp de origem, formula e limite da alegacao entram no manifesto Build Week 1.7.2.
+
 ## 1.21.16 - 21/07/2026
 
 - Cronograma final de tres horas ordena auditoria, higiene, verificacao, versionamento e publicacao dos MVPs.

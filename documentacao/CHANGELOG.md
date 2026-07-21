@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Documentacao
 
+## 1.17.12 - 2026-07-21
+
+- Pagina Build Week passa a calcular tempo de calendario desde o timestamp comprovado do Codex Sol.
+- O texto impede interpretar o contador como horas de processamento ou atestado do runtime Charlie Echo.
+- Versionamento publico sobe para 5.19.2 e manifesto Build Week para 1.7.2.
+
 ## 1.17.11 - 2026-07-21
 
 - Versionamento publico recebe o registro 5.19.1 do sprint final dos MVPs, preservando a API G6C3 publicada em 5.19.
