@@ -31,6 +31,8 @@ Permissoes legadas permanecem nas listas durante a observacao de 72 horas, mas a
 - `tests/validate-worker-auth.mjs`: autenticacao, RBAC, memoria, DAJ e Drive.
 - `tests/validate-daj-homologation.mjs`: fluxo tecnico reversivel e limpeza final.
 - `scripts/audit-g6c2-rbac-granular-charlie.mjs`: coerencia documental e operacional.
+- `npm ci`: gera `dist` automaticamente no checkout limpo.
+- `wrangler deploy --dry-run`: empacotamento validado sem envio ou alteracao remota.
 
 ## Limites
 

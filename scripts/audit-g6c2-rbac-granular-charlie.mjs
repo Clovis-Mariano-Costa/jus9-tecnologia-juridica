@@ -5,7 +5,7 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
-const [permissions, worker, pagesMemory, frontend, decision, release, cronograma, wrangler, serviceWorker] = await Promise.all([
+const [permissions, worker, pagesMemory, frontend, decision, release, cronograma, wrangler, serviceWorker, packageJson, cloudflareBuild] = await Promise.all([
   fs.readFile(new URL('functions/_shared/permissions.js', root), 'utf8'),
   fs.readFile(new URL('worker.js', root), 'utf8'),
   fs.readFile(new URL('functions/api/charlie/memory.js', root), 'utf8'),
@@ -14,7 +14,9 @@ const [permissions, worker, pagesMemory, frontend, decision, release, cronograma
   fs.readFile(new URL('releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.21.11.md', root), 'utf8'),
   fs.readFile(new URL('governanca/CRONOGRAMA_CHARLIE_GOVERNANCA_CNJ_CONEXOES_v1.9.0.md', root), 'utf8'),
   fs.readFile(new URL('wrangler.jsonc', root), 'utf8'),
-  fs.readFile(new URL('service-worker.js', root), 'utf8')
+  fs.readFile(new URL('service-worker.js', root), 'utf8'),
+  fs.readFile(new URL('package.json', root), 'utf8').then(JSON.parse),
+  fs.readFile(new URL('scripts/build-cloudflare-dist.mjs', root), 'utf8')
 ]);
 
 for (const permission of [
@@ -34,5 +36,8 @@ assert(decision.includes('implementacao do RBAC granular') && decision.includes(
 assert(cronograma.includes('22/07 as 10h') && cronograma.includes('silencio nao autoriza'), 'cronograma G6C2/CNJ incompleto');
 assert(release.includes('v1.21.11') && wrangler.includes('governanca-1.21.11-g6c2-rbac-granular-1.0'), 'release operacional G6C2 inconsistente');
 assert(serviceWorker.includes('jus9-pwa-v51-2026-07-21-g6c2-rbac-granular'), 'cache G6C2 desatualizado');
+assert(packageJson.scripts?.postinstall === 'node scripts/build-cloudflare-dist.mjs', 'Cloudflare sem geracao automatica do dist no checkout limpo');
+assert(packageJson.devDependencies?.wrangler === '4.112.0', 'Wrangler nao esta fixado para build reproduzivel');
+assert(cloudflareBuild.includes("builtFiles.includes('worker.js')") && cloudflareBuild.includes("file.startsWith('governanca/')"), 'build nao bloqueia exposicao de fonte/governanca');
 
-console.log('G6C2_RBAC_GRANULAR_OK memory=3 daj-review=3 drive=5 confirmations=closed');
+console.log('G6C2_RBAC_GRANULAR_OK memory=3 daj-review=3 drive=5 confirmations=closed cloudflare-dist=generated');

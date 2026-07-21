@@ -15,7 +15,7 @@ preserva_historico: true
 
 ## Estado atual
 
-G6C e o registro canonico estao documentados. G6C2 foi implementado no PR #3 e aguarda suite integral e Workers Build. Os PRs #2 e #3 falharam instantaneamente no mesmo check Cloudflare, indicando incidente recorrente da integracao, ainda sem causa confirmada. O CNJ ainda nao respondeu; silencio nao autoriza conexao ou homologacao.
+G6C e o registro canonico estao documentados. G6C2 foi implementado no PR #3 e passou na suite local. Os PRs #2 e #3 falharam no mesmo check Cloudflare. Foi localizado um defeito reproduzivel: `wrangler.jsonc` exige `dist`, mas `dist/` era ignorado e inexistia no checkout limpo. A correcao gera os assets publicos antes do deploy remoto. O CNJ ainda nao respondeu; silencio nao autoriza conexao ou homologacao.
 
 ## Fila executavel
 

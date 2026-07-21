@@ -19,6 +19,12 @@ const githubRoot = [configuredGithubRoot, defaultGithubRoot, fallbackGithubRoot]
 
 const checks = [
   {
+    label: "Build reproduzivel Cloudflare dist",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/build-cloudflare-dist.mjs"]
+  },
+  {
     label: "Prontidao OpenAI Build Week",
     cwd: portalRoot,
     command: process.execPath,

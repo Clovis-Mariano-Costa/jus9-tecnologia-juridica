@@ -28,7 +28,8 @@ Implementar o desenho G6C aprovado para memoria, revisao DAJ e Drive com falha f
 - Configuracao candidata: `governanca-1.21.11-g6c2-rbac-granular-1.0`.
 - Cache candidato: `jus9-pwa-v51-2026-07-21-g6c2-rbac-granular`.
 - Nenhum deploy manual foi executado.
-- Workers Builds falhou instantaneamente nos PRs #2 e #3; a causa permanece externa e nao confirmada sem o log autenticado.
+- Workers Builds falhou nos PRs #2 e #3. A incompatibilidade reproduzivel do repositorio foi corrigida: `dist/` era ignorado e inexistente no checkout limpo, embora exigido por `wrangler.jsonc`.
+- O build passa a gerar `dist` automaticamente, fixa Wrangler 4.112.0 e exclui fonte operacional/governanca dos assets.
 - PDPJ, contato externo e efeitos judiciais continuam bloqueados.
 
 ## Rollback
