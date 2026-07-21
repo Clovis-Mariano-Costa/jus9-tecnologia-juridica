@@ -24,14 +24,15 @@ O check remoto do PR falhou porque Workers Builds executa um checkout limpo, `di
 - `scripts/run-local-ci.mjs` executa o builder como primeira verificacao;
 - Wrangler executa o builder em deploy local e dry-run;
 - a revisao geral V4-08 foi reexecutada e versionada em `PACOTE_V4_08_REVISAO_GERAL_VIDEO_ZIP_DEFERIDOS_2026-07-20_v1.1.0.md`;
-- o trigger Workers Builds deve usar `node scripts/build-portal-dist.mjs` como Build command, pois o servico remoto nao honra automaticamente o custom build do Wrangler.
+- `package.json` registra o mesmo builder em `build` e `postinstall`;
+- o Workers Builds mantem Build command vazio e executa o builder durante seu `npm clean-install`, conforme uma build verde do proprio Worker.
 
 ## Evidencia esperada
 
 - `PORTAL_DIST_BUILD_OK files=170 output=dist`;
 - Wrangler: 175 assets, 224,68 KiB, gzip 48,96 KiB;
 - CI local completo sem falhas;
-- check remoto Workers Builds aprovado depois da configuracao do trigger.
+- check remoto Workers Builds aprovado depois do push do hook versionado.
 
 ## Limites
 
@@ -39,4 +40,4 @@ Nenhuma capacidade juridica, permissao, integracao transacional ou classe de dad
 
 ## Rollback
 
-Restaurar `governanca-1.21.11-mvps-v4-1.0`, remover o bloco custom build do Wrangler e voltar o trigger ao comando anterior. A pasta `dist` continua derivada e nao deve ser publicada como fonte canonica.
+Restaurar `governanca-1.21.11-mvps-v4-1.0` e remover o `postinstall` e o bloco custom build do Wrangler. A configuracao remota permanece sem Build command; `dist` continua derivado e nao deve ser publicado como fonte canonica.

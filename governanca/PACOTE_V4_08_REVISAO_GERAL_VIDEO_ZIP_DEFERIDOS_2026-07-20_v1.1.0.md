@@ -25,7 +25,7 @@ O ultimo pacote do Mao na Massa e sempre a revisao de todos os pacotes. A falha 
 | V4-04 | `CONCLUIDO_COM_GATES_HUMANOS` | Matriz de dez requisitos transversais | IAM, LGPD, seguranca, WCAG e operacao |
 | V4-05 | `REVALIDACAO_TECNICA_14_DE_14` | DAJ e cinco ondas aprovados | Aceite humano de utilidade das ondas |
 | V4-06 | `CONCLUIDO_TECNICAMENTE` | 31 repositorios classificados | Ownership de infraestrutura e backlog humano |
-| V4-07 | `PRONTO_LOCALMENTE_CHECK_REMOTO_PENDENTE` | Build limpo, CI e Cloudflare dry-run aprovados | Configurar trigger e obter check remoto verde |
+| V4-07 | `PRONTO_LOCALMENTE_CHECK_REMOTO_PENDENTE` | Build limpo, CI, dry-run e mecanismo remoto confirmados | Publicar o hook versionado e obter check remoto verde |
 | V4-08 | `REVISAO_GERAL_REEXECUTADA` | Este documento e auditor final v1.1.0 | Video e ZIP no congelamento humano final |
 
 ## Motivo da reabertura
@@ -36,7 +36,8 @@ O Workers Builds recebeu um checkout limpo sem `dist/`, que e derivado e ignorad
 
 - builder: `PORTAL_DIST_BUILD_OK files=170 output=dist`;
 - contrato: `PORTAL_REPRODUCIBLE_BUILD_OK sources=170 wrangler_assets=175 portal=5.17 release=1.21.12`;
-- CI local completo: `LOCAL_CI_OK` em 143,4 segundos;
+- instalacao remota simulada: `npm clean-install` executou o `postinstall`, recriou 170 arquivos e auditou 35 pacotes sem vulnerabilidades;
+- CI local completo por `npm test`: `LOCAL_CI_OK` em 139,5 segundos;
 - Build Week: 122 verificacoes aprovadas, modo nao estrito;
 - Core: 10 testes aprovados, 0 falhas;
 - portfolio: 14 MVPs, sendo 1 piloto, 10 demos governadas e 3 demos restritas;
@@ -44,7 +45,8 @@ O Workers Builds recebeu um checkout limpo sem `dist/`, que e derivado e ignorad
 - Wrangler: `4.112.0`;
 - dry-run: 175 arquivos, 224,68 KiB, gzip 48,96 KiB;
 - release candidata: `governanca-1.21.12-build-reproduzivel-1.0`;
-- check remoto: pendente da configuracao do trigger Workers Builds.
+- configuracao remota confirmada: Build command vazio, `npm clean-install` e deploy `npx wrangler versions upload`;
+- check remoto: pendente do push do `postinstall` versionado.
 
 ## Sete bloqueios Build Week preservados
 

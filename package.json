@@ -1,0 +1,13 @@
+{
+  "name": "jus9-tecnologia-juridica",
+  "version": "1.21.12",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build-portal-dist.mjs",
+    "postinstall": "node scripts/build-portal-dist.mjs",
+    "test": "node scripts/run-local-ci.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "4.112.0"
+  }
+}

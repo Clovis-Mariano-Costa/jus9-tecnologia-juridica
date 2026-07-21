@@ -14,7 +14,7 @@ hash: nao-aplicavel-changelog
 ## 1.17.9 - 2026-07-20
 
 - Versionamento publico v5.17 registra o build reproduzivel do portal em checkout limpo.
-- README documenta `node scripts/build-portal-dist.mjs` como Build command do Workers Builds.
+- README documenta o `postinstall` que executa `node scripts/build-portal-dist.mjs` durante o `npm clean-install` do Workers Builds, mantendo o Build command vazio.
 - Manifesto Build Week sobe para 1.5.0 com evidencia do builder, 170 fontes curadas e 175 assets processados.
 - Revisao final V4-08 v1.1.0 registra a reabertura corretiva e mantem Video/ZIP deferidos.
 

@@ -173,7 +173,7 @@ node scripts/build-portal-dist.mjs
 npx wrangler deploy --dry-run
 ```
 
-This repository has no root `package.json`; do not invent an `npm install` or `npm run dev` step. The cross-platform Node builder recreates the curated `dist` directory from a clean checkout before Wrangler reads the assets. The Workers Builds trigger must use `node scripts/build-portal-dist.mjs` as its Build command because the remote build service does not honor Wrangler custom builds automatically.
+The cross-platform Node builder recreates the curated `dist` directory from a clean checkout before Wrangler reads the assets. Cloudflare Workers Builds keeps **Build command** unset: its `npm clean-install` step executes the versioned `postinstall` hook in `package.json`, which runs `node scripts/build-portal-dist.mjs`. Local Wrangler deploys use the same builder through `wrangler.jsonc`.
 
 ## Governance model
 

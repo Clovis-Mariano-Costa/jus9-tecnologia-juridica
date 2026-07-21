@@ -15,6 +15,7 @@ hash: nao-aplicavel-changelog
 
 - Portal ganha builder Node multiplataforma que recria `dist` a partir de 170 arquivos publicos curados.
 - CI e Wrangler passam a executar o mesmo build antes de validar ou publicar os 175 assets processados.
+- Workers Builds executa o builder pelo `postinstall` durante `npm clean-install`, mantendo o Build command remoto vazio.
 - Artefato falha diante de alteracao inesperada do manifesto ou tentativa de incluir segredo, `tmp`, governanca, release, Markdown ou ZIP.
 - Revisao geral dos oito pacotes reexecutada e preservada como V4-08 v1.1.0, com check remoto ainda pendente.
 - Correcao nao amplia permissao, dado, integracao, Video ou ZIP final.

@@ -11,7 +11,7 @@
   },
   "schemaVersion": "1.0.0",
   "documentId": "JUS9-BUILD-WEEK-STATUS-2026-001",
-  "updatedAt": "2026-07-20T22:14:42-03:00",
+  "updatedAt": "2026-07-20T23:30:45-03:00",
   "owner": "Clovis Mariano da Costa / Aeon Primevo",
   "reviewer": "Codex / Charlie Fox",
   "classification": "PUBLICO-INSTITUCIONAL",
@@ -144,7 +144,9 @@
       "builder": "scripts/build-portal-dist.mjs",
       "sourceFiles": 170,
       "wranglerAssets": 175,
-      "remoteBuildCommand": "node scripts/build-portal-dist.mjs"
+      "remoteBuildCommand": null,
+      "remoteInstallCommand": "npm clean-install --progress=false",
+      "installHook": "postinstall -> node scripts/build-portal-dist.mjs"
     },
     "finalZip": {
       "state": "deferred_until_human_freeze",
