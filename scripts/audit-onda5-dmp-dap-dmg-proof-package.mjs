@@ -126,7 +126,7 @@ for (const phrase of [
   includes(versionamento, phrase, "versionamento publico");
 }
 
-includes(serviceWorker, "jus9-pwa-v56-2026-07-21-codex-elapsed-evidence", "service worker");
+includes(serviceWorker, "jus9-pwa-v57-2026-07-21-github-security", "service worker");
 includes(wranglerConfig, "governanca-1.21.15-g6c3-api-1.0", "wrangler release");
 includes(release, "Release v1.21.5 - Onda 5 DMP + DAP + DMG", "release Onda 5");
 

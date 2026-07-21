@@ -31,6 +31,6 @@ assert(buildWeek.includes("Live governance API") && buildWeek.includes("/api/gov
 assert(versioning.includes("Versao 5.19") && versioning.includes("governanca 1.21.15"), "versionamento publico G6C3 ausente");
 assert(release.includes("v1.21.15") && packageJson.version === "1.21.15", "release G6C3 inconsistente");
 assert(wrangler.includes("governanca-1.21.15-g6c3-api-1.0"), "release do Worker G6C3 inconsistente");
-assert(serviceWorker.includes("jus9-pwa-v56-2026-07-21-codex-elapsed-evidence"), "cache PWA sucessor a G6C3 inconsistente");
+assert(serviceWorker.includes("jus9-pwa-v57-2026-07-21-github-security"), "cache PWA sucessor a G6C3 inconsistente");
 
 console.log("G6C3_GOVERNANCE_API_OK schema=1.0.0 method=GET default-deny=true cnj=awaiting-response pdpj=readiness-only");
