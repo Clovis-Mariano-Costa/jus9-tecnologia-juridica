@@ -754,21 +754,30 @@ async function handleCharlieMemory(request, env) {
   const corsHeaders = getAuthCorsHeaders(request);
   const session = await getSession(request, env);
   if (!session) return jsonResponse({ authenticated: false }, 401, corsHeaders);
-  if (!hasPermission(session, "auth:read")) {
-    return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "auth:read" }, 403, corsHeaders);
-  }
-
   if (request.method === "GET") {
+    if (!hasPermission(session, "memory:read")) {
+      return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "memory:read" }, 403, corsHeaders);
+    }
     const result = await readUserMemoryRecord(env, session);
     return jsonResponse({ authenticated: true, profile: session.profile, ...result.payload }, result.status, corsHeaders);
   }
 
   if (request.method === "POST") {
+    if (!hasPermission(session, "memory:write")) {
+      return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "memory:write" }, 403, corsHeaders);
+    }
     const result = await saveUserMemoryRecord(env, session, request, await request.json().catch(() => null));
     return jsonResponse({ authenticated: true, profile: session.profile, ...result.payload }, result.status, corsHeaders);
   }
 
   if (request.method === "DELETE") {
+    if (!hasPermission(session, "memory:delete")) {
+      return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "memory:delete" }, 403, corsHeaders);
+    }
+    const confirmation = String(request.headers.get("X-Jus9-Confirm-Memory-Delete") || "").trim();
+    if (confirmation !== "EXCLUIR MINHA MEMORIA") {
+      return jsonResponse({ ok: false, error: "confirmacao_explicita_obrigatoria", confirmation: "EXCLUIR MINHA MEMORIA" }, 409, corsHeaders);
+    }
     const result = await deleteUserMemoryRecord(env, session);
     return jsonResponse({ authenticated: true, profile: session.profile, ...result.payload }, result.status, corsHeaders);
   }
@@ -1038,7 +1047,7 @@ async function handleCharlieRespond(request, env) {
   }
 
   const session = await getSession(request, env).catch(() => null);
-  const driveAuthorized = Boolean(session && hasPermission(session, "drive:write"));
+  let driveAuthorized = false;
   const headers = new Headers({
     Accept: "application/json",
     "X-Jus9-Portal-Proxy": "jus9-tecnologia-juridica"
@@ -1056,6 +1065,13 @@ async function handleCharlieRespond(request, env) {
     governanceInput = charlieGovernanceInputFromRequest(parsed);
     const { governance: _governance, ...upstreamParsed } = parsed;
     parsedBody = prepareDajLaudoProxyRequest(upstreamParsed);
+    const drivePermission = requestedCharlieDrivePermission(parsed);
+    driveAuthorized = Boolean(
+      drivePermission &&
+      session &&
+      hasPermission(session, drivePermission) &&
+      hasDriveEffectConfirmation(parsed, drivePermission)
+    );
     headers.set("Content-Type", "application/json");
     body = JSON.stringify(parsedBody);
   }
@@ -1697,8 +1713,8 @@ async function handleDajReview(request, env) {
   const corsHeaders = getAuthCorsHeaders(request);
   const session = await getSession(request, env);
   if (!session) return jsonResponse({ authenticated: false }, 401, corsHeaders);
-  if (!hasPermission(session, "dajs:read")) {
-    return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "dajs:read" }, 403, corsHeaders);
+  if (!hasPermission(session, "dajs:review:write") && !hasPermission(session, "dajs:review:submit")) {
+    return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "dajs:review:submit|dajs:review:write" }, 403, corsHeaders);
   }
   if (!env.JUS9_DAJ_PROCESS_LINKS) {
     return jsonResponse({ ok: false, error: "daj_registry_configuracao_pendente" }, 501, corsHeaders);
@@ -1725,8 +1741,8 @@ async function handleDajWorkflowInbox(request, env) {
   const corsHeaders = getAuthCorsHeaders(request);
   const session = await getSession(request, env);
   if (!session) return jsonResponse({ authenticated: false }, 401, corsHeaders);
-  if (!hasPermission(session, "dajs:read")) {
-    return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "dajs:read" }, 403, corsHeaders);
+  if (!hasPermission(session, "dajs:review:read")) {
+    return jsonResponse({ ok: false, error: "perfil_sem_permissao", permission: "dajs:review:read" }, 403, corsHeaders);
   }
   if (!env.JUS9_DAJ_PROCESS_LINKS) {
     return jsonResponse({ ok: false, error: "daj_registry_configuracao_pendente" }, 501, corsHeaders);
@@ -1844,7 +1860,7 @@ function getAuthCorsHeaders(request) {
     "Access-Control-Allow-Origin": origin,
     "Access-Control-Allow-Credentials": "true",
     "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Idempotency-Key, X-Jus9-Internal-Token",
+    "Access-Control-Allow-Headers": "Content-Type, Idempotency-Key, X-Jus9-Internal-Token, X-Jus9-Confirm-Memory-Delete",
     "Access-Control-Expose-Headers": "X-Jus9-Charlie-Source, X-Jus9-Charlie-Contract-Version, X-Jus9-Charlie-Audit-Id, X-Jus9-Charlie-Classification, X-Jus9-Charlie-Risk-Level, X-Jus9-Charlie-Human-Review, X-Jus9-Charlie-Citation-Status, X-Jus9-Charlie-Blocked-Effects, X-Jus9-Charlie-Limits, X-Jus9-Charlie-Drive, X-Jus9-Daj-Laudo-Fallback",
     "Vary": "Origin"
   };
@@ -1852,6 +1868,32 @@ function getAuthCorsHeaders(request) {
 
 function hasPermission(session, permission) {
   return getPermissions(session?.profile).includes(permission);
+}
+
+function requestedCharlieDrivePermission(payload) {
+  if (!payload || typeof payload !== "object") return "";
+  const routeAction = String(payload.route?.driveAction || "").toLowerCase();
+  const userMessage = String(payload.governance?.message || payload.message || "").toLowerCase();
+  const input = `${routeAction} ${userMessage}`;
+  if (!/\b(drive|google docs|cartorio digital|arquivo|artefato|documento)\b/i.test(input)) return "";
+  if (/\b(excluir|apagar|deletar|lixeira|delete)\b/i.test(input)) return "drive:artifact:delete";
+  if (/\b(revogar|revogue|restringir|restrinja|despublicar|despublique|revoke)\b/i.test(input)) return "drive:link:revoke";
+  if (/\b(publicar|publico|publica|compartilhar|publish)\b/i.test(input)) return "drive:link:publish";
+  if (/\b(salvar|salve|gravar|grave|save)\b/i.test(input)) return "drive:artifact:save";
+  if (/\b(criar|crie|gerar|gere|create)\b/i.test(input)) return "drive:artifact:create";
+  return "";
+}
+
+function hasDriveEffectConfirmation(payload, permission) {
+  const confirmation = String(payload?.governance?.effectConfirmation || "").trim();
+  const expected = {
+    "drive:artifact:create": "CONFIRMAR CRIACAO DRIVE",
+    "drive:artifact:save": "CONFIRMAR SALVAMENTO DRIVE",
+    "drive:link:publish": "CONFIRMAR PUBLICACAO DRIVE",
+    "drive:link:revoke": "CONFIRMAR REVOGACAO DRIVE",
+    "drive:artifact:delete": "CONFIRMAR EXCLUSAO DRIVE"
+  };
+  return confirmation === expected[permission];
 }
 
 function profileDirectoryModuleFromRequest(request) {

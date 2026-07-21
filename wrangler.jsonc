@@ -13,7 +13,7 @@
     "AUTH_PUBLIC_GOOGLE_ENABLED": "true",
     "AUTH_PUBLIC_GOOGLE_PROFILE": "cidadao",
     "GOOGLE_CALENDAR_OAUTH_ENABLED": "false",
-    "JUS9_RELEASE": "governanca-1.21.8-pacote8-fechamento-1.0"
+    "JUS9_RELEASE": "governanca-1.21.11-g6c2-rbac-granular-1.0"
   },
   "observability": {
     "enabled": true,

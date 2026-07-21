@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.16.11 - 2026-07-21
+
+- G6C2 implementa o RBAC granular aprovado para memoria, revisao DAJ e efeitos Drive.
+- Exclusao da memoria do proprio usuario exige permissao e confirmacao textual vinculada ao efeito.
+- Segredo interno do Drive so segue ao backend quando pedido, permissao granular e confirmacao especifica coincidem.
+- PDPJ, contato externo e efeitos judiciais permanecem bloqueados; o silencio do CNJ continua sem efeito autorizativo.
+- Falhas instantaneas dos PRs #2 e #3 no mesmo Workers Build ficam registradas como incidente da integracao externa, ainda sem causa confirmada pelos logs.
+
 ## 1.16.10 - 2026-07-20
 
 - G6C define matriz de autoridade e ferramentas com default deny e aprovacao por efeito.

@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.21.11 - 2026-07-21
+
+- G6C2 implementa permissoes granulares em memoria, revisao DAJ e Drive.
+- Exclusao de memoria e acionamento privilegiado do Drive passam a exigir confirmacao explicita por efeito.
+- Testes de autenticacao/RBAC e homologacao DAJ cobrem o novo comportamento de falha fechada.
+- Release operacional passa a `governanca-1.21.11-g6c2-rbac-granular-1.0`; cache PWA sobe para `jus9-pwa-v51-2026-07-21-g6c2-rbac-granular`.
+- Workers Builds dos PRs #2 e #3 seguem falhando antes da execucao normal; publicacao em producao nao e presumida.
+
 ## 1.21.10 - 2026-07-20
 
 - Release documental publica a matriz G6C de autoridade e ferramentas da Charlie.

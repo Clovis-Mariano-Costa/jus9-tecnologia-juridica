@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - APIs
 
+## 1.4.1 - 2026-07-21
+
+- Permissoes de memoria passam a `memory:read`, `memory:write` e `memory:delete`.
+- Revisao DAJ passa a distinguir leitura, submissao supervisionada e decisao de encaminhamento.
+- Drive passa a distinguir criar, salvar, publicar, revogar e excluir, com confirmacao por efeito antes do segredo interno.
+- Permissoes legadas sao preservadas durante a janela de observacao, sem liberar CNJ/PDPJ ou efeitos judiciais.
+
 ## 1.4.0 - 2026-07-20
 
 - Criado catalogo governado unificado com 11 capacidades DataJud/PDPJ.

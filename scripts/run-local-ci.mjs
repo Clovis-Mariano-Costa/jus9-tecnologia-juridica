@@ -175,6 +175,12 @@ const checks = [
     args: ["scripts/audit-g6c-autoridade-ferramentas-charlie.mjs"]
   },
   {
+    label: "G6C2 RBAC granular Charlie",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-g6c2-rbac-granular-charlie.mjs"]
+  },
+  {
     label: "Qualidade da interface Charlie Echo",
     cwd: portalRoot,
     command: process.execPath,

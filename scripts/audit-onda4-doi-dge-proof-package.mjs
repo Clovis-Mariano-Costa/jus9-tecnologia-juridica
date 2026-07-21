@@ -104,8 +104,8 @@ for (const phrase of [
   includes(versionamento, phrase, "versionamento publico");
 }
 
-includes(serviceWorker, "jus9-pwa-v50-2026-07-20-pacote8-fechamento", "service worker");
-includes(wranglerConfig, "governanca-1.21.8-pacote8-fechamento-1.0", "wrangler release");
+includes(serviceWorker, "jus9-pwa-v51-2026-07-21-g6c2-rbac-granular", "service worker");
+includes(wranglerConfig, "governanca-1.21.11-g6c2-rbac-granular-1.0", "wrangler release");
 includes(release, "Release v1.21.4 - Onda 4 DOI + DGE", "release Onda 4");
 
 console.log("ONDA4_DOI_DGE_PROOF_PACKAGE_OK roteiro=22min mvps=DOI,DGE status=PUBLICADO_CONTROLADO");

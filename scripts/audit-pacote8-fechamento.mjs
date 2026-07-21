@@ -126,8 +126,8 @@ for (const phrase of [
   includes(versionamento, phrase, "versionamento Pacote 8");
 }
 
-includes(serviceWorker, "jus9-pwa-v50-2026-07-20-pacote8-fechamento", "service worker Pacote 8");
-includes(wranglerConfig, "governanca-1.21.8-pacote8-fechamento-1.0", "wrangler Pacote 8");
+includes(serviceWorker, "jus9-pwa-v51-2026-07-21-g6c2-rbac-granular", "service worker atual preserva Pacote 8");
+includes(wranglerConfig, "governanca-1.21.11-g6c2-rbac-granular-1.0", "wrangler atual preserva Pacote 8");
 includes(release, "Release v1.21.8 - Pacote 8 fechamento tecnico", "release Pacote 8");
 
 console.log("PACOTE8_FECHAMENTO_OK revisao=executada video=pendente zip=pendente gates=humanos");

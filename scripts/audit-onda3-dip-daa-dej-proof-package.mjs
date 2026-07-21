@@ -122,8 +122,8 @@ for (const phrase of [
   includes(versionamento, phrase, "versionamento publico");
 }
 
-includes(serviceWorker, "jus9-pwa-v50-2026-07-20-pacote8-fechamento", "service worker");
-includes(wranglerConfig, "governanca-1.21.8-pacote8-fechamento-1.0", "wrangler release");
+includes(serviceWorker, "jus9-pwa-v51-2026-07-21-g6c2-rbac-granular", "service worker");
+includes(wranglerConfig, "governanca-1.21.11-g6c2-rbac-granular-1.0", "wrangler release");
 includes(release, "Release v1.21.1 - Onda 3 DIP + DAA + DEJ", "release Onda 3");
 
 console.log("ONDA3_DIP_DAA_DEJ_PROOF_PACKAGE_OK roteiro=33min mvps=DIP,DAA,DEJ status=PUBLICADO_CONTROLADO");

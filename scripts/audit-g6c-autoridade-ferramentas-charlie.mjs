@@ -34,12 +34,13 @@ assert(matrix.migracao_proposta.exige_aceite_humano_antes_da_fase_1 === true, 'G
 assert(matrix.proxima_acao_unica === 'G6C2_ACEITE_HUMANO_PARA_IMPLEMENTAR_RBAC_GRANULAR', 'proxima acao G6C incorreta');
 assert(registry.lacunas_p0_para_g6c.length === 3, 'registro canonico nao entrega tres lacunas a G6C');
 
-for (const targetPermission of ['memory:read', 'memory:write', 'memory:delete', 'dajs:review:write', 'drive:link:publish']) {
-  assert(!permissions.includes(`"${targetPermission}"`), `${targetPermission} foi implementada antes do aceite G6C2`);
-}
-assert(worker.includes('hasPermission(session, "auth:read")'), 'baseline de memoria nao localizada');
-assert(worker.includes('permission: "dajs:read"'), 'baseline de revisao DAJ nao localizada');
 assert(decision.includes('RBAC e o runtime permanecem inalterados'), 'decisao G6C nao preserva runtime');
 assert(release.includes('v1.21.10') && release.includes('nao altera runtime'), 'release G6C inconsistente');
 
-console.log('G6C_AUTORIDADE_FERRAMENTAS_OK tools=11 permissions=23 runtime=unchanged next=human-approval');
+const g6c2Implemented = permissions.includes('"memory:read"') || worker.includes('permission: "dajs:review:read"');
+if (g6c2Implemented) {
+  const g6c2Decision = await fs.readFile(new URL('governanca/DECISAO_G6C2_IMPLEMENTACAO_RBAC_GRANULAR_CHARLIE_v1.0.0.md', root), 'utf8');
+  assert(g6c2Decision.includes('O aceite expresso para seguir foi recebido'), 'G6C2 implementada sem registro do aceite humano');
+}
+
+console.log(`G6C_AUTORIDADE_FERRAMENTAS_OK tools=11 permissions=23 snapshot=preserved g6c2=${g6c2Implemented ? 'implemented' : 'pending'}`);
