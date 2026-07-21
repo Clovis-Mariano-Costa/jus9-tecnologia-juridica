@@ -17,7 +17,8 @@ hash: nao-aplicavel-changelog
 - Vinte e nove arquivos foram atualizados e dois READMEs ausentes foram criados.
 - Bloco comum registra baseline 5.18/1.21.13, links publicos, ferramentas OpenAI, autoria humana e limites de terceiros.
 - Versionamento publico recebe o registro complementar 5.18.1.
-- Nenhum codigo, runtime, segredo, permissao ou capacidade CNJ foi alterado.
+- Primeira rodada de 31 PRs recebeu correcao integral de codificacao por mais 31 PRs; verificacao final retornou `31/31 already_current`.
+- Nenhum codigo, runtime, segredo, permissao ou capacidade CNJ foi alterado nas 62 PRs documentais.
 
 ## 1.17.9 - 2026-07-20
 

@@ -14,7 +14,8 @@ hash: nao-aplicavel-changelog
 ## 1.16.14 - 2026-07-21
 
 - Publicado registro governado da sincronizacao dos 31 READMEs principais do ecossistema.
-- Todas as mudancas passaram por PR individual e foram mescladas em `main`.
+- Publicacao e correcao de codificacao passaram por duas rodadas de 31 PRs, totalizando 62 merges em `main`.
+- Verificacao remota final confirmou `31/31 already_current` em portugues ASCII seguro.
 - Bloco idempotente diferencia baseline comum do escopo, historico, licenca e versao proprios de cada repositorio.
 - Credenciais, tokens, cookies, IDs privados de sessao e dados pessoais permanecem proibidos nos READMEs.
 - CNJ segue sem resposta; silencio continua sem autorizar integracao ou efeito transacional.

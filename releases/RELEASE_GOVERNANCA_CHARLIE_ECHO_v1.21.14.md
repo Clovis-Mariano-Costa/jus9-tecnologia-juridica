@@ -29,8 +29,10 @@ Os 31 repositorios catalogados como vinculados a Jus 9 receberam um bloco comum,
 
 ## Publicacao
 
-- 31 PRs individuais;
-- 31 merges em `main`;
+- primeira rodada: 31 PRs individuais;
+- segunda rodada corretiva de codificacao: 31 PRs individuais;
+- total: 62 merges em `main`;
+- verificacao remota final: `31/31 already_current`;
 - nenhuma alteracao de codigo, runtime, permissao ou segredo;
 - pagina publica de versionamento recebe o registro complementar 5.18.1.
 

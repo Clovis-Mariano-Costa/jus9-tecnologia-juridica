@@ -15,8 +15,8 @@ assert.ok(readme.includes("JUS9_ECOSYSTEM_STATUS_START") && readme.includes("JUS
 assert.ok(readme.includes("ChatGPT, Codex e a API OpenAI"), "README principal sem toolchain OpenAI delimitada");
 assert.ok(readme.includes("silêncio não autoriza") || readme.includes("silencio nao autoriza"), "README principal sem limite CNJ");
 assert.ok(versioning.includes("Atualizacao documental 5.18.1 - READMEs dos 31 repositorios"), "versionamento sem registro 5.18.1");
-assert.ok(registry.includes("PRs mescladas em `main`: 31") && registry.includes("alteracoes de codigo/runtime/permissao: 0"), "registro governado inconsistente");
+assert.ok(registry.includes("PRs mescladas em `main`: 62") && registry.includes("31/31 already_current") && registry.includes("alteracoes de codigo/runtime/permissao: 0"), "registro governado inconsistente");
 assert.ok(release.includes("Release v1.21.14 - Sincronizacao dos READMEs do ecossistema") && release.includes("runtime permanece em 1.21.13"), "release documental inconsistente");
 
-console.log("READMES_ECOSYSTEM_SYNC_OK repos=31 updated=29 created=2 merged=31 runtime=unchanged");
+console.log("READMES_ECOSYSTEM_SYNC_OK repos=31 updated=29 created=2 rounds=2 merged=62 verified=31 runtime=unchanged");
 
