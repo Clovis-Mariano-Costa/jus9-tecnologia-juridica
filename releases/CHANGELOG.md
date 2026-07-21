@@ -14,7 +14,8 @@ hash: nao-aplicavel-changelog
 ## 1.21.14 - 2026-07-21
 
 - Release estritamente documental registra a sincronizacao dos READMEs dos 31 repositorios catalogados.
-- Vinte e nove READMEs foram atualizados e dois foram criados por PRs individuais mescladas.
+- Vinte e nove READMEs foram atualizados e dois foram criados; uma segunda rodada corrigiu a codificacao, totalizando 62 PRs mescladas.
+- Verificacao final independente confirmou os 31 blocos atuais e idempotentes.
 - Portal permanece no baseline funcional 5.18 e runtime 1.21.13; a pagina de versionamento recebe o registro complementar 5.18.1.
 - Nenhum runtime, permissao, credencial, integracao, Video, ZIP ou estado de submissao foi ampliado.
 
