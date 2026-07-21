@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.16.14 - 2026-07-21
+
+- Publicado registro governado da sincronizacao dos 31 READMEs principais do ecossistema.
+- Todas as mudancas passaram por PR individual e foram mescladas em `main`.
+- Bloco idempotente diferencia baseline comum do escopo, historico, licenca e versao proprios de cada repositorio.
+- Credenciais, tokens, cookies, IDs privados de sessao e dados pessoais permanecem proibidos nos READMEs.
+- CNJ segue sem resposta; silencio continua sem autorizar integracao ou efeito transacional.
+
 ## 1.16.13 - 2026-07-21
 
 - Integradas as linhas MVP v4 e G6C/G6C2 em uma unica branch de entrega Build Week.

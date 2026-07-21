@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Documentacao
 
+## 1.17.10 - 2026-07-21
+
+- Sincronizados os READMEs principais dos 31 repositorios catalogados no ecossistema Jus 9.
+- Vinte e nove arquivos foram atualizados e dois READMEs ausentes foram criados.
+- Bloco comum registra baseline 5.18/1.21.13, links publicos, ferramentas OpenAI, autoria humana e limites de terceiros.
+- Versionamento publico recebe o registro complementar 5.18.1.
+- Nenhum codigo, runtime, segredo, permissao ou capacidade CNJ foi alterado.
+
 ## 1.17.9 - 2026-07-20
 
 - Versionamento publico v5.17 registra o build reproduzivel do portal em checkout limpo.

@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.21.14 - 2026-07-21
+
+- Release estritamente documental registra a sincronizacao dos READMEs dos 31 repositorios catalogados.
+- Vinte e nove READMEs foram atualizados e dois foram criados por PRs individuais mescladas.
+- Portal permanece no baseline funcional 5.18 e runtime 1.21.13; a pagina de versionamento recebe o registro complementar 5.18.1.
+- Nenhum runtime, permissao, credencial, integracao, Video, ZIP ou estado de submissao foi ampliado.
+
 ## 1.21.13 - 2026-07-21
 
 - Release integra MVPs v4 e governanca G6C/G6C2 na entrega final Build Week.

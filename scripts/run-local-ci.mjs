@@ -49,6 +49,12 @@ const checks = [
     args: ["scripts/audit-pesquisa-repositorios.mjs"]
   },
   {
+    label: "READMEs do ecossistema Jus 9",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-readmes-ecosystem-sync.mjs"]
+  },
+  {
     label: "Portal publico e 14 MVPs",
     cwd: portalRoot,
     command: process.execPath,
