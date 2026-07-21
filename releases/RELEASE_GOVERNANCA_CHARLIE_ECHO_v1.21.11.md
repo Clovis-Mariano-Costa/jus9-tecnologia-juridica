@@ -4,7 +4,7 @@ versao: 1.21.11
 autor: Codex / Charlie Juris
 revisor_responsavel: Clovis Mariano da Costa
 data: 2026-07-21
-status: candidata-em-pr-cloudflare-pendente
+status: candidata-build-cloudflare-verde-aguardando-merge
 classificacao: PUBLICO-INSTITUCIONAL
 hash: gerar-na-versao-final
 ---
@@ -30,6 +30,8 @@ Implementar o desenho G6C aprovado para memoria, revisao DAJ e Drive com falha f
 - Nenhum deploy manual foi executado.
 - Workers Builds falhou nos PRs #2 e #3. A incompatibilidade reproduzivel do repositorio foi corrigida: `dist/` era ignorado e inexistente no checkout limpo, embora exigido por `wrangler.jsonc`.
 - O build passa a gerar `dist` automaticamente, fixa Wrangler 4.112.0 e exclui fonte operacional/governanca dos assets.
+- Evidencia remota: Workers Build `57af5b3e-0c41-4802-bcba-d331a0f3c940`, commit `b9a83c7`, concluido com `SUCCESS` em 21/07/2026.
+- PR #3 ficou `CLEAN` e `MERGEABLE`; merge e promocao continuam decisoes humanas separadas.
 - PDPJ, contato externo e efeitos judiciais continuam bloqueados.
 
 ## Rollback

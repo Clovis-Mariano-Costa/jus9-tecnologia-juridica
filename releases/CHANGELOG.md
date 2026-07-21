@@ -19,6 +19,7 @@ hash: nao-aplicavel-changelog
 - Release operacional passa a `governanca-1.21.11-g6c2-rbac-granular-1.0`; cache PWA sobe para `jus9-pwa-v51-2026-07-21-g6c2-rbac-granular`.
 - Workers Builds dos PRs #2 e #3 seguem falhando antes da execucao normal; publicacao em producao nao e presumida.
 - Checkout limpo passa a gerar `dist` automaticamente durante a instalacao de dependencias, com Wrangler fixado e lista publica controlada.
+- Workers Build remoto do commit `b9a83c7` conclui com sucesso; PR #3 fica limpo e apto a merge, ainda em rascunho.
 
 ## 1.21.10 - 2026-07-20
 

@@ -20,6 +20,7 @@ hash: nao-aplicavel-changelog
 - Falhas instantaneas dos PRs #2 e #3 no mesmo Workers Build ficam registradas como incidente da integracao externa, ainda sem causa confirmada pelos logs.
 - Corrigido o defeito reproduzivel do checkout limpo: `wrangler.jsonc` exigia `dist`, mas `dist/` era ignorado e nao era gerado pelo build remoto.
 - Build passa a gerar somente ativos publicos rastreados e fixa Wrangler 4.112.0, sem expor `worker.js` ou a pasta de governanca como asset.
+- Workers Build remoto confirma `SUCCESS` no commit `b9a83c7`; PR #3 passa a `CLEAN` e `MERGEABLE`, sem merge automatico.
 
 ## 1.16.10 - 2026-07-20
 
