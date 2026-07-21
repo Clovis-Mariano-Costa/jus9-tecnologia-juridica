@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.16.12 - 2026-07-20
+
+- Portal ganha builder Node multiplataforma que recria `dist` a partir de 170 arquivos publicos curados.
+- CI e Wrangler passam a executar o mesmo build antes de validar ou publicar os 175 assets processados.
+- Artefato falha diante de alteracao inesperada do manifesto ou tentativa de incluir segredo, `tmp`, governanca, release, Markdown ou ZIP.
+- Revisao geral dos oito pacotes reexecutada e preservada como V4-08 v1.1.0, com check remoto ainda pendente.
+- Correcao nao amplia permissao, dado, integracao, Video ou ZIP final.
+
 ## 1.16.11 - 2026-07-20
 
 - Pacotes V4-01 a V4-08 reconciliam o estado corrente, criam Portfolio Canonico V2, matriz transversal e revisao geral dos 14 MVPs.

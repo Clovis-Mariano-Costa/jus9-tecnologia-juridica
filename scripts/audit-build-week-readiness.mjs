@@ -80,7 +80,7 @@ const codexSolEvidence = read("documentacao/hackathon/EVIDENCIA_CODEX_SOL_BUILD_
 const integrationMatrix = read("documentacao/hackathon/MATRIZ_INTEGRACOES_TERCEIROS_BUILD_WEEK_2026.md");
 
 check(status.schemaVersion === "1.0.0", "status manifest schema", "Unexpected Build Week status schema");
-check(status.metadata?.versao === "1.4.0", "status manifest MVP reconciliation version", "Build Week status must be version 1.4.0 for the MVP reconciliation release");
+check(status.metadata?.versao === "1.5.0", "status manifest reproducible build version", "Build Week status must be version 1.5.0 for the reproducible portal build release");
 check(status.project?.track === "Work and Productivity", "competition track", "Track must be Work and Productivity");
 check(status.project?.reviewerUrl === "https://jus9tecnologia.com.br/build-week-2026.html", "canonical reviewer URL", "Reviewer URL does not match the public page");
 check(status.mvpConsolidation?.stateMapUrl === "https://jus9tecnologia.com.br/mvp-o-que-ja-funciona.html", "MVP state-map URL", "Build Week status does not point to the public MVP state map");

@@ -1,6 +1,6 @@
 <!--
   Jus 9 Tecnologia Juridica - software livre, autoria preservada.
-  Versionamento publico atualizado para a versao 5.16.
+  Versionamento publico atualizado para a versao 5.17.
   DNA de referencia: charlieecho-jus9-tecnologia-juridica
 -->
 <!doctype html>
@@ -8,8 +8,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Versionamento Jus 9 - v5.16</title>
-  <meta name="description" content="Versionamento publico da Jus 9 Tecnologia Juridica, com registro da entrada na versao 5.16.">
+  <title>Versionamento Jus 9 - v5.17</title>
+  <meta name="description" content="Versionamento publico da Jus 9 Tecnologia Juridica, com registro da entrada na versao 5.17.">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
@@ -38,8 +38,22 @@
   <div class="container">
     <div class="doc-shell">
       <div class="eyebrow">Versionamento publico</div>
-      <h1>Jus 9 Tecnologia Juridica - versao 5.16</h1>
-      <p class="lead">A versao 5.16 executa os Pacotes V4-01 a V4-08 do Mao na Massa dos MVPs: estados reconciliados, portfolio canonico V2, contratos e padroes verificados, 14 MVPs revalidados, 31 repositorios mapeados e revisao geral executada. Video e ZIP continuam deferidos dentro do ultimo pacote.</p>
+      <h1>Jus 9 Tecnologia Juridica - versao 5.17</h1>
+      <p class="lead">A versao 5.17 torna o deploy dos MVPs reproduzivel em checkout limpo: o portal recria o pacote publico antes do CI e do Wrangler, sem depender de uma pasta <code>dist</code> local ou rastreada pelo Git. Os limites, Video e ZIP da v5.16 permanecem inalterados.</p>
+
+      <section class="version-card">
+        <h2>Versao 5.17 - Build reproduzivel do portal</h2>
+        <p><strong>Data:</strong> 20/07/2026</p>
+        <ul>
+          <li>Criado <code>build-portal-dist.mjs</code> para recriar 170 arquivos publicos curados em checkout limpo.</li>
+          <li>Wrangler executa o builder antes de ler os assets e continua processando 175 arquivos no artefato final.</li>
+          <li>CI local inicia pelo mesmo builder usado no trigger remoto do Workers Builds.</li>
+          <li>Revisao geral V4-08 reexecutada em <code>PACOTE_V4_08_REVISAO_GERAL_VIDEO_ZIP_DEFERIDOS_2026-07-20_v1.1.0.md</code>.</li>
+          <li>Segredos, <code>tmp</code>, governanca, releases, Markdown e ZIP permanecem fora do artefato publico.</li>
+          <li>Criado release <code>RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.21.12.md</code>; cache PWA atualizado para <code>jus9-pwa-v52-2026-07-20-build-reproduzivel</code>.</li>
+          <li>Nenhuma permissao, dado real, integracao transacional, Video ou ZIP final foi ampliado.</li>
+        </ul>
+      </section>
 
       <section class="version-card">
         <h2>Versao 5.16 - Mao na Massa dos MVPs v4</h2>

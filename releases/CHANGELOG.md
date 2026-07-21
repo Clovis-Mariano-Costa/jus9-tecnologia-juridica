@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.21.12 - 2026-07-20
+
+- Release corrige o build remoto do portal sem rastrear a pasta `dist` no Git.
+- Builder Node recria 170 arquivos curados; Wrangler processa 175 assets e usa release `governanca-1.21.12-build-reproduzivel-1.0`.
+- Portal sobe para v5.17 e cache PWA para `jus9-pwa-v52-2026-07-20-build-reproduzivel`.
+- Revisao final dos oito pacotes reexecutada em V4-08 v1.1.0 antes do novo check remoto.
+- Video, ZIP e os sete gates Build Week permanecem inalterados.
+
 ## 1.21.11 - 2026-07-20
 
 - Release publica consolida os Pacotes V4-01 a V4-08 do Mao na Massa dos MVPs.

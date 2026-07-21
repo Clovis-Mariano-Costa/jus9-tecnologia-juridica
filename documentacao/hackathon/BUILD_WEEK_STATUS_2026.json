@@ -1,7 +1,7 @@
 {
   "metadata": {
     "id": "JUS9-BUILD-WEEK-STATUS-2026-001",
-    "versao": "1.4.0",
+    "versao": "1.5.0",
     "autor": "Codex / Charlie Fox",
     "revisor_responsavel": "Clovis Mariano da Costa",
     "data": "2026-07-20",
@@ -11,7 +11,7 @@
   },
   "schemaVersion": "1.0.0",
   "documentId": "JUS9-BUILD-WEEK-STATUS-2026-001",
-  "updatedAt": "2026-07-20T19:56:40-03:00",
+  "updatedAt": "2026-07-20T22:14:42-03:00",
   "owner": "Clovis Mariano da Costa / Aeon Primevo",
   "reviewer": "Codex / Charlie Fox",
   "classification": "PUBLICO-INSTITUCIONAL",
@@ -138,6 +138,13 @@
       "videoScript": "documentacao/hackathon/VIDEO_ROTEIRO_BUILD_WEEK_2026.md",
       "zipManifest": "documentacao/hackathon/ZIP_FINAL_MANIFESTO_PENDENTE_2026.md",
       "note": "Technical closeout review is prepared; final submission remains blocked by human gates"
+    },
+    "reproducibleBuild": {
+      "state": "verified_clean_checkout_builder",
+      "builder": "scripts/build-portal-dist.mjs",
+      "sourceFiles": 170,
+      "wranglerAssets": 175,
+      "remoteBuildCommand": "node scripts/build-portal-dist.mjs"
     },
     "finalZip": {
       "state": "deferred_until_human_freeze",

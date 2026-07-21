@@ -113,7 +113,7 @@ for (const phrase of [
 }
 
 for (const phrase of [
-  "Versionamento Jus 9 - v5.16",
+  "Versionamento Jus 9 - v5.17",
   "PACOTE_ONDA3_DIP_DAA_DEJ_PROVA_VALOR_2026-07-19_v1.0.0.md",
   "audit-onda3-dip-daa-dej-proof-package.mjs",
   "jus9-pwa-v50-2026-07-20-pacote8-fechamento",
@@ -122,8 +122,8 @@ for (const phrase of [
   includes(versionamento, phrase, "versionamento publico");
 }
 
-includes(serviceWorker, "jus9-pwa-v51-2026-07-20-mvps-v4", "service worker");
-includes(wranglerConfig, "governanca-1.21.11-mvps-v4-1.0", "wrangler release");
+includes(serviceWorker, "jus9-pwa-v52-2026-07-20-build-reproduzivel", "service worker");
+includes(wranglerConfig, "governanca-1.21.12-build-reproduzivel-1.0", "wrangler release");
 includes(release, "Release v1.21.1 - Onda 3 DIP + DAA + DEJ", "release Onda 3");
 
 console.log("ONDA3_DIP_DAA_DEJ_PROOF_PACKAGE_OK roteiro=33min mvps=DIP,DAA,DEJ status=PUBLICADO_CONTROLADO");

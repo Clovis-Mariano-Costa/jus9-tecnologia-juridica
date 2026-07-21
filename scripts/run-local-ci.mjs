@@ -19,6 +19,18 @@ const githubRoot = [configuredGithubRoot, defaultGithubRoot, fallbackGithubRoot]
 
 const checks = [
   {
+    label: "Build reproduzivel do portal dist",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/build-portal-dist.mjs"]
+  },
+  {
+    label: "Contrato do build reproduzivel do portal",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-portal-reproducible-build.mjs"]
+  },
+  {
     label: "Prontidao OpenAI Build Week",
     cwd: portalRoot,
     command: process.execPath,

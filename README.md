@@ -169,10 +169,11 @@ Regular mode verifies the evidence and reports unresolved submission blockers. S
 Cloudflare configuration can be inspected with:
 
 ```powershell
+node scripts/build-portal-dist.mjs
 npx wrangler deploy --dry-run
 ```
 
-This repository has no root `package.json`; do not invent an `npm install` or `npm run dev` step. The production Worker serves the compiled static assets from `dist`.
+This repository has no root `package.json`; do not invent an `npm install` or `npm run dev` step. The cross-platform Node builder recreates the curated `dist` directory from a clean checkout before Wrangler reads the assets. The Workers Builds trigger must use `node scripts/build-portal-dist.mjs` as its Build command because the remote build service does not honor Wrangler custom builds automatically.
 
 ## Governance model
 
