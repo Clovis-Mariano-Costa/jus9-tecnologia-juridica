@@ -17,6 +17,7 @@ hash: nao-aplicavel-changelog
 - Cronograma focado avanca para v2.0.0 e registra a janela final da Build Week.
 - CNJ continua sem resposta; conferencia permanece em 22/07/2026 as 10h e reiteracao nao e automatica.
 - DataJud permanece somente leitura e PDPJ permanece `READINESS_ONLY`.
+- PR `#9`, Workers Build `c85e6371-2973-48fe-8975-390327527c1c` e deployment `65182c10-c7a0-4f60-9d7a-b980db8d6c02` validados em producao.
 
 ## 1.16.14 - 2026-07-21
 

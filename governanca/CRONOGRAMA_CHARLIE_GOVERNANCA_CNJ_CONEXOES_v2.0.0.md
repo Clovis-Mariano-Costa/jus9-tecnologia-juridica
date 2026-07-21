@@ -4,7 +4,7 @@ versao: 2.0.0
 autor: Codex / Charlie Juris
 revisor_responsavel: Clovis Mariano da Costa
 data: 2026-07-21
-status: execucao-controlada-g6c3-aguardando-cnj
+status: g6c3-publicado-observacao-controlada-aguardando-cnj
 classificacao: PUBLICO-INSTITUCIONAL
 hash: calcular-na-release-aprovada
 substitui_planejamento_operacional: CRONOGRAMA_CHARLIE_GOVERNANCA_CNJ_CONEXOES_v1.9.0.md
@@ -15,7 +15,7 @@ preserva_historico: true
 
 ## Estado consolidado
 
-G6C2 esta integrado ao `main`, a suite completa e o Workers Build passaram, e o portal 5.18 esta publicado. O pacote G6C3 acrescenta uma API publica de estado governado, sem ampliar permissoes ou conexoes. O CNJ ainda nao respondeu ao e-mail institucional; silencio nao autoriza integracao, homologacao, reiteracao automatica ou efeito transacional.
+G6C2 esta integrado ao `main`, a suite completa passou e o portal 5.19 esta publicado. G6C3 esta online pela API publica de estado governado, sem ampliar permissoes ou conexoes. O PR `#9`, o Workers Build `c85e6371-2973-48fe-8975-390327527c1c` e o deployment `65182c10-c7a0-4f60-9d7a-b980db8d6c02` foram validados. O CNJ ainda nao respondeu ao e-mail institucional; silencio nao autoriza integracao, homologacao, reiteracao automatica ou efeito transacional.
 
 ## Janela final da Build Week - 21/07/2026
 
@@ -46,4 +46,4 @@ G6C2 esta integrado ao `main`, a suite completa e o Workers Build passaram, e o 
 
 ## Proxima acao unica
 
-Concluir validacao, versionamento e publicacao do G6C3; depois observar o build remoto e manter o lembrete do CNJ para 22/07 as 10h.
+Manter observacao G6C2/G6C3 e conferir o canal institucional do CNJ em 22/07 as 10h, sem envio automatico.
