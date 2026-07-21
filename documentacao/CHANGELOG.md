@@ -11,6 +11,22 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Documentacao
 
+## 1.17.9 - 2026-07-20
+
+- Versionamento publico v5.17 registra o build reproduzivel do portal em checkout limpo.
+- README documenta o `postinstall` que executa `node scripts/build-portal-dist.mjs` durante o `npm clean-install` do Workers Builds, mantendo o Build command vazio.
+- Manifesto Build Week sobe para 1.5.0 com evidencia do builder, 170 fontes curadas e 175 assets processados.
+- Revisao final V4-08 v1.1.0 registra a reabertura corretiva e mantem Video/ZIP deferidos.
+- Manifesto Build Week 1.5.1 e V4-08 v1.2.0 registram o check remoto aprovado.
+
+## 1.17.8 - 2026-07-20
+
+- Versionamento publico v5.16 registra a execucao dos Pacotes V4-01 a V4-08 dos MVPs gerais.
+- Painel, mapa de estados e Build Week passam a refletir Pacote 2 concluido com ressalva, Core 1.2.0 implementado e Memoria/Drive apenas em homologacao controlada.
+- Portfolio Canonico V2, matriz de contratos/padroes, revalidacao 14/14 e mapa dos 31 repositorios ganham documentos e auditores.
+- Pacote V4-08 registra CI, dry-run e revisao geral; Video e ZIP permanecem deferidos.
+- Manifesto `BUILD_WEEK_STATUS_2026.json` sobe para `1.4.0`.
+
 ## 1.17.7 - 2026-07-20
 
 - Versionamento publico v5.15 registra o Pacote 8 como fechamento tecnico com gates humanos.

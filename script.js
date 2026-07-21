@@ -2378,17 +2378,18 @@ window.jus9DemoLogin = function(form){
     return response && response.ok && data && typeof data.answer === 'string' && data.answer.trim();
   }
 
-  function charlieGovernanceRequest(code, question, room, routeDecision){
+  function charlieGovernanceRequest(code, question, room, routeDecision, effectConfirmation){
     var routeSource = routeDecision && routeDecision.dajAnalysisSource || {};
     return {
       mvpCode: String(code || '').toUpperCase().slice(0, 16),
       classification: String(routeSource.classification || (room && room.governanceClass) || (code === 'DAJ' ? 'JURIDICO_SIGILOSO' : 'PUBLICO_DEMONSTRATIVO')).slice(0, 80),
       message: plainQuestionText(question).slice(0, 20000),
-      hasAttachment: /\[ANEXOS DO USUARIO - UPLOAD LOCAL GOVERNADO\]/i.test(String(question || ''))
+      hasAttachment: /\[ANEXOS DO USUARIO - UPLOAD LOCAL GOVERNADO\]/i.test(String(question || '')),
+      effectConfirmation: String(effectConfirmation || '').slice(0, 80)
     };
   }
 
-  async function askCharlieApiPayload(mode, code, focus, question, room, routeDecision){
+  async function askCharlieApiPayload(mode, code, focus, question, room, routeDecision, effectConfirmation){
     function contaminatedApiMemory(text){
       return /Para pesquisar doutrina e jurisprudencia com seguranca|voce pediu pesquisa juridica guiada|Leitura do pedido: voce pediu pesquisa juridica guiada|Caminho escolhido: escutar|Vou continuar pela memoria governada|API segura indisponivel|mantive fallback local/i.test(String(text || ''));
     }
@@ -2415,7 +2416,7 @@ window.jus9DemoLogin = function(form){
       requestId: requestId,
       mode: apiModeFor(mode),
       route: routeDecision,
-      governance: charlieGovernanceRequest(code, question, room, routeDecision),
+      governance: charlieGovernanceRequest(code, question, room, routeDecision, effectConfirmation),
       message: buildApiMessage(mode, code, focus, question, identityContext, routeDecision),
       room: apiRoom
     };
@@ -2430,7 +2431,7 @@ window.jus9DemoLogin = function(form){
         requestId: requestId,
         mode: apiModeFor(mode),
         route: Object.assign({}, routeDecision, { retryCompacto:true }),
-        governance: charlieGovernanceRequest(code, question, room, routeDecision),
+        governance: charlieGovernanceRequest(code, question, room, routeDecision, effectConfirmation),
         message: buildApiMessage(mode, code, focus, compactQuestion, identityContext, routeDecision),
         room: null
       }, 45000);
@@ -2718,7 +2719,8 @@ window.jus9DemoLogin = function(form){
     var response = await fetch('/api/charlie/memory', {
       method:'DELETE',
       cache:'no-store',
-      credentials:'include'
+      credentials:'include',
+      headers:{ 'X-Jus9-Confirm-Memory-Delete':'EXCLUIR MINHA MEMORIA' }
     });
     var data = await response.json().catch(function(){ return null; });
     if(response.status === 401) return { authenticated:false, configured:false };
@@ -4337,7 +4339,7 @@ window.jus9DemoLogin = function(form){
       if(!lastAnswer) return appendEcho('Ainda nao ha minuta ou resposta para salvar no Drive. Gere a minuta primeiro e depois acione Salvar no Drive.');
       appendEcho('Vou pedir ao backend autorizado para classificar e salvar a ultima resposta no Cartorio Digital Charlie Echo, retornando downloadUrl real quando a classificacao permitir.', { remember:false });
       try{
-        var savedPayload = await askCharlieApiPayload('jurista', code, focus, 'Salve esta minuta/documento no Cartorio Digital Charlie Echo e gere link de download se a classificacao governada permitir. Use a resposta anterior como conteudo-base, sem inventar dados reais.\n\nPergunta anterior: ' + (lastQuestion || 'sem pergunta registrada') + '\n\nResposta anterior:\n' + lastAnswer, room);
+        var savedPayload = await askCharlieApiPayload('jurista', code, focus, 'Salve esta minuta/documento no Cartorio Digital Charlie Echo e gere link de download se a classificacao governada permitir. Use a resposta anterior como conteudo-base, sem inventar dados reais.\n\nPergunta anterior: ' + (lastQuestion || 'sem pergunta registrada') + '\n\nResposta anterior:\n' + lastAnswer, room, null, 'CONFIRMAR SALVAMENTO DRIVE');
         appendEcho(savedPayload.answer, { driveSaverPayload:savedPayload });
       }catch(err){
         appendEcho('Nao consegui acionar o salvamento governado agora. O download local da pagina continua disponivel; tente novamente quando a API segura estiver acessivel.');

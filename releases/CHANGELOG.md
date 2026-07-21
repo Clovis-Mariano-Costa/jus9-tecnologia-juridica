@@ -11,6 +11,39 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.21.13 - 2026-07-21
+
+- Release integra MVPs v4 e governanca G6C/G6C2 na entrega final Build Week.
+- Portal sobe para v5.18, manifesto Build Week para 1.6.0 e cache PWA para `jus9-pwa-v53-2026-07-21-build-week-final`.
+- Um unico builder reproduzivel preserva 170 fontes publicas e 175 assets, sem expor credenciais ou artefatos privados.
+- Pagina dos juizes recebe teste de tres minutos e declaracao delimitada sobre ChatGPT, Codex e API OpenAI.
+- Pacote privado fica preparado e hasheado fora do Git; roteiro detalhado do video permanece separado e a gravacao continua humana.
+- Elegibilidade, direitos de ativos, video, submissao e qualquer ampliacao CNJ permanecem bloqueados aos gates correspondentes.
+
+## 1.21.12 - 2026-07-20
+
+- Release corrige o build remoto do portal sem rastrear a pasta `dist` no Git.
+- Builder Node recria 170 arquivos curados; Wrangler processa 175 assets e usa release `governanca-1.21.12-build-reproduzivel-1.0`.
+- `package.json` e lockfile fixam Wrangler 4.112.0 e acionam o builder no `postinstall` remoto.
+- Portal sobe para v5.17 e cache PWA para `jus9-pwa-v52-2026-07-20-build-reproduzivel`.
+- Revisao final dos oito pacotes reexecutada em V4-08 v1.1.0 antes do novo check remoto.
+- V4-08 v1.2.0 registra a build remota verde e libera apenas a revisao humana do PR #2.
+- Video, ZIP e os sete gates Build Week permanecem inalterados.
+
+## 1.21.11 - 2026-07-20
+
+- Release publica consolida os Pacotes V4-01 a V4-08 do Mao na Massa dos MVPs.
+- Portal sobe para v5.16 e cache PWA para `jus9-pwa-v51-2026-07-20-mvps-v4`.
+- Estados 1C/Drive/Memoria sao reconciliados; Portfolio V2, contratos, baseline, revalidacao e mapa de repositorios tornam-se auditaveis.
+- Revisao geral V4-08 foi executada; Video e ZIP continuam deferidos e nenhuma capacidade produtiva, permissao ou dado real foi autorizada.
+
+## 1.21.10 - 2026-07-20
+
+- Release documental registra o Cronograma Mao na Massa dos MVPs gerais v4.0.0.
+- Oito pacotes organizam reconciliacao canonica, portfolio V2, nucleo comum, baseline transversal, ondas, repositorios, publicacao e fechamento final.
+- Pagina Equipe fica fora do escopo executivo deste Chat; DGE permanece como governanca tecnica com dependencia externa por contrato.
+- Worker permanece na release operacional `1.21.8`; nenhuma pagina publica, permissao, dado, Video ou ZIP foi alterado.
+
 ## 1.21.9 - 2026-07-20
 
 - Release documental publica o registro canonico de capacidades Charlie v2.0.0.

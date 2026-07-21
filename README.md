@@ -1,6 +1,6 @@
 # Jus 9 Tecnologia Juridica - OpenAI Build Week 2026
 
-> **Submission status, July 19, 2026:** technical work is continuing, but competitive eligibility is awaiting written clarification. The current Official Rules expressly list residents and organizations domiciled in Brazil among excluded entrants. This repository does not claim eligibility until the organizers answer.
+> **Submission status, July 21, 2026:** the integrated technical delivery and private judge package are prepared, while competitive eligibility, asset rights, human video recording, and final submission remain pending human gates. The current Official Rules expressly list residents and organizations domiciled in Brazil among excluded entrants. This repository does not claim eligibility until the organizers answer.
 
 ## One-sentence overview
 
@@ -41,7 +41,7 @@ This English reviewer workspace presents the working flow in order, separates ve
 
 ### Controlled workflow
 
-The complete write workflow requires an authenticated, least-privilege test session. A judge account or sandbox must be provided before submission. Reviewers must use only fictional names, identifiers, documents, and facts.
+The complete write workflow requires an authenticated, least-privilege test session. Founder-confirmed judge access is supplied only in the private judge package and never in this repository or the public portal. Reviewers must use only fictional names, identifiers, documents, and facts.
 
 The public pages can be inspected without credentials, but public availability must not be interpreted as permission to use real legal or personal data.
 
@@ -120,6 +120,10 @@ At the time of this audit:
 
 Therefore, this repository claims verified `gpt-5.6-sol` use only for the Codex development task. It does **not** claim verified GPT-5.6 runtime integration for Charlie Echo.
 
+### OpenAI production toolchain
+
+The founder confirms that, through July 21, 2026, the ecosystem's production work was constructed exclusively with ChatGPT, Codex, and the OpenAI API, under human authorship and review. This statement describes the AI production toolchain. It does not claim OpenAI sponsorship, formal partnership, or OpenAI authorship of Cloudflare, GitHub, Google, CNJ sources, open-source libraries, standards, or other third-party infrastructure and ideas.
+
 ## Architecture
 
 ### Main repository
@@ -169,10 +173,11 @@ Regular mode verifies the evidence and reports unresolved submission blockers. S
 Cloudflare configuration can be inspected with:
 
 ```powershell
+node scripts/build-portal-dist.mjs
 npx wrangler deploy --dry-run
 ```
 
-This repository has no root `package.json`; do not invent an `npm install` or `npm run dev` step. The production Worker serves the compiled static assets from `dist`.
+The cross-platform Node builder recreates the curated `dist` directory from a clean checkout before Wrangler reads the assets. Cloudflare Workers Builds keeps **Build command** unset: its `npm clean-install` step executes the versioned `postinstall` hook in `package.json`, which runs `node scripts/build-portal-dist.mjs`. Local Wrangler deploys use the same builder through `wrangler.jsonc`.
 
 ## Governance model
 
@@ -237,9 +242,9 @@ Use placeholders in `.env.example`. Provide judge access through a limited test 
 
 ## Submission package
 
-The supplementary ZIP audited on July 18 contains 32 entries and is 23,730,283 bytes. The chat-only `sandbox:/mnt/data/...` link is not durable. The final package must be uploaded through a stable submission path, visually reviewed, scanned for secrets, accompanied by an asset-rights declaration, and frozen with a SHA-256 hash.
+The private judge ZIP is frozen outside Git after secret review, extraction testing, manifest verification, size validation, and SHA-256 generation. It includes the founder-confirmed judge credential only in its private access file and excludes AI handoff notes, repository credentials, tokens, nested ZIPs, and the video script.
 
-The final ZIP and demo video are intentionally deferred until the technical and evidence freeze requested by the project owner. Their pending state is enforced by `documentacao/hackathon/BUILD_WEEK_STATUS_2026.json` and the strict readiness audit.
+The detailed video script is delivered separately. Human recording and publication remain pending, as do eligibility confirmation, asset-rights signoff, legacy `tmp` cleanup, and final submission. These gates are enforced by `documentacao/hackathon/BUILD_WEEK_STATUS_2026.json` and the strict readiness audit.
 
 ## License and authorship
 

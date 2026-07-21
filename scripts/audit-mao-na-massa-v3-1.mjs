@@ -44,7 +44,7 @@ assert(cronograma.indexOf("| 12 | Revisao geral, video e ZIP final") > cronogram
 assert(!cronograma.includes("Pacote 2 |") || cronograma.includes("`DEPENDENTE_DE_ACAO_HUMANA`"), "Pacote 2 nao pode perder dependencia humana");
 assert(cronograma.includes("`BLOQUEADO_ATE_REVERSIBILIDADE_1C`"), "Pacote 6 precisa continuar bloqueado ate reversibilidade 1C");
 
-assert(buildWeek.includes("data-build-week-mvp-scope") && buildWeek.includes("Charlie Core v0"), "Build Week sem consolidacao do cronograma v3.1");
+assert(buildWeek.includes("data-build-week-mvp-scope") && buildWeek.includes("Charlie Core 1.2.0"), "Build Week corrente sem o nucleo compartilhado implementado");
 assert(stateMap.includes("data-state-map") && stateMap.includes("ATIVO_PUBLICADO") && stateMap.includes("BLOQUEADO"), "pagina de estado dos MVPs sem estados do cronograma v3.1");
 assert(saibaMais.includes("build-week-2026.html") && saibaMais.includes("mvp-o-que-ja-funciona.html"), "Saiba Mais sem links do cronograma v3.1");
 
@@ -54,4 +54,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("MAO_NA_MASSA_V3_1_OK pacotes=13 piloto=DAJ proximo=Charlie-Core-v0 final=video-zip-revisao");
+console.log("MAO_NA_MASSA_V3_1_OK historico=pacotes-13 corrente=Charlie-Core-1.2.0 final=video-zip-revisao");

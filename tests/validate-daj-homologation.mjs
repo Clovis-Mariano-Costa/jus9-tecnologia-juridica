@@ -210,7 +210,10 @@ for (const dajId of [firstDajId, secondDajId]) {
 }
 assert(JSON.parse(await dajProcessKv.get("daj-process-links:index")).length === 0, "homologacao deveria terminar sem DAJ ficticio ativo");
 
-response = await call("/api/charlie/memory", { method: "DELETE", headers: { cookie } });
+response = await call("/api/charlie/memory", {
+  method: "DELETE",
+  headers: { cookie, "X-Jus9-Confirm-Memory-Delete": "EXCLUIR MINHA MEMORIA" }
+});
 data = await response.json();
 assert(response.status === 200 && data.deleted === true, "usuario deveria conseguir limpar memoria oficial");
 

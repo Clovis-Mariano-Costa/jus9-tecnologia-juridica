@@ -1,17 +1,17 @@
 {
   "metadata": {
     "id": "JUS9-BUILD-WEEK-STATUS-2026-001",
-    "versao": "1.3.0",
+    "versao": "1.6.0",
     "autor": "Codex / Charlie Fox",
     "revisor_responsavel": "Clovis Mariano da Costa",
-    "data": "2026-07-20",
+    "data": "2026-07-21",
     "status": "ativo-controlado",
     "classificacao": "PUBLICO-INSTITUCIONAL",
     "hash": "gerar-na-versao-final"
   },
   "schemaVersion": "1.0.0",
   "documentId": "JUS9-BUILD-WEEK-STATUS-2026-001",
-  "updatedAt": "2026-07-20T15:26:55-03:00",
+  "updatedAt": "2026-07-21T12:00:00-03:00",
   "owner": "Clovis Mariano da Costa / Aeon Primevo",
   "reviewer": "Codex / Charlie Fox",
   "classification": "PUBLICO-INSTITUCIONAL",
@@ -32,10 +32,11 @@
     "ecosystemMapUrl": "https://jus9tecnologia.com.br/saiba-mais.html",
     "operationalPilot": "DAJ",
     "showcasePolicy": "The other 13 MVPs remain governed public showcases with fictional datasets and human-review limits.",
-    "nextSharedCore": "Charlie Core v0",
+    "sharedCore": "Charlie Core 1.2.0 implemented and covered by automated tests",
     "dajAnalysisContract": "Charlie Echo must return a structured Laudo de Analise DAJ before DAJ review feedback is registered; the portal proxy can recover evasive upstream responses with a governed laudo from minimized registry data.",
-    "package2State": "AGUARDANDO_NOVO_TESTE_HUMANO",
-    "finalPackageState": "PACOTE8_REVISAO_EXECUTADA_GATES_HUMANOS",
+    "package2State": "CONCLUIDO_COM_RESSALVA_CORRETIVA",
+    "package6State": "AUTORIZADO_APENAS_PARA_REVISAO_E_HOMOLOGACAO_CONTROLADA",
+    "finalPackageState": "PACOTE_PRIVADO_JUIZES_PREPARADO_VIDEO_HUMANO_PENDENTE",
     "finalPackagePublicAnchor": "https://jus9tecnologia.com.br/build-week-2026.html#final-package"
   },
   "claims": {
@@ -64,6 +65,16 @@
     "openAiApiIntegration": {
       "state": "verified_in_source",
       "evidence": "Charlie Echo API source calls OpenAI Responses and active-search endpoints"
+    },
+    "openAiProductionToolchain": {
+      "state": "founder_confirmed",
+      "tools": [
+        "ChatGPT",
+        "Codex",
+        "OpenAI API"
+      ],
+      "through": "2026-07-21",
+      "claimBoundary": "Exclusive AI production toolchain under human authorship and review; no sponsorship, formal partnership, or OpenAI authorship of third-party infrastructure, sources, libraries, standards, or historical ideas is claimed"
     },
     "gpt56Runtime": {
       "state": "unverified",
@@ -120,7 +131,8 @@
   ],
   "submissionArtifacts": {
     "judgeAccount": {
-      "state": "pending_private_configuration",
+      "state": "ready_private",
+      "evidence": "Founder-confirmed Google login supplied only in the private judge package",
       "publicRepositoryPolicy": "Never commit or publish judge credentials"
     },
     "assetRightsDeclaration": {
@@ -138,21 +150,30 @@
       "zipManifest": "documentacao/hackathon/ZIP_FINAL_MANIFESTO_PENDENTE_2026.md",
       "note": "Technical closeout review is prepared; final submission remains blocked by human gates"
     },
+    "reproducibleBuild": {
+      "state": "verified_clean_checkout_builder",
+      "builder": "scripts/build-portal-dist.mjs",
+      "sourceFiles": 170,
+      "wranglerAssets": 175,
+      "remoteBuildCommand": null,
+      "remoteInstallCommand": "npm clean-install --progress=false",
+      "installHook": "postinstall -> node scripts/build-portal-dist.mjs",
+      "remoteCheck": "pass",
+      "remoteBuildId": "444604fa-3510-4096-ba23-7411e2e24b24"
+    },
     "finalZip": {
-      "state": "deferred_until_human_freeze",
-      "note": "Owner must authorize final freeze, scan, open-check, and SHA-256 hash"
+      "state": "ready_hashed_scanned_private",
+      "note": "Private judge package is frozen after scan and open-check; its SHA-256 is delivered in a separate sidecar"
     },
     "demoVideo": {
-      "state": "deferred_until_human_recording",
-      "note": "Owner must record or approve the public video under three minutes"
+      "state": "script_ready_human_recording_pending",
+      "note": "Detailed script is delivered separately; owner must record or approve the public video under three minutes"
     }
   },
   "strictSubmissionBlockers": [
     "Official written eligibility clarification for a Brazilian resident",
-    "Least-privilege judge account or isolated sandbox",
     "Third-party authorization and asset-rights evidence",
     "Owner-approved removal of the tracked legacy ZIP extraction from the final public HEAD",
-    "Final ZIP integrity review",
     "Public demo video under three minutes"
   ]
 }

@@ -84,11 +84,15 @@ response = await request("/api/auth/permissions", { headers: { cookie: await coo
 data = await response.json();
 assert(response.status === 200 && data.permissions.includes("dajs:write"), "advogado sem dajs:write");
 assert(data.permissions.includes("drive:write"), "advogado sem drive:write governado");
+assert(data.permissions.includes("memory:read") && data.permissions.includes("memory:write") && data.permissions.includes("memory:delete"), "advogado sem memoria granular");
+assert(data.permissions.includes("dajs:review:read") && data.permissions.includes("dajs:review:write"), "advogado sem revisao DAJ granular");
+assert(data.permissions.includes("drive:artifact:save") && data.permissions.includes("drive:link:revoke"), "advogado sem Drive granular");
 console.log("AUTH_OK advogado=dajs:write");
 
 response = await request("/api/auth/permissions", { headers: { cookie: await cookieFor("estagio") } });
 data = await response.json();
 assert(response.status === 200 && data.permissions.includes("dajs:write"), "estagio deve poder redigir DAJ sob supervisao automatica");
+assert(data.permissions.includes("dajs:review:submit") && !data.permissions.includes("dajs:review:write"), "estagio deve submeter revisao sem poder decidir");
 assert(!data.permissions.includes("audit:write") && !data.permissions.includes("processes:read"), "estagio nao deve receber poderes de auditoria ou processo");
 console.log("AUTH_OK estagio=dajs:write-supervisionado");
 
@@ -162,9 +166,55 @@ try {
     body: JSON.stringify({ message: "Salve uma minuta ficticia no Drive", mode: "profissional" })
   }), { ...env, JUS9_CHARLIE_INTERNAL_TOKEN: "token-interno-ficticio" });
   assert(response.status === 200, "proxy Charlie autenticado deveria responder");
+  assert(proxyAuthorization === "", "proxy Drive sem confirmacao explicita nao deve receber segredo interno");
+  assert(response.headers.get("x-jus9-charlie-drive") === "somente-resposta", "proxy Drive sem confirmacao deveria ficar somente resposta");
+
+  response = await worker.fetch(new Request("https://jus9.invalid/api/charlie/respond", {
+    method: "POST",
+    headers: {
+      cookie: await cookieFor("advogado"),
+      "content-type": "application/json"
+    },
+    body: JSON.stringify({
+      message: "Salve uma minuta ficticia no Drive",
+      mode: "profissional",
+      governance: {
+        message: "Salve uma minuta ficticia no Drive",
+        effectConfirmation: "CONFIRMAR SALVAMENTO DRIVE"
+      }
+    })
+  }), { ...env, JUS9_CHARLIE_INTERNAL_TOKEN: "token-interno-ficticio" });
+  assert(response.status === 200, "proxy Charlie confirmado deveria responder");
   assert(proxyAuthorization === "Bearer token-interno-ficticio", "proxy advogado deveria autorizar Drive com segredo interno");
   assert(response.headers.get("x-jus9-charlie-drive") === "governado", "proxy advogado deveria declarar Drive governado");
   console.log("AUTH_OK charlie-proxy-advogado=drive-governado");
+
+  response = await worker.fetch(new Request("https://jus9.invalid/api/charlie/respond", {
+    method: "POST",
+    headers: { cookie: await cookieFor("advogado"), "content-type": "application/json" },
+    body: JSON.stringify({
+      message: "Revogue o link publico deste arquivo no Drive",
+      governance: {
+        message: "Revogue o link publico deste arquivo no Drive",
+        effectConfirmation: "CONFIRMAR REVOGACAO DRIVE"
+      }
+    })
+  }), { ...env, JUS9_CHARLIE_INTERNAL_TOKEN: "token-interno-ficticio" });
+  assert(response.status === 200 && proxyAuthorization === "Bearer token-interno-ficticio", "revogacao confirmada deveria usar permissao especifica");
+
+  response = await worker.fetch(new Request("https://jus9.invalid/api/charlie/respond", {
+    method: "POST",
+    headers: { cookie: await cookieFor("advogado"), "content-type": "application/json" },
+    body: JSON.stringify({
+      message: "Exclua este arquivo do Drive",
+      governance: {
+        message: "Exclua este arquivo do Drive",
+        effectConfirmation: "CONFIRMAR SALVAMENTO DRIVE"
+      }
+    })
+  }), { ...env, JUS9_CHARLIE_INTERNAL_TOKEN: "token-interno-ficticio" });
+  assert(response.status === 200 && proxyAuthorization === "", "confirmacao de efeito diferente nao deve autorizar exclusao Drive");
+  console.log("AUTH_OK charlie-proxy-drive-effects=granular-confirmed");
 
   response = await worker.fetch(new Request("https://jus9.invalid/api/charlie/respond", {
     method: "POST",
@@ -440,6 +490,16 @@ response = await worker.fetch(
   new Request("https://jus9.invalid/api/charlie/memory", {
     method: "DELETE",
     headers: { cookie: userMemoryCookie }
+  }),
+  userMemoryEnv
+);
+data = await response.json();
+assert(response.status === 409 && data.error === "confirmacao_explicita_obrigatoria", "exclusao de memoria sem confirmacao deve falhar fechada");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/charlie/memory", {
+    method: "DELETE",
+    headers: { cookie: userMemoryCookie, "X-Jus9-Confirm-Memory-Delete": "EXCLUIR MINHA MEMORIA" }
   }),
   userMemoryEnv
 );

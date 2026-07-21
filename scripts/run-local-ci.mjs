@@ -19,6 +19,18 @@ const githubRoot = [configuredGithubRoot, defaultGithubRoot, fallbackGithubRoot]
 
 const checks = [
   {
+    label: "Build reproduzivel do portal dist",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/build-portal-dist.mjs"]
+  },
+  {
+    label: "Contrato do build reproduzivel do portal",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-portal-reproducible-build.mjs"]
+  },
+  {
     label: "Prontidao OpenAI Build Week",
     cwd: portalRoot,
     command: process.execPath,
@@ -109,7 +121,7 @@ const checks = [
     args: ["scripts/audit-charlie-governance-backend-contracts.mjs"]
   },
   {
-    label: "Charlie Core v0 e contratos JSON",
+    label: "Charlie Core 1.2.0 e contratos JSON",
     cwd: portalRoot,
     command: process.execPath,
     args: ["--test", "tests/charlie-core.test.mjs"]
@@ -167,6 +179,18 @@ const checks = [
     cwd: portalRoot,
     command: process.execPath,
     args: ["scripts/audit-g6b-registro-canonico-charlie.mjs"]
+  },
+  {
+    label: "G6C autoridade e ferramentas Charlie",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-g6c-autoridade-ferramentas-charlie.mjs"]
+  },
+  {
+    label: "G6C2 RBAC granular Charlie",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-g6c2-rbac-granular-charlie.mjs"]
   },
   {
     label: "Qualidade da interface Charlie Echo",
@@ -257,6 +281,42 @@ const checks = [
     cwd: portalRoot,
     command: process.execPath,
     args: ["scripts/audit-pacote8-fechamento.mjs"]
+  },
+  {
+    label: "Cronograma geral dos MVPs v4",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-cronograma-mvps-v4.mjs"]
+  },
+  {
+    label: "Portfolio canonico dos MVPs v2",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-portfolio-mvps-v2.mjs"]
+  },
+  {
+    label: "Contratos e baseline transversal dos MVPs",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-mvp-contracts-baseline.mjs"]
+  },
+  {
+    label: "Revalidacao e mapa de repositorios dos MVPs",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-mvp-revalidation-repositories.mjs"]
+  },
+  {
+    label: "Release Mao na Massa dos MVPs v4",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-mao-na-massa-mvps-v4-release.mjs"]
+  },
+  {
+    label: "Revisao final dos pacotes MVPs v4",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-mvp-v4-final-review.mjs"]
   },
   {
     label: "Painel executivo dos MVPs",

@@ -3,6 +3,10 @@
   "name": "jus9-tecnologia-juridica",
   "main": "worker.js",
   "compatibility_date": "2026-07-13",
+  "build": {
+    "command": "node scripts/build-portal-dist.mjs",
+    "watch_dir": ["*.html", "assets", "data-publica", "documentos", "scripts/build-portal-dist.mjs"]
+  },
   "assets": {
     "directory": "dist",
     "binding": "ASSETS",
@@ -13,7 +17,7 @@
     "AUTH_PUBLIC_GOOGLE_ENABLED": "true",
     "AUTH_PUBLIC_GOOGLE_PROFILE": "cidadao",
     "GOOGLE_CALENDAR_OAUTH_ENABLED": "false",
-    "JUS9_RELEASE": "governanca-1.21.8-pacote8-fechamento-1.0"
+    "JUS9_RELEASE": "governanca-1.21.13-build-week-final-1.0"
   },
   "observability": {
     "enabled": true,

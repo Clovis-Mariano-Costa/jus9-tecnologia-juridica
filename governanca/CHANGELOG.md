@@ -11,6 +11,39 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.16.13 - 2026-07-21
+
+- Integradas as linhas MVP v4 e G6C/G6C2 em uma unica branch de entrega Build Week.
+- Builder canonico permanece `build-portal-dist.mjs`; o builder concorrente da branch G6C foi retirado da integracao.
+- Auditores G6C e G6C2 entram no CI completo ao lado dos 14 MVPs e dos contratos existentes.
+- Build Week registra acesso privado dos juizes, ZIP privado preparado, roteiro separado e gravacao humana ainda pendente.
+- Confirmacao do fundador sobre ferramentas OpenAI recebe limites explicitos de autoria humana e atribuicao de terceiros.
+- CNJ segue sem resposta; silencio nao autoriza nova capacidade.
+
+## 1.16.12 - 2026-07-20
+
+- Portal ganha builder Node multiplataforma que recria `dist` a partir de 170 arquivos publicos curados.
+- CI e Wrangler passam a executar o mesmo build antes de validar ou publicar os 175 assets processados.
+- Workers Builds executa o builder pelo `postinstall` durante `npm clean-install`, mantendo o Build command remoto vazio.
+- Artefato falha diante de alteracao inesperada do manifesto ou tentativa de incluir segredo, `tmp`, governanca, release, Markdown ou ZIP.
+- Revisao geral dos oito pacotes reexecutada e preservada como V4-08 v1.1.0, com check remoto ainda pendente.
+- V4-08 v1.2.0 fecha a revisao tecnica apos o Workers Builds verde, mantendo merge, Video e ZIP sob decisao humana.
+- Correcao nao amplia permissao, dado, integracao, Video ou ZIP final.
+
+## 1.16.11 - 2026-07-20
+
+- Pacotes V4-01 a V4-08 reconciliam o estado corrente, criam Portfolio Canonico V2, matriz transversal e revisao geral dos 14 MVPs.
+- Charlie Core 1.2.0 e cinco DTOs sao confirmados por testes; IAM, LGPD, seguranca, acessibilidade e operacao preservam seus gates humanos.
+- Cinco ondas e kit DAJ sao revalidados; 31 repositorios recebem mapa de fontes sem acao destrutiva.
+- Pagina Equipe permanece sob Mariana e seu Codex; a revisao V4-08 foi executada e Video/ZIP continuam deferidos no ultimo pacote.
+
+## 1.16.10 - 2026-07-20
+
+- Cronograma Mao na Massa dos MVPs gerais sobe para v4.0.0 apos varredura do Chat, portal e repositorios relacionados.
+- Linha de base registra 14 MVPs, Pagina Equipe sob responsabilidade de Mariana e oito pacotes V4.
+- Pacote V4-01 passa a priorizar a reconciliacao de estados superados sobre 1C, Memoria/Drive, Charlie Core e contratos JSON.
+- Revisao geral, Video e ZIP permanecem obrigatoriamente no ultimo pacote e continuam deferidos.
+
 ## 1.16.9 - 2026-07-20
 
 - G6B cria registro canonico v2 com 20 capacidades da Charlie e regra de falha fechada por divergencia.

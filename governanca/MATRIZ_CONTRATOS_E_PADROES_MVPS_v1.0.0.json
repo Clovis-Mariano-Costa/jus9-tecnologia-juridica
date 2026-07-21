@@ -1,0 +1,67 @@
+{
+  "metadata": {
+    "id": "GOV-JUS9-MVPS-CONTRATOS-PADROES-001",
+    "versao": "1.0.0",
+    "autor": "Codex / Charlie Juris",
+    "revisor_responsavel": "Clovis Mariano da Costa",
+    "data": "2026-07-20",
+    "status": "homologacao-tecnica",
+    "classificacao": "PUBLICO-INSTITUCIONAL / SEM DADOS REAIS",
+    "hash": "calcular-na-release-aprovada"
+  },
+  "portfolio": "governanca/PORTFOLIO_CANONICO_MVPS_v2.0.0.json",
+  "coreContract": {
+    "name": "Charlie Core",
+    "version": "1.2.0",
+    "source": "functions/lib/charlie-core/contracts.js",
+    "pipeline": "functions/lib/charlie-core/response-pipeline.js",
+    "tests": "tests/charlie-core.test.mjs",
+    "types": ["ChatRequest","ChatResponse","DocumentSaveRequest","DataJudSearchRequest","AuditEvent"],
+    "responseSources": ["upstream","correcao_upstream","fallback_governado"],
+    "controlledFields": ["auditId","contractVersion","source","classification","riskLevel","humanReviewRequired","citations","limits","downloadOptions","nextActions"]
+  },
+  "coverage": {
+    "appliesTo": ["DAJ","DAA","DEJ","DIC","DPJ","DIP","DEE","DEJI","DOI","DGE","DMG","DMP","DAP","DED"],
+    "criticalMvps": ["DMG","DMP","DAP"],
+    "criticalControls": ["sandbox_isolado","dado_ficticio","efeito_externo_bloqueado","revisao_humana_obrigatoria","falha_fechada"]
+  },
+  "requirements": [
+    {
+      "id":"MVP-IAM","state":"PARCIAL_CONTRATO_EXTERNO","technicalEvidence":["functions/lib/charlie-core/registry.js","tests/validate-worker-auth.mjs"],"residualRisk":"Pagina Equipe, responsaveis e matriz definitiva de permissoes pertencem ao fluxo da Mariana.","humanGate":"Designar responsaveis e homologar matriz de menor privilegio antes de producao."
+    },
+    {
+      "id":"MVP-SEC","state":"BASELINE_TECNICA_IMPLEMENTADA_REVISAO_PENDENTE","technicalEvidence":["tests/validate-worker-auth.mjs","scripts/audit-charlie-governance-risk-suite.mjs"],"residualRisk":"Nao substitui threat model formal, SAST/DAST e teste de penetracao por escopo.","humanGate":"Aprovar risco residual e teste independente antes de dado real."
+    },
+    {
+      "id":"MVP-LGPD","state":"BASELINE_TECNICA_IMPLEMENTADA_REVISAO_PENDENTE","technicalEvidence":["governanca/RELATORIO_ACEITE_E_REVERSIBILIDADE_PACOTE_1C_DAJ_2026-07-19.md","functions/lib/charlie-core/contracts.js"],"residualRisk":"Base legal, encarregado, retencao produtiva e RIPD dependem do contexto real.","humanGate":"Revisao juridica/LGPD antes de qualquer dado pessoal."
+    },
+    {
+      "id":"MVP-ETH","state":"IMPLEMENTADO","technicalEvidence":["functions/lib/charlie-core/policies.js","functions/lib/charlie-core/response-pipeline.js"],"residualRisk":"Texto de interface e respostas precisam de revisao continua.","humanGate":"Aceite humano por onda e por mudanca material."
+    },
+    {
+      "id":"MVP-AI","state":"IMPLEMENTADO_CONTRATO_1_2_0","technicalEvidence":["functions/lib/charlie-core/contracts.js","functions/lib/charlie-core/response-pipeline.js","tests/charlie-core.test.mjs"],"residualRisk":"Modelos e fontes externas podem mudar; prompt injection e citacao exigem regressao continua.","humanGate":"Aprovar uso de modelo, fontes e risco residual em cada promocao."
+    },
+    {
+      "id":"MVP-AUD","state":"IMPLEMENTADO_MINIMIZADO","technicalEvidence":["functions/lib/charlie-core/contracts.js","tests/charlie-core.test.mjs"],"residualRisk":"Retencao, acesso e monitoramento produtivos precisam de operador designado.","humanGate":"Definir operador, retencao e resposta a incidente."
+    },
+    {
+      "id":"MVP-DAT","state":"IMPLEMENTADO_PARA_DEMO_FICTICIA","technicalEvidence":["data-publica/mvp-perfis.json","governanca/RELATORIO_ACEITE_E_REVERSIBILIDADE_PACOTE_1C_DAJ_2026-07-19.md"],"residualRisk":"Dados reais exigem classificacao, finalidade, base autorizativa e ciclo de vida proprios.","humanGate":"Autorizar expressamente qualquer nova classe de dado."
+    },
+    {
+      "id":"MVP-UX","state":"PARCIAL_AUDITORIA_WCAG_PENDENTE","technicalEvidence":["tests/validate-public-mvps.mjs"],"residualRisk":"Nao ha laudo completo WCAG 2.2 AA por pagina e tecnologia assistiva.","humanGate":"Executar e aceitar auditoria manual de teclado, leitor de tela, zoom e contraste."
+    },
+    {
+      "id":"MVP-TST","state":"IMPLEMENTADO_TECNICAMENTE_ACEITE_HUMANO_PENDENTE","technicalEvidence":["scripts/run-local-ci.mjs","scripts/audit-onda1-ded-dic-proof-package.mjs","scripts/audit-onda5-dmp-dap-dmg-proof-package.mjs"],"residualRisk":"Automacao nao substitui aceite de linguagem, competencia e utilidade por publico.","humanGate":"Registrar aceite humano por onda."
+    },
+    {
+      "id":"MVP-OPS","state":"BASELINE_TECNICA_IMPLEMENTADA","technicalEvidence":["wrangler.jsonc","service-worker.js","governanca/CHANGELOG.md","releases/CHANGELOG.md"],"residualRisk":"SLO, plantao, alertas e dono operacional nao estao formalmente designados.","humanGate":"Designar operador e aprovar runbook/SLO antes de producao ampliada."
+    }
+  ],
+  "prohibitedClaims": [
+    "conformidade integral com WCAG, ASVS ou LGPD sem laudo e aceite competentes",
+    "producao autorizada por existir teste automatizado",
+    "efeito juridico, institucional, policial, ministerial ou judicial autonomo",
+    "Pagina Equipe implementada por este fluxo"
+  ]
+}
+

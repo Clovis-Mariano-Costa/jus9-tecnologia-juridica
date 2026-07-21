@@ -1,0 +1,64 @@
+{
+  "metadata": {
+    "id": "GOV-JUS9-MVPS-REPOSITORIOS-001",
+    "versao": "1.0.0",
+    "autor": "Codex / Charlie Juris",
+    "revisor_responsavel": "Clovis Mariano da Costa",
+    "data": "2026-07-20",
+    "status": "homologacao-tecnica",
+    "classificacao": "PUBLICO-INSTITUCIONAL / SOMENTE METADADOS",
+    "hash": "calcular-na-release-aprovada"
+  },
+  "catalogSource": "data-publica/repositorios-jus9.json",
+  "policy": {
+    "destructiveActionAuthorized": false,
+    "privateContentReplicated": false,
+    "repositoryCreationAuthorized": false,
+    "rule": "Nenhum repositorio sera migrado, arquivado, excluido, tornado publico ou fundido sem decisao humana registrada."
+  },
+  "sourceOfTruthByDomain": [
+    {"domain":"portal_publico_e_worker","repository":"jus9-tecnologia-juridica","state":"CANONICO_ATUAL"},
+    {"domain":"portfolio_e_governanca_dos_14_mvps","repository":"jus9-tecnologia-juridica","state":"CANONICO_ATUAL"},
+    {"domain":"produto_mvp_experimental","repository":"mvp-jus9-tecnologia-juridica","state":"REFERENCIA_SUJEITA_A_RECONCILIACAO"},
+    {"domain":"interface_charlie_echo","repository":"charlieecho-jus9-tecnologia-juridica","state":"CANONICO_POR_DOMINIO"},
+    {"domain":"backend_api","repository":"backend-api-jus9-tecnologia-juridica","state":"CANONICO_POR_DOMINIO"},
+    {"domain":"identidade_e_acesso","repository":"auth-identidade-acesso-jus9-tecnologia-juridica","state":"CONTRATO_EXTERNO_A_HOMOLOGAR"},
+    {"domain":"pagina_equipe","repository":"equipe-jus9-tecnologia-juridica","state":"RESPONSABILIDADE_MARIANA_CODEX"},
+    {"domain":"infraestrutura_cloudflare","repository":null,"state":"PENDENTE_DECISAO_HUMANA_ENTRE_3_REPOSITORIOS"},
+    {"domain":"dados_e_migracoes","repository":"db-modelos-migracoes-jus9-tecnologia-juridica","state":"CANONICO_POR_DOMINIO"},
+    {"domain":"cofre_documental","repository":"cofre-documentos-seguros-jus9-tecnologia-juridica","state":"CANONICO_POR_DOMINIO"},
+    {"domain":"logs_e_auditoria","repository":"logs-auditoria-jus9-tecnologia-juridica","state":"CANONICO_POR_DOMINIO"},
+    {"domain":"administracao_operacional","repository":"admin-painel-jus9-tecnologia-juridica","state":"CANONICO_POR_DOMINIO"}
+  ],
+  "repositoryGroups": [
+    {
+      "id":"NUCLEO_MVPS","action":"MANTER_E_RECONCILIAR_CONTRATOS","repositories":["jus9-tecnologia-juridica","mvp-jus9-tecnologia-juridica","charlieecho-jus9-tecnologia-juridica","auth-identidade-acesso-jus9-tecnologia-juridica","backend-api-jus9-tecnologia-juridica","cofre-documentos-seguros-jus9-tecnologia-juridica","db-modelos-migracoes-jus9-tecnologia-juridica","ia-profissional-orquestrador-jus9-tecnologia-juridica","logs-auditoria-jus9-tecnologia-juridica","portal-cliente-jus9-tecnologia-juridica","admin-painel-jus9-tecnologia-juridica"]
+    },
+    {
+      "id":"GOVERNANCA_DOCUMENTACAO","action":"MANTER_COM_REFERENCIAS_VERSIONADAS","repositories":["documentacao-jus9-tecnologia-juridica","governanca-autoorganizacao-charlie-echo-jus9-tecnologia-juridica","governanca-jus9-tecnologia-juridica","_workspace-jus9-colaborativo"]
+    },
+    {
+      "id":"INFRAESTRUTURA_SOBREPOSTA","action":"REVISAR_SOBREPOSICAO_SEM_MIGRAR","repositories":["infra-jus9-cloudflare","infra-cloudflare-jus9-tecnologia-juridica","workers-pages-functions-jus9-tecnologia-juridica"]
+    },
+    {
+      "id":"PAGINA_EQUIPE_EXTERNA","action":"RESPONSABILIDADE_MARIANA_CODEX","repositories":["equipe-jus9-tecnologia-juridica"]
+    },
+    {
+      "id":"SATELITES_DE_DOMINIO","action":"MANTER_FORA_DA_FONTE_CANONICA_DOS_14_MVPS","repositories":["carta-jus9-tecnologia-juridica","livros-jus9-tecnologia-juridica","investimentos-jus9-tecnologia-juridica","quandoodesenhofala-jus9-tecnologia-juridica","ia-dupla-jus9-tecnologia-juridica","jus9verde-jus9-tecnologia-juridica","aulas-charlie-echo-jus9-tecnologia-juridica","juridico-virtual-jus9-tecnologia-juridica","universidadedofuturo-jus9-tecnologia-juridica"]
+    },
+    {
+      "id":"LABORATORIOS","action":"MANTER_ISOLADOS_ATE_CLASSIFICACAO_HUMANA","repositories":["olamundo-jus9-tecnologia-juridica","laboratorio-jus9-tecnologia-juridica","Laboratorio-Natan-jus9-tecnologia-juridica"]
+    }
+  ],
+  "backlog": [
+    {"id":"MVP-OPS-001","priority":"P0","state":"PENDENTE_HUMANO","action":"Designar Product Owner e responsavel tecnico para cada um dos 14 MVPs."},
+    {"id":"MVP-IAM-001","priority":"P0","state":"PENDENTE_COORDENACAO","action":"Homologar contrato de identidade e menor privilegio com Mariana sem implementar a Pagina Equipe neste fluxo."},
+    {"id":"MVP-REP-001","priority":"P1","state":"PENDENTE_HUMANO","action":"Escolher a fonte canonica de infraestrutura entre os tres repositorios sobrepostos."},
+    {"id":"MVP-ACC-001","priority":"P1","state":"PENDENTE_HUMANO","action":"Executar auditoria manual WCAG 2.2 AA nos fluxos prioritarios."},
+    {"id":"MVP-SEC-001","priority":"P1","state":"PENDENTE_HUMANO","action":"Aprovar threat model e teste independente antes de dados reais."},
+    {"id":"MVP-VAL-001","priority":"P1","state":"PENDENTE_HUMANO","action":"Registrar aceite de utilidade, linguagem e competencia das cinco ondas."},
+    {"id":"MVP-BW-001","priority":"P0","state":"PENDENTE_HUMANO","action":"Resolver gates Build Week de elegibilidade, conta de avaliacao, direitos de ativos e limpeza tmp."},
+    {"id":"MVP-FINAL-001","priority":"ULTIMO_PACOTE","state":"DEFERIDO","action":"Revisar todos os pacotes; depois gravar Video, congelar, escanear e gerar ZIP com SHA-256."}
+  ]
+}
+

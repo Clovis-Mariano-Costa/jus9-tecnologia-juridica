@@ -1,6 +1,6 @@
 <!--
   Jus 9 Tecnologia Juridica - software livre, autoria preservada.
-  Versionamento publico atualizado para a versao 5.15.
+  Versionamento publico atualizado para a versao 5.18.
   DNA de referencia: charlieecho-jus9-tecnologia-juridica
 -->
 <!doctype html>
@@ -8,8 +8,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Versionamento Jus 9 - v5.15</title>
-  <meta name="description" content="Versionamento publico da Jus 9 Tecnologia Juridica, com registro da entrada na versao 5.15.">
+  <title>Versionamento Jus 9 - v5.18</title>
+  <meta name="description" content="Versionamento publico da Jus 9 Tecnologia Juridica, com registro da entrega final privada aos juizes na versao 5.18.">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
@@ -38,8 +38,53 @@
   <div class="container">
     <div class="doc-shell">
       <div class="eyebrow">Versionamento publico</div>
-      <h1>Jus 9 Tecnologia Juridica - versao 5.15</h1>
-      <p class="lead">A versao 5.15 executa o Pacote 8 como fechamento tecnico do Mao na Massa: revisao geral preparada, Build Week orientada para gates humanos e video/ZIP ainda pendentes de gravacao, congelamento, escaneamento e hash.</p>
+      <h1>Jus 9 Tecnologia Juridica - versao 5.18</h1>
+      <p class="lead">A versao 5.18 integra a consolidacao dos 14 MVPs com a governanca granular da Charlie, prepara o pacote privado dos juizes e separa corretamente o roteiro do video. Credenciais permanecem fora do repositorio e do portal publico.</p>
+
+      <section class="version-card">
+        <h2>Versao 5.18 - Entrega final aos juizes</h2>
+        <p><strong>Data:</strong> 21/07/2026</p>
+        <ul>
+          <li>Branches dos MVPs v4 e da governanca G6C/G6C2 reconciliadas em uma unica linha de entrega.</li>
+          <li>Um unico builder reproduzivel preserva 170 fontes publicas curadas e 175 assets processados, sem publicar governanca, Markdown, ZIP, <code>tmp</code> ou segredos.</li>
+          <li>Charlie recebe permissoes granulares para memoria, revisao DAJ e efeitos governados no Drive, com menor privilegio, confirmacao e falha fechada.</li>
+          <li>A pagina Build Week passa a oferecer um teste de tres minutos, registrar o acesso privado dos juizes e distinguir ZIP preparado de video ainda pendente de gravacao humana.</li>
+          <li>O fundador confirma que ChatGPT, Codex e API OpenAI foram as ferramentas de IA usadas exclusivamente na construcao produtiva do ecossistema ate 21/07/2026, sob autoria e revisao humanas. Nao se afirma patrocinio, parceria formal ou autoria OpenAI de infraestrutura e fontes de terceiros.</li>
+          <li>Pacote privado dos juizes e respectivo SHA-256 ficam fora do repositorio; o roteiro detalhado do video e entregue como arquivo separado.</li>
+          <li>Elegibilidade do participante brasileiro, direitos de ativos, gravacao/publicacao do video e envio final continuam como decisoes humanas; silencio do CNJ nao concede autorizacao.</li>
+          <li>Criado release <code>RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.21.13.md</code>; cache PWA atualizado para <code>jus9-pwa-v53-2026-07-21-build-week-final</code>.</li>
+        </ul>
+      </section>
+
+      <section class="version-card">
+        <h2>Versao 5.17 - Build reproduzivel do portal</h2>
+        <p><strong>Data:</strong> 20/07/2026</p>
+        <ul>
+          <li>Criado <code>build-portal-dist.mjs</code> para recriar 170 arquivos publicos curados em checkout limpo.</li>
+          <li>Wrangler executa o builder antes de ler os assets e continua processando 175 arquivos no artefato final.</li>
+          <li>CI e Wrangler usam o mesmo builder; no Workers Builds ele roda pelo <code>postinstall</code> durante <code>npm clean-install</code>, sem Build command personalizado.</li>
+          <li>Revisao geral V4-08 fechada na v1.2.0 apos o check remoto verde <code>444604fa-3510-4096-ba23-7411e2e24b24</code>; v1.0.0 e v1.1.0 permanecem como historico.</li>
+          <li>Segredos, <code>tmp</code>, governanca, releases, Markdown e ZIP permanecem fora do artefato publico.</li>
+          <li>Criado release <code>RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.21.12.md</code>; cache PWA atualizado para <code>jus9-pwa-v52-2026-07-20-build-reproduzivel</code>.</li>
+          <li>Nenhuma permissao, dado real, integracao transacional, Video ou ZIP final foi ampliado.</li>
+        </ul>
+      </section>
+
+      <section class="version-card">
+        <h2>Versao 5.16 - Mao na Massa dos MVPs v4</h2>
+        <p><strong>Data:</strong> 20/07/2026</p>
+        <ul>
+          <li>Pacote 1C/Pacote 2 passa ao estado corrente <code>CONCLUIDO_COM_RESSALVA_CORRETIVA</code>; o historico anterior permanece preservado.</li>
+          <li>Memoria e Drive ficam <code>AUTORIZADO_APENAS_PARA_REVISAO_E_HOMOLOGACAO_CONTROLADA</code>, sem producao ou dado real.</li>
+          <li>Portfolio Canonico V2 registra 14 MVPs: um piloto, dez demos governadas e tres demos restritas de alta sensibilidade.</li>
+          <li>Charlie Core <code>1.2.0</code>, cinco DTOs e dez requisitos transversais recebem matriz e auditoria dedicadas.</li>
+          <li>As cinco ondas e o kit DAJ foram revalidados; aceite humano de utilidade das ondas continua explicitamente pendente.</li>
+          <li>Os 31 repositorios foram classificados sem arquivamento, migracao, exclusao, publicacao ou replicacao de conteudo privado.</li>
+          <li>Pagina Equipe permanece sob responsabilidade de Mariana e do Codex dela, integrada aqui somente por contrato externo.</li>
+          <li>Criado release <code>RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.21.11.md</code>; cache PWA atualizado para <code>jus9-pwa-v51-2026-07-20-mvps-v4</code>.</li>
+          <li>Pacote V4-08 registra a revisao total como executada; Video e ZIP permanecem deferidos e nao sao declarados concluidos.</li>
+        </ul>
+      </section>
 
       <section class="version-card">
         <h2>Versao 5.15 - Pacote 8 fechamento tecnico</h2>
