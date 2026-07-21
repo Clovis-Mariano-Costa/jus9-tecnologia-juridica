@@ -11,7 +11,7 @@
   },
   "schemaVersion": "1.0.0",
   "documentId": "JUS9-BUILD-WEEK-STATUS-2026-001",
-  "updatedAt": "2026-07-21T18:30:00-03:00",
+  "updatedAt": "2026-07-21T18:43:00-03:00",
   "owner": "Clovis Mariano da Costa / Aeon Primevo",
   "reviewer": "Codex / Charlie Fox",
   "classification": "PUBLICO-INSTITUCIONAL",
@@ -67,7 +67,7 @@
       "evidence": "Charlie Echo API source calls OpenAI Responses and active-search endpoints"
     },
     "charlieGovernanceApi": {
-      "state": "implemented_pending_publication_validation",
+      "state": "live_verified",
       "url": "https://jus9tecnologia.com.br/api/governance/charlie/capabilities",
       "schemaVersion": "1.0.0",
       "evidence": "Public read-only minimized state for G6C2, DataJud, PDPJ, CNJ channel, and blocked effects",
@@ -114,7 +114,7 @@
       "publicDemoPolicy": "Never replace an unavailable official party search with a generative answer"
     },
     "charlieGovernance": {
-      "state": "g6c3_read_only_api_pending_publication_validation",
+      "state": "g6c3_read_only_api_live_verified",
       "publicDemoPolicy": "Inspect the minimized API without credentials; do not interpret readiness as authorization"
     }
   },
@@ -170,7 +170,10 @@
       "remoteInstallCommand": "npm clean-install --progress=false",
       "installHook": "postinstall -> node scripts/build-portal-dist.mjs",
       "remoteCheck": "pass",
-      "remoteBuildId": "444604fa-3510-4096-ba23-7411e2e24b24"
+      "remoteBuildId": "c85e6371-2973-48fe-8975-390327527c1c",
+      "productionDeploymentId": "65182c10-c7a0-4f60-9d7a-b980db8d6c02",
+      "productionVersionId": "dda51a41-d335-4f79-a903-c61df72105ce",
+      "productionValidatedAt": "2026-07-21T18:42:49-03:00"
     },
     "finalZip": {
       "state": "ready_hashed_scanned_private",

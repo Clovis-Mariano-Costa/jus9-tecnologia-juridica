@@ -4,7 +4,7 @@ versao: 1.0.0
 autor: Codex / Charlie Juris
 revisor_responsavel: Clovis Mariano da Costa
 data: 2026-07-21
-status: implementado-em-validacao
+status: implementado-publicado-validado
 classificacao: PUBLICO-INSTITUCIONAL
 hash: calcular-na-release-aprovada
 ---
@@ -41,3 +41,7 @@ Remover a rota e o import do modulo compartilhado. Nenhum dado persistente, perm
 ## Porta seguinte
 
 Observar G6C2 ate completar 72 horas. Remover permissoes legadas somente por nova decisao humana. Conferir o canal institucional do CNJ em 22/07/2026 as 10h, sem envio automatico.
+
+## Evidencia de publicacao
+
+PR `#9` integrado no commit `d7cb2175feb0544ccbfb987ec1c1b5e4d8af1cbe`. Workers Build `c85e6371-2973-48fe-8975-390327527c1c` passou e o deployment `65182c10-c7a0-4f60-9d7a-b980db8d6c02` foi validado online.
