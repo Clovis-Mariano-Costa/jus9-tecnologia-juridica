@@ -30,7 +30,9 @@ const requiredFiles = [
   "documentacao/hackathon/FECHAMENTO_HUMANO_BUILD_WEEK_2026.md",
   "documentacao/hackathon/VIDEO_ROTEIRO_BUILD_WEEK_2026.md",
   "documentacao/hackathon/ZIP_FINAL_MANIFESTO_PENDENTE_2026.md",
-  "governanca/PACOTE8_REVISAO_GERAL_VIDEO_ZIP_BUILD_WEEK_2026-07-20_v1.0.0.md"
+  "governanca/PACOTE8_REVISAO_GERAL_VIDEO_ZIP_BUILD_WEEK_2026-07-20_v1.0.0.md",
+  "governanca/CRONOGRAMA_SPRINT_FINAL_MVPS_BUILD_WEEK_2026-07-21_v1.0.0.md",
+  "releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.21.16.md"
 ];
 
 const errors = [];
@@ -80,7 +82,7 @@ const codexSolEvidence = read("documentacao/hackathon/EVIDENCIA_CODEX_SOL_BUILD_
 const integrationMatrix = read("documentacao/hackathon/MATRIZ_INTEGRACOES_TERCEIROS_BUILD_WEEK_2026.md");
 
 check(status.schemaVersion === "1.0.0", "status manifest schema", "Unexpected Build Week status schema");
-check(status.metadata?.versao === "1.7.0", "status manifest governance API version", "Build Week status must be version 1.7.0 for the G6C3 governance API release");
+check(status.metadata?.versao === "1.7.1", "status manifest final sprint version", "Build Week status must be version 1.7.1 for the final MVP sprint release");
 check(status.project?.track === "Work and Productivity", "competition track", "Track must be Work and Productivity");
 check(status.project?.reviewerUrl === "https://jus9tecnologia.com.br/build-week-2026.html", "canonical reviewer URL", "Reviewer URL does not match the public page");
 check(status.mvpConsolidation?.stateMapUrl === "https://jus9tecnologia.com.br/mvp-o-que-ja-funciona.html", "MVP state-map URL", "Build Week status does not point to the public MVP state map");
@@ -108,12 +110,14 @@ check(status.submissionArtifacts?.package8Closeout?.state === "review_executed_h
 check(status.submissionArtifacts?.judgeAccount?.state === "ready_private", "judge access ready privately", "Judge access must be ready only in the private package");
 check(status.submissionArtifacts?.finalZip?.state === "ready_hashed_scanned_private", "final private ZIP ready", "Final private ZIP must be scanned, opened, and hashed");
 check(status.submissionArtifacts?.demoVideo?.state === "script_ready_human_recording_pending", "video script ready with human recording pending", "Video state must distinguish the ready script from pending human recording");
-check(status.submissionArtifacts?.repositoryHygiene?.state === "blocked_tracked_legacy_zip_extraction", "tracked legacy ZIP extraction is declared", "Repository hygiene status does not declare the tracked legacy ZIP extraction");
+check(status.submissionArtifacts?.repositoryHygiene?.state === "verified_no_tracked_tmp", "repository hygiene verified", "Repository hygiene must record the completed tracked-tmp cleanup");
+check(status.strictSubmissionBlockers?.length === 4 && status.strictSubmissionBlockers.some((item) => /DataJud terms review/.test(item)), "strict blocker manifest aligned", "Strict blocker manifest must list the four current human gates, including DataJud review");
 
 check(/<html\s+lang="en">/i.test(reviewerPage), "reviewer page language", "Reviewer page must declare English");
 check(/id="live-flow"/.test(reviewerPage) && /id="evidence"/.test(reviewerPage) && /id="safety"/.test(reviewerPage), "reviewer page sections", "Reviewer page is missing live flow, evidence, or safety sections");
 check(/id="mvp-scope"/.test(reviewerPage) && /data-build-week-mvp-scope/.test(reviewerPage), "reviewer MVP scope section", "Reviewer page is missing the MVP scope section");
 check(/id="final-package"/.test(reviewerPage) && /data-build-week-final-package/.test(reviewerPage) && /Final delivery status/.test(reviewerPage), "reviewer final package section", "Reviewer page is missing the final delivery status");
+check(/Repository hygiene/.test(reviewerPage) && /26-file legacy ZIP audit extraction/.test(reviewerPage), "reviewer repository hygiene disclosure", "Reviewer page does not record the completed repository cleanup");
 check(/id="judge-test"/.test(reviewerPage) && /Verify the core flow in three minutes/.test(reviewerPage), "three-minute judge path", "Reviewer page is missing the three-minute judge path");
 check(/OpenAI production toolchain/.test(reviewerPage) && /ChatGPT, Codex, and the OpenAI API/.test(reviewerPage), "truthful OpenAI toolchain disclosure", "Reviewer page is missing the approved OpenAI production-toolchain disclosure");
 check(/Codex development model/.test(reviewerPage) && /gpt-5\.6-sol/.test(reviewerPage), "reviewer Codex Sol disclosure", "Reviewer page does not disclose the verified Codex development model");
@@ -215,7 +219,7 @@ block(status.claims.entrantEligibility.state !== "verified_eligible", "Entrant e
 block(status.claims.codexCollaboration.sessionId !== "attached_privately", "Codex Session ID from /feedback is not attached privately.");
 block(status.submissionArtifacts.judgeAccount.state !== "ready_private", "Least-privilege judge account or isolated sandbox is not ready.");
 block(status.submissionArtifacts.assetRightsDeclaration.state !== "approved", "Asset-rights declaration is not approved.");
-block(trackedTemporaryFiles.length > 0, `Repository still tracks ${trackedTemporaryFiles.length} temporary ZIP-audit file(s) under tmp.`);
+check(trackedTemporaryFiles.length === 0, "no tracked temporary ZIP-audit files", `Repository still tracks ${trackedTemporaryFiles.length} temporary ZIP-audit file(s) under tmp.`);
 block(!status.integrations.datajud.state.includes("legal_review_complete"), "DataJud terms review or authorization evidence is incomplete for the demonstrated use.");
 block(!status.submissionArtifacts.finalZip.state.startsWith("ready_hashed_scanned"), "Final ZIP is not frozen, scanned, and hashed.");
 block(status.submissionArtifacts.demoVideo.state !== "ready_public_under_3_minutes", "Public demo video under three minutes is not yet recorded and published.");

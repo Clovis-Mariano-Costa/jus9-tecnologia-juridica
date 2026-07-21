@@ -62,7 +62,7 @@ O comando `node scripts/audit-build-week-readiness.mjs` imprime o HEAD e as esta
 | `d42f4bf` | 18/07 20:27 | Kit de aceite humano do DAJ preparado |
 | `d052ebe` | 18/07 20:40 | Rota publica do avaliador e auditoria estrita implementadas |
 
-O intervalo tambem contem commits de extracao e auditoria de artefatos. Esses arquivos nao sao apresentados como funcionalidade nova do produto. A extracao temporaria do ZIP original que permanece rastreada deve ser retirada do HEAD antes da abertura competitiva do repositorio, sem reescrever a evidencia historica sem decisao expressa do responsavel.
+O intervalo tambem contem commits de extracao e auditoria de artefatos. Esses arquivos nao sao apresentados como funcionalidade nova do produto. A extracao temporaria do ZIP original foi retirada do HEAD no sprint final de 21/07/2026, sem reescrever a evidencia historica e sem alterar o pacote privado dos juizes. O auditor exige que `git ls-files tmp` retorne zero entrada.
 
 ## API central da Charlie Echo
 

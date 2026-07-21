@@ -1,7 +1,7 @@
 {
   "metadata": {
     "id": "JUS9-BUILD-WEEK-STATUS-2026-001",
-    "versao": "1.7.0",
+    "versao": "1.7.1",
     "autor": "Codex / Charlie Fox",
     "revisor_responsavel": "Clovis Mariano da Costa",
     "data": "2026-07-21",
@@ -11,7 +11,7 @@
   },
   "schemaVersion": "1.0.0",
   "documentId": "JUS9-BUILD-WEEK-STATUS-2026-001",
-  "updatedAt": "2026-07-21T18:43:00-03:00",
+  "updatedAt": "2026-07-21T18:45:00-03:00",
   "owner": "Clovis Mariano da Costa / Aeon Primevo",
   "reviewer": "Codex / Charlie Fox",
   "classification": "PUBLICO-INSTITUCIONAL",
@@ -150,8 +150,9 @@
       "state": "pending_owner_signoff"
     },
     "repositoryHygiene": {
-      "state": "blocked_tracked_legacy_zip_extraction",
-      "note": "The original ZIP extraction remains tracked under tmp and must be removed from the final public HEAD by an explicit owner-approved cleanup"
+      "state": "verified_no_tracked_tmp",
+      "evidence": "git ls-files tmp returns zero entries; tmp/ and archive formats remain denied by .gitignore",
+      "note": "The 26-file legacy ZIP audit extraction was removed from the public repository during the final MVP sprint; the private judge ZIP was not changed"
     },
     "package8Closeout": {
       "state": "review_executed_human_gates_pending",
@@ -187,7 +188,7 @@
   "strictSubmissionBlockers": [
     "Official written eligibility clarification for a Brazilian resident",
     "Third-party authorization and asset-rights evidence",
-    "Owner-approved removal of the tracked legacy ZIP extraction from the final public HEAD",
+    "DataJud terms review or authorization evidence for the demonstrated read-only use",
     "Public demo video under three minutes"
   ]
 }

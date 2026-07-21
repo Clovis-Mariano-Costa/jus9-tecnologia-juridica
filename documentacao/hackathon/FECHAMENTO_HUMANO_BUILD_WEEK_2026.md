@@ -19,9 +19,10 @@ This file is public-safe. It names what must be decided by the human owner befor
 2. Prepare a least-privilege judge sandbox with synthetic data only.
 3. Complete the asset-rights declaration.
 4. Review DataJud authorization/terms for the exact read-only public-metadata use.
-5. Decide whether the tracked legacy ZIP extraction under `tmp` may be removed from final public HEAD.
-6. Record the public video only after the screen is free of real accounts, tokens, CPFs, process data, private Drive content, and secrets.
-7. Freeze the ZIP only after the human checks above are complete.
+5. Record the public video only after the screen is free of real accounts, tokens, CPFs, process data, private Drive content, and secrets.
+6. Freeze the ZIP only after the human checks above are complete.
+
+Repository hygiene is complete: the tracked legacy ZIP extraction under `tmp` was removed on 2026-07-21, without changing the private judge package.
 
 ## Do not claim
 
@@ -49,7 +50,7 @@ Eligibility written clarification: pending / approved / not pursued
 Judge sandbox ready: pending / ready
 Asset-rights declaration signed: pending / signed
 DataJud terms reviewed: pending / reviewed
-Tracked tmp cleanup authorized: pending / authorized / denied
+Tracked tmp cleanup: completed (26 files removed from Git)
 Video URL: pending / attached
 Final ZIP SHA-256: pending / attached
 Codex task ID attached privately: pending / attached
