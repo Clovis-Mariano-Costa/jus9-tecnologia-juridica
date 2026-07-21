@@ -1,0 +1,263 @@
+{
+  "metadata": {
+    "id": "API-CHARLIE-AUTORIDADE-FERRAMENTAS-G6C-001",
+    "versao": "1.0.0",
+    "autor": "Codex / Charlie Juris",
+    "revisor_responsavel": "Clovis Mariano da Costa",
+    "data": "2026-07-20",
+    "status": "desenho-governado-aguardando-aceite-para-implementacao",
+    "classificacao": "PUBLICO-INSTITUCIONAL",
+    "hash": "calcular-na-release-aprovada",
+    "registro_canonico": "apis/REGISTRO_CANONICO_CAPACIDADES_CHARLIE_v2.0.0.json"
+  },
+  "principios": {
+    "default_deny": true,
+    "papel_nao_e_autorizacao_universal": true,
+    "capacidade_elegivel_nao_e_acao_autorizada": true,
+    "permissao_de_leitura_nao_autoriza_escrita": true,
+    "permissao_de_escrita_nao_autoriza_publicacao_ou_exclusao": true,
+    "charlie_nao_aprova_a_propria_acao_sensivel": true,
+    "silencio_externo_autoriza": false,
+    "segredo_em_prompt_log_repositorio": false,
+    "efeito_juridico_autonomo": false
+  },
+  "niveis_de_aprovacao": [
+    {
+      "id": "A0",
+      "nome": "leitura_publica_minimizada",
+      "requisitos": ["rota_publica_expressa", "sem_dado_pessoal", "sem_mutacao"]
+    },
+    {
+      "id": "A1",
+      "nome": "acao_local_ou_no_proprio_escopo",
+      "requisitos": ["gesto_explicito_do_usuario", "sem_efeito_externo", "reversivel"]
+    },
+    {
+      "id": "A2",
+      "nome": "acao_autenticada_governada",
+      "requisitos": ["sessao_valida", "permissao_especifica", "escopo_de_modulo", "auditoria_minimizada"]
+    },
+    {
+      "id": "A3",
+      "nome": "confirmacao_humana_por_efeito",
+      "requisitos": ["A2", "resumo_do_efeito", "alvo_exato", "confirmacao_vinculada", "rollback"]
+    },
+    {
+      "id": "A4",
+      "nome": "dupla_validacao_sensivel_ou_destrutiva",
+      "requisitos": ["A3", "revisor_humano_distinto_quando_aplicavel", "justificativa", "evento_de_auditoria", "janela_de_revogacao"]
+    },
+    {
+      "id": "BLOQUEADO",
+      "nome": "sem_autoridade_nesta_fase",
+      "requisitos": ["nao_executar", "nao_inferir_consentimento", "registrar_dependencia"]
+    }
+  ],
+  "atores": [
+    {
+      "id": "charlie",
+      "tipo": "agente_assistivo",
+      "pode": ["classificar", "explicar", "resumir", "preparar", "recomendar", "solicitar_confirmacao", "encaminhar_para_humano"],
+      "nao_pode": ["conceder_permissao", "aprovar_propria_acao", "usar_credencial_fora_do_proxy", "enviar_contato_externo", "publicar", "excluir", "peticionar", "registrar_ciencia"]
+    },
+    {
+      "id": "anonimo_demo",
+      "tipo": "usuario_publico",
+      "pode": ["health_publico", "resposta_limitada_com_dados_ficticios", "extracao_temporaria_ficticia", "download_local"],
+      "nao_pode": ["memoria_persistente", "daj", "drive_privilegiado", "calendar", "perfil", "datajud_interno", "pdpj"]
+    },
+    {
+      "id": "usuario_autenticado",
+      "tipo": "identidade_governada",
+      "pode": ["consultar_proprio_contexto", "usar_memoria_do_proprio_usuario_conforme_permissao_granular", "solicitar_perfil"],
+      "nao_pode": ["herdar_permissao_de_outro_papel", "atuar_fora_do_modulo", "compartilhar_sessao"]
+    },
+    {
+      "id": "advogado_lider",
+      "tipo": "decisor_humano_juridico",
+      "pode": ["revisar_laudo", "decidir_encaminhamento", "aprovar_acao_no_escopo_das_permissoes_explicitas", "gerir_perfis_no_modulo_autorizado"],
+      "nao_pode": ["bypass_de_seguranca", "autorizar_pdpj_sem_onboarding", "delegar_credencial", "autorizar_ato_autonomo_da_charlie", "agir_fora_do_modulo"]
+    },
+    {
+      "id": "advogado",
+      "tipo": "profissional_juridico",
+      "pode": ["operar_daj_no_escopo", "revisar_resposta", "usar_ferramenta_com_permissao_especifica"],
+      "nao_pode": ["gerir_perfis_sem_profiles_manage", "bypass_de_confirmacao", "pdpj_bloqueada"]
+    },
+    {
+      "id": "estagio",
+      "tipo": "atuacao_supervisionada",
+      "pode": ["operar_daj_conforme_escopo", "submeter_feedback_para_supervisao"],
+      "nao_pode": ["aprovar_propria_revisao", "publicar", "excluir", "atuar_sem_supervisao_quando_exigida"]
+    },
+    {
+      "id": "admin_sistema",
+      "tipo": "administracao_tecnica",
+      "pode": ["administrar_configuracao_e_perfis_no_escopo", "responder_incidente", "revogar_acesso"],
+      "nao_pode": ["substituir_decisao_juridica", "usar_dado_fora_da_finalidade", "autorizar_conector_externo_sem_gate_institucional"]
+    },
+    {
+      "id": "demais_perfis",
+      "tipo": "rbac_especifico",
+      "pode": ["somente_permissoes_listadas_em_functions/_shared/permissions.js_e_no_modulo"],
+      "nao_pode": ["permissao_por_analogia", "escalada_por_nome_do_cargo", "efeito_nao_catalogado"]
+    }
+  ],
+  "permissoes_alvo": [
+    {"id": "memory:read", "efeito": "ler_memoria_do_proprio_usuario", "nivel": "A2"},
+    {"id": "memory:write", "efeito": "gravar_memoria_do_proprio_usuario", "nivel": "A2"},
+    {"id": "memory:delete", "efeito": "excluir_memoria_do_proprio_usuario", "nivel": "A3"},
+    {"id": "dajs:review:read", "efeito": "ler_feedback_e_caixa_de_revisao", "nivel": "A2"},
+    {"id": "dajs:review:submit", "efeito": "submeter_feedback_supervisionado", "nivel": "A2"},
+    {"id": "dajs:review:write", "efeito": "decidir_feedback_e_encaminhamento", "nivel": "A3"},
+    {"id": "drive:artifact:create", "efeito": "criar_artefato_privado", "nivel": "A3"},
+    {"id": "drive:artifact:save", "efeito": "salvar_nova_versao_privada", "nivel": "A3"},
+    {"id": "drive:link:publish", "efeito": "tornar_link_publico", "nivel": "A4"},
+    {"id": "drive:link:revoke", "efeito": "revogar_link_publico", "nivel": "A3"},
+    {"id": "drive:artifact:delete", "efeito": "excluir_artefato", "nivel": "A4"},
+    {"id": "calendar:event:read", "efeito": "ler_eventos_autorizados", "nivel": "A2"},
+    {"id": "calendar:event:create", "efeito": "criar_evento_externo", "nivel": "A3"},
+    {"id": "calendar:event:update", "efeito": "alterar_evento_externo", "nivel": "A3"},
+    {"id": "calendar:event:delete", "efeito": "cancelar_ou_excluir_evento", "nivel": "A4"},
+    {"id": "calendar:disconnect", "efeito": "desconectar_integracao", "nivel": "A3"},
+    {"id": "datajud:read", "efeito": "consultar_metadados_por_numero_cnj", "nivel": "A2"},
+    {"id": "pdpj:readiness:read", "efeito": "ler_prontidao_sem_token", "nivel": "A0"},
+    {"id": "pdpj:token:test", "efeito": "testar_token_em_ambiente_autorizado", "nivel": "BLOQUEADO"},
+    {"id": "external:contact:send", "efeito": "enviar_mensagem_a_terceiro", "nivel": "BLOQUEADO"},
+    {"id": "judicial:science:write", "efeito": "registrar_ciencia", "nivel": "BLOQUEADO"},
+    {"id": "judicial:petition:write", "efeito": "peticionar_ou_protocolar", "nivel": "BLOQUEADO"},
+    {"id": "judicial:mni:execute", "efeito": "executar_operacao_mni", "nivel": "BLOQUEADO"}
+  ],
+  "ferramentas": [
+    {
+      "id": "TOOL-001",
+      "nome": "charlie_response",
+      "capacidade": "CHARLIE-CAP-004",
+      "estado": "ATIVO_PUBLICO_LIMITADO",
+      "operacoes": ["responder", "classificar", "registrar_auditoria_minimizada"],
+      "nivel": "A0",
+      "executor": "proxy_governado",
+      "confirmacao": "revisao_humana_para_uso_sensivel",
+      "proibido": ["ato_externo", "segredo", "autorizacao_por_inferencia"]
+    },
+    {
+      "id": "TOOL-002",
+      "nome": "attachment_extract",
+      "capacidade": "CHARLIE-CAP-006",
+      "estado": "ATIVO_PUBLICO_LIMITADO",
+      "operacoes": ["extrair_texto_temporario"],
+      "nivel": "A1",
+      "executor": "worker_sem_persistencia",
+      "confirmacao": "gesto_de_upload",
+      "proibido": ["persistir_automaticamente", "tratar_ocr_como_prova"]
+    },
+    {
+      "id": "TOOL-003",
+      "nome": "user_memory",
+      "capacidade": "CHARLIE-CAP-007",
+      "estado": "ATIVO_GOVERNADO_COM_PENDENCIA",
+      "operacoes": ["read", "write", "delete"],
+      "nivel": "A2_A3",
+      "executor": "usuario_autenticado_no_proprio_escopo",
+      "confirmacao": "explicita_para_delete_e_promocao",
+      "proibido": ["memoria_de_terceiro", "promocao_automatica", "retencao_indefinida_sem_politica"]
+    },
+    {
+      "id": "TOOL-004",
+      "nome": "daj_registry_and_review",
+      "capacidade": "CHARLIE-CAP-009_CHARLIE-CAP-010",
+      "estado": "ATIVO_GOVERNADO_COM_PENDENCIA",
+      "operacoes": ["read", "write", "delete_test", "review_read", "review_submit", "review_decide"],
+      "nivel": "A2_A4",
+      "executor": "equipe_juridica_conforme_rbac",
+      "confirmacao": "humana_para_revisao_decisao_e_exclusao",
+      "proibido": ["delete_de_registro_real", "revisao_escrita_apenas_por_dajs_read_no_modelo_alvo", "ato_juridico_automatico"]
+    },
+    {
+      "id": "TOOL-005",
+      "nome": "drive_governado",
+      "capacidade": "CHARLIE-CAP-008",
+      "estado": "ATIVO_GOVERNADO_COM_PENDENCIA",
+      "operacoes": ["create_private", "save_private", "publish_link", "revoke_link", "delete"],
+      "nivel": "A3_A4",
+      "executor": "backend_autorizado_no_contexto_do_usuario",
+      "confirmacao": "vinculada_ao_efeito_e_alvo",
+      "proibido": ["url_inventada", "publicacao_por_drive_write_generico_no_modelo_alvo", "token_no_frontend", "drive_como_cofre"]
+    },
+    {
+      "id": "TOOL-006",
+      "nome": "calendar_governado",
+      "capacidade": "CHARLIE-CAP-017",
+      "estado": "ATIVO_GOVERNADO",
+      "operacoes": ["read", "create", "update", "delete", "disconnect"],
+      "nivel": "A2_A4",
+      "executor": "backend_oauth_no_contexto_do_usuario",
+      "confirmacao": "explicita_para_toda_escrita",
+      "proibido": ["convite_sem_confirmacao", "token_no_frontend", "alteracao_de_terceiro_sem_escopo"]
+    },
+    {
+      "id": "TOOL-007",
+      "nome": "datajud_readonly",
+      "capacidade": "CHARLIE-CAP-014",
+      "estado": "ATIVO_GOVERNADO",
+      "operacoes": ["search_by_cnj_number"],
+      "nivel": "A2",
+      "executor": "gateway_interno",
+      "confirmacao": "revisao_humana_antes_de_uso_juridico",
+      "proibido": ["nome", "cpf", "escrita", "resultado_inventado"]
+    },
+    {
+      "id": "TOOL-008",
+      "nome": "pdpj",
+      "capacidade": "CHARLIE-CAP-015_CHARLIE-CAP-016",
+      "estado": "READINESS_ONLY",
+      "operacoes": ["readiness"],
+      "nivel": "A0",
+      "executor": "worker_sem_transacao",
+      "confirmacao": "nova_autorizacao_apos_onboarding_para_qualquer_teste",
+      "proibido": ["token_test_agora", "ciencia", "peticao", "mni", "domicilio"]
+    },
+    {
+      "id": "TOOL-009",
+      "nome": "external_party_search",
+      "capacidade": "CHARLIE-CAP-019",
+      "estado": "BLOQUEADO_DEPENDENCIA_EXTERNA",
+      "operacoes": [],
+      "nivel": "BLOQUEADO",
+      "executor": "nenhum",
+      "confirmacao": "nao_aplicavel_sem_conector_autorizado",
+      "proibido": ["nome", "cpf", "resultado_llm", "presuncao_de_fonte"]
+    },
+    {
+      "id": "TOOL-010",
+      "nome": "external_contact",
+      "capacidade": "NAO_HABILITADA",
+      "estado": "BLOQUEADO_POR_SEGURANCA",
+      "operacoes": [],
+      "nivel": "BLOQUEADO",
+      "executor": "nenhum",
+      "confirmacao": "nova_capacidade_e_autorizacao_especifica",
+      "proibido": ["email_automatico", "mensagem_a_terceiro", "protocolo", "notificacao_real"]
+    },
+    {
+      "id": "TOOL-011",
+      "nome": "judicial_effects",
+      "capacidade": "CHARLIE-CAP-020",
+      "estado": "BLOQUEADO_POR_SEGURANCA",
+      "operacoes": [],
+      "nivel": "BLOQUEADO",
+      "executor": "nenhum",
+      "confirmacao": "revisao_humana_sozinha_nao_habilita_capacidade_inexistente",
+      "proibido": ["ciencia", "peticionamento", "mni", "ordem", "decisao", "assinatura_por_autoridade"]
+    }
+  ],
+  "migracao_proposta": {
+    "altera_runtime_nesta_versao": false,
+    "fase_1": "adicionar_permissoes_granulares_em_paralelo_as_legadas_com_testes",
+    "fase_2": "migrar_rotas_para_permissao_especifica_e_confirmacao_por_efeito",
+    "fase_3": "observar_72h_e_remover_fallback_de_permissao_legada_somente_apos_aceite",
+    "rollback": "reativar_mapeamento_legado_sem_perder_eventos_ou_dados",
+    "exige_aceite_humano_antes_da_fase_1": true
+  },
+  "proxima_acao_unica": "G6C2_ACEITE_HUMANO_PARA_IMPLEMENTAR_RBAC_GRANULAR"
+}

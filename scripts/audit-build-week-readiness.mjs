@@ -80,7 +80,7 @@ const codexSolEvidence = read("documentacao/hackathon/EVIDENCIA_CODEX_SOL_BUILD_
 const integrationMatrix = read("documentacao/hackathon/MATRIZ_INTEGRACOES_TERCEIROS_BUILD_WEEK_2026.md");
 
 check(status.schemaVersion === "1.0.0", "status manifest schema", "Unexpected Build Week status schema");
-check(status.metadata?.versao === "1.5.1", "status manifest reproducible build version", "Build Week status must be version 1.5.1 for the remotely verified portal build release");
+check(status.metadata?.versao === "1.6.0", "status manifest final delivery version", "Build Week status must be version 1.6.0 for the final judge delivery release");
 check(status.project?.track === "Work and Productivity", "competition track", "Track must be Work and Productivity");
 check(status.project?.reviewerUrl === "https://jus9tecnologia.com.br/build-week-2026.html", "canonical reviewer URL", "Reviewer URL does not match the public page");
 check(status.mvpConsolidation?.stateMapUrl === "https://jus9tecnologia.com.br/mvp-o-que-ja-funciona.html", "MVP state-map URL", "Build Week status does not point to the public MVP state map");
@@ -90,7 +90,7 @@ check(status.mvpConsolidation?.operationalPilot === "DAJ", "DAJ operational pilo
 check(status.mvpConsolidation?.dajAnalysisContract?.includes("Laudo de Analise DAJ"), "DAJ laudo contract", "Build Week status must preserve the DAJ laudo contract");
 check(status.mvpConsolidation?.package2State === "CONCLUIDO_COM_RESSALVA_CORRETIVA", "Package 2 reconciled state", "Build Week status must preserve the completed Package 2 state with corrective caveat");
 check(status.mvpConsolidation?.package6State === "AUTORIZADO_APENAS_PARA_REVISAO_E_HOMOLOGACAO_CONTROLADA", "Package 6 controlled-review state", "Build Week status must not present Drive or memory as production-ready");
-check(status.mvpConsolidation?.finalPackageState === "PACOTE8_REVISAO_EXECUTADA_GATES_HUMANOS", "Package 8 closeout state", "Build Week status must preserve Package 8 human-gated closeout state");
+check(status.mvpConsolidation?.finalPackageState === "PACOTE_PRIVADO_JUIZES_PREPARADO_VIDEO_HUMANO_PENDENTE", "private judge package state", "Build Week status must record the private package without claiming the video or submission complete");
 check(status.claims?.significantExtensionAfterStart?.state === "verified", "significant-extension claim", "Significant extension is not marked verified");
 check(status.claims?.codexCollaboration?.state === "verified", "Codex collaboration status", "Codex collaboration must be supported by evidence");
 check(status.claims?.codexCollaboration?.sessionId === "attached_privately", "Codex task identification retained privately", "Codex task identification must be retained privately");
@@ -98,19 +98,24 @@ check(status.claims?.codexGpt56SolDevelopment?.state === "verified_local_session
 check(status.claims?.codexGpt56SolDevelopment?.modelId === "gpt-5.6-sol", "Codex Sol model identifier", "Unexpected Codex development model identifier");
 check(status.claims?.codexGpt56SolDevelopment?.evidenceFingerprintSha256 === "d2cfd341b2ad8c4e95e47977f4a90bd3b023cde50977efd345d08d51904a54b9", "Codex Sol evidence fingerprint", "Codex Sol evidence fingerprint does not match the approved record");
 check(status.claims?.openAiApiIntegration?.state === "verified_in_source", "OpenAI source integration status", "OpenAI integration must remain scoped to source verification");
+check(status.claims?.openAiProductionToolchain?.state === "founder_confirmed", "OpenAI production toolchain confirmation", "OpenAI production toolchain confirmation is missing");
+check(status.claims?.openAiProductionToolchain?.tools?.join("|") === "ChatGPT|Codex|OpenAI API", "OpenAI production toolchain scope", "OpenAI production toolchain must name only the founder-confirmed tools");
 check(status.claims?.gpt56Runtime?.state === "unverified", "GPT-5.6 claim remains unverified", "GPT-5.6 runtime must remain unverified until evidence is attached");
 check(status.claims?.entrantEligibility?.state === "blocked_pending_official_clarification", "eligibility remains explicitly blocked", "Eligibility must not be presented as approved without written clarification");
 check(status.integrations?.externalPartySearch?.state === "unavailable_fail_closed", "party search fails closed", "External party search must remain unavailable and fail closed");
 check(status.integrations?.datajud?.state.includes("read_only"), "DataJud remains read-only", "DataJud must remain read-only in the competition package");
 check(status.submissionArtifacts?.package8Closeout?.state === "review_executed_human_gates_pending", "Package 8 closeout prepared", "Package 8 closeout must be prepared without final submission claim");
-check(status.submissionArtifacts?.finalZip?.state === "deferred_until_human_freeze", "final ZIP is explicitly deferred to human freeze", "Final ZIP deferral was lost");
-check(status.submissionArtifacts?.demoVideo?.state === "deferred_until_human_recording", "demo video is explicitly deferred to human recording", "Demo video deferral was lost");
+check(status.submissionArtifacts?.judgeAccount?.state === "ready_private", "judge access ready privately", "Judge access must be ready only in the private package");
+check(status.submissionArtifacts?.finalZip?.state === "ready_hashed_scanned_private", "final private ZIP ready", "Final private ZIP must be scanned, opened, and hashed");
+check(status.submissionArtifacts?.demoVideo?.state === "script_ready_human_recording_pending", "video script ready with human recording pending", "Video state must distinguish the ready script from pending human recording");
 check(status.submissionArtifacts?.repositoryHygiene?.state === "blocked_tracked_legacy_zip_extraction", "tracked legacy ZIP extraction is declared", "Repository hygiene status does not declare the tracked legacy ZIP extraction");
 
 check(/<html\s+lang="en">/i.test(reviewerPage), "reviewer page language", "Reviewer page must declare English");
 check(/id="live-flow"/.test(reviewerPage) && /id="evidence"/.test(reviewerPage) && /id="safety"/.test(reviewerPage), "reviewer page sections", "Reviewer page is missing live flow, evidence, or safety sections");
 check(/id="mvp-scope"/.test(reviewerPage) && /data-build-week-mvp-scope/.test(reviewerPage), "reviewer MVP scope section", "Reviewer page is missing the MVP scope section");
-check(/id="final-package"/.test(reviewerPage) && /data-build-week-final-package/.test(reviewerPage) && /Final human gates/.test(reviewerPage), "reviewer final package section", "Reviewer page is missing the Package 8 final package gate");
+check(/id="final-package"/.test(reviewerPage) && /data-build-week-final-package/.test(reviewerPage) && /Final delivery status/.test(reviewerPage), "reviewer final package section", "Reviewer page is missing the final delivery status");
+check(/id="judge-test"/.test(reviewerPage) && /Verify the core flow in three minutes/.test(reviewerPage), "three-minute judge path", "Reviewer page is missing the three-minute judge path");
+check(/OpenAI production toolchain/.test(reviewerPage) && /ChatGPT, Codex, and the OpenAI API/.test(reviewerPage), "truthful OpenAI toolchain disclosure", "Reviewer page is missing the approved OpenAI production-toolchain disclosure");
 check(/Codex development model/.test(reviewerPage) && /gpt-5\.6-sol/.test(reviewerPage), "reviewer Codex Sol disclosure", "Reviewer page does not disclose the verified Codex development model");
 check(/id="codex-sol-evidence"/.test(reviewerPage) && reviewerPage.includes(status.claims.codexGpt56SolDevelopment.evidenceFingerprintSha256), "self-contained public Codex Sol evidence", "Reviewer page must expose the sanitized Codex Sol evidence without requiring repository access");
 check(/app-atendimento-inicial\.html/.test(reviewerPage) && /app-ia-profissional\.html/.test(reviewerPage) && /app-processos\.html/.test(reviewerPage), "reviewer workflow links", "Reviewer page does not link the complete DAJ flow");
@@ -212,8 +217,8 @@ block(status.submissionArtifacts.judgeAccount.state !== "ready_private", "Least-
 block(status.submissionArtifacts.assetRightsDeclaration.state !== "approved", "Asset-rights declaration is not approved.");
 block(trackedTemporaryFiles.length > 0, `Repository still tracks ${trackedTemporaryFiles.length} temporary ZIP-audit file(s) under tmp.`);
 block(!status.integrations.datajud.state.includes("legal_review_complete"), "DataJud terms review or authorization evidence is incomplete for the demonstrated use.");
-block(status.submissionArtifacts.finalZip.state !== "ready_hashed_scanned", "Final ZIP is deferred and not frozen, scanned, and hashed.");
-block(status.submissionArtifacts.demoVideo.state !== "ready_public_under_3_minutes", "Public demo video under three minutes is deferred.");
+block(!status.submissionArtifacts.finalZip.state.startsWith("ready_hashed_scanned"), "Final ZIP is not frozen, scanned, and hashed.");
+block(status.submissionArtifacts.demoVideo.state !== "ready_public_under_3_minutes", "Public demo video under three minutes is not yet recorded and published.");
 
 if (status.claims.gpt56Runtime.state !== "verified") {
   warnings.push("GPT-5.6 runtime remains unverified; the final submission must keep that claim out unless sanitized evidence is attached.");

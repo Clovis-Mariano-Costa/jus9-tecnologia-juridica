@@ -29,6 +29,7 @@ Software livre com autoria preservada.
         <a class="active" href="#overview">Overview</a>
         <a href="#mvp-scope">MVP scope</a>
         <a href="#live-flow">Live flow</a>
+        <a href="#judge-test">3-minute test</a>
         <a href="#evidence">Evidence</a>
         <a href="#final-package">Final package</a>
         <a href="#safety">Safety and limits</a>
@@ -90,8 +91,21 @@ Software livre com autoria preservada.
           <div class="status-row" role="row"><strong role="cell">13 MVP expansions</strong><span class="state limited" role="cell">Governed demos</span><span role="cell">Public showcase pages use fictional datasets and explicit human-review limits.</span></div>
           <div class="status-row" role="row"><strong role="cell">Charlie Core 1.2.0</strong><span class="state verified" role="cell">Implemented</span><span role="cell">Shared policies, MVP registry, risk classification, governed response contracts, provenance, limits, human review, and minimized audit are covered by automated tests.</span></div>
           <div class="status-row" role="row"><strong role="cell">Drive and memory</strong><span class="state limited" role="cell">Controlled review only</span><span role="cell">DAJ reversibility closed with corrective caveats. Drive and memory may use only fictional data in authorized, reversible homologation; production and real data remain blocked.</span></div>
-          <div class="status-row" role="row"><strong role="cell">ZIP and video</strong><span class="state blocked" role="cell">Final human gates</span><span role="cell">Pacote8_REVISAO_EXECUTADA_GATES_HUMANOS prepares the final package without declaring the public video or final ZIP ready.</span></div>
+          <div class="status-row" role="row"><strong role="cell">Judge package</strong><span class="state verified" role="cell">Private ZIP prepared</span><span role="cell">The credentialed package is delivered privately, scanned, hashed, and kept outside the public repository. The video script is a separate owner artifact.</span></div>
         </div>
+      </section>
+
+      <section class="reviewer-section" id="judge-test">
+        <div class="section-heading">
+          <p class="reviewer-eyebrow">Judge test</p>
+          <h2>Verify the core flow in three minutes</h2>
+          <p>Credentials are supplied only in the private judge package. Use fictional data throughout the review.</p>
+        </div>
+        <ol class="workflow-list">
+          <li><span class="step-number">01</span><div><h3>Create a fictional DAJ</h3><p>Persist a synthetic intake and retain the generated DAJ identifier.</p></div><a href="app-atendimento-inicial.html">Open intake</a></li>
+          <li><span class="step-number">02</span><div><h3>Inspect the governed laudo</h3><p>Open the isolated Charlie room and verify facts, gaps, limits, feedback, and human routing.</p></div><a href="app-ia-profissional.html">Open Charlie</a></li>
+          <li><span class="step-number">03</span><div><h3>Verify the official-source boundary</h3><p>Check read-only CNJ-number metadata or the declared fail-closed state. No generative substitute is allowed.</p></div><a href="app-processos.html">Open processes</a></li>
+        </ol>
       </section>
 
       <section class="reviewer-section" id="live-flow">
@@ -152,6 +166,8 @@ node scripts/audit-build-week-readiness.mjs --strict</code></pre>
               <p><strong>Activated:</strong> July 13, 2026 at 6:37:59 PM BRT. <strong>First active turn:</strong> 6:40:30 PM. <strong>First code edit:</strong> 6:53:47 PM.</p>
               <p><strong>Evidence seal:</strong> <code class="evidence-hash">d2cfd341b2ad8c4e95e47977f4a90bd3b023cde50977efd345d08d51904a54b9</code></p>
               <p>The full task identifier is retained privately. This verifies <code>gpt-5.6-sol</code> for Codex development only; it does not attest the Charlie Echo production runtime.</p>
+              <p><strong>OpenAI production toolchain:</strong> the founder confirms that the ecosystem's production work through July 21, 2026 was constructed exclusively with ChatGPT, Codex, and the OpenAI API, under human authorship and review. This does not claim sponsorship, formal partnership, or OpenAI authorship of Cloudflare, GitHub, Google, CNJ sources, libraries, standards, or other third-party infrastructure.</p>
+              <p>The public <a href="https://carta.jus9tecnologia.com.br/" target="_blank" rel="noopener">Jus 9 Carta</a> records the broader contribution of OpenAI tools to writing, memory, documentation, repositories, governance, and technical construction.</p>
             </div>
           </div>
         </div>
@@ -160,17 +176,17 @@ node scripts/audit-build-week-readiness.mjs --strict</code></pre>
       <section class="reviewer-section" id="final-package" data-build-week-final-package>
         <div class="section-heading">
           <p class="reviewer-eyebrow">Pacote 8 closeout</p>
-          <h2>Final package gate</h2>
-          <p>The technical closeout review is prepared, but the project must not be submitted as final until the human gates below are resolved.</p>
+          <h2>Final delivery status</h2>
+          <p>The private judge package has been authorized for freeze and is delivered outside the public repository. Eligibility, asset rights, video recording, and final submission remain human decisions.</p>
         </div>
         <div class="status-table" role="table" aria-label="Final package gate status">
           <div class="status-row status-head" role="row"><span role="columnheader">Gate</span><span role="columnheader">State</span><span role="columnheader">Required human action</span></div>
           <div class="status-row" role="row"><strong role="cell">General review</strong><span class="state verified" role="cell">REVISAO_GERAL_EXECUTADA</span><span role="cell">Keep the review record and audit output attached to the final package.</span></div>
           <div class="status-row" role="row"><strong role="cell">Eligibility</strong><span class="state blocked" role="cell">Clarification pending</span><span role="cell">Obtain written confirmation before submitting as a Brazil resident.</span></div>
-          <div class="status-row" role="row"><strong role="cell">Judge sandbox</strong><span class="state pending" role="cell">Private setup pending</span><span role="cell">Provide a least-privilege session with synthetic data only.</span></div>
+          <div class="status-row" role="row"><strong role="cell">Judge access</strong><span class="state verified" role="cell">Ready privately</span><span role="cell">A founder-confirmed Google login is included only in the private judge package; use synthetic data only.</span></div>
           <div class="status-row" role="row"><strong role="cell">Asset rights</strong><span class="state pending" role="cell">Owner signoff pending</span><span role="cell">Complete the declaration before using screenshots, marks, cards, or narration.</span></div>
-          <div class="status-row" role="row"><strong role="cell">Demo video</strong><span class="state pending" role="cell">VIDEO_PENDENTE_GRAVACAO_HUMANA</span><span role="cell">Record under three minutes without real data, secrets, accounts, CPFs, process records, or private Drive files.</span></div>
-          <div class="status-row" role="row"><strong role="cell">Final ZIP</strong><span class="state pending" role="cell">ZIP_PENDENTE_CONGELAMENTO_HUMANO</span><span role="cell">Freeze only after scan, open-check, exclusions, and SHA-256 hash.</span></div>
+          <div class="status-row" role="row"><strong role="cell">Demo video</strong><span class="state pending" role="cell">Script ready</span><span role="cell">Human recording remains pending. Keep it under three minutes and do not expose credentials, CPFs, real process records, or private Drive files.</span></div>
+          <div class="status-row" role="row"><strong role="cell">Private judge ZIP</strong><span class="state verified" role="cell">Prepared and hashed</span><span role="cell">Credentialed delivery is separate from the repository and excludes AI handoff notes and the video script.</span></div>
         </div>
       </section>
 
@@ -185,6 +201,7 @@ node scripts/audit-build-week-readiness.mjs --strict</code></pre>
           <div class="status-row" role="row"><strong role="cell">Codex collaboration</strong><span class="state verified" role="cell">Verified</span><span role="cell">Timestamped development record and Git evidence</span></div>
           <div class="status-row" role="row"><strong role="cell">Codex development model</strong><span class="state verified" role="cell">Verified</span><span role="cell"><code>gpt-5.6-sol</code> active from July 13, 2026 at 6:37:59 PM BRT; sanitized evidence only</span></div>
           <div class="status-row" role="row"><strong role="cell">OpenAI API integration</strong><span class="state verified" role="cell">Verified in source</span><span role="cell">Runtime model is selected by deployment configuration</span></div>
+          <div class="status-row" role="row"><strong role="cell">OpenAI production toolchain</strong><span class="state verified" role="cell">Founder confirmed</span><span role="cell">ChatGPT, Codex, and the OpenAI API were the exclusive AI production tools through July 21, 2026; third-party infrastructure remains separately attributed.</span></div>
           <div class="status-row" role="row"><strong role="cell">Charlie Echo GPT-5.6 runtime</strong><span class="state pending" role="cell">Unverified</span><span role="cell">Development evidence is not a production-runtime attestation</span></div>
           <div class="status-row" role="row"><strong role="cell">Brazil entrant eligibility</strong><span class="state blocked" role="cell">Clarification pending</span><span role="cell">Current rules appear to exclude Brazilian residents</span></div>
           <div class="status-row" role="row"><strong role="cell">DataJud</strong><span class="state limited" role="cell">Read-only</span><span role="cell">Public metadata by CNJ number; no case files or transactional acts</span></div>

@@ -102,23 +102,23 @@ for (const phrase of [
 for (const phrase of [
   "id=\"final-package\"",
   "data-build-week-final-package",
-  "Final package gate",
-  "Final human gates",
-  "Pacote8_REVISAO_EXECUTADA_GATES_HUMANOS",
+  "Final delivery status",
+  "Private judge ZIP",
+  "Prepared and hashed",
 ]) {
   includes(buildWeek, phrase, "Build Week Pacote 8");
 }
 
 includes(saibaMais, "build-week-2026.html#final-package", "Saiba Mais fechamento Build Week");
 
-assert(status.metadata?.versao === "1.5.1", "status Build Week precisa estar na versao 1.5.1");
-assert(status.mvpConsolidation?.finalPackageState === "PACOTE8_REVISAO_EXECUTADA_GATES_HUMANOS", "status Build Week sem estado final do Pacote 8");
+assert(status.metadata?.versao === "1.6.0", "status Build Week precisa estar na versao 1.6.0");
+assert(status.mvpConsolidation?.finalPackageState === "PACOTE_PRIVADO_JUIZES_PREPARADO_VIDEO_HUMANO_PENDENTE", "status Build Week sem estado da entrega privada final");
 assert(status.submissionArtifacts?.package8Closeout?.state === "review_executed_human_gates_pending", "status Build Week sem closeout do Pacote 8");
-assert(status.submissionArtifacts?.finalZip?.state === "deferred_until_human_freeze", "ZIP final nao deve ser declarado pronto");
-assert(status.submissionArtifacts?.demoVideo?.state === "deferred_until_human_recording", "video final nao deve ser declarado pronto");
+assert(status.submissionArtifacts?.finalZip?.state === "ready_hashed_scanned_private", "ZIP privado final deve estar pronto sem publicacao de credenciais");
+assert(status.submissionArtifacts?.demoVideo?.state === "script_ready_human_recording_pending", "roteiro deve estar pronto sem declarar gravacao concluida");
 
 for (const phrase of [
-  "Versionamento Jus 9 - v5.17",
+  "Versionamento Jus 9 - v5.18",
   "Versao 5.15 - Pacote 8 fechamento tecnico",
   "RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.21.8.md",
   "jus9-pwa-v50-2026-07-20-pacote8-fechamento",
@@ -126,8 +126,8 @@ for (const phrase of [
   includes(versionamento, phrase, "versionamento Pacote 8");
 }
 
-includes(serviceWorker, "jus9-pwa-v52-2026-07-20-build-reproduzivel", "service worker corrente apos Pacote 8");
-includes(wranglerConfig, "governanca-1.21.12-build-reproduzivel-1.0", "wrangler corrente apos Pacote 8");
+includes(serviceWorker, "jus9-pwa-v53-2026-07-21-build-week-final", "service worker corrente apos Pacote 8");
+includes(wranglerConfig, "governanca-1.21.13-build-week-final-1.0", "wrangler corrente apos Pacote 8");
 includes(release, "Release v1.21.8 - Pacote 8 fechamento tecnico", "release Pacote 8");
 
-console.log("PACOTE8_FECHAMENTO_OK revisao=executada video=pendente zip=pendente gates=humanos");
+console.log("PACOTE8_FECHAMENTO_OK revisao=executada video=roteiro-pronto zip=privado-pronto gates=humanos");

@@ -1,6 +1,6 @@
 {
   "name": "jus9-tecnologia-juridica",
-  "version": "1.21.12",
+  "version": "1.21.13",
   "private": true,
   "scripts": {
     "build": "node scripts/build-portal-dist.mjs",

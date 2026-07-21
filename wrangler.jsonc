@@ -17,7 +17,7 @@
     "AUTH_PUBLIC_GOOGLE_ENABLED": "true",
     "AUTH_PUBLIC_GOOGLE_PROFILE": "cidadao",
     "GOOGLE_CALENDAR_OAUTH_ENABLED": "false",
-    "JUS9_RELEASE": "governanca-1.21.12-build-reproduzivel-1.0"
+    "JUS9_RELEASE": "governanca-1.21.13-build-week-final-1.0"
   },
   "observability": {
     "enabled": true,

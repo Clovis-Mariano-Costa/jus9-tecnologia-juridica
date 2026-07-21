@@ -22,7 +22,7 @@ const portfolio = readJson("governanca/PORTFOLIO_CANONICO_MVPS_v2.0.0.json");
 const matrix = readJson("governanca/MATRIZ_CONTRATOS_E_PADROES_MVPS_v1.0.0.json");
 const repositories = readJson("governanca/MAPA_REPOSITORIOS_E_FONTES_MVPS_v1.0.0.json");
 
-for (const marker of ["Versionamento Jus 9 - v5.17","Versao 5.17 - Build reproduzivel do portal","Versao 5.16 - Mao na Massa dos MVPs v4","RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.21.11.md","jus9-pwa-v51-2026-07-20-mvps-v4"]) {
+for (const marker of ["Versionamento Jus 9 - v5.18","Versao 5.18 - Entrega final aos juizes","Versao 5.17 - Build reproduzivel do portal","Versao 5.16 - Mao na Massa dos MVPs v4","RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.21.11.md","jus9-pwa-v51-2026-07-20-mvps-v4"]) {
   assert.ok(versioning.includes(marker), `versionamento sem marcador: ${marker}`);
 }
 for (const marker of ["CONCLUIDO_COM_RESSALVA_CORRETIVA","AUTORIZADO_APENAS_PARA_REVISAO_E_HOMOLOGACAO_CONTROLADA"]) {
@@ -31,20 +31,20 @@ for (const marker of ["CONCLUIDO_COM_RESSALVA_CORRETIVA","AUTORIZADO_APENAS_PARA
 assert.ok(stateMap.includes("Charlie Core 1.2.0"));
 assert.ok(buildWeek.includes("Controlled review only"));
 assert.ok(more.includes("Registro publico da v5.17"));
-assert.ok(serviceWorker.includes("jus9-pwa-v52-2026-07-20-build-reproduzivel"));
-assert.ok(wrangler.includes("governanca-1.21.12-build-reproduzivel-1.0"));
+assert.ok(serviceWorker.includes("jus9-pwa-v53-2026-07-21-build-week-final"));
+assert.ok(wrangler.includes("governanca-1.21.13-build-week-final-1.0"));
 assert.ok(governanceChangelog.includes("## 1.16.11 - 2026-07-20"));
 assert.ok(docsChangelog.includes("## 1.17.8 - 2026-07-20"));
 assert.ok(releasesChangelog.includes("## 1.21.11 - 2026-07-20"));
 assert.ok(release.includes("runtime_alterado: true"));
 assert.ok(finalReview.includes("APROVADO_TECNICAMENTE_PARA_REVISAO_HUMANA_E_MERGE_SEM_VIDEO_ZIP_FINAL"));
-assert.equal(status.metadata.versao, "1.5.1");
+assert.equal(status.metadata.versao, "1.6.0");
 assert.equal(status.mvpConsolidation.package2State, "CONCLUIDO_COM_RESSALVA_CORRETIVA");
 assert.equal(status.mvpConsolidation.package6State, "AUTORIZADO_APENAS_PARA_REVISAO_E_HOMOLOGACAO_CONTROLADA");
-assert.equal(status.submissionArtifacts.finalZip.state, "deferred_until_human_freeze");
-assert.equal(status.submissionArtifacts.demoVideo.state, "deferred_until_human_recording");
+assert.equal(status.submissionArtifacts.finalZip.state, "ready_hashed_scanned_private");
+assert.equal(status.submissionArtifacts.demoVideo.state, "script_ready_human_recording_pending");
 assert.equal(portfolio.mvps.length, 14);
 assert.equal(matrix.coreContract.version, "1.2.0");
 assert.equal(repositories.repositoryGroups.flatMap((group) => group.repositories).length, 31);
 
-console.log("MAO_NA_MASSA_MVPS_V4_RELEASE_OK portal=5.17 release=1.21.12 mvps=14 repos=31 video_zip=deferido");
+console.log("MAO_NA_MASSA_MVPS_V4_RELEASE_OK portal=5.18 release=1.21.13 mvps=14 repos=31 zip=privado-pronto video=roteiro-pronto");

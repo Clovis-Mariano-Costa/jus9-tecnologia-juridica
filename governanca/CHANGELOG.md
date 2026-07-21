@@ -11,6 +11,15 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.16.13 - 2026-07-21
+
+- Integradas as linhas MVP v4 e G6C/G6C2 em uma unica branch de entrega Build Week.
+- Builder canonico permanece `build-portal-dist.mjs`; o builder concorrente da branch G6C foi retirado da integracao.
+- Auditores G6C e G6C2 entram no CI completo ao lado dos 14 MVPs e dos contratos existentes.
+- Build Week registra acesso privado dos juizes, ZIP privado preparado, roteiro separado e gravacao humana ainda pendente.
+- Confirmacao do fundador sobre ferramentas OpenAI recebe limites explicitos de autoria humana e atribuicao de terceiros.
+- CNJ segue sem resposta; silencio nao autoriza nova capacidade.
+
 ## 1.16.12 - 2026-07-20
 
 - Portal ganha builder Node multiplataforma que recria `dist` a partir de 170 arquivos publicos curados.

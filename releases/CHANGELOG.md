@@ -11,6 +11,15 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.21.13 - 2026-07-21
+
+- Release integra MVPs v4 e governanca G6C/G6C2 na entrega final Build Week.
+- Portal sobe para v5.18, manifesto Build Week para 1.6.0 e cache PWA para `jus9-pwa-v53-2026-07-21-build-week-final`.
+- Um unico builder reproduzivel preserva 170 fontes publicas e 175 assets, sem expor credenciais ou artefatos privados.
+- Pagina dos juizes recebe teste de tres minutos e declaracao delimitada sobre ChatGPT, Codex e API OpenAI.
+- Pacote privado fica preparado e hasheado fora do Git; roteiro detalhado do video permanece separado e a gravacao continua humana.
+- Elegibilidade, direitos de ativos, video, submissao e qualquer ampliacao CNJ permanecem bloqueados aos gates correspondentes.
+
 ## 1.21.12 - 2026-07-20
 
 - Release corrige o build remoto do portal sem rastrear a pasta `dist` no Git.

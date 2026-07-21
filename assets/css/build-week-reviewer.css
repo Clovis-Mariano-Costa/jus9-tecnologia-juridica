@@ -87,7 +87,7 @@ code{font-family:"Cascadia Code","SFMono-Regular",Consolas,monospace}
 .status-row:last-child{border-bottom:0}
 .status-row>span,.status-row>strong{padding:12px 14px;min-width:0}
 .status-head{min-height:42px;background:#e9edf1;color:#465365;font-size:.78rem;text-transform:uppercase}
-.state{display:inline-flex;margin:8px 14px;padding:6px 8px!important;border-radius:5px;font-size:.8rem;font-weight:800;width:max-content;max-width:calc(100% - 28px)}
+.state{display:inline-flex;margin:8px 14px;padding:6px 8px!important;border-radius:5px;font-size:.8rem;font-weight:800;width:max-content;max-width:calc(100% - 28px);overflow-wrap:anywhere;word-break:break-word}
 .state.verified{background:var(--green-soft);color:var(--green)}
 .state.pending,.state.limited{background:#fff3dc;color:var(--gold-dark)}
 .state.blocked{background:var(--red-soft);color:var(--red)}
