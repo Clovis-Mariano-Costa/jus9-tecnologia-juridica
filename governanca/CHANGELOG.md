@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.21.15 - 21/07/2026
+
+- Decisao G6C3 cria API publica de estado governado da Charlie, sem ampliar RBAC ou conectores.
+- Cronograma focado avanca para v2.0.0 e registra a janela final da Build Week.
+- CNJ continua sem resposta; conferencia permanece em 22/07/2026 as 10h e reiteracao nao e automatica.
+- DataJud permanece somente leitura e PDPJ permanece `READINESS_ONLY`.
+
 ## 1.16.14 - 2026-07-21
 
 - Publicado registro governado da sincronizacao dos 31 READMEs principais do ecossistema.

@@ -75,6 +75,7 @@ These are reproducible snapshot figures, not a live marketing counter. The readi
 - structured party-search fail-closed behavior, without generative results;
 - official per-user memory isolation;
 - governed Google Drive proxy and Drive Saver integration;
+- public, read-only Charlie governance-state API with default-deny evidence;
 - API-first Charlie Echo routing and anti-stuck response contracts;
 - clean DAJ interface and modular team directory across 14 MVP instruments;
 - removal of the legacy browser-local team registry;
@@ -176,6 +177,9 @@ Cloudflare configuration can be inspected with:
 node scripts/build-portal-dist.mjs
 npx wrangler deploy --dry-run
 ```
+
+The minimized runtime governance state is inspectable without credentials at
+[`/api/governance/charlie/capabilities`](https://jus9tecnologia.com.br/api/governance/charlie/capabilities). It reports boundaries and readiness only; it grants no permission and executes no external or judicial effect.
 
 The cross-platform Node builder recreates the curated `dist` directory from a clean checkout before Wrangler reads the assets. Cloudflare Workers Builds keeps **Build command** unset: its `npm clean-install` step executes the versioned `postinstall` hook in `package.json`, which runs `node scripts/build-portal-dist.mjs`. Local Wrangler deploys use the same builder through `wrangler.jsonc`.
 

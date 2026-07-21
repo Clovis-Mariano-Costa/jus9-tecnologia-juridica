@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - APIs
 
+## 1.21.15 - 21/07/2026
+
+- Criado contrato OpenAPI 3.1 da rota publica `GET /api/governance/charlie/capabilities`.
+- Estado de G6C2, DataJud, PDPJ, canal CNJ e efeitos bloqueados passa a ser verificavel sem credenciais.
+- A rota e somente leitura, minimizada, `no-store` e nao concede permissao ou capacidade transacional.
+
 ## 1.4.1 - 2026-07-21
 
 - Permissoes de memoria passam a `memory:read`, `memory:write` e `memory:delete`.

@@ -1,7 +1,7 @@
 {
   "metadata": {
     "id": "JUS9-BUILD-WEEK-STATUS-2026-001",
-    "versao": "1.6.0",
+    "versao": "1.7.0",
     "autor": "Codex / Charlie Fox",
     "revisor_responsavel": "Clovis Mariano da Costa",
     "data": "2026-07-21",
@@ -11,7 +11,7 @@
   },
   "schemaVersion": "1.0.0",
   "documentId": "JUS9-BUILD-WEEK-STATUS-2026-001",
-  "updatedAt": "2026-07-21T12:00:00-03:00",
+  "updatedAt": "2026-07-21T18:30:00-03:00",
   "owner": "Clovis Mariano da Costa / Aeon Primevo",
   "reviewer": "Codex / Charlie Fox",
   "classification": "PUBLICO-INSTITUCIONAL",
@@ -66,6 +66,13 @@
       "state": "verified_in_source",
       "evidence": "Charlie Echo API source calls OpenAI Responses and active-search endpoints"
     },
+    "charlieGovernanceApi": {
+      "state": "implemented_pending_publication_validation",
+      "url": "https://jus9tecnologia.com.br/api/governance/charlie/capabilities",
+      "schemaVersion": "1.0.0",
+      "evidence": "Public read-only minimized state for G6C2, DataJud, PDPJ, CNJ channel, and blocked effects",
+      "claimBoundary": "The endpoint reports policy and readiness; it grants no permission and executes no external or judicial effect"
+    },
     "openAiProductionToolchain": {
       "state": "founder_confirmed",
       "tools": [
@@ -105,6 +112,10 @@
     "externalPartySearch": {
       "state": "unavailable_fail_closed",
       "publicDemoPolicy": "Never replace an unavailable official party search with a generative answer"
+    },
+    "charlieGovernance": {
+      "state": "g6c3_read_only_api_pending_publication_validation",
+      "publicDemoPolicy": "Inspect the minimized API without credentials; do not interpret readiness as authorization"
     }
   },
   "reviewPath": [

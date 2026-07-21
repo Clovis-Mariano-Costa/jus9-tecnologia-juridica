@@ -117,7 +117,7 @@ for (const phrase of [
 }
 
 for (const phrase of [
-  "Versionamento Jus 9 - v5.18",
+  "Versionamento Jus 9 - v5.19",
   "PACOTE_ONDA5_DMP_DAP_DMG_PROVA_VALOR_2026-07-20_v1.0.0.md",
   "audit-onda5-dmp-dap-dmg-proof-package.mjs",
   "jus9-pwa-v50-2026-07-20-pacote8-fechamento",
@@ -126,8 +126,8 @@ for (const phrase of [
   includes(versionamento, phrase, "versionamento publico");
 }
 
-includes(serviceWorker, "jus9-pwa-v53-2026-07-21-build-week-final", "service worker");
-includes(wranglerConfig, "governanca-1.21.13-build-week-final-1.0", "wrangler release");
+includes(serviceWorker, "jus9-pwa-v54-2026-07-21-g6c3-governance-api", "service worker");
+includes(wranglerConfig, "governanca-1.21.15-g6c3-api-1.0", "wrangler release");
 includes(release, "Release v1.21.5 - Onda 5 DMP + DAP + DMG", "release Onda 5");
 
 console.log("ONDA5_DMP_DAP_DMG_PROOF_PACKAGE_OK roteiro=32min mvps=DMP,DAP,DMG status=PUBLICADO_CONTROLADO");

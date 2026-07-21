@@ -11,6 +11,8 @@ hash: nao-aplicavel-documento-base
 
 # Governanca Charlie Echo
 
+Estado operacional corrente: G6C3 publica um retrato minimizado e somente leitura em `/api/governance/charlie/capabilities`; o cronograma vigente e `CRONOGRAMA_CHARLIE_GOVERNANCA_CNJ_CONEXOES_v2.0.0.md`. A rota descreve limites, nao concede autoridade. CNJ segue sem resposta e PDPJ permanece `READINESS_ONLY`.
+
 Esta pasta e a raiz da governanca modular, versionada e auditavel da Charlie Echo.
 
 Objetivo: preservar a logica de negocio existente e criar trilhos para versionar regras, memoria, prompts, documentacao, APIs, modelos, logs, testes, releases, historico e itens obsoletos.

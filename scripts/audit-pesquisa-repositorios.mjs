@@ -32,7 +32,7 @@ assert(sitemap.includes('https://jus9tecnologia.com.br/pesquisa-repositorios.htm
 for (const asset of ['/pesquisa-repositorios.html', '/assets/js/pesquisa-repositorios.js', '/data-publica/repositorios-jus9.json']) {
   assert(worker.includes(asset), `service worker sem ${asset}`);
 }
-assert(versioning.includes('Versionamento Jus 9 - v5.18') && versioning.includes('Versao 5.12 - Pesquisa federada de repositorios GitHub'), 'versionamento publico sem v5.18 corrente e card v5.12 da pesquisa');
+assert(versioning.includes('Versionamento Jus 9 - v5.19') && versioning.includes('Versao 5.12 - Pesquisa federada de repositorios GitHub'), 'versionamento publico sem v5.19 corrente e card v5.12 da pesquisa');
 for (const asset of ['pesquisa-repositorios.html', 'pesquisa-repositorios.js', 'repositorios-jus9.json', "'_redirects'"]) {
   assert(sync.includes(asset), `sincronizacao dist sem ${asset}`);
 }

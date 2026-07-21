@@ -1,0 +1,74 @@
+---
+metadata:
+  id: API-CHARLIE-G6C3-ESTADO-GOVERNADO-001
+  versao: 1.0.0
+  autor: Codex / Charlie Juris
+  revisor_responsavel: Clovis Mariano da Costa
+  data: 2026-07-21
+  status: implementado-em-validacao
+  classificacao: PUBLICO-INSTITUCIONAL
+  hash: calcular-na-release-aprovada
+openapi: 3.1.0
+info:
+  title: Jus 9 - Estado Governado da Charlie Echo
+  version: 1.0.0
+  description: >-
+    Contrato publico, somente leitura e minimizado para inspecao das portas de
+    governanca da Charlie. Prontidao tecnica nao equivale a autorizacao juridica
+    ou institucional.
+servers:
+  - url: https://jus9tecnologia.com.br
+paths:
+  /api/governance/charlie/capabilities:
+    get:
+      operationId: readCharlieGovernanceCapabilities
+      summary: Retorna estado governado minimizado da Charlie
+      security: []
+      responses:
+        '200':
+          description: Estado corrente, sem segredos ou dados pessoais
+          headers:
+            X-Jus9-Request-Id:
+              schema: { type: string, format: uuid }
+            X-Jus9-Governance-Schema:
+              schema: { type: string, const: 1.0.0 }
+            Cache-Control:
+              schema: { type: string, const: 'no-store, max-age=0' }
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GovernanceSnapshot'
+        '405':
+          description: Escrita proibida; rota aceita somente GET
+components:
+  schemas:
+    GovernanceSnapshot:
+      type: object
+      required: [ok, schemaVersion, policyVersion, principles, governance, integrations, blockedEffects, evidence]
+      properties:
+        ok: { type: boolean, const: true }
+        schemaVersion: { type: string, const: 1.0.0 }
+        policyVersion: { type: string, const: G6C3-1.0.0 }
+        classification: { type: string, const: PUBLICO_INSTITUCIONAL_MINIMIZADO }
+        principles:
+          type: object
+          description: Default deny, revisao humana e ausencia de autoridade autonoma.
+        governance:
+          type: object
+          description: Estado do RBAC granular e confirmacoes por efeito.
+        integrations:
+          type: object
+          description: DataJud somente leitura, PDPJ readiness-only e canal CNJ aguardando resposta.
+        blockedEffects:
+          type: array
+          items: { type: string }
+        evidence:
+          type: object
+          description: Caminhos publicos das fontes governadas versionadas.
+x-jus9-governance:
+  approvalLevel: A0
+  mutation: false
+  personalData: false
+  secrets: false
+  humanReviewForLegalUse: true
+  cnjSilenceAuthorizes: false
