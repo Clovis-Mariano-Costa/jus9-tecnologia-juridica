@@ -32,7 +32,7 @@ const requiredFiles = [
   "documentacao/hackathon/ZIP_FINAL_MANIFESTO_PENDENTE_2026.md",
   "governanca/PACOTE8_REVISAO_GERAL_VIDEO_ZIP_BUILD_WEEK_2026-07-20_v1.0.0.md",
   "governanca/CRONOGRAMA_SPRINT_FINAL_MVPS_BUILD_WEEK_2026-07-21_v1.0.0.md",
-  "releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.21.16.md"
+  "releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.21.17.md"
 ];
 
 const errors = [];
@@ -82,7 +82,7 @@ const codexSolEvidence = read("documentacao/hackathon/EVIDENCIA_CODEX_SOL_BUILD_
 const integrationMatrix = read("documentacao/hackathon/MATRIZ_INTEGRACOES_TERCEIROS_BUILD_WEEK_2026.md");
 
 check(status.schemaVersion === "1.0.0", "status manifest schema", "Unexpected Build Week status schema");
-check(status.metadata?.versao === "1.7.1", "status manifest final sprint version", "Build Week status must be version 1.7.1 for the final MVP sprint release");
+check(status.metadata?.versao === "1.7.2", "status manifest elapsed-evidence version", "Build Week status must be version 1.7.2 for the elapsed-evidence release");
 check(status.project?.track === "Work and Productivity", "competition track", "Track must be Work and Productivity");
 check(status.project?.reviewerUrl === "https://jus9tecnologia.com.br/build-week-2026.html", "canonical reviewer URL", "Reviewer URL does not match the public page");
 check(status.mvpConsolidation?.stateMapUrl === "https://jus9tecnologia.com.br/mvp-o-que-ja-funciona.html", "MVP state-map URL", "Build Week status does not point to the public MVP state map");
@@ -99,6 +99,8 @@ check(status.claims?.codexCollaboration?.sessionId === "attached_privately", "Co
 check(status.claims?.codexGpt56SolDevelopment?.state === "verified_local_session_metadata", "Codex Sol development evidence status", "Codex Sol development evidence must be explicitly verified");
 check(status.claims?.codexGpt56SolDevelopment?.modelId === "gpt-5.6-sol", "Codex Sol model identifier", "Unexpected Codex development model identifier");
 check(status.claims?.codexGpt56SolDevelopment?.evidenceFingerprintSha256 === "d2cfd341b2ad8c4e95e47977f4a90bd3b023cde50977efd345d08d51904a54b9", "Codex Sol evidence fingerprint", "Codex Sol evidence fingerprint does not match the approved record");
+check(status.claims?.codexGpt56SolDevelopment?.elapsedCounter?.startedAt === "2026-07-13T18:37:59.601-03:00", "Codex elapsed counter origin", "Codex elapsed counter must use the verified activation timestamp");
+check(/Calendar elapsed time only/.test(status.claims?.codexGpt56SolDevelopment?.elapsedCounter?.claimBoundary || ""), "Codex elapsed counter claim boundary", "Codex elapsed counter must distinguish calendar time from compute time and production runtime");
 check(status.claims?.openAiApiIntegration?.state === "verified_in_source", "OpenAI source integration status", "OpenAI integration must remain scoped to source verification");
 check(status.claims?.openAiProductionToolchain?.state === "founder_confirmed", "OpenAI production toolchain confirmation", "OpenAI production toolchain confirmation is missing");
 check(status.claims?.openAiProductionToolchain?.tools?.join("|") === "ChatGPT|Codex|OpenAI API", "OpenAI production toolchain scope", "OpenAI production toolchain must name only the founder-confirmed tools");
@@ -122,6 +124,8 @@ check(/id="judge-test"/.test(reviewerPage) && /Verify the core flow in three min
 check(/OpenAI production toolchain/.test(reviewerPage) && /ChatGPT, Codex, and the OpenAI API/.test(reviewerPage), "truthful OpenAI toolchain disclosure", "Reviewer page is missing the approved OpenAI production-toolchain disclosure");
 check(/Codex development model/.test(reviewerPage) && /gpt-5\.6-sol/.test(reviewerPage), "reviewer Codex Sol disclosure", "Reviewer page does not disclose the verified Codex development model");
 check(/id="codex-sol-evidence"/.test(reviewerPage) && reviewerPage.includes(status.claims.codexGpt56SolDevelopment.evidenceFingerprintSha256), "self-contained public Codex Sol evidence", "Reviewer page must expose the sanitized Codex Sol evidence without requiring repository access");
+check(/data-codex-elapsed/.test(reviewerPage) && /data-started-at="2026-07-13T18:37:59\.601-03:00"/.test(reviewerPage) && /Date\.now\(\) - startedAt/.test(reviewerPage), "live Codex elapsed-time calculation", "Reviewer page must calculate elapsed calendar time from the verified timestamp");
+check(/not accumulated compute time/.test(reviewerPage) && /production runtime remains unverified/.test(reviewerPage), "elapsed-time public boundary", "Reviewer page must not present calendar elapsed time as compute usage or Charlie Echo runtime evidence");
 check(/app-atendimento-inicial\.html/.test(reviewerPage) && /app-ia-profissional\.html/.test(reviewerPage) && /app-processos\.html/.test(reviewerPage), "reviewer workflow links", "Reviewer page does not link the complete DAJ flow");
 check(/saiba-mais\.html/.test(reviewerPage) && /mvp-o-que-ja-funciona\.html/.test(reviewerPage) && /app-painel-mvps\.html/.test(reviewerPage), "reviewer ecosystem links", "Reviewer page does not link Saiba mais, state map, and executive panel");
 check(/@media \(max-width:760px\)/.test(reviewerCss), "reviewer mobile layout", "Reviewer CSS has no mobile layout");

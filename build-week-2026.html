@@ -177,6 +177,11 @@ node scripts/audit-build-week-readiness.mjs --strict</code></pre>
             <div class="codex-proof" id="codex-sol-evidence">
               <h3>Codex Sol evidence</h3>
               <p><strong>Activated:</strong> July 13, 2026 at 6:37:59 PM BRT. <strong>First active turn:</strong> 6:40:30 PM. <strong>First code edit:</strong> 6:53:47 PM.</p>
+              <div class="elapsed-proof" data-codex-elapsed data-started-at="2026-07-13T18:37:59.601-03:00">
+                <span>Elapsed since verified Codex activation</span>
+                <time data-elapsed-output datetime="P8D">Approximately 8 days</time>
+                <small>Live calendar time since the verified <code>gpt-5.6-sol</code> activation, not accumulated compute time. Charlie Echo's production runtime remains unverified.</small>
+              </div>
               <p><strong>Evidence seal:</strong> <code class="evidence-hash">d2cfd341b2ad8c4e95e47977f4a90bd3b023cde50977efd345d08d51904a54b9</code></p>
               <p>The full task identifier is retained privately. This verifies <code>gpt-5.6-sol</code> for Codex development only; it does not attest the Charlie Echo production runtime.</p>
               <p><strong>OpenAI production toolchain:</strong> the founder confirms that the ecosystem's production work through July 21, 2026 was constructed exclusively with ChatGPT, Codex, and the OpenAI API, under human authorship and review. This does not claim sponsorship, formal partnership, or OpenAI authorship of Cloudflare, GitHub, Google, CNJ sources, libraries, standards, or other third-party infrastructure.</p>
@@ -258,10 +263,30 @@ node scripts/audit-build-week-readiness.mjs --strict</code></pre>
       </section>
 
       <footer class="reviewer-footer">
-        <span>Release 5.19.1. Use synthetic data only. Human review remains required for legal work.</span>
+        <span>Release 5.19.2. Use synthetic data only. Human review remains required for legal work.</span>
         <a href="#overview">Back to top</a>
       </footer>
     </main>
   </div>
+  <script>
+    (() => {
+      const proof = document.querySelector("[data-codex-elapsed]");
+      const output = proof?.querySelector("[data-elapsed-output]");
+      const startedAt = Date.parse(proof?.dataset.startedAt || "");
+      if (!proof || !output || !Number.isFinite(startedAt)) return;
+
+      const updateElapsed = () => {
+        const elapsedMinutes = Math.max(0, Math.floor((Date.now() - startedAt) / 60000));
+        const days = Math.floor(elapsedMinutes / 1440);
+        const hours = Math.floor((elapsedMinutes % 1440) / 60);
+        const minutes = elapsedMinutes % 60;
+        output.textContent = `${days} days, ${hours} hours, ${minutes} minutes`;
+        output.dateTime = `P${days}DT${hours}H${minutes}M`;
+      };
+
+      updateElapsed();
+      window.setInterval(updateElapsed, 60000);
+    })();
+  </script>
 </body>
 </html>

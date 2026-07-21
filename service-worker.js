@@ -4,7 +4,7 @@
   Não armazena dados sensíveis. Não altera login, backend ou rotas protegidas.
 */
 
-const JUS9_CACHE = 'jus9-pwa-v55-2026-07-21-mvps-final-sprint';
+const JUS9_CACHE = 'jus9-pwa-v56-2026-07-21-codex-elapsed-evidence';
 const JUS9_ASSETS = [
   '/',
   '/index.html',

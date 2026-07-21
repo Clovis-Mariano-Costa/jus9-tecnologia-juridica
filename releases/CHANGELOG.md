@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.21.17 - 2026-07-21
+
+- Build Week recebe contador vivo de tempo de calendario desde a ativacao comprovada do Codex com `gpt-5.6-sol`.
+- A pagina diferencia expressamente tempo decorrido, processamento acumulado e runtime produtivo da Charlie Echo.
+- Portal sobe para 5.19.2, manifesto Build Week para 1.7.2 e cache PWA para v56.
+- Runtime operacional permanece em 1.21.15 e sem atestado GPT-5.6 para Charlie Echo em producao.
+
 ## 1.21.16 - 2026-07-21
 
 - Sprint final remove do Git 26 arquivos temporarios de auditoria, aproximadamente 29 MB, sem alterar o ZIP privado.

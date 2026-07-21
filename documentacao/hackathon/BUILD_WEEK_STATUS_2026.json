@@ -1,7 +1,7 @@
 {
   "metadata": {
     "id": "JUS9-BUILD-WEEK-STATUS-2026-001",
-    "versao": "1.7.1",
+    "versao": "1.7.2",
     "autor": "Codex / Charlie Fox",
     "revisor_responsavel": "Clovis Mariano da Costa",
     "data": "2026-07-21",
@@ -11,7 +11,7 @@
   },
   "schemaVersion": "1.0.0",
   "documentId": "JUS9-BUILD-WEEK-STATUS-2026-001",
-  "updatedAt": "2026-07-21T18:45:00-03:00",
+  "updatedAt": "2026-07-21T19:04:32-03:00",
   "owner": "Clovis Mariano da Costa / Aeon Primevo",
   "reviewer": "Codex / Charlie Fox",
   "classification": "PUBLICO-INSTITUCIONAL",
@@ -60,6 +60,12 @@
       "sessionIdSha256": "ce81b54fedefc9b4309cc4070b8899f5ffe2478d09b599fec51df73e7d24d315",
       "evidenceFingerprintSha256": "d2cfd341b2ad8c4e95e47977f4a90bd3b023cde50977efd345d08d51904a54b9",
       "publicEvidence": "documentacao/hackathon/EVIDENCIA_CODEX_SOL_BUILD_WEEK_2026_v1.0.0.md",
+      "elapsedCounter": {
+        "state": "public_live_calendar_elapsed",
+        "startedAt": "2026-07-13T18:37:59.601-03:00",
+        "calculation": "max(0, floor((current browser time - startedAt) / 60000)) rendered as days, hours, and minutes",
+        "claimBoundary": "Calendar elapsed time only; not accumulated compute time and not an attestation of the Charlie Echo production runtime"
+      },
       "claimBoundary": "Development-session evidence only; it does not attest the Charlie Echo production runtime model"
     },
     "openAiApiIntegration": {
