@@ -39,7 +39,7 @@ The final ZIP must not be frozen until the human closeout gates are resolved.
 - real CPFs
 - real process documents
 - private Drive files
-- tracked legacy ZIP extraction under `tmp`, unless the owner explicitly decides otherwise
+- any temporary ZIP extraction under `tmp` (the former tracked copy was removed on 2026-07-21)
 
 ## Human freeze record
 

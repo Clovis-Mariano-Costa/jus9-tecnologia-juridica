@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.21.16 - 2026-07-21
+
+- Sprint final remove do Git 26 arquivos temporarios de auditoria, aproximadamente 29 MB, sem alterar o ZIP privado.
+- Auditor Build Week passa a exigir zero arquivo rastreado sob `tmp`.
+- Portal recebe o registro 5.19.1, manifesto Build Week 1.7.1 e cache PWA v55, preservando a API G6C3 da release 1.21.15.
+- Runtime permanece em 1.21.15; gates humanos de elegibilidade, ativos, DataJud, video e submissao permanecem abertos.
+
 ## 1.21.14 - 2026-07-21
 
 - Release estritamente documental registra a sincronizacao dos READMEs dos 31 repositorios catalogados.

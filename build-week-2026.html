@@ -62,7 +62,7 @@ Software livre com autoria preservada.
 
       <section class="status-strip" aria-label="Submission status">
         <div><span class="status-dot live" aria-hidden="true"></span><strong>Product</strong><span>Public workflow live</span></div>
-        <div><span class="status-dot verified" aria-hidden="true"></span><strong>Build evidence</strong><span>Git + Codex Sol verified</span></div>
+        <div><span class="status-dot verified" aria-hidden="true"></span><strong>Build evidence</strong><span>Git, CI, and repository hygiene verified</span></div>
         <div><span class="status-dot pending" aria-hidden="true"></span><strong>Eligibility</strong><span>Official clarification pending</span></div>
       </section>
 
@@ -195,6 +195,7 @@ node scripts/audit-build-week-readiness.mjs --strict</code></pre>
         <div class="status-table" role="table" aria-label="Final package gate status">
           <div class="status-row status-head" role="row"><span role="columnheader">Gate</span><span role="columnheader">State</span><span role="columnheader">Required human action</span></div>
           <div class="status-row" role="row"><strong role="cell">General review</strong><span class="state verified" role="cell">REVISAO_GERAL_EXECUTADA</span><span role="cell">Keep the review record and audit output attached to the final package.</span></div>
+          <div class="status-row" role="row"><strong role="cell">Repository hygiene</strong><span class="state verified" role="cell">Clean</span><span role="cell">The 26-file legacy ZIP audit extraction was removed from Git. Temporary folders and archive formats remain denied by repository policy.</span></div>
           <div class="status-row" role="row"><strong role="cell">Eligibility</strong><span class="state blocked" role="cell">Clarification pending</span><span role="cell">Obtain written confirmation before submitting as a Brazil resident.</span></div>
           <div class="status-row" role="row"><strong role="cell">Judge access</strong><span class="state verified" role="cell">Ready privately</span><span role="cell">A founder-confirmed Google login is included only in the private judge package; use synthetic data only.</span></div>
           <div class="status-row" role="row"><strong role="cell">Asset rights</strong><span class="state pending" role="cell">Owner signoff pending</span><span role="cell">Complete the declaration before using screenshots, marks, cards, or narration.</span></div>
@@ -257,7 +258,7 @@ node scripts/audit-build-week-readiness.mjs --strict</code></pre>
       </section>
 
       <footer class="reviewer-footer">
-        <span>Use synthetic data only. Human review remains required for legal work.</span>
+        <span>Release 5.19.1. Use synthetic data only. Human review remains required for legal work.</span>
         <a href="#overview">Back to top</a>
       </footer>
     </main>

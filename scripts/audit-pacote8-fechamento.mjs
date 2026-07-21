@@ -64,7 +64,7 @@ for (const phrase of [
   "Judge sandbox ready",
   "Asset-rights declaration signed",
   "DataJud terms reviewed",
-  "Tracked tmp cleanup authorized",
+  "Tracked tmp cleanup: completed",
   "Final ZIP SHA-256",
 ]) {
   includes(humanGuide, phrase, "guia humano");
@@ -83,7 +83,7 @@ for (const phrase of [
   "ZIP_FINAL_PENDENTE_HASH",
   "Final ZIP path",
   "SHA-256",
-  "tracked legacy ZIP extraction under `tmp`",
+  "former tracked copy was removed on 2026-07-21",
 ]) {
   includes(zipManifest, phrase, "manifesto ZIP");
 }
@@ -111,7 +111,7 @@ for (const phrase of [
 
 includes(saibaMais, "build-week-2026.html#final-package", "Saiba Mais fechamento Build Week");
 
-assert(status.metadata?.versao === "1.7.0", "status Build Week precisa estar na versao 1.7.0");
+assert(status.metadata?.versao === "1.7.1", "status Build Week precisa estar na versao 1.7.1");
 assert(status.mvpConsolidation?.finalPackageState === "PACOTE_PRIVADO_JUIZES_PREPARADO_VIDEO_HUMANO_PENDENTE", "status Build Week sem estado da entrega privada final");
 assert(status.submissionArtifacts?.package8Closeout?.state === "review_executed_human_gates_pending", "status Build Week sem closeout do Pacote 8");
 assert(status.submissionArtifacts?.finalZip?.state === "ready_hashed_scanned_private", "ZIP privado final deve estar pronto sem publicacao de credenciais");
@@ -126,7 +126,7 @@ for (const phrase of [
   includes(versionamento, phrase, "versionamento Pacote 8");
 }
 
-includes(serviceWorker, "jus9-pwa-v54-2026-07-21-g6c3-governance-api", "service worker corrente apos Pacote 8");
+includes(serviceWorker, "jus9-pwa-v55-2026-07-21-mvps-final-sprint", "service worker corrente apos Pacote 8");
 includes(wranglerConfig, "governanca-1.21.15-g6c3-api-1.0", "wrangler corrente apos Pacote 8");
 includes(release, "Release v1.21.8 - Pacote 8 fechamento tecnico", "release Pacote 8");
 

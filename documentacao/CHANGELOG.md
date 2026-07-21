@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Documentacao
 
+## 1.17.11 - 2026-07-21
+
+- Versionamento publico recebe o registro 5.19.1 do sprint final dos MVPs, preservando a API G6C3 publicada em 5.19.
+- Manifesto Build Week sobe para 1.7.1 e registra a higiene do repositorio como verificada.
+- Pagina dos juizes informa a limpeza da extracao temporaria sem expor ou alterar o pacote privado.
+
 ## 1.17.10 - 2026-07-21
 
 - Sincronizados os READMEs principais dos 31 repositorios catalogados no ecossistema Jus 9.

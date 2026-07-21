@@ -95,7 +95,7 @@ for (const phrase of [
   includes(versionamento, phrase, "versionamento publico");
 }
 
-includes(serviceWorker, "jus9-pwa-v54-2026-07-21-g6c3-governance-api", "service worker atual");
+includes(serviceWorker, "jus9-pwa-v55-2026-07-21-mvps-final-sprint", "service worker atual");
 includes(wranglerConfig, "governanca-1.21.15-g6c3-api-1.0", "wrangler release atual");
 includes(release, "Release v1.18.1 - Onda 1 DED + DIC", "release Onda 1");
 

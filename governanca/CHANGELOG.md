@@ -11,6 +11,12 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.21.16 - 21/07/2026
+
+- Cronograma final de tres horas ordena auditoria, higiene, verificacao, versionamento e publicacao dos MVPs.
+- Higiene do repositorio passa de bloqueada para verificada, com zero arquivo rastreado sob `tmp`.
+- Remocao preserva a API G6C3, o ZIP privado, as evidencias historicas do Git e todos os gates humanos.
+
 ## 1.21.15 - 21/07/2026
 
 - Decisao G6C3 cria API publica de estado governado da Charlie, sem ampliar RBAC ou conectores.
