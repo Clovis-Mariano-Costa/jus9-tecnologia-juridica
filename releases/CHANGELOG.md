@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.21.10 - 2026-07-20
+
+- Release documental publica a matriz G6C de autoridade e ferramentas da Charlie.
+- Seis niveis de aprovacao, onze ferramentas e vinte e tres permissoes-alvo sao catalogados.
+- G6C2 exige aceite humano antes de qualquer alteracao de RBAC ou Worker.
+- PDPJ, contato externo e efeitos judiciais permanecem bloqueados.
+
 ## 1.21.9 - 2026-07-20
 
 - Release documental publica o registro canonico de capacidades Charlie v2.0.0.

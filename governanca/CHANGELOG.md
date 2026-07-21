@@ -11,6 +11,13 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Governanca
 
+## 1.16.10 - 2026-07-20
+
+- G6C define matriz de autoridade e ferramentas com default deny e aprovacao por efeito.
+- Onze grupos de ferramentas e vinte e tres permissoes-alvo passam a ter desenho governado.
+- Memoria, revisao DAJ e Drive sao decompostos por leitura, escrita, publicacao, revogacao e exclusao.
+- Implementacao G6C2 fica condicionada a aceite humano; RBAC e Worker permanecem inalterados.
+
 ## 1.16.9 - 2026-07-20
 
 - G6B cria registro canonico v2 com 20 capacidades da Charlie e regra de falha fechada por divergencia.
