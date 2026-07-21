@@ -4,7 +4,7 @@ versao: 1.21.16
 autor: Codex / Charlie Juris
 revisor_responsavel: Clovis Mariano da Costa
 data: 2026-07-21
-status: candidato-a-publicacao
+status: publicado
 classificacao: PUBLICO-INSTITUCIONAL
 runtime_alterado: false
 hash: calcular-na-release-aprovada
@@ -24,3 +24,11 @@ hash: calcular-na-release-aprovada
 ## Limites
 
 O ZIP privado e suas credenciais nao foram alterados. Elegibilidade, direitos de ativos, termos DataJud, video e submissao permanecem sob decisao humana.
+
+## Publicacao verificada
+
+- PR: `#11`;
+- merge: `039443bf08a618cb52766dfc027ccf86ba146c3f`;
+- Workers Build: `3b78e10f-193b-44bf-85f1-9ca3d91f4107`, aprovado;
+- smoke publico: Build Week `200`, versionamento `200` e API governada `200`;
+- marcadores confirmados no dominio: `Release 5.19.1` e `Repository hygiene`.
