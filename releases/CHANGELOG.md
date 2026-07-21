@@ -11,6 +11,14 @@ hash: nao-aplicavel-changelog
 
 # Changelog - Releases
 
+## 1.21.18 - 2026-07-21
+
+- Dependabot e correcoes automaticas de seguranca foram habilitados no repositorio principal.
+- Alertas npm de `sharp`, `morgan` e `body-parser` foram corrigidos; auditorias da raiz e do backend retornam zero vulnerabilidades.
+- Nove branches remotas concluidas ou obsoletas foram removidas e a exclusao automatica apos merge foi ativada.
+- Portal sobe para 5.19.3, manifesto Build Week para 1.7.3 e cache PWA para v57.
+- Runtime operacional e permissoes da Charlie Echo permanecem em 1.21.15 e sem ampliacao.
+
 ## 1.21.17 - 2026-07-21
 
 - Build Week recebe contador vivo de tempo de calendario desde a ativacao comprovada do Codex com `gpt-5.6-sol`.

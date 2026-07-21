@@ -27,12 +27,12 @@ assert.ok(wrangler.includes('"JUS9_RELEASE": "governanca-1.21.15-g6c3-api-1.0"')
 assert.equal(packageManifest.version, "1.21.15");
 assert.equal(packageManifest.scripts.build, "node scripts/build-portal-dist.mjs");
 assert.equal(packageManifest.scripts.postinstall, "node scripts/build-portal-dist.mjs");
-assert.equal(packageManifest.devDependencies.wrangler, "4.112.0");
+assert.equal(packageManifest.devDependencies.wrangler, "4.113.0");
 assert.equal(packageLock.packages[""].version, "1.21.15");
 assert.ok(readme.includes("Workers Builds") && readme.includes("postinstall") && readme.includes("Build command") && readme.includes("unset"), "README sem contrato remoto por postinstall");
 assert.ok(versioning.includes("Versionamento Jus 9 - v5.19") && versioning.includes("Versao 5.19 - API verificavel de governanca da Charlie") && versioning.includes("Versao 5.18 - Entrega final aos juizes"), "pagina publica sem v5.19 e historico v5.18");
-assert.ok(serviceWorker.includes("jus9-pwa-v56-2026-07-21-codex-elapsed-evidence"), "cache PWA sem v56");
-assert.equal(status.metadata.versao, "1.7.2");
+assert.ok(serviceWorker.includes("jus9-pwa-v57-2026-07-21-github-security"), "cache PWA sem v57");
+assert.equal(status.metadata.versao, "1.7.3");
 assert.equal(status.submissionArtifacts.reproducibleBuild.builder, "scripts/build-portal-dist.mjs");
 assert.equal(status.submissionArtifacts.reproducibleBuild.sourceFiles, 170);
 assert.equal(status.submissionArtifacts.reproducibleBuild.wranglerAssets, 175);
