@@ -76,6 +76,35 @@ assert(data.checks?.charlieCore?.configured === true && data.checks.charlieCore.
 assert(data.checks?.charlieCore?.contractVersion === "1.2.0", "health deveria expor versao dos contratos Charlie Core");
 console.log("AUTH_OK health=200");
 
+response = await request("/api/governance/charlie/capabilities");
+data = await response.json();
+assert(response.status === 200 && data.schemaVersion === "1.0.0", "API publica de governanca deveria declarar schema");
+assert(data.principles?.defaultDeny === true && data.principles?.externalSilenceAuthorizes === false, "API de governanca deveria falhar fechado");
+assert(data.governance?.rbac?.state === "G6C2_ACTIVE_OBSERVATION", "API de governanca deveria declarar observacao G6C2");
+assert(data.governance?.rbac?.granularPermissionGroups?.memory?.length === 3, "API de governanca deveria expor memoria granular");
+assert(data.integrations?.dataJud?.transactionalEffects === false, "DataJud deveria permanecer sem efeito transacional");
+assert(data.integrations?.pdpj?.state === "READINESS_ONLY" && data.integrations.pdpj.petitioning === false, "PDPJ deveria permanecer readiness-only");
+assert(data.integrations?.cnjInstitutionalChannel?.state === "AWAITING_RESPONSE" && data.integrations.cnjInstitutionalChannel.silenceAuthorizesConnection === false, "silencio do CNJ nao pode autorizar conexao");
+assert(data.blockedEffects?.includes("JUDICIAL_PETITION_WRITE"), "efeito judicial deveria constar como bloqueado");
+assert(Boolean(response.headers.get("x-jus9-request-id")), "API de governanca deveria emitir correlacao por requisicao");
+assert(response.headers.get("x-jus9-governance-schema") === "1.0.0", "API de governanca deveria emitir versao no cabecalho");
+assert(response.headers.get("cache-control")?.includes("no-store"), "API de governanca nao deve ser armazenada em cache");
+console.log("AUTH_OK charlie-governance-capabilities=200-default-deny");
+
+response = await request("/api/governance/charlie/capabilities", { method: "POST" });
+assert(response.status === 405 && response.headers.get("allow") === "GET", "API de governanca deve ser somente leitura");
+console.log("AUTH_OK charlie-governance-capabilities-write=405");
+
+response = await worker.fetch(
+  new Request("https://jus9.invalid/api/governance/charlie/capabilities", {
+    method: "OPTIONS",
+    headers: { origin: "https://jus9tecnologia.com.br" }
+  }),
+  env
+);
+assert(response.status === 204 && response.headers.get("access-control-allow-origin") === "https://jus9tecnologia.com.br", "CORS da governanca deveria liberar origem principal");
+console.log("AUTH_OK charlie-governance-capabilities-cors=204");
+
 response = await request("/api/auth/permissions");
 assert(response.status === 401, "permissoes anonimas devem retornar 401");
 console.log("AUTH_OK anonymous=401");

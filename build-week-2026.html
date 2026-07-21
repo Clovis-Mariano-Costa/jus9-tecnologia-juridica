@@ -31,6 +31,7 @@ Software livre com autoria preservada.
         <a href="#live-flow">Live flow</a>
         <a href="#judge-test">3-minute test</a>
         <a href="#evidence">Evidence</a>
+        <a href="#governance-api">Governance API</a>
         <a href="#final-package">Final package</a>
         <a href="#safety">Safety and limits</a>
         <a href="#architecture">Architecture</a>
@@ -63,6 +64,18 @@ Software livre com autoria preservada.
         <div><span class="status-dot live" aria-hidden="true"></span><strong>Product</strong><span>Public workflow live</span></div>
         <div><span class="status-dot verified" aria-hidden="true"></span><strong>Build evidence</strong><span>Git + Codex Sol verified</span></div>
         <div><span class="status-dot pending" aria-hidden="true"></span><strong>Eligibility</strong><span>Official clarification pending</span></div>
+      </section>
+
+      <section class="reviewer-section" id="governance-api">
+        <div class="section-heading">
+          <p class="reviewer-eyebrow">Live governance API</p>
+          <h2>Inspect what Charlie may do — and what remains blocked</h2>
+          <p>A public, read-only and minimized endpoint exposes the active G6C2 permission boundaries, confirmation gates, DataJud read-only status, PDPJ readiness-only status, blocked judicial effects, and the unanswered CNJ institutional channel. It grants no permission and contains no credentials or personal data.</p>
+        </div>
+        <div class="source-links">
+          <a href="https://jus9tecnologia.com.br/api/governance/charlie/capabilities" target="_blank" rel="noopener"><strong>Open live governance state</strong><span>Versioned JSON, no-store, default deny, request correlation</span></a>
+          <a href="https://github.com/Clovis-Mariano-Costa/jus9-tecnologia-juridica/blob/main/apis/CONTRATO_API_ESTADO_GOVERNADO_CHARLIE_v1.0.0.yaml" target="_blank" rel="noopener"><strong>Inspect OpenAPI contract</strong><span>Public A0 read model; all mutations forbidden</span></a>
+        </div>
       </section>
 
       <section class="reviewer-section mvp-scope-band" id="mvp-scope" data-build-week-mvp-scope>
@@ -205,6 +218,8 @@ node scripts/audit-build-week-readiness.mjs --strict</code></pre>
           <div class="status-row" role="row"><strong role="cell">Charlie Echo GPT-5.6 runtime</strong><span class="state pending" role="cell">Unverified</span><span role="cell">Development evidence is not a production-runtime attestation</span></div>
           <div class="status-row" role="row"><strong role="cell">Brazil entrant eligibility</strong><span class="state blocked" role="cell">Clarification pending</span><span role="cell">Current rules appear to exclude Brazilian residents</span></div>
           <div class="status-row" role="row"><strong role="cell">DataJud</strong><span class="state limited" role="cell">Read-only</span><span role="cell">Public metadata by CNJ number; no case files or transactional acts</span></div>
+          <div class="status-row" role="row"><strong role="cell">Charlie governance API</strong><span class="state verified" role="cell">Live, read-only</span><span role="cell">Default-deny capability state is inspectable without credentials; it executes no effect</span></div>
+          <div class="status-row" role="row"><strong role="cell">CNJ institutional channel</strong><span class="state pending" role="cell">Awaiting response</span><span role="cell">Follow-up check is scheduled for July 22 at 10:00 AM BRT; silence grants no authorization</span></div>
           <div class="status-row" role="row"><strong role="cell">External name or CPF search</strong><span class="state blocked" role="cell">Unavailable</span><span role="cell">The product fails closed while official guidance and credentials are pending</span></div>
         </div>
       </section>
@@ -236,6 +251,7 @@ node scripts/audit-build-week-readiness.mjs --strict</code></pre>
           <a href="https://github.com/Clovis-Mariano-Costa/charlieecho-jus9-tecnologia-juridica" target="_blank" rel="noopener"><strong>Charlie Echo API</strong><span>Governed AI routing and response contracts</span></a>
           <a href="https://github.com/Clovis-Mariano-Costa/backend-api-jus9-tecnologia-juridica" target="_blank" rel="noopener"><strong>Backend API</strong><span>Exposure and fail-closed policies</span></a>
           <a href="https://github.com/Clovis-Mariano-Costa/jus9-tecnologia-juridica/blob/main/documentacao/hackathon/EVIDENCIAS_BUILD_WEEK_2026.md" target="_blank" rel="noopener"><strong>Evidence ledger</strong><span>Timestamped commits and scope</span></a>
+          <a href="https://jus9tecnologia.com.br/api/governance/charlie/capabilities" target="_blank" rel="noopener"><strong>Live governance API</strong><span>Current permissions, gates, integrations, and blocked effects</span></a>
           <a href="#codex-sol-evidence"><strong>Codex Sol evidence</strong><span>Sanitized timestamps, scope, and SHA-256 seal on this page</span></a>
         </div>
       </section>

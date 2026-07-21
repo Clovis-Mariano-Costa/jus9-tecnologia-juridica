@@ -47,6 +47,10 @@ import {
   testPdpjToken
 } from "./functions/_shared/pdpj.js";
 import {
+  CHARLIE_GOVERNANCE_API_VERSION,
+  buildPublicCharlieGovernanceSnapshot
+} from "./functions/_shared/governance-capabilities.js";
+import {
   CHARLIE_CONTRACTS,
   buildCharlieResponseAuditEvent,
   buildCharlieResponseGovernance,
@@ -146,6 +150,10 @@ export default {
 
     if (originalUrl.pathname === "/api/health") {
       return handleHealth(request, env);
+    }
+
+    if (originalUrl.pathname === "/api/governance/charlie/capabilities") {
+      return handleCharlieGovernanceCapabilities(request, env);
     }
 
     if (originalUrl.pathname === "/api/attachments/extract") {
@@ -1407,6 +1415,25 @@ function handleHealth(request, env) {
   }, 200, corsHeaders);
 }
 
+function handleCharlieGovernanceCapabilities(request, env) {
+  const corsHeaders = getAuthCorsHeaders(request);
+  if (request.method !== "GET") {
+    return jsonResponse({ ok: false, error: "metodo_nao_permitido" }, 405, {
+      ...corsHeaders,
+      Allow: "GET",
+      "X-Jus9-Governance-Schema": CHARLIE_GOVERNANCE_API_VERSION
+    });
+  }
+
+  const requestId = crypto.randomUUID();
+  return jsonResponse(buildPublicCharlieGovernanceSnapshot(env), 200, {
+    ...corsHeaders,
+    "Cache-Control": "no-store, max-age=0",
+    "X-Jus9-Request-Id": requestId,
+    "X-Jus9-Governance-Schema": CHARLIE_GOVERNANCE_API_VERSION
+  });
+}
+
 async function handleDataJudSearch(request, env) {
   const corsHeaders = getAuthCorsHeaders(request);
   if (request.method !== "POST") {
@@ -1822,6 +1849,7 @@ function isAuthCorsPath(pathname) {
     pathname.startsWith("/api/judicial/pdpj/") ||
     pathname.startsWith("/api/judicial/parties/") ||
     pathname === "/api/health" ||
+    pathname === "/api/governance/charlie/capabilities" ||
     pathname === "/api/auth/me" ||
     pathname === "/api/auth/permissions" ||
     pathname === "/api/auth/context" ||

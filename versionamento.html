@@ -1,6 +1,6 @@
 <!--
   Jus 9 Tecnologia Juridica - software livre, autoria preservada.
-  Versionamento publico atualizado para a versao 5.18.
+  Versionamento publico atualizado para a versao 5.19.
   DNA de referencia: charlieecho-jus9-tecnologia-juridica
 -->
 <!doctype html>
@@ -8,8 +8,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Versionamento Jus 9 - v5.18</title>
-  <meta name="description" content="Versionamento publico da Jus 9 Tecnologia Juridica, com registro da entrega final privada aos juizes na versao 5.18.">
+  <title>Versionamento Jus 9 - v5.19</title>
+  <meta name="description" content="Versionamento publico da Jus 9 Tecnologia Juridica, com API verificavel de governanca da Charlie na versao 5.19.">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="assets/css/visual-jus9-fase-final.css">
@@ -38,8 +38,22 @@
   <div class="container">
     <div class="doc-shell">
       <div class="eyebrow">Versionamento publico</div>
-      <h1>Jus 9 Tecnologia Juridica - versao 5.18</h1>
-      <p class="lead">A versao 5.18 integra a consolidacao dos 14 MVPs com a governanca granular da Charlie, prepara o pacote privado dos juizes e separa corretamente o roteiro do video. Credenciais permanecem fora do repositorio e do portal publico.</p>
+      <h1>Jus 9 Tecnologia Juridica - versao 5.19</h1>
+      <p class="lead">A versao 5.19 torna a governanca da Charlie verificavel por API publica e somente leitura, preservando default deny, revisao humana e os bloqueios institucionais do CNJ/PDPJ.</p>
+
+      <section class="version-card">
+        <h2>Versao 5.19 - API verificavel de governanca da Charlie</h2>
+        <p><strong>Data:</strong> 21/07/2026</p>
+        <ul>
+          <li>Criada <a href="https://jus9tecnologia.com.br/api/governance/charlie/capabilities">API publica de estado governado</a>, somente leitura, minimizada e sem credenciais.</li>
+          <li>O endpoint registra RBAC granular G6C2, confirmacoes por efeito, DataJud somente leitura, PDPJ <code>READINESS_ONLY</code> e efeitos judiciais bloqueados.</li>
+          <li>Escrita retorna <code>405</code>; respostas usam <code>no-store</code> e identificador aleatorio de correlacao.</li>
+          <li>O canal institucional do CNJ permanece <code>AWAITING_RESPONSE</code>; silencio nao autoriza conexao, homologacao, busca por nome/CPF ou transacao.</li>
+          <li>Cronograma focado atualizado para v2.0.0, com conferencia do CNJ em 22/07/2026 as 10h e observacao G6C2 por 72 horas.</li>
+          <li>Contrato OpenAPI 3.1, decisao G6C3, testes, auditor e release de governanca 1.21.15 acompanham a entrega.</li>
+          <li>Nenhuma permissao, segredo, dado pessoal, ato processual ou integracao transacional foi ampliado.</li>
+        </ul>
+      </section>
 
       <section class="version-card">
         <h2>Atualizacao documental 5.18.1 - READMEs dos 31 repositorios</h2>

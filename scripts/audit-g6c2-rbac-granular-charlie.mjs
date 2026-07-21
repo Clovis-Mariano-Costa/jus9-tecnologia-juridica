@@ -34,8 +34,8 @@ assert(worker.includes('EXCLUIR MINHA MEMORIA') && pagesMemory.includes('EXCLUIR
 assert(frontend.includes('CONFIRMAR SALVAMENTO DRIVE'), 'frontend sem confirmacao de salvamento Drive');
 assert(decision.includes('implementacao do RBAC granular') && decision.includes('PDPJ'), 'decisao G6C2 incompleta');
 assert(cronograma.includes('22/07 as 10h') && cronograma.includes('silencio nao autoriza'), 'cronograma G6C2/CNJ incompleto');
-assert(release.includes('v1.21.13') && wrangler.includes('governanca-1.21.13-build-week-final-1.0'), 'release operacional integrada G6C2 inconsistente');
-assert(serviceWorker.includes('jus9-pwa-v53-2026-07-21-build-week-final'), 'cache integrado G6C2 desatualizado');
+assert(release.includes('v1.21.13') && wrangler.includes('governanca-1.21.15-g6c3-api-1.0'), 'baseline G6C2 ou release sucessora inconsistente');
+assert(serviceWorker.includes('jus9-pwa-v54-2026-07-21-g6c3-governance-api'), 'cache sucessor ao G6C2 desatualizado');
 assert(packageJson.scripts?.postinstall === 'node scripts/build-portal-dist.mjs', 'Cloudflare sem geracao automatica do dist no checkout limpo');
 assert(packageJson.devDependencies?.wrangler === '4.112.0', 'Wrangler nao esta fixado para build reproduzivel');
 assert(portalBuild.includes('files.length !== 170') && portalBuild.includes('.env|tmp|governanca|releases'), 'build integrado nao preserva manifesto curado e bloqueio de fonte/governanca');

@@ -199,6 +199,12 @@ const checks = [
     args: ["scripts/audit-g6c2-rbac-granular-charlie.mjs"]
   },
   {
+    label: "G6C3 API de estado governado Charlie",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["scripts/audit-g6c3-governance-api.mjs"]
+  },
+  {
     label: "Qualidade da interface Charlie Echo",
     cwd: portalRoot,
     command: process.execPath,
