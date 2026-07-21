@@ -3,7 +3,7 @@ import fs from "node:fs";
 
 const root = new URL("../", import.meta.url);
 const read = (path) => fs.readFileSync(new URL(path, root), "utf8");
-const review = read("governanca/PACOTE_V4_08_REVISAO_GERAL_VIDEO_ZIP_DEFERIDOS_2026-07-20_v1.1.0.md");
+const review = read("governanca/PACOTE_V4_08_REVISAO_GERAL_VIDEO_ZIP_DEFERIDOS_2026-07-20_v1.2.0.md");
 
 for (const field of ["id","versao","autor","revisor_responsavel","data","status","classificacao","hash"]) {
   assert.match(review, new RegExp(`(^|\\n)${field}:`), `revisao V4-08 sem metadado: ${field}`);
@@ -21,11 +21,12 @@ for (const marker of [
   "175 arquivos",
   "VIDEO_DEFERIDO / ZIP_DEFERIDO",
   "PORTAL_REPRODUCIBLE_BUILD_OK",
-  "APROVADO_TECNICAMENTE_PARA_COMMIT_E_CHECK_REMOTO_SEM_VIDEO_ZIP_FINAL"
+  "444604fa-3510-4096-ba23-7411e2e24b24",
+  "APROVADO_TECNICAMENTE_PARA_REVISAO_HUMANA_E_MERGE_SEM_VIDEO_ZIP_FINAL"
 ]) {
   assert.ok(review.includes(marker), `revisao V4-08 sem marcador: ${marker}`);
 }
 assert.ok(review.indexOf("| V4-08 |") > review.indexOf("| V4-07 |"), "V4-08 precisa ser o ultimo pacote");
 assert.equal((review.match(/^\d+\./gm) || []).length, 13, "revisao deve registrar 7 bloqueios e 6 passos finais");
 
-console.log("MVP_V4_FINAL_REVIEW_OK pacotes=8 ci=ok dry_run=ok remote=pending video=deferido zip=deferido blockers=7");
+console.log("MVP_V4_FINAL_REVIEW_OK pacotes=8 ci=ok dry_run=ok remote=pass video=deferido zip=deferido blockers=7");

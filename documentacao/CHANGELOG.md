@@ -17,6 +17,7 @@ hash: nao-aplicavel-changelog
 - README documenta o `postinstall` que executa `node scripts/build-portal-dist.mjs` durante o `npm clean-install` do Workers Builds, mantendo o Build command vazio.
 - Manifesto Build Week sobe para 1.5.0 com evidencia do builder, 170 fontes curadas e 175 assets processados.
 - Revisao final V4-08 v1.1.0 registra a reabertura corretiva e mantem Video/ZIP deferidos.
+- Manifesto Build Week 1.5.1 e V4-08 v1.2.0 registram o check remoto aprovado.
 
 ## 1.17.8 - 2026-07-20
 

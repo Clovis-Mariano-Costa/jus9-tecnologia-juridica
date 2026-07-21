@@ -111,7 +111,7 @@ for (const phrase of [
 
 includes(saibaMais, "build-week-2026.html#final-package", "Saiba Mais fechamento Build Week");
 
-assert(status.metadata?.versao === "1.5.0", "status Build Week precisa estar na versao 1.5.0");
+assert(status.metadata?.versao === "1.5.1", "status Build Week precisa estar na versao 1.5.1");
 assert(status.mvpConsolidation?.finalPackageState === "PACOTE8_REVISAO_EXECUTADA_GATES_HUMANOS", "status Build Week sem estado final do Pacote 8");
 assert(status.submissionArtifacts?.package8Closeout?.state === "review_executed_human_gates_pending", "status Build Week sem closeout do Pacote 8");
 assert(status.submissionArtifacts?.finalZip?.state === "deferred_until_human_freeze", "ZIP final nao deve ser declarado pronto");

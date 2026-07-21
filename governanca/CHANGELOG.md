@@ -18,6 +18,7 @@ hash: nao-aplicavel-changelog
 - Workers Builds executa o builder pelo `postinstall` durante `npm clean-install`, mantendo o Build command remoto vazio.
 - Artefato falha diante de alteracao inesperada do manifesto ou tentativa de incluir segredo, `tmp`, governanca, release, Markdown ou ZIP.
 - Revisao geral dos oito pacotes reexecutada e preservada como V4-08 v1.1.0, com check remoto ainda pendente.
+- V4-08 v1.2.0 fecha a revisao tecnica apos o Workers Builds verde, mantendo merge, Video e ZIP sob decisao humana.
 - Correcao nao amplia permissao, dado, integracao, Video ou ZIP final.
 
 ## 1.16.11 - 2026-07-20

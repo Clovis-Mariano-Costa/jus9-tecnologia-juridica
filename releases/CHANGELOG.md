@@ -18,6 +18,7 @@ hash: nao-aplicavel-changelog
 - `package.json` e lockfile fixam Wrangler 4.112.0 e acionam o builder no `postinstall` remoto.
 - Portal sobe para v5.17 e cache PWA para `jus9-pwa-v52-2026-07-20-build-reproduzivel`.
 - Revisao final dos oito pacotes reexecutada em V4-08 v1.1.0 antes do novo check remoto.
+- V4-08 v1.2.0 registra a build remota verde e libera apenas a revisao humana do PR #2.
 - Video, ZIP e os sete gates Build Week permanecem inalterados.
 
 ## 1.21.11 - 2026-07-20

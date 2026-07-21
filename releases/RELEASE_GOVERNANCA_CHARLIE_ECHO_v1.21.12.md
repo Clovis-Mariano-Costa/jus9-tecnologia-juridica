@@ -23,7 +23,7 @@ O check remoto do PR falhou porque Workers Builds executa um checkout limpo, `di
 - o manifesto bloqueia variacao nao versionada e caminhos de segredo, `tmp`, governanca, releases, Markdown ou ZIP;
 - `scripts/run-local-ci.mjs` executa o builder como primeira verificacao;
 - Wrangler executa o builder em deploy local e dry-run;
-- a revisao geral V4-08 foi reexecutada e versionada em `PACOTE_V4_08_REVISAO_GERAL_VIDEO_ZIP_DEFERIDOS_2026-07-20_v1.1.0.md`;
+- a revisao geral V4-08 foi fechada na v1.2.0, preservando v1.0.0 e v1.1.0 como historico;
 - `package.json` registra o mesmo builder em `build` e `postinstall`;
 - o Workers Builds mantem Build command vazio e executa o builder durante seu `npm clean-install`, conforme uma build verde do proprio Worker.
 
@@ -32,7 +32,7 @@ O check remoto do PR falhou porque Workers Builds executa um checkout limpo, `di
 - `PORTAL_DIST_BUILD_OK files=170 output=dist`;
 - Wrangler: 175 assets, 224,68 KiB, gzip 48,96 KiB;
 - CI local completo sem falhas;
-- check remoto Workers Builds aprovado depois do push do hook versionado.
+- check remoto Workers Builds aprovado na build `444604fa-3510-4096-ba23-7411e2e24b24`.
 
 ## Limites
 
