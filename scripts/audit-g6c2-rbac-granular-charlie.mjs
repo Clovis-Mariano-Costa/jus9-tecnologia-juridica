@@ -38,6 +38,6 @@ assert(release.includes('v1.21.13') && wrangler.includes('governanca-1.21.15-g6c
 assert(serviceWorker.includes('jus9-pwa-v57-2026-07-21-github-security'), 'cache sucessor ao G6C2 desatualizado');
 assert(packageJson.scripts?.postinstall === 'node scripts/build-portal-dist.mjs', 'Cloudflare sem geracao automatica do dist no checkout limpo');
 assert(packageJson.devDependencies?.wrangler === '4.113.0', 'Wrangler nao esta fixado para build reproduzivel');
-assert(portalBuild.includes('files.length !== 170') && portalBuild.includes('.env|tmp|governanca|releases'), 'build integrado nao preserva manifesto curado e bloqueio de fonte/governanca');
+assert(portalBuild.includes('files.length !== 174') && portalBuild.includes('.env|tmp|governanca|releases'), 'build integrado nao preserva manifesto curado atual e bloqueio de fonte/governanca');
 
 console.log('G6C2_RBAC_GRANULAR_OK memory=3 daj-review=3 drive=5 confirmations=closed portal-dist=generated');
