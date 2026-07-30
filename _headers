@@ -16,6 +16,11 @@
 /*.js
   Content-Type: application/javascript; charset=utf-8
 
+/documentos/*.txt
+  Content-Type: text/plain; charset=utf-8
+  Content-Disposition: attachment
+  X-Content-Type-Options: nosniff
+
 /*.html
   Content-Type: text/html; charset=utf-8
 

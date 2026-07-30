@@ -18,7 +18,7 @@ const status = readJson("documentacao/hackathon/BUILD_WEEK_STATUS_2026.json");
 const release = read("releases/RELEASE_GOVERNANCA_CHARLIE_ECHO_v1.21.15.md");
 const finalReview = read("governanca/PACOTE_V4_08_REVISAO_GERAL_VIDEO_ZIP_DEFERIDOS_2026-07-20_v1.2.0.md");
 
-assert.ok(builder.includes("files.length !== 170"), "builder sem total canonico de 170 fontes");
+assert.ok(builder.includes("files.length !== 174"), "builder sem total canonico atual de 174 fontes");
 for (const marker of ["rmSync(dist", ".env|tmp|governanca|releases", "\\.(md|zip)$", "PORTAL_DIST_BUILD_OK"]) {
   assert.ok(builder.includes(marker), `builder sem controle: ${marker}`);
 }
@@ -48,6 +48,6 @@ const countFiles = (directory) => fs.readdirSync(directory, { withFileTypes: tru
   .reduce((total, entry) => total + (entry.isDirectory()
     ? countFiles(path.join(directory, entry.name))
     : 1), 0);
-assert.equal(countFiles(path.join(root, "dist")), 170, "dist deve conter exatamente 170 arquivos derivados");
+assert.equal(countFiles(path.join(root, "dist")), 174, "dist deve conter exatamente 174 arquivos derivados");
 
-console.log("PORTAL_REPRODUCIBLE_BUILD_OK sources=170 wrangler_assets=175 portal=5.19 release=1.21.15");
+console.log("PORTAL_REPRODUCIBLE_BUILD_OK sources=174 submission_sources=170 submission_wrangler_assets=175 portal=5.19 release=1.21.15");

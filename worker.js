@@ -274,6 +274,19 @@ export default {
 
     const assetRequest = new Request(assetUrl.toString(), request);
     const response = await env.ASSETS.fetch(assetRequest);
+    if (response.status === 404 && request.method === "GET") {
+      const notFoundUrl = new URL("/404.html", originalUrl);
+      const notFoundResponse = await env.ASSETS.fetch(new Request(notFoundUrl.toString(), request));
+      const notFoundHeaders = new Headers(notFoundResponse.headers);
+      notFoundHeaders.set("content-type", "text/html; charset=utf-8");
+      notFoundHeaders.set("cache-control", "no-store, max-age=0");
+      notFoundHeaders.set("x-robots-tag", "noindex");
+      return new Response(notFoundResponse.body, {
+        status: 404,
+        statusText: "Not Found",
+        headers: notFoundHeaders
+      });
+    }
     const headers = new Headers(response.headers);
 
     if (assetUrl.pathname.endsWith(".css")) {

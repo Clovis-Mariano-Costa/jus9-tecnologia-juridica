@@ -29,6 +29,9 @@ const explicitFiles = [
   "assets/clovis-founder-context.png",
   "data-publica/mvp-perfis.json",
   "data-publica/repositorios-jus9.json",
+  "documentos/contrato-prestacao-servicos-demo.txt",
+  "documentos/minuta-contestacao-demo.txt",
+  "documentos/relatorio-atendimento-demo.txt",
 ];
 
 const topLevelHtml = readdirSync(root, { withFileTypes: true })
@@ -39,8 +42,8 @@ const documentsHtml = readdirSync(path.join(root, "documentos"), { withFileTypes
   .map((entry) => `documentos/${entry.name}`);
 const files = [...new Set([...explicitFiles, ...topLevelHtml, ...documentsHtml])].sort();
 
-if (files.length !== 170) {
-  throw new Error(`Manifesto publico inesperado: esperado=170 atual=${files.length}`);
+if (files.length !== 174) {
+  throw new Error(`Manifesto publico inesperado: esperado=174 atual=${files.length}`);
 }
 
 rmSync(dist, { recursive: true, force: true });
