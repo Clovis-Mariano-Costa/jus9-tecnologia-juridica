@@ -268,6 +268,10 @@ export default {
       assetUrl.pathname = "/portal-transparencia.html";
     }
 
+    if (assetUrl.pathname === "/central-tecnica" || assetUrl.pathname === "/central-tecnica/") {
+      assetUrl.pathname = "/central-tecnica.html";
+    }
+
     if (assetUrl.pathname === "/cadastro-governado" || assetUrl.pathname === "/cadastro-governado/") {
       assetUrl.pathname = "/cadastro-governado.html";
     }
