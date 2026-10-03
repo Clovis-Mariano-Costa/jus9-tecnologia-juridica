@@ -59,7 +59,7 @@
   document.querySelectorAll('[data-whatsapp]').forEach((el) => {
     el.addEventListener('click', () => {
       const msg = encodeURIComponent('Olá, Clovis. Vim pelo site da Jus 9 Tecnologia Jurídica e quero conhecer melhor o MVP.');
-      el.href = `https://wa.me/5548999082726?text=${msg}`;
+      el.href = `https://wa.me/5548991089206?text=${msg}`;
     });
   });
 })();
