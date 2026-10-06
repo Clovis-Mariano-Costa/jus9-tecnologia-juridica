@@ -4,7 +4,7 @@ import { issueComiasGrant, introspectComiasGrant } from "../functions/_shared/co
 
 const env = { AUTH_COOKIE_SECRET: "unit-test-secret-only" };
 const object = { id:"udf-v2-2", version:"2.2", hash:"sha256:" + "a".repeat(64) };
-const now = Date.parse("2026-10-06T00:00:00Z");
+const now = Date.now();
 
 test("admin_sistema can issue a short object-bound COM-IAS grant", async () => {
   const result = await issueComiasGrant({
