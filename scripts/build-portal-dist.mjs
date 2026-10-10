@@ -42,8 +42,8 @@ const documentsHtml = readdirSync(path.join(root, "documentos"), { withFileTypes
   .map((entry) => `documentos/${entry.name}`);
 const files = [...new Set([...explicitFiles, ...topLevelHtml, ...documentsHtml])].sort();
 
-if (files.length !== 174) {
-  throw new Error(`Manifesto publico inesperado: esperado=174 atual=${files.length}`);
+if (files.length !== 175) {
+  throw new Error(`Manifesto publico inesperado: esperado=175 atual=${files.length}`);
 }
 
 rmSync(dist, { recursive: true, force: true });
