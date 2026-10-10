@@ -380,6 +380,12 @@ assert(
   "skill.md da Universidade deveria ser aceito"
 );
 assert(normalizeAuthReturnTo("/app-chat-charlie-echo.html") === "/app-chat-charlie-echo.html", "chat dedicado da Charlie deveria ser aceito");
+assert(normalizeAuthReturnTo("/chats-para-ias") === "/chats-para-ias", "hub de Chats deveria ser aceito");
+assert(normalizeAuthReturnTo("/chats-para-ias.html") === "/chats-para-ias.html", "hub de Chats com extensao deveria ser aceito");
+assert(normalizeAuthReturnTo("/comunicacao-academica-legal-ias") === "/comunicacao-academica-legal-ias", "Agora deveria ser aceita");
+assert(normalizeAuthReturnTo("/comunicacao-academica-legal-ias.html") === "/comunicacao-academica-legal-ias.html", "Agora com extensao deveria ser aceita");
+assert(normalizeAuthReturnTo("/processo-legislativo-emergencia") === "/processo-legislativo-emergencia", "Central legislativa deveria ser aceita");
+assert(normalizeAuthReturnTo("/processo-legislativo-emergencia.html") === "/processo-legislativo-emergencia.html", "Central legislativa com extensao deveria ser aceita");
 assert(normalizeAuthReturnTo("//evil.example") === "", "protocolo relativo externo deveria ser bloqueado");
 assert(normalizeAuthReturnTo("https://equipe.evil.example/") === "", "dominio externo deveria ser bloqueado");
 assert(normalizeAuthReturnTo("https://naoautorizado.jus9tecnologia.com.br/") === "", "subdominio nao autorizado deveria ser bloqueado");

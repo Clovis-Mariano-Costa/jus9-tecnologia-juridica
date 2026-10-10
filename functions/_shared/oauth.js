@@ -86,7 +86,13 @@ export function normalizeAuthReturnTo(value) {
     "/app-gravacoes.html",
     "/app-retorno.html",
     "/equipe.html",
-    "/skill.md"
+    "/skill.md",
+    "/chats-para-ias",
+    "/chats-para-ias.html",
+    "/comunicacao-academica-legal-ias",
+    "/comunicacao-academica-legal-ias.html",
+    "/processo-legislativo-emergencia",
+    "/processo-legislativo-emergencia.html"
   ]);
   const allowedPattern = /^\/(?:app-(?:demo|ia|documentos|perfis|workspace)-[a-z0-9-]+|demo-\d{2}-[a-z0-9-]+)\.html$/;
   if (!allowedExactPaths.has(path) && !allowedPattern.test(path)) return "";
