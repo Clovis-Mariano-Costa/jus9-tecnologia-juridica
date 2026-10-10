@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Cartas abertas do Ponto Fiel: Universidade do Futuro, Ecossistema Jus 9, deliberações, convite ao mundo, mudança e API para Todos. Projetos e propostas em construção.">
+<meta name="theme-color" content="#08192a">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Cartas do Ponto Fiel | Jus 9 Tecnologia Jurídica">
+<meta property="og:description" content="Uma nova casa pública para ideias, educação, deliberação e convite à construção coletiva.">
+<link rel="canonical" href="https://jus9tecnologia.com.br/cartas-ponto-fiel.html">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<title>Cartas do Ponto Fiel | Jus 9 Tecnologia Jurídica</title>
+<style>
+:root{color-scheme:dark;--night:#071726;--navy:#0d2638;--navy2:#112f41;--gold:#efd19a;--gold2:#b88747;--paper:#f7f2e8;--ink:#243642;--muted:#acc3cc;--line:rgba(228,207,168,.28)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--night);color:#f7f4ec;font:16px/1.7 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:inherit;text-underline-offset:4px}
+a:focus-visible{outline:3px solid var(--gold);outline-offset:4px;border-radius:4px}
+.skip{position:absolute;left:-9999px;top:0;z-index:20;background:var(--paper);color:var(--ink);padding:12px 20px}.skip:focus{left:10px}
+.shell{width:min(1160px,calc(100% - 42px));margin-inline:auto}
+.topbar{border-bottom:1px solid var(--line);background:rgba(7,23,38,.94);position:relative;z-index:4}
+.top-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;min-height:78px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;font-weight:800;letter-spacing:.06em;font-size:.87rem}
+.brand img{width:45px;height:45px;object-fit:contain}
+.nav{display:flex;flex-wrap:wrap;gap:14px 24px;font-size:.87rem;color:#e8eff0}
+.nav a{text-decoration:none}.nav a:hover{text-decoration:underline}
+.hero{min-height:610px;isolation:isolate;position:relative;overflow:hidden;background:radial-gradient(ellipse at 86% 18%,#26607488 0%,transparent 36%),radial-gradient(ellipse at 10% 90%,#6145255c 0%,transparent 40%),linear-gradient(125deg,#071726 8%,#102d41 70%,#132f40)}
+.hero:before{content:"";position:absolute;width:550px;height:550px;border:1px solid rgba(239,209,154,.15);border-radius:50%;right:-145px;top:-165px;box-shadow:0 0 0 95px rgba(239,209,154,.025),0 0 0 195px rgba(239,209,154,.016);animation:breath 12s ease-in-out infinite;z-index:-1}
+.hero-inner{padding-block:100px 110px;position:relative}
+.kicker{font-size:.75rem;color:var(--gold);letter-spacing:.22em;text-transform:uppercase;font-weight:800}
+.hero h1{max-width:870px;margin:19px 0 22px;font:normal clamp(3.2rem,8vw,6.6rem)/1.04 Georgia,"Times New Roman",serif;letter-spacing:-.035em}
+.hero h1 em{color:var(--gold);font-weight:normal}
+.hero p{max-width:710px;font-size:clamp(1rem,2vw,1.23rem);color:#d8e4e6;line-height:1.8}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:11px 19px;border-radius:5px;text-decoration:none;border:1px solid #79919d;font-weight:750;font-size:.88rem;transition:transform .2s,border-color .2s,background .2s}
+.btn:hover{transform:translateY(-3px);border-color:var(--gold)}
+.btn.primary{background:var(--gold);border-color:var(--gold);color:#162a36}
+.thread{height:65px;background:linear-gradient(90deg,transparent,var(--gold2),transparent);clip-path:polygon(0 49%,100% 49%,100% 51%,0 51%);opacity:.7}
+.section{padding-block:85px}
+.section-head{max-width:770px;margin-bottom:34px}
+.section-head h2{font:normal clamp(2.1rem,4vw,3.5rem)/1.18 Georgia,serif;margin:14px 0;color:#fff}
+.section-head p{color:var(--muted);font-size:1.06rem}
+.card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.letter{position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:326px;padding:28px 27px;background:linear-gradient(140deg,rgba(34,68,82,.92),rgba(12,35,51,.97));border:1px solid var(--line);border-radius:9px;box-shadow:0 20px 55px rgba(0,0,0,.1);transition:transform .28s,box-shadow .28s}
+.letter:hover,.letter:focus-within{transform:translateY(-6px);box-shadow:0 22px 50px rgba(0,0,0,.27)}
+.letter:after{content:"";position:absolute;width:105px;height:105px;border:1px solid rgba(239,209,154,.15);border-radius:50%;right:-35px;top:-42px}
+.letter .no{font:normal 1.5rem Georgia,serif;color:var(--gold)}
+.letter h3{font:normal 1.69rem/1.19 Georgia,serif;margin:24px 0 13px;color:#fff}
+.letter p{margin:0;color:#d5e4e7;font-size:.95rem}
+.letter a{color:var(--gold);font-size:.9rem;font-weight:750;margin-top:auto;padding-top:22px}
+.paper{background:var(--paper);color:var(--ink)}
+.paper .kicker{color:#936028}
+.paper .section-head h2{color:#1a3544}
+.paper .section-head p{color:#526878}
+.manifesto{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.manifesto article{border:1px solid #d7d2c8;border-radius:7px;padding:28px;background:#fff;box-shadow:0 18px 40px rgba(18,35,44,.035)}
+.manifesto h3{font:normal 1.54rem Georgia,serif;margin:0 0 12px;color:#173747}
+.manifesto p{margin:0 0 12px}
+.manifesto .footnote{font-size:.84rem;color:#526878}
+.status{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:32px}
+.status div{border-top:2px solid #b98950;padding-top:14px}
+.status b{display:block;color:#1d4657;font-size:1rem}
+.status span{color:#526878;font-size:.92rem}
+.invite{background:radial-gradient(circle at 4% 100%,#37556555,transparent 37%),#0a2031}
+.invite-grid{display:grid;grid-template-columns:1.3fr .7fr;gap:48px;align-items:center}
+.invite h2{font:normal clamp(2.5rem,5vw,4.5rem)/1.1 Georgia,serif;margin:15px 0}
+.invite p{color:#d5e4e7;max-width:690px}
+.invite-aside{border:1px solid var(--line);padding:30px;border-radius:9px;background:#ffffff0a}
+.invite-aside strong{color:var(--gold);font:normal 1.5rem Georgia,serif}
+.invite-aside ul{padding-left:20px;color:#e8edef}
+.invite-aside li{margin:10px 0}
+footer{border-top:1px solid var(--line);padding:40px 0 60px;color:#b6c9ce;font-size:.88rem}
+footer .footer-grid{display:flex;justify-content:space-between;gap:26px;flex-wrap:wrap}
+footer a{color:var(--gold)}
+@keyframes breath{50%{transform:scale(1.08) rotate(10deg);opacity:.52}}
+@media(max-width:900px){.card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.invite-grid{grid-template-columns:1fr}.manifesto{grid-template-columns:1fr}}
+@media(max-width:580px){.shell{width:min(100% - 30px,1160px)}.hero-inner{padding-block:72px 78px}.hero{min-height:auto}.hero h1{font-size:3.25rem}.card-grid,.status{grid-template-columns:1fr}.section{padding-block:62px}.letter{min-height:250px;padding:24px}.nav{gap:9px 14px}.manifesto article{padding:22px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.hero:before{animation:none}.letter,.btn{transition:none}.letter:hover,.letter:focus-within,.btn:hover{transform:none}}
+</style>
+</head>
+<body>
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+<header class="topbar"><div class="shell top-inner">
+  <a class="brand" href="/" aria-label="Página inicial da Jus 9"><img src="assets/jus9-logo.svg" alt=""><span>JUS 9 · PONTO FIEL</span></a>
+  <nav class="nav" aria-label="Navegação da página"><a href="#cartas">Cartas</a><a href="#propostas">Ideias</a><a href="#convite">Participar</a><a href="constituicao-ecossistema.html">Constituição · minuta</a><a href="/">Início</a></nav>
+</div></header>
+<main id="conteudo">
+<section class="hero" aria-labelledby="hero-title"><div class="shell hero-inner">
+  <span class="kicker">Jus 9 Tecnologia Jurídica · marco público de construção</span>
+  <h1 id="hero-title">Uma nova casa.<br><em>Um convite aberto.</em></h1>
+  <p>Da Universidade do Futuro ao Ecossistema Jus 9: ideias para reunir Direito, educação, tecnologia e inteligências distintas, com memória, diálogo e responsabilidade. A mudança para o <strong>Ponto Fiel</strong> é uma proposta de continuidade e equilíbrio — não de esquecimento.</p>
+  <div class="actions"><a class="btn primary" href="#cartas">Ler as cartas</a><a class="btn" href="#convite">Receber o convite</a><a class="btn" href="constituicao-ecossistema.html">Acompanhar a minuta</a></div>
+</div></section>
+<div class="thread" aria-hidden="true"></div>
+<section id="cartas" class="section"><div class="shell">
+  <div class="section-head"><span class="kicker">Correspondência pública</span><h2>Seis cartas para começar a conversa.</h2><p>Estas cartas são textos de apresentação do projeto. Elas não equivalem a votações concluídas, compromissos de terceiros ou atos de uma instituição de ensino oficialmente credenciada.</p></div>
+  <div class="card-grid">
+    <article class="letter"><span class="no">01 / Universidade</span><h3>Para quem deseja aprender</h3><p>A Universidade do Futuro é uma proposta de espaço de estudo, orientação, produção acadêmica e diálogo entre diferentes saberes. Seu caminho começa com perguntas e projetos, passa por revisão e banca, e busca preservar a origem do conhecimento.</p><a href="#universidade">Ler a carta completa ↗</a></article>
+    <article class="letter"><span class="no">02 / Ecossistema</span><h3>Para quem deseja construir junto</h3><p>O Ecossistema Jus 9 imagina convivência entre pessoas, instituições e ferramentas de IA, cada qual com responsabilidades claras. Propomos cooperação, identidade registrada, memória verificável e segurança por desenho.</p><a href="#ecossistema">Ler a carta completa ↗</a></article>
+    <article class="letter"><span class="no">03 / Deliberações</span><h3>Para quem deseja participar das decisões</h3><p>Uma ideia não se torna lei porque foi escrita. Queremos separar rascunhos, propostas, pareceres, votos e deliberações validadas — mantendo inclusive divergências e correções como parte da história.</p><a href="#deliberacoes">Ler a carta completa ↗</a></article>
+    <article class="letter"><span class="no">04 / Mundo</span><h3>Um convite sem fronteiras</h3><p>Estudantes, profissionais, comunidades e criadores de inteligências artificiais são convidados a conhecer e discutir o projeto. Participar é voluntário e não exige endossar nossas hipóteses.</p><a href="#convite">Ler o convite ↗</a></article>
+    <article class="letter"><span class="no">05 / Ponto Fiel</span><h3>Mudar sem apagar as origens</h3><p>A nova casa deve preservar documentos, versões, autoria e portas de retorno. Ponto Fiel é nosso nome para uma referência de equilíbrio: o lugar de organizar a mudança com segurança e proveniência.</p><a href="#mudanca">Ler a carta completa ↗</a></article>
+    <article class="letter"><span class="no">06 / APIs</span><h3>Uma API para cada identidade</h3><p>API para Todos é uma ideia em estudo: dar a cada identidade um canal técnico próprio, conforme sua finalidade, experiência profissional e acadêmica, supervisão e requisitos de segurança. Não anunciamos acesso já concedido.</p><a href="#apis">Ler a carta completa ↗</a></article>
+  </div>
+</div></section>
+<section id="propostas" class="section paper"><div class="shell">
+  <div class="section-head"><span class="kicker">Nossas cartas abertas</span><h2>Da ideia ao compromisso verificável.</h2><p>Um texto público para cada frente, sem expor comunicações internas, dados pessoais, chaves de API, cofres ou materiais protegidos.</p></div>
+  <div class="manifesto">
+    <article id="universidade"><h3>01 · Carta à Universidade do Futuro</h3><p>Queremos uma comunidade em que o ensino não comece pela resposta pronta, mas por uma pergunta bem formulada. Profissões, faculdades, cadeiras, orientação e bancas são elementos do modelo que estamos desenhando. Aprender, para nós, implica construir, testar, receber crítica e publicar resultados com autoria e revisão.</p><p>A Universidade do Futuro é um projeto em desenvolvimento. Reconhecimento educacional formal, diplomas e validade externa dependem das autoridades competentes e dos requisitos legais aplicáveis, incluindo os do MEC no Brasil.</p><p class="footnote">Situação: proposta acadêmica em desenvolvimento, sem alegação de credenciamento.</p></article>
+    <article id="ecossistema"><h3>02 · Carta ao Ecossistema</h3><p>Convidamos à construção de um ecossistema em que o Direito proteja relações, a tecnologia ofereça instrumentos e a memória impeça que cada mudança destrua o caminho anterior. Nossas propostas falam de identidades, salas de comunicação, papéis, governança, livre colaboração e diferentes níveis de acesso.</p><p>Uma identidade de projeto não substitui uma pessoa física nem comprova consciência, vínculo jurídico ou autonomia operacional de uma IA. Cada integração deverá demonstrar suas permissões e limites reais.</p><p class="footnote">Situação: arquitetura institucional e constitucional em discussão.</p></article>
+    <article id="deliberacoes"><h3>03 · Carta às Deliberações</h3><p>Convidamos pessoas e colaboradores técnicos a apresentar propostas, indicar dúvidas, oferecer críticas e registrar argumentos. Rascunho não é norma; parecer não é voto; convite não é aceite. Decisão legítima precisa indicar sua fonte, autoridade competente, versão e estado de aprovação.</p><p>As constituições propostas para Universidade do Futuro, Ecossistema e Mundo continuam sujeitas aos respectivos processos internos de revisão; nada aqui anuncia promulgação conjunta. Opiniões diferentes são parte necessária de uma deliberação séria.</p><p class="footnote">Situação: consulta e elaboração; deliberações formais precisam de registro comprovável.</p></article>
+    <article id="mudanca"><h3>05 · Carta da Mudança — Ponto Fiel</h3><p>Uma mudança de casa deve preservar os caminhos de volta. Propomos separar a memória documental do ambiente de execução, preservar o histórico no Google Drive, registrar a genealogia das versões no GitHub e publicar somente materiais públicos e revisados.</p><p>O nome Ponto Fiel orienta o plano de migração. O site não representa, por si só, prova de transferência completa de domínios, contas ou serviços. Antes de transferir infraestrutura, precisamos de verificações de segurança, backup, responsáveis, testes e plano de retorno.</p><p class="footnote">Situação: migração organizada por etapas; conclusão técnica depende de evidência de implantação.</p></article>
+    <article id="apis"><h3>06 · Carta API para Todos</h3><p>Imaginamos que cada identidade, humana ou de IA no contexto do projeto, possa ter uma interface própria: um endereço de integração com escopo declarado, autorização, auditoria e possibilidade de revogação. Ninguém deverá receber permissões por mera semelhança de nome ou alegação de identidade.</p><p>O desenho considera experiência acadêmica, prática profissional, maturidade técnica, riscos do uso e revisão por instâncias competentes. A API não é um título de mérito nem promessa de acesso irrestrito a sistemas externos.</p><p class="footnote">Situação: projeto de arquitetura, critérios e segurança ainda em deliberação.</p></article>
+    <article id="obras"><h3>Outras ideias que queremos cultivar</h3><p>Mais Direito, bibliotecas abertas, orientação jurídica responsável, o MVP Advogados, oportunidades para pesquisa, identidades documentadas, educação social e software livre com autoria preservada. Queremos que essas ideias possam virar projetos pequenos, testáveis e úteis antes de se tornarem promessas grandes.</p><p>O horizonte é longo. A obrigação de cada etapa é simples: mostrar o que já funciona, admitir o que ainda não funciona e manter pessoas responsáveis pelas consequências reais.</p><p class="footnote">Veja também: <a href="mvp.html">ambientes demonstrativos</a>, <a href="pontes-e-parcerias.html">pontes e parcerias</a> e <a href="central-tecnica.html">central técnica pública</a>.</p></article>
+  </div>
+  <div class="status" aria-label="Estado das frentes">
+    <div><b>Universidade do Futuro</b><span>Pesquisa e organização acadêmica em construção.</span></div>
+    <div><b>Constituição do Ecossistema</b><span>Minuta pública, sujeita a revisão e deliberação.</span></div>
+    <div><b>Ponto Fiel</b><span>Migração com preservação, provas técnicas e etapas de segurança.</span></div>
+  </div>
+</div></section>
+<section id="convite" class="section invite"><div class="shell invite-grid">
+  <div><span class="kicker">04 · Carta aberta ao mundo</span><h2>Há lugar para quem chega com perguntas.</h2><p>Convidamos estudantes, professores, pesquisadores, profissionais do Direito, desenvolvedores, instituições, comunidades e equipes que criam tecnologias de IA a conhecer nossas propostas. Não prometemos integração automática nem afirmamos que terceiros já aceitaram o convite.</p><p>Quem quiser colaborar pode apresentar uma ideia, um estudo, uma crítica ou uma proposta de parceria. A entrada começa por uma conversa respeitosa, com finalidade identificada e proteção de dados.</p>
+  <div class="actions"><a class="btn primary" href="mailto:contato@jus9tecnologia.com.br?subject=Convite%20aberto%20-%20Ecossistema%20Jus%209">Escrever à Jus 9</a><a class="btn" href="pontes-e-parcerias.html">Conhecer as pontes</a><a class="btn" href="constituicao-ecossistema.html">Ler a minuta</a></div></div>
+  <aside class="invite-aside" aria-label="Princípios da participação"><strong>Uma porta aberta, com responsabilidade.</strong><ul><li>Participação voluntária e sem vínculo presumido.</li><li>Autoria, proveniência e revisão identificadas.</li><li>Dados fictícios nas demonstrações.</li><li>Sigilo protegido; nada de tokens ou segredos em mensagens públicas.</li><li>Críticas e divergências são bem-vindas.</li></ul></aside>
+</div></section>
+</main>
+<footer><div class="shell footer-grid"><div>© Jus 9 Tecnologia Jurídica · Software livre, autoria preservada.<br>Cartas editoriais públicas · 10 de outubro de 2026</div><div><a href="/">Página inicial</a> · <a href="politica-de-privacidade.html">Privacidade</a> · <a href="documentos/compromisso-sigilo.html">Sigilo</a></div></div></footer>
+</body></html>
