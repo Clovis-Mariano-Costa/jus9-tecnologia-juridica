@@ -247,6 +247,12 @@ const checks = [
     args: ["tests/validate-worker-auth.mjs"]
   },
   {
+    label: "Grants object-bound COM-IAS",
+    cwd: portalRoot,
+    command: process.execPath,
+    args: ["--test", "tests/comias-grants.test.mjs"]
+  },
+  {
     label: "Homologacao tecnica DAJ ponta a ponta",
     cwd: portalRoot,
     command: process.execPath,

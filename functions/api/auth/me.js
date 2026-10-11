@@ -6,6 +6,7 @@ export async function onRequestGet({ request, env }) {
   return jsonResponse({
     authenticated: true,
     provider: session.provider,
+    subject_id: session.emailHash ? `human:${session.emailHash}` : null,
     profile: session.profile,
     accessMode: session.accessMode || "legacy",
     authNucleus: session.authNucleus || "principal",
